@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haryana CET Mock Test Portal</title>
+    <style>
+        /* CSS Variables for Light & Dark Mode */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --text-main: #1a1a1a;
+            --text-muted: #4a4a4a;
+            --card-hover: rgba(255, 255, 255, 0.45);
+            --btn-bg: #4a90e2;
+            --btn-hover: #357abd;
+            --header-bg: rgba(255, 255, 255, 0.15);
+            --footer-bg: rgba(255, 255, 255, 0.3);
+            --list-hover: rgba(255,255,255, 0.6);
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-bg: rgba(16, 24, 32, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f0f0f0;
+            --text-muted: #b0b0b0;
+            --card-hover: rgba(16, 24, 32, 0.7);
+            --btn-bg: #00d2ff;
+            --btn-hover: #3a7bd5;
+            --header-bg: rgba(0, 0, 0, 0.3);
+            --footer-bg: rgba(0, 0, 0, 0.4);
+            --list-hover: rgba(0,0,0, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Glassmorphism Utilities */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+        }
+
+        /* Header Styles */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--glass-border);
+            background: var(--header-bg);
+            backdrop-filter: blur(15px);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-container svg {
+            width: 40px;
+            height: 40px;
+            fill: var(--btn-bg);
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding: 8px 15px 8px 35px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--text-main);
+            outline: none;
+            width: 200px;
+            transition: width 0.3s ease;
+        }
+
+        .search-box input:focus {
+            width: 250px;
+            border-color: var(--btn-bg);
+        }
+
+        .search-box svg {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            fill: var(--text-muted);
+        }
+
+        .theme-toggle {
+            cursor: pointer;
+            background: none;
+            border: none;
+            display: flex;
+            padding: 8px;
+            border-radius: 50%;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+        }
+
+        .theme-toggle svg {
+            width: 22px;
+            height: 22px;
+            fill: var(--text-main);
+        }
+
+        .login-btn {
+            background: transparent;
+            border: 2px solid var(--btn-bg);
+            color: var(--text-main);
+            padding: 8px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .login-btn:hover {
+            background: var(--btn-bg);
+            color: #fff;
+        }
+
+        /* Running News Bar */
+        .news-ticker {
+            background: var(--btn-bg);
+            color: #fff;
+            padding: 8px 20px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .news-ticker strong {
+            background: #ff4757;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 15px;
+            white-space: nowrap;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 40px 20px 20px;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: var(--btn-bg);
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+
+        /* Section Container Styles */
+        .section-box {
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Latest Mock Test Section */
+        .latest-list {
+            list-style: none;
+        }
+
+        .latest-list li {
+            margin-bottom: 10px;
+        }
+
+        .latest-list a {
+            text-decoration: none;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            border-radius: 10px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .latest-list a:hover {
+            background: var(--list-hover);
+            transform: translateX(5px);
+            border-color: var(--btn-bg);
+        }
+
+        /* Main Grid container */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        /* Card Styles */
+        .card {
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 260px;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            background: var(--card-hover);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-icon svg {
+            width: 30px;
+            height: 30px;
+            fill: var(--text-main);
+        }
+
+        .card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .start-btn {
+            display: inline-block;
+            text-decoration: none;
+            background: var(--btn-bg);
+            color: #fff;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            width: 100%;
+        }
+
+        .start-btn:hover {
+            background: var(--btn-hover);
+            transform: scale(1.05);
+        }
+
+        /* Results Section */
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        .results-table th, .results-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .results-table th {
+            font-weight: 600;
+            background: var(--glass-bg);
+        }
+        .results-table tr:hover {
+            background: var(--list-hover);
+        }
+        .status-pass { color: #28a745; font-weight: bold; }
+        .status-fail { color: #dc3545; font-weight: bold; }
+
+        /* Footer */
+        footer {
+            background: var(--footer-bg);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--glass-border);
+            padding: 30px 5%;
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--btn-bg);
+        }
+
+        /* Floating Buttons */
+        .floating-btns {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .float-btn {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+        }
+
+        .float-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .wa-btn { background: #25D366; }
+        .tg-btn { background: #0088cc; }
+        
+        .float-btn svg {
+            width: 30px;
+            height: 30px;
+            fill: white;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+            .header-controls {
+                width: 100%;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .search-box input {
+                width: 100%;
+            }
+            .hero h2 { font-size: 2rem; }
+            .footer-content { flex-direction: column; text-align: center; justify-content: center; }
+            .footer-links { justify-content: center; }
+            .floating-btns { bottom: 15px; right: 15px; }
+            .float-btn { width: 45px; height: 45px; }
+            .float-btn svg { width: 24px; height: 24px; }
+            
+            /* Responsive Table */
+            .results-table thead { display: none; }
+            .results-table, .results-table tbody, .results-table tr, .results-table td { display: block; width: 100%; }
+            .results-table tr { margin-bottom: 15px; border: 1px solid var(--glass-border); border-radius: 8px; }
+            .results-table td { text-align: right; padding-left: 50%; position: relative; }
+            .results-table td::before { content: attr(data-label); position: absolute; left: 15px; width: 45%; text-align: left; font-weight: bold; }
+        }
+    </style>
+</head>
+<body data-theme="light">
+
+    <header class="glass">
+        <div class="logo-container">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 3L1 9l4 2.18v6L12 21l7-3.82v-6l2-1.09V17h2V9L12 3zm6.82 6L12 12.72 5.18 9 12 5.28 18.82 9zM17 15.99l-5 2.73-5-2.73v-3.72L12 15l5-2.73v3.72z"/>
+            </svg>
+            <div class="logo-text">
+                <h1>Haryana CET Mock Test Portal</h1>
+            </div>
+        </div>
+        <div class="header-controls">
+            <div class="search-box">
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <input type="text" id="searchInput" placeholder="Search categories..." onkeyup="filterCards()">
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" title="Toggle Dark Mode">
+                <svg viewBox="0 0 24 24" id="themeIcon">
+                    <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.86 0-7-3.14-7-7s3.14-7 7-7 7 3.14 7 7-3.14 7-7 7z"/>
+                </svg>
+            </button>
+            <button class="login-btn">Login / Register</button>
+        </div>
+    </header>
+
+    <div class="news-ticker">
+        <strong>Updates</strong>
+        <marquee behavior="scroll" direction="left" scrollamount="6">
+            🔴 CET Notification Out: 10 Guna Rule Applicable in Mains &nbsp;&nbsp; | &nbsp;&nbsp; 🆕 New Haryana GK Mock Test Added Today &nbsp;&nbsp; | &nbsp;&nbsp; 📢 Download Latest Previous Year Papers PDF &nbsp;&nbsp; | &nbsp;&nbsp; ⭐ Free Maths Test Series Live Now!
+        </marquee>
+    </div>
+
+    <div class="hero">
+        <div class="badge">Updates: CET Mains (10 Guna Rule)</div>
+        <h2>Crack Haryana CET with Confidence</h2>
+    </div>
+
+    <main class="container">
+        
+        <section class="section-box glass">
+            <h2 class="section-title">🔥 Latest Mock Tests</h2>
+            <ul class="latest-list">
+                <li><a href="fullmock.html">⭐ Full Mock Test 1 (New Pattern)</a></li>
+                <li><a href="fullmock2.html">⭐ Full Mock Test 2</a></li>
+                <li><a href="haryanagk.html">⭐ Haryana GK Test 1</a></li>
+                <li><a href="haryanagk2.html">⭐ Haryana GK Test 2</a></li>
+                <li><a href="science.html">⭐ Science Test 1</a></li>
+                <li><a href="maths.html">⭐ Maths Test 1</a></li>
+            </ul>
+        </section>
+
+        <div class="grid" id="cardGrid">
+            
+            <article class="card glass" data-title="Full Mock Test">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                </div>
+                <h3>Full Mock Test</h3>
+                <p>100 Questions | 105 Minutes.</p>
+                <a href="fullmock.html" class="start-btn">Start Test</a>
+            </article>
+
+            <article class="card glass" data-title="Haryana GK">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24"><path d="M14 6l-3.75 5 2.85 3.8-1.6 1.2C9.81 13.75 7 10 7 10l-6 8h22L14 6z"/></svg>
+                </div>
+                <h3>Haryana GK</h3>
+                <p>Master Haryana's history & culture.</p>
+                <a href="haryanagk.html" class="start-btn">Practice Now</a>
+            </article>
+
+            <article class="card glass" data-title="General Science">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24"><path d="M7 19h10V4H7v15zm-5-2h4V6H2v11zM18 6v11h4V6h-4z"/></svg>
+                </div>
+                <h3>General Science</h3>
+                <p>Physics, Chemistry, and Biology.</p>
+                <a href="science.html" class="start-btn">Practice Now</a>
+            </article>
+
+            <article class="card glass" data-title="Mathematics">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9h-2V7h-2v5H6v2h2v5h2v-5h2v-2zm4 3h-4v2h4v-2zm0-4h-4v2h4V11z"/></svg>
+                </div>
+                <h3>Mathematics</h3>
+                <p>Arithmetic and Advance Maths.</p>
+                <a href="maths.html" class="start-btn">Practice Now</a>
+            </article>
+
+            <article class="card glass" data-title="Reasoning">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6A4.997 4.997 0 0 1 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z"/></svg>
+                </div>
+                <h3>Reasoning</h3>
+                <p>Logical & Analytical Reasoning.</p>
+                <a href="reasoning.html" class="start-btn">Practice Now</a>
+            </article>
+
+            <article class="card glass" data-title="Hindi">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm6.93 6h-2.95a15.65 15.65 0 0 0-1.38-3.56A8.03 8.03 0 0 1 18.92 8zM12 4.04c.83 1.2 1.48 2.53 1.91 3.96h-3.82c.43-1.43 1.08-2.76 1.91-3.96zM4.26 14C4.1 13.36 4 12.69 4 12s.1-1.36.26-2h3.38c-.08.66-.14 1.32-.14 2 0 .68.06 1.34.14 2H4.26zm.82 2h2.95c.32 1.25.78 2.45 1.38 3.56A7.987 7.987 0 0 1 5.08 16zm2.95-8H5.08a7.987 7.987 0 0 1 4.33-3.56A15.65 15.65 0 0 0 8.03 8z"/></svg>
+                </div>
+                <h3>Hindi</h3>
+                <p>व्याकरण, मुहावरे, संधि और समास।</p>
+                <a href="hindi.html" class="start-btn">Practice Now</a>
+            </article>
+
+            <article class="card glass" data-title="English">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/></svg>
+                </div>
+                <h3>English</h3>
+                <p>Grammar rules & Vocabulary.</p>
+                <a href="english.html" class="start-btn">Practice Now</a>
+            </article>
+
+            <article class="card glass" data-title="Previous Year Papers">
+                <div class="card-icon">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                </div>
+                <h3>Previous Year Papers</h3>
+                <p>Attempt real HSSC past papers.</p>
+                <a href="previousyear.html" class="start-btn">View Papers</a>
+            </article>
+        </div>
+
+        <sec
