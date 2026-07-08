@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Science Mock Test Part 1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Hind:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-light: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); --glass-bg-light: rgba(255, 255, 255, 0.6); --glass-border-light: rgba(255, 255, 255, 0.8); --text-light: #2d3436; --text-muted-light: #636e72; --primary-color: #0984e3; --primary-hover: #74b9ff; --success: #00b894; --danger: #d63031; --warning: #fdcb6e; --shadow-light: rgba(0, 0, 0, 0.1); --bg-dark: linear-gradient(135deg, #1e1e2f 0%, #2a2a40 100%); --glass-bg-dark: rgba(30, 30, 46, 0.6); --glass-border-dark: rgba(255, 255, 255, 0.1); --text-dark: #f5f6fa; --text-muted-dark: #b2bec3; --shadow-dark: rgba(0, 0, 0, 0.3); }
+        [data-theme="light"] { --app-bg: var(--bg-light); --glass-bg: var(--glass-bg-light); --glass-border: var(--glass-border-light); --text: var(--text-light); --text-muted: var(--text-muted-light); --shadow: var(--shadow-light); --option-bg: rgba(255,255,255,0.7); --option-hover: rgba(255,255,255,0.9); }
+        [data-theme="dark"] { --app-bg: var(--bg-dark); --glass-bg: var(--glass-bg-dark); --glass-border: var(--glass-border-dark); --text: var(--text-dark); --text-muted: var(--text-muted-dark); --shadow: var(--shadow-dark); --option-bg: rgba(255,255,255,0.05); --option-hover: rgba(255,255,255,0.15); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind', 'Poppins', sans-serif; transition: background 0.3s ease, color 0.3s ease; }
+        body { background: var(--app-bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; padding: 20px; }
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: 0 8px 32px 0 var(--shadow); padding: 24px; margin-bottom: 20px; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .header-title h1 { font-size: 24px; font-weight: 600; }
+        .header-controls { display: flex; align-items: center; gap: 15px; }
+        .timer { font-size: 18px; font-weight: bold; background: var(--primary-color); color: white; padding: 8px 16px; border-radius: 30px; letter-spacing: 1px; }
+        .theme-toggle { cursor: pointer; background: none; border: none; font-size: 24px; color: var(--text); display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: var(--glass-bg); border: 1px solid var(--glass-border); }
+        .main-container { display: flex; gap: 20px; flex: 1; }
+        .test-area { flex: 3; display: flex; flex-direction: column; }
+        .palette-area { flex: 1; min-width: 250px; }
+        .progress-bar { height: 8px; background: var(--option-bg); border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary-color); width: 0%; transition: width 0.3s ease; }
+        .question-header { font-size: 22px; font-weight: 600; margin-bottom: 20px; line-height: 1.4; }
+        .options-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px; }
+        .option { background: var(--option-bg); border: 1px solid var(--glass-border); padding: 16px 20px; border-radius: 12px; cursor: pointer; font-size: 18px; display: flex; align-items: center; gap: 15px; transition: all 0.2s; }
+        .option:hover { background: var(--option-hover); transform: translateY(-2px); }
+        .option.selected { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+        .option-label { font-weight: bold; background: rgba(0,0,0,0.1); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        .controls { display: flex; justify-content: space-between; margin-top: auto; gap: 10px; flex-wrap: wrap; }
+        .btn { padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; color: white; }
+        .btn-prev { background: var(--text-muted); } .btn-next { background: var(--primary-color); } .btn-submit { background: var(--success); } .btn-home { background: #34495e; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;} .btn-restart { background: var(--primary-color); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; } .btn:hover:not(:disabled) { opacity: 0.9; transform: scale(1.02); }
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 15px; }
+        .palette-btn { aspect-ratio: 1; border: 1px solid var(--glass-border); background: var(--option-bg); color: var(--text); border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .palette-btn.attempted { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+        .palette-btn.active { box-shadow: 0 0 0 3px var(--text); }
+        .palette-title { font-size: 18px; font-weight: 600; margin-bottom: 10px; text-align: center; }
+        .hidden { display: none !important; }
+        .result-dashboard { display: flex; flex-direction: column; gap: 20px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px; padding: 15px; text-align: center; }
+        .stat-value { font-size: 28px; font-weight: bold; margin-bottom: 5px; }
+        .stat-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+        .color-success { color: var(--success); } .color-danger { color: var(--danger); } .color-primary { color: var(--primary-color); } .color-warning { color: var(--warning); }
+        .review-section { display: flex; flex-direction: column; gap: 20px; }
+        .review-card { padding: 20px; border-radius: 12px; border-left: 6px solid var(--text-muted); }
+        .review-card.correct { border-left-color: var(--success); } .review-card.wrong { border-left-color: var(--danger); } .review-card.unattempted { border-left-color: var(--warning); }
+        .review-q { font-size: 18px; font-weight: 600; margin-bottom: 15px; }
+        .review-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .review-option { padding: 10px; border-radius: 6px; background: var(--option-bg); border: 1px solid var(--glass-border); font-size: 15px; }
+        .review-option.is-correct { background: rgba(0, 184, 148, 0.2); border-color: var(--success); font-weight: bold; }
+        .review-option.is-user-wrong { background: rgba(214, 48, 49, 0.2); border-color: var(--danger); }
+        .explanation-box { background: rgba(0,0,0,0.05); padding: 15px; border-radius: 8px; font-size: 15px; line-height: 1.6; color: var(--text); border: 1px solid var(--glass-border); }
+        [data-theme="dark"] .explanation-box { background: rgba(255,255,255,0.05); }
+        .explanation-title { font-weight: bold; margin-bottom: 5px; color: var(--primary-color); }
+        @media (max-width: 768px) { .main-container { flex-direction: column; } .palette-area { order: -1; } .palette-grid { grid-template-columns: repeat(10, 1fr); } .review-options { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .palette-grid { grid-template-columns: repeat(5, 1fr); } header { flex-direction: column; gap: 10px; text-align: center; } .header-controls { width: 100%; justify-content: space-between; } }
+    </style>
+</head>
+<body data-theme="light">
+    <header class="glass-panel" style="margin-bottom: 20px; padding: 15px 24px;">
+        <div class="header-title"><h1>Science Mock Test - Part 1</h1></div>
+        <div class="header-controls">
+            <div class="timer" id="timer">25:00</div>
+            <button class="theme-toggle" id="theme-btn">🌓</button>
+        </div>
+    </header>
+
+    <div id="test-screen" class="main-container">
+        <main class="test-area glass-panel">
+            <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+            <div class="question-header" id="question-text"></div>
+            <div class="options-list" id="options-container"></div>
+            <div class="controls">
+                <button class="btn btn-prev" id="btn-prev">पिछला</button>
+                <button class="btn btn-next" id="btn-next">अगला</button>
+                <button class="btn btn-submit hidden" id="btn-submit">Submit Test</button>
+            </div>
+        </main>
+        <aside class="palette-area glass-panel">
+            <div class="palette-title">Question Palette</div>
+            <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:10px;">
+                <span><span style="display:inline-block; width:10px;height:10px;background:var(--primary-color);border-radius:50%;"></span> Attempted</span>
+                <span><span style="display:inline-block; width:10px;height:10px;background:var(--option-bg);border:1px solid var(--glass-border);border-radius:50%;"></span> Unattempted</span>
+            </div>
+            <div class="palette-grid" id="palette-grid"></div>
+        </aside>
+    </div>
+
+    <div id="result-screen" class="result-dashboard hidden">
+        <div class="glass-panel">
+            <h2 style="text-align: center; margin-bottom: 20px; font-size: 28px;">परीक्षा परिणाम (Result)</h2>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-value color-primary" id="score-val">0/25</div><div class="stat-label">Score</div></div>
+                <div class="stat-card"><div class="stat-value color-primary" id="percent-val">0%</div><div class="stat-label">Percentage</div></div>
+                <div class="stat-card"><div class="stat-value color-primary" id="accuracy-val">0%</div><div class="stat-label">Accuracy</div></div>
+                <div class="stat-card"><div class="stat-value color-success" id="correct-val">0</div><div class="stat-label">Correct</div></div>
+                <div class="stat-card"><div class="stat-value color-danger" id="wrong-val">0</div><div class="stat-label">Wrong</div></div>
+                <div class="stat-card"><div class="stat-value color-warning" id="attempted-val">0</div><div class="stat-label">Attempted</div></div>
+                <div class="stat-card"><div class="stat-value" style="color:var(--text-muted)" id="unattempted-val">0</div><div class="stat-label">Unattempted</div></div>
+            </div>
+            <div style="text-align: center; margin-top: 10px;">
+                <button class="btn btn-restart" onclick="location.reload()">Restart Test</button>
+                <a href="index.html" class="btn btn-home" style="margin-left: 10px;">Home Page</a>
+            </div>
+        </div>
+        <div class="glass-panel">
+            <h3 style="margin-bottom: 20px; font-size: 22px; border-bottom: 2px solid var(--glass-border); padding-bottom: 10px;">विस्तृत समाधान (Detailed Solution)</h3>
+            <div class="review-section" id="review-container"></div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            { id: 1, q: "विटामिन C का सर्वोत्तम स्रोत क्या है?", opt: ["गाजर", "आँवला", "सेब", "संतरा"], ans: 1, exp: "फोटो में दिए गए 'मॉडल सेट 1' के अनुसार, विटामिन C का सर्वोत्तम स्रोत आँवला है। (जबकि गाजर विटामिन A का स्रोत है)।" },
+            { id: 2, q: "मानव शरीर में गुर्दों (Kidney) का प्रमुख कार्य क्या है?", opt: ["रक्त चाप नियंत्रित करना", "ऑक्सीजन पहुँचाना", "शरीर से बेकार द्रव्य को बाहर निकालना", "हार्मोन स्रावित करना"], ans: 2, exp: "फोटो (मॉडल सेट 1) के अनुसार, मानव शरीर में गुर्दों (Kidney) का प्रमुख कार्य शरीर से बेकार द्रव्य को बाहर निकालना है।" },
+            { id: 3, q: "चेचक के टीके का आविष्कार किसने किया था?", opt: ["हरगोविन्द खुराना", "एडवर्ड जेनर", "लुई पाश्चर", "वाटसन"], ans: 1, exp: "फोटो के 'मॉडल सेट 1' में स्पष्ट रूप से लिखा है कि चेचक के टीके का आविष्कार एडवर्ड जेनर ने किया था।" },
+            { id: 4, q: "शरीर की सबसे लम्बी अस्थि कौन-सी है?", opt: ["स्टेपीस", "फीमर (जांघ)", "रीढ़ की हड्डी", "जबड़े की हड्डी"], ans: 1, exp: "मॉडल सेट 1 में दी गई जानकारी के अनुसार, शरीर की सबसे लम्बी अस्थि फीमर (जांघ) है। (नोट: सबसे छोटी अस्थि स्टेपीस होती है)।" },
+            { id: 5, q: "हीमोग्लोबिन किस का यौगिक है?", opt: ["वसा का", "प्रोटीन का", "विटामिन का", "कार्बोहाइड्रेट का"], ans: 1, exp: "फोटो में दी गई जानकारी के अनुसार, हीमोग्लोबिन प्रोटीन का यौगिक है। (खून का रंग लाल हीमोग्लोबिन के कारण होता है)।" },
+            { id: 6, q: "लाल रक्त कणिकाओं (RBC) का जीवनकाल कितना होता है?", opt: ["120 दिन", "60 दिन", "15 दिन", "200 दिन"], ans: 0, exp: "मॉडल सेट 1 में दिया गया है कि लाल रक्त कणिकाओं (RBC) का जीवनकाल 120 दिन होता है।" },
+            { id: 7, q: "रुधिर का थक्का जमने में कौन-सा विटामिन सहायक है?", opt: ["विटामिन A", "विटामिन C", "विटामिन K", "विटामिन D"], ans: 2, exp: "दी गई फोटो की जानकारी के अनुसार रुधिर (खून) का थक्का जमने में सहायक विटामिन K है।" },
+            { id: 8, q: "रक्त समूह में 'सर्वदाता' और 'सर्वग्राही' क्रमशः कौन-से हैं?", opt: ["A तथा B", "O तथा AB", "AB तथा O", "O तथा B"], ans: 1, exp: "फोटो में स्पष्ट लिखा है कि रक्त समूह में सर्वदाता O तथा सर्वग्राही AB हैं (क्रमश: O तथा AB)।" },
+            { id: 9, q: "पित्त (Bile) कहाँ उत्पन्न होता है?", opt: ["वृक्क में", "यकृत में", "अग्नाशय में", "छोटी आंत में"], ans: 1, exp: "मॉडल सेट 1 के तथ्यों के अनुसार, पित्त (Bile) यकृत (Liver) में उत्पन्न होता है।" },
+            { id: 10, q: "हाइड्रोफोबिया रोग किससे संबंधित है?", opt: ["विषाणुओं से", "जीवाणुओं से", "कुत्ते के काटने से", "कवकों से"], ans: 2, exp: "फोटो के अनुसार, हाइड्रोफोबिया कुत्ते के काटने से संबंधित है। (रेबीज वायरस)।" },
+            { id: 11, q: "खून का थक्का किस रोग में नहीं जमता है?", opt: ["रतौंधी", "वर्णांधता", "हीमोफीलिया", "ट्रेकोमा"], ans: 2, exp: "मॉडल सेट 1 में स्पष्ट रूप से दिया गया है कि हीमोफीलिया रोग में खून का थक्का नहीं जमता है।" },
+            { id: 12, q: "प्लाज्मोडियम परजीवी किस रोग का कारण है?", opt: ["मलेरिया रोग का", "टाइफाइड का", "डेंगू का", "चेचक का"], ans: 0, exp: "मॉडल सेट 2 के अनुसार, प्लाज्मोडियम परजीवी मलेरिया रोग का कारण है।" },
+            { id: 13, q: "तने के रूपान्तरण का सही उदाहरण कौन-सा है?", opt: ["मूली, गाजर, शकरकंद", "आलू, अदरक और प्याज", "पालक के पत्ते", "उपर्युक्त सभी"], ans: 1, exp: "फोटो के 'मॉडल सेट 2' में बताया गया है कि तने के रूपान्तरण का उदाहरण आलू, अदरक और प्याज हैं। (जबकि मूली, गाजर जड़ के उदाहरण हैं)।" },
+            { id: 14, q: "कवकों (Fungi) का अध्ययन क्या कहलाता है?", opt: ["वायरोलॉजी", "माइकोलॉजी", "बायोलॉजी", "फाइकोलॉजी"], ans: 1, exp: "मॉडल सेट 2 में दी गई जानकारी के अनुसार, कवकों का अध्ययन माइकोलॉजी कहलाता है।" },
+            { id: 15, q: "मानव शरीर में गुणसूत्रों की कुल संख्या कितनी होती है?", opt: ["46 (23 जोड़े)", "48 (24 जोड़े)", "44 (22 जोड़े)", "42 (21 जोड़े)"], ans: 0, exp: "फोटो में लिखा है कि मानव में गुणसूत्रों की संख्या 46 (23 जोड़े) होती है।" },
+            { id: 16, q: "रक्त कणिकाओं का निर्माण शरीर में कहाँ होता है?", opt: ["यकृत में", "मस्तिष्क में", "अग्नाशय में", "अस्थिमज्जा में"], ans: 3, exp: "मॉडल सेट 2 के अनुसार, रक्त कणिकाओं (Blood cells) का निर्माण अस्थिमज्जा (Bone marrow) में होता है।" },
+            { id: 17, q: "पिट्यूटरी ग्रंथि शरीर में कहाँ पायी जाती है?", opt: ["गले में", "मस्तिष्क में", "वक्ष में", "वृक्क में"], ans: 1, exp: "फोटो की जानकारी के अनुसार, पिट्यूटरी (पीयूष) ग्रंथि मस्तिष्क में पायी जाती है।" },
+            { id: 18, q: "लार (Saliva) में पाया जाने वाला एन्जाइम कौन-सा है?", opt: ["टायलिन", "पेप्सिन", "रेनिन", "लाइपेज"], ans: 0, exp: "मॉडल सेट 2 में स्पष्ट है कि लार में पाया जाने वाला प्रमुख एन्जाइम टायलिन है।" },
+            { id: 19, q: "भोपाल गैस कांड (1984) में किस गैस का रिसाव हुआ था?", opt: ["कार्बन डाइऑक्साइड", "मिथाइल आइसोसाइनेट", "नाइट्रोजन ऑक्साइड", "कार्बन मोनोऑक्साइड"], ans: 1, exp: "फोटो में लिखा है कि भोपाल गैस कांड (1984) में मिथाइल आइसोसाइनेट (MIC) गैस का रिसाव हुआ था।" },
+            { id: 20, q: "'काला हीरा' तथा 'काला सीसा' किसे कहते हैं?", opt: ["ग्रेफाइट और कोयला", "कार्बोनेडो और ग्रेफाइट", "कोयला और कार्बोनेडो", "हीरा और ग्रेफाइट"], ans: 1, exp: "मॉडल सेट 3 के अनुसार, काला हीरा तथा काला सीसा क्रमश: कार्बोनेडो और ग्रेफाइट को कहते हैं।" },
+            { id: 21, q: "'आत्म हत्या की थैली' किसे कहा जाता है?", opt: ["राइबोसोम", "लाइसोसोम", "माइटोकॉन्ड्रिया", "गोलजीकाय"], ans: 1, exp: "फोटो के 'मॉडल सेट 3' में दिया गया है कि 'आत्म हत्या की थैली' लाइसोसोम को कहा जाता है। (प्रोटीन की फैक्ट्री राइबोसोम है)।" },
+            { id: 22, q: "मानव शरीर का सामान्य ताप कितना होता है?", opt: ["98.6°F या 37°C या 310 कैल्विन", "97°F या 36°C", "99°F या 38°C", "98.4°F या 35°C"], ans: 0, exp: "फोटो के अनुसार मानव शरीर का सामान्य ताप 98.6°F या 37°C या 310 कैल्विन होता है।" },
+            { id: 23, q: "संसार का सबसे बड़ा पक्षी कौन-सा है?", opt: ["मोर", "गिद्ध", "शुतुरमुर्ग", "बाज"], ans: 2, exp: "मॉडल सेट 3 में स्पष्ट लिखा है कि संसार का सबसे बड़ा पक्षी शुतुरमुर्ग है।" },
+            { id: 24, q: "जीन के संश्लेषण से संबंधित व्यक्ति कौन हैं?", opt: ["एडवर्ड जेनर", "हरगोविन्द खुराना", "लुई पाश्चर", "वाटसन"], ans: 1, exp: "फोटो में दी गई जानकारी के अनुसार, जीन के संश्लेषण से संबंधित व्यक्ति भारतीय वैज्ञानिक हरगोविन्द खुराना हैं।" },
+            { id: 25, q: "एक लड़का अपने पिता से कौन-सा 'क्रोमोजोम' पाता है?", opt: ["22+X", "22+Y", "23+X", "23+Y"], ans: 1, exp: "मॉडल सेट 3 के अंतिम तथ्य के अनुसार, एक लड़का अपने पिता से '22+Y' क्रोमोजोम पाता है।" }
+        ];
+        let currentQuestion = 0; let answers = new Array(questions.length).fill(null);
+        let timeLeft = 25 * 60; let timerInterval;
+
+        const DOM = {
+            themeBtn: document.getElementById('theme-btn'), timer: document.getElementById('timer'),
+            progress: document.getElementById('progress'), qText: document.getElementById('question-text'),
+            optContainer: document.getElementById('options-container'), btnPrev: document.getElementById('btn-prev'),
+            btnNext: document.getElementById('btn-next'), btnSubmit: document.getElementById('btn-submit'),
+            paletteGrid: document.getElementById('palette-grid'), testScreen: document.getElementById('test-screen'),
+            resultScreen: document.getElementById('result-screen'), scoreVal: document.getElementById('score-val'),
+            percentVal: document.getElementById('percent-val'), correctVal: document.getElementById('correct-val'),
+            wrongVal: document.getElementById('wrong-val'), attemptedVal: document.getElementById('attempted-val'),
+            unattemptedVal: document.getElementById('unattempted-val'), accuracyVal: document.getElementById('accuracy-val'),
+            reviewContainer: document.getElementById('review-container')
+        };
+
+        DOM.themeBtn.addEventListener('click', () => {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', newTheme);
+            DOM.themeBtn.innerText = newTheme === 'light' ? '🌓' : '☀️';
+        });
+
+        function init() { renderPalette(); renderQuestion(); startTimer(); }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) { clearInterval(timerInterval); submitTest(); return; }
+                timeLeft--;
+                const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+                const s = (timeLeft % 60).toString().padStart(2, '0');
+                DOM.timer.innerText = `${m}:${s}`;
+                if (timeLeft < 300) { DOM.timer.style.background = 'var(--danger)'; }
+            }, 1000);
+        }
+
+        function renderPalette() {
+            DOM.paletteGrid.innerHTML = '';
+            questions.forEach((_, index) => {
+                const btn = document.createElement('button');
+                btn.className = `palette-btn ${answers[index] !== null ? 'attempted' : ''} ${index === currentQuestion ? 'active' : ''}`;
+                btn.innerText = index + 1;
+                btn.onclick = () => { currentQuestion = index; renderQuestion(); };
+                DOM.paletteGrid.appendChild(btn);
+            });
+        }
+
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+            DOM.qText.innerHTML = `<span style="color:var(--primary-color)">प्र. ${currentQuestion + 1}:</span> ${q.q}`;
+            DOM.optContainer.innerHTML = '';
+            const labels = ['A', 'B', 'C', 'D'];
+            
+            q.opt.forEach((optText, i) => {
+                const optDiv = document.createElement('div');
+                optDiv.className = `option ${answers[currentQuestion] === i ? 'selected' : ''}`;
+                optDiv.innerHTML = `<span class="option-label">${labels[i]}</span> <span>${optText}</span>`;
+                optDiv.onclick = () => selectOption(i);
+                DOM.optContainer.appendChild(optDiv);
+            });
+
+            const answeredCount = answers.filter(a => a !== null).length;
+            DOM.progress.style.width = `${(answeredCount / questions.length) * 100}%`;
+            DOM.btnPrev.disabled = currentQuestion === 0;
+            
+            if (currentQuestion === questions.length - 1) {
+                DOM.btnNext.classList.add('hidden'); DOM.btnSubmit.classList.remove('hidden');
+            } else {
+                DOM.btnNext.classList.remove('hidden'); DOM.btnSubmit.classList.add('hidden');
+            }
+            renderPalette();
+        }
+
+        function selectOption(index) { answers[currentQuestion] = index; renderQuestion(); }
+        DOM.btnPrev.onclick = () => { if (currentQuestion > 0) { currentQuestion--; renderQuestion(); } };
+        DOM.btnNext.onclick = () => { if (currentQuestion < questions.length - 1) { currentQuestion++; renderQuestion(); } };
+        DOM.btnSubmit.onclick = () => { if(confirm("क्या आप टेस्ट सबमिट करना चाहते हैं?")) { submitTest(); } };
+
+        function submitTest() {
+            clearInterval(timerInterval);
+            DOM.testScreen.classList.add('hidden'); DOM.resultScreen.classList.remove('hidden');
+            let correct = 0; let wrong = 0; let attempted = 0; let unattempted = 0;
+
+            questions.forEach((q, i) => {
+                if (answers[i] !== null) {
+                    attempted++;
+                    if (answers[i] === q.ans) { correct++; } else { wrong++; }
+                } else {
+                    unattempted++;
+                }
+            });
+
+            const percent = Math.round((correct / questions.length) * 100);
+            const accuracy = attempted > 0 ? Math.round((correct / attempted) * 100) : 0;
+            
+            DOM.scoreVal.innerText = `${correct}/${questions.length}`;
+            DOM.percentVal.innerText = `${percent}%`;
+            DOM.accuracyVal.innerText = `${accuracy}%`;
+            DOM.correctVal.innerText = correct; 
+            DOM.wrongVal.innerText = wrong;
+            DOM.attemptedVal.innerText = attempted;
+            DOM.unattemptedVal.innerText = unattempted;
+            renderReview();
+        }
+
+        function renderReview() {
+            DOM.reviewContainer.innerHTML = ''; const labels = ['A', 'B', 'C', 'D'];
+            questions.forEach((q, i) => {
+                const userAns = answers[i]; const isCorrect = userAns === q.ans; const isAttempted = userAns !== null;
+                let cardClass = 'unattempted';
+                if (isAttempted) { cardClass = isCorrect ? 'correct' : 'wrong'; }
+
+                const card = document.createElement('div'); card.className = `review-card glass-panel ${cardClass}`;
+                let optionsHtml = '<div class="review-options">';
+                q.opt.forEach((optText, optIndex) => {
+                    let optClass = 'review-option';
+                    if (optIndex === q.ans) { optClass += ' is-correct'; } 
+                    else if (optIndex === userAns && !isCorrect) { optClass += ' is-user-wrong'; }
+                    optionsHtml += `<div class="${optClass}">${labels[optIndex]}. ${optText}</div>`;
+                });
+                optionsHtml += '</div>';
+
+                let statusBadge = '';
+                if (!isAttempted) { statusBadge = '<span style="color:var(--warning); font-weight:bold;">[छोड़ दिया - Unattempted]</span>'; } 
+                else if (isCorrect) { statusBadge = '<span style="color:var(--success); font-weight:bold;">[सही - Correct]</span>'; } 
+                else { statusBadge = '<span style="color:var(--danger); font-weight:bold;">[गलत - Wrong]</span>'; }
+
+                card.innerHTML = `<div class="review-q">प्र. ${i + 1}: ${q.q} ${statusBadge}</div>${optionsHtml}<div class="explanation-box"><div class="explanation-title">समाधान:</div>${q.exp}</div>`;
+                DOM.reviewContainer.appendChild(card);
+            });
+        }
+        init();
+    </script>
+</body>
+</html>
