@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haryana GK Mock Test Part 4</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Hind:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-light: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%); --glass-bg-light: rgba(255, 255, 255, 0.6); --glass-border-light: rgba(255, 255, 255, 0.8); --text-light: #2d3436; --text-muted-light: #636e72; --primary-color: #0984e3; --primary-hover: #74b9ff; --success: #00b894; --danger: #d63031; --warning: #fdcb6e; --shadow-light: rgba(0, 0, 0, 0.1); --bg-dark: linear-gradient(135deg, #1e1e2f 0%, #2a2a40 100%); --glass-bg-dark: rgba(30, 30, 46, 0.6); --glass-border-dark: rgba(255, 255, 255, 0.1); --text-dark: #f5f6fa; --text-muted-dark: #b2bec3; --shadow-dark: rgba(0, 0, 0, 0.3); }
+        [data-theme="light"] { --app-bg: var(--bg-light); --glass-bg: var(--glass-bg-light); --glass-border: var(--glass-border-light); --text: var(--text-light); --text-muted: var(--text-muted-light); --shadow: var(--shadow-light); --option-bg: rgba(255,255,255,0.7); --option-hover: rgba(255,255,255,0.9); }
+        [data-theme="dark"] { --app-bg: var(--bg-dark); --glass-bg: var(--glass-bg-dark); --glass-border: var(--glass-border-dark); --text: var(--text-dark); --text-muted: var(--text-muted-dark); --shadow: var(--shadow-dark); --option-bg: rgba(255,255,255,0.05); --option-hover: rgba(255,255,255,0.15); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Hind', 'Poppins', sans-serif; transition: background 0.3s ease, color 0.3s ease; }
+        body { background: var(--app-bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; padding: 20px; }
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: 0 8px 32px 0 var(--shadow); padding: 24px; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .header-title h1 { font-size: 24px; font-weight: 600; }
+        .header-controls { display: flex; align-items: center; gap: 15px; }
+        .timer { font-size: 18px; font-weight: bold; background: var(--primary-color); color: white; padding: 8px 16px; border-radius: 30px; letter-spacing: 1px; }
+        .theme-toggle { cursor: pointer; background: none; border: none; font-size: 24px; color: var(--text); display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: var(--glass-bg); border: 1px solid var(--glass-border); }
+        .main-container { display: flex; gap: 20px; flex: 1; }
+        .test-area { flex: 3; display: flex; flex-direction: column; }
+        .palette-area { flex: 1; min-width: 250px; }
+        .progress-bar { height: 8px; background: var(--option-bg); border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary-color); width: 0%; transition: width 0.3s ease; }
+        .question-header { font-size: 22px; font-weight: 600; margin-bottom: 20px; line-height: 1.4; }
+        .options-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px; }
+        .option { background: var(--option-bg); border: 1px solid var(--glass-border); padding: 16px 20px; border-radius: 12px; cursor: pointer; font-size: 18px; display: flex; align-items: center; gap: 15px; transition: all 0.2s; }
+        .option:hover { background: var(--option-hover); transform: translateY(-2px); }
+        .option.selected { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+        .option-label { font-weight: bold; background: rgba(0,0,0,0.1); width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        .controls { display: flex; justify-content: space-between; margin-top: auto; }
+        .btn { padding: 12px 24px; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; color: white; }
+        .btn-prev { background: var(--text-muted); } .btn-next { background: var(--primary-color); } .btn-submit { background: var(--success); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; } .btn:hover:not(:disabled) { opacity: 0.9; transform: scale(1.02); }
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-top: 15px; }
+        .palette-btn { aspect-ratio: 1; border: 1px solid var(--glass-border); background: var(--option-bg); color: var(--text); border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .palette-btn.attempted { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+        .palette-btn.active { box-shadow: 0 0 0 3px var(--text); }
+        .palette-title { font-size: 18px; font-weight: 600; margin-bottom: 10px; text-align: center; }
+        .hidden { display: none !important; }
+        .result-dashboard { display: flex; flex-direction: column; gap: 20px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px; padding: 20px; text-align: center; }
+        .stat-value { font-size: 32px; font-weight: bold; margin-bottom: 5px; }
+        .stat-label { font-size: 14px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        .color-success { color: var(--success); } .color-danger { color: var(--danger); } .color-primary { color: var(--primary-color); } .color-warning { color: var(--warning); }
+        .review-section { display: flex; flex-direction: column; gap: 20px; }
+        .review-card { padding: 20px; border-radius: 12px; border-left: 6px solid var(--text-muted); }
+        .review-card.correct { border-left-color: var(--success); } .review-card.wrong { border-left-color: var(--danger); } .review-card.unattempted { border-left-color: var(--warning); }
+        .review-q { font-size: 18px; font-weight: 600; margin-bottom: 15px; }
+        .review-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .review-option { padding: 10px; border-radius: 6px; background: var(--option-bg); border: 1px solid var(--glass-border); font-size: 15px; }
+        .review-option.is-correct { background: rgba(0, 184, 148, 0.2); border-color: var(--success); font-weight: bold; }
+        .review-option.is-user-wrong { background: rgba(214, 48, 49, 0.2); border-color: var(--danger); }
+        .explanation-box { background: rgba(0,0,0,0.05); padding: 15px; border-radius: 8px; font-size: 15px; line-height: 1.5; color: var(--text); border: 1px solid var(--glass-border); }
+        [data-theme="dark"] .explanation-box { background: rgba(255,255,255,0.05); }
+        .explanation-title { font-weight: bold; margin-bottom: 5px; color: var(--primary-color); }
+        @media (max-width: 768px) { .main-container { flex-direction: column; } .palette-area { order: -1; } .palette-grid { grid-template-columns: repeat(10, 1fr); } .review-options { grid-template-columns: 1fr; } }
+        @media (max-width: 480px) { .palette-grid { grid-template-columns: repeat(5, 1fr); } header { flex-direction: column; gap: 10px; text-align: center; } .header-controls { width: 100%; justify-content: space-between; } }
+    </style>
+</head>
+<body data-theme="light">
+    <header class="glass-panel">
+        <div class="header-title"><h1>Haryana GK Mock Test - Part 4</h1></div>
+        <div class="header-controls">
+            <div class="timer" id="timer">25:00</div>
+            <button class="theme-toggle" id="theme-btn">🌓</button>
+        </div>
+    </header>
+    <div id="test-screen" class="main-container">
+        <main class="test-area glass-panel">
+            <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+            <div class="question-header" id="question-text"></div>
+            <div class="options-list" id="options-container"></div>
+            <div class="controls">
+                <button class="btn btn-prev" id="btn-prev">पिछला</button>
+                <button class="btn btn-next" id="btn-next">अगला</button>
+                <button class="btn btn-submit hidden" id="btn-submit">Submit Test</button>
+            </div>
+        </main>
+        <aside class="palette-area glass-panel">
+            <div class="palette-title">Question Palette</div>
+            <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:10px;">
+                <span><span style="display:inline-block; width:10px;height:10px;background:var(--primary-color);border-radius:50%;"></span> Attempted</span>
+                <span><span style="display:inline-block; width:10px;height:10px;background:var(--option-bg);border:1px solid var(--glass-border);border-radius:50%;"></span> Unattempted</span>
+            </div>
+            <div class="palette-grid" id="palette-grid"></div>
+        </aside>
+    </div>
+    <div id="result-screen" class="result-dashboard glass-panel hidden">
+        <h2 style="text-align: center; margin-bottom: 10px; font-size: 28px;">परीक्षा परिणाम (Result)</h2>
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-value color-primary" id="score-val">0/25</div><div class="stat-label">स्कोर (Score)</div></div>
+            <div class="stat-card"><div class="stat-value color-primary" id="percent-val">0%</div><div class="stat-label">प्रतिशत (Percentage)</div></div>
+            <div class="stat-card"><div class="stat-value color-success" id="correct-val">0</div><div class="stat-label">सही उत्तर (Correct)</div></div>
+            <div class="stat-card"><div class="stat-value color-danger" id="wrong-val">0</div><div class="stat-label">गलत उत्तर (Wrong)</div></div>
+            <div class="stat-card"><div class="stat-value color-warning" id="attempted-val">0</div><div class="stat-label">प्रयास किए (Attempted)</div></div>
+        </div>
+        <h3 style="margin-top: 20px; font-size: 22px; border-bottom: 2px solid var(--glass-border); padding-bottom: 10px;">विस्तृत समाधान (Detailed Solution)</h3>
+        <div class="review-section" id="review-container"></div>
+    </div>
+    <script>
+        const questions = [
+            { id: 1, q: "झाड़ूफिरी के बारे में सबसे उल्लेखनीय बात यह है कि यह हरियाणवी भाषा में लिखा पहला ........ है।", opt: ["नाटक", "उपन्यास", "गाना", "फिल्म"], ans: 1, exp: "उपन्यास। झाड़ूफिरी प्रसिद्ध उपन्यासकार राजाराम शास्त्री द्वारा हरियाणवी भाषा में लिखा गया पहला उपन्यास है। इस प्रकार राजाराम शास्त्री हरियाणवी भाषा के प्रथम उपन्यासकार कहलाए। इनका दूसरा उपन्यास 'फफा कुटटणी' है।" },
+            { id: 2, q: "जब 1966 में हरियाणा को एक नया राज्य बनाया गया था, उस समय श्री उदयभानु हंस को कौन-सा शीर्षक दिया गया था?", opt: ["राजपिता", "राज्य के नेता और दूरदर्शी", "राजकवि", "राजलेखक"], ans: 2, exp: "राजकवि। जब 1966 में हरियाणा एक स्वतंत्र राज्य बना था, उस समय श्री उदयभानु हंस को हरियाणा का राजकवि शीर्षक दिया गया था। इस प्रकार श्री उदयभानु हंस हरियाणा के प्रथम राजकवि कहलाए।" },
+            { id: 3, q: "श्री बिशम्भर नाथ कौशिक ने मासिक पत्रिकाओं में ........ लिखा है।", opt: ["कौशिक द्वारा कविताएँ", "कौशिक की चिट्ठियाँ", "दूबे की चिट्ठियाँ", "दूबे की कविताएँ"], ans: 2, exp: "दूबे की चिट्ठियाँ। हिन्दी के प्रतिष्ठित कहानीकार श्री बिशम्भर नाथ कौशिक का जन्म अम्बाला छावनी में हुआ था। इनकी प्रसिद्ध कहानी 'ताई' आज भी पाठ्य पुस्तकों में पढ़ाई जाती है। 'चाँद' मासिक पत्रिका में ये 'दूबे की चिट्ठियाँ' नाम से व्यंग्य तथा हास्य स्तंभ लिखा करते थे।" },
+            { id: 4, q: "किस राज्य की सीमा हरियाणा की सीमा से सटी हुई नहीं है?", opt: ["गुजरात", "दिल्ली", "पंजाब", "उत्तरप्रदेश"], ans: 0, exp: "गुजरात। हरियाणा राज्य की सीमा 5 राज्यों से लगती है (हिमाचल प्रदेश, राजस्थान, उत्तर प्रदेश, उत्तराखण्ड तथा पंजाब)। सबसे लम्बी सीमा राजस्थान तथा सबसे छोटी सीमा उत्तराखण्ड से लगती है। इसके अलावा 2 केन्द्र शासित प्रदेशों (दिल्ली व चण्डीगढ़) से भी सीमा लगती है।" },
+            { id: 5, q: "हरियाणा की चार मुख्य भौगोलिक विशेषताएँ हैं। उस भौगोलिक विशेषता को पहचानें जो हरियाणा से संबंधित है।", opt: ["पश्चिमी घाट", "थार मरुस्थल", "दक्कन का पठार", "यमुना-घग्गर का मैदान"], ans: 3, exp: "यमुना-घग्गर का मैदान। हरियाणा भौगोलिक रूप से कई भागों में बंटा है, जिसमें जलोढ़ मैदान (यमुना-घग्गर का मैदान) प्रमुख है, जो शिवालिक के गिरिपाद क्षेत्र से अरावली तक फैला हुआ है।" },
+            { id: 6, q: "हरियाणा की पूर्वी सीमा पर ........ नदी बहती है।", opt: ["सतलज", "गंगा", "घग्गर", "यमुना"], ans: 3, exp: "यमुना। यमुना नदी हरियाणा की पूर्वी सीमा पर बहती है और इसे उत्तर प्रदेश से अलग करती है।" },
+            { id: 7, q: "कारोह की चोटी, हरियाणा का ........ पर्वत शिखर है।", opt: ["सबसे नीचा", "सबसे ऊँचा", "दूसरा सबसे ऊँचा", "चढ़ना सबसे कठिन"], ans: 1, exp: "सबसे ऊँचा। हरियाणा का सबसे ऊँचा पर्वत शिखर करोह (कारोह) की चोटी है। यह शिवालिक की मोरनी पहाड़ियों में स्थित है। करोह की समुद्र तल से ऊँचाई 1514 मीटर है।" },
+            { id: 8, q: "हरियाणा का ........ क्षेत्रफल 44,212 वर्ग किलोमीटर है।", opt: ["कुल भौगोलिक", "कुल कृषि", "कुल सिंचाई", "कुल मोटर योग्य"], ans: 0, exp: "कुल भौगोलिक। हरियाणा का कुल भौगोलिक क्षेत्रफल 44,212 वर्ग किलोमीटर है।" },
+            { id: 9, q: "महेंद्रगढ़ जिले का मुख्यालय ........ है।", opt: ["नारनौल", "रेवाड़ी", "दादरी", "नूंह"], ans: 0, exp: "नारनौल। महेंद्रगढ़ जिले का मुख्यालय नारनौल में स्थित है।" },
+            { id: 10, q: "हरियाणा के किस राष्ट्रीय उद्यान और वन्यजीव अभयारण्य में साल के पेड़ मिलते हैं?", opt: ["कालेसर", "सुल्तानपुर", "बीर शिकारगढ़", "नाहर"], ans: 0, exp: "कालेसर। कालेसर राष्ट्रीय उद्यान (यमुनानगर) को हम साल वृक्षों के लिए जानते हैं। इसे 2003 में राष्ट्रीय उद्यान के रूप में स्थापित किया गया था। यह राज्य में लाल जंगली मुर्गों (रेड फाउल) के लिए भी जाना जाता है।" },
+            { id: 11, q: "राजा हर्षवर्धन ने थानेसर के अलावा ........ को अपनी राजधानी बनाया था।", opt: ["हिसार", "पानीपत", "कन्नौज", "कुरुक्षेत्र"], ans: 2, exp: "कन्नौज। राजा हर्षवर्धन ने थानेसर के अलावा कन्नौज को अपनी राजधानी बनाया। हर्षवर्धन ने 606 ई. में हर्ष संवत् की शुरुआत की और 636 ई. में कन्नौज को वर्धन वंश की दूसरी राजधानी बनाया।" },
+            { id: 12, q: "हरियाणा के प्रथम मुख्यमंत्री कौन थे?", opt: ["श्री बंसीलाल", "श्री भगवत दयाल शर्मा", "राव बीरेंद्र सिंह", "श्री बनारसी दास गुप्ता"], ans: 1, exp: "श्री भगवत दयाल शर्मा। हरियाणा के प्रथम मुख्यमंत्री श्री भगवत दयाल शर्मा थे।" },
+            { id: 13, q: "किस युद्ध क्षेत्र में आर्टिलरी और बंदूक पाउडर के अग्नि-आयुध को पहली बार मुगलों ने पेश किया था?", opt: ["पानीपत की पहली लड़ाई", "तराइन की पहली लड़ाई", "पानीपत की दूसरी लड़ाई", "करनाल की लड़ाई"], ans: 0, exp: "पानीपत की पहली लड़ाई। भारत में पहली बार मुगलों ने आर्टिलरी और बंदूक पाउडर (बंदूक व तोपखाने) का प्रयोग पानीपत की पहली लड़ाई (1526) में किया था। यह लड़ाई बाबर तथा इब्राहिम लोधी के बीच हुई थी।" },
+            { id: 14, q: "खाद्य प्रसंस्करण मंत्रालय के पोर्टल के नवीनतम अपडेट के अनुसार, दिए गए विकल्पों में, हरियाणा, भारत में ........ का सबसे बड़ा उत्पादक है।", opt: ["मक्का", "गाजर", "बाजरा", "गेहूँ"], ans: 1, exp: "गाजर। हरियाणा दिए गए विकल्पों में भारत में गाजर का प्रमुख उत्पादक है।" },
+            { id: 15, q: "मुख्यमंत्री गुड गवर्नेस एसोसिएट्स प्रोग्राम (CMGGA) हरियाणा सरकार, और ........ के बीच एक साझेदारी है।", opt: ["एमिटी विश्वविद्यालय", "बिट्स, पिलानी", "अशोक विश्वविद्यालय", "जवाहरलाल राष्ट्रीय विश्वविद्यालय (JNU)"], ans: 2, exp: "अशोक विश्वविद्यालय। मुख्यमंत्री का गुड गवर्नेस एसोसिएट्स प्रोग्राम (CMGGA) हरियाणा सरकार व अशोक विश्वविद्यालय के बीच एक साझेदारी है। यह एक अनुभवात्मक कार्यक्रम है।" },
+            { id: 16, q: "हरियाणा के वर्तमान मुख्यमंत्री श्री मनोहरलाल खट्टर, हरियाणा विधानसभा में ........ निर्वाचन क्षेत्र का प्रतिनिधित्व करते हैं।", opt: ["जगाधरी", "करनाल", "कैथल", "पानीपत ग्रामीण"], ans: 1, exp: "करनाल। हरियाणा में तत्कालीन मुख्यमंत्री श्री मनोहर लाल खट्टर विधानसभा में करनाल निर्वाचन क्षेत्र का प्रतिनिधित्व करते थे।" },
+            { id: 17, q: "सोहना-KMP एक्सप्रेसवे कैरिजवे परियोजना अब 'हरियाणा में निवेश' का एक हिस्सा है। KMP एक्सप्रेसवे का पूरा नाम ........ है।", opt: ["करनाल-महेंद्रगढ़-पलवल एक्सप्रेसवे", "कैथल-महेंद्रगढ़-पंचकुला एक्सप्रेसवे", "कुंडली-मानेसर-पलवल एक्सप्रेसवे", "कैथल-मेवात-पलवल एक्सप्रेसवे"], ans: 2, exp: "कुंडली-मानेसर-पलवल एक्सप्रेसवे। के.एम.पी. (KMP) का पूर्ण रूप कुंडली-मानेसर-पलवल एक्सप्रेसवे है। इसकी कुल लंबाई 135.65 किलोमीटर है। प्रधानमंत्री नरेन्द्र मोदी ने नवंबर 2018 में इसका उद्घाटन किया था।" },
+            { id: 18, q: "जकार्ता-पालेमबांग में आयोजित, 2018 एशियाई खेलों में, मंजीत सिंह, जो जींद के रहने वाले हैं, उन्होंने ........ में स्वर्ण पदक जीता था।", opt: ["भाला", "शॉटपुट", "लंबी कूद", "800 मीटर"], ans: 3, exp: "800 मीटर। जकार्ता-पालेमबांग इंडोनेशिया में आयोजित 18वें एशियाई खेलों (2018) में जींद के मंजीत सिंह ने 800 मीटर दौड़ में स्वर्ण पदक जीता था।" },
+            { id: 19, q: "........ हरियाणवी भाषा में लिखा गया पहला उपन्यास है।", opt: ["झाड़ूफिरी", "अमानत एक शहीद की", "सीप का मोती", "लाल धूप"], ans: 0, exp: "झाड़ूफिरी। हरियाणा भाषा में लिखा गया पहला उपन्यास झाड़ूफिरी है जो राजाराम शास्त्री द्वारा लिखा गया था। दूसरा उपन्यास 'फफा कुटटणी' भी इन्हीं के द्वारा लिखा गया था।" },
+            { id: 20, q: "1996 में जब हरियाणा को एक नया राज्य का दर्जा दिया गया था, उस समय 'हरियाणा के राज्य कवि' का खिताब किसे दिया गया था?", opt: ["श्री राजाराम शास्त्री", "पंडित नेकीराम शर्मा", "श्री उदयभानु हंस", "श्री बिशम्भर नाथ कौशिक"], ans: 2, exp: "श्री उदयभानु हंस। (नोट: प्रश्न में 1996 लिखा है, जबकि हरियाणा 1966 में बना था)। 1966 में हरियाणा गठन के समय श्री उदयभानु हंस को राज्य कवि का खिताब दिया गया था।" },
+            { id: 21, q: "मासिक पत्रिकाओं में प्रकाशित 'लेटर्स ऑफ दुबे' ........ द्वारा लिखे गए थे।", opt: ["श्री राजाराम शास्त्री", "पंडित नेकीराम शर्मा", "श्री उदयभानु हंस", "श्री बिशम्भर नाथ कौशिक"], ans: 3, exp: "श्री बिशम्भर नाथ कौशिक। 'चाँद' मासिक पत्रिका में 'दूबे की चिट्ठियाँ' (लेटर्स ऑफ दुबे) नाम से व्यंग्य तथा हास्य स्तंभ श्री बिशम्भर नाथ कौशिक लिखा करते थे।" },
+            { id: 22, q: "हरियाणा ........ राज्य के साथ अपनी सीमाओं को साझा नहीं करता है।", opt: ["दिल्ली", "पंजाब", "उत्तरप्रदेश", "गुजरात"], ans: 3, exp: "गुजरात। हरियाणा राज्य गुजरात के साथ अपनी सीमाएँ साझा नहीं करता। हरियाणा उत्तर-पश्चिम में पंजाब व चंडीगढ़, उत्तर में हिमाचल प्रदेश, पूर्व में उत्तर प्रदेश, दिल्ली, उत्तराखंड तथा दक्षिण-पश्चिम में राजस्थान से लगता है।" },
+            { id: 23, q: "हरियाणा को ........ भौगोलिक विशेषताओं में विभाजित किया गया है।", opt: ["चार", "तीन", "दो", "छः"], ans: 0, exp: "चार। हरियाणा को मुख्य रूप से चार भौगोलिक विशेषताओं में विभाजित किया गया है।" },
+            { id: 24, q: "यमुना, हरियाणा की ........ सीमा के पास बहती है।", opt: ["दक्षिणी", "पश्चिमी", "पूर्वी", "उत्तरी"], ans: 2, exp: "पूर्वी। यमुना नदी हरियाणा की पूर्वी सीमा के पास बहती है और इसे उत्तर प्रदेश से अलग करती है।" },
+            { id: 25, q: "हरियाणा राज्य में सर्वोच्च पर्वत शिखर कौन-सा है?", opt: ["कारोह चोटी", "गारो पहाड़ियाँ", "अरावली शिखर", "मोरनी हिल्स"], ans: 0, exp: "कारोह चोटी। पंचकुला जिले में मोरनी हिल्स की सबसे ऊँची चोटी कारोह (Karoh) है। इसकी समुद्रतल से ऊँचाई 1514 मीटर है। यह हरियाणा की सर्वोच्च चोटी है।" }
+        ];
+        let currentQuestion = 0; let answers = new Array(questions.length).fill(null);
+        let timeLeft = 25 * 60; let timerInterval;
+
+        const DOM = {
+            themeBtn: document.getElementById('theme-btn'), timer: document.getElementById('timer'),
+            progress: document.getElementById('progress'), qText: document.getElementById('question-text'),
+            optContainer: document.getElementById('options-container'), btnPrev: document.getElementById('btn-prev'),
+            btnNext: document.getElementById('btn-next'), btnSubmit: document.getElementById('btn-submit'),
+            paletteGrid: document.getElementById('palette-grid'), testScreen: document.getElementById('test-screen'),
+            resultScreen: document.getElementById('result-screen'), scoreVal: document.getElementById('score-val'),
+            percentVal: document.getElementById('percent-val'), correctVal: document.getElementById('correct-val'),
+            wrongVal: document.getElementById('wrong-val'), attemptedVal: document.getElementById('attempted-val'),
+            reviewContainer: document.getElementById('review-container')
+        };
+
+        DOM.themeBtn.addEventListener('click', () => {
+            const currentTheme = document.body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', newTheme);
+            DOM.themeBtn.innerText = newTheme === 'light' ? '🌓' : '☀️';
+        });
+
+        function init() { renderPalette(); renderQuestion(); startTimer(); }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) { clearInterval(timerInterval); submitTest(); return; }
+                timeLeft--;
+                const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+                const s = (timeLeft % 60).toString().padStart(2, '0');
+                DOM.timer.innerText = `${m}:${s}`;
+                if (timeLeft < 300) { DOM.timer.style.background = 'var(--danger)'; }
+            }, 1000);
+        }
+
+        function renderPalette() {
+            DOM.paletteGrid.innerHTML = '';
+            questions.forEach((_, index) => {
+                const btn = document.createElement('button');
+                btn.className = `palette-btn ${answers[index] !== null ? 'attempted' : ''} ${index === currentQuestion ? 'active' : ''}`;
+                btn.innerText = index + 1;
+                btn.onclick = () => { currentQuestion = index; renderQuestion(); };
+                DOM.paletteGrid.appendChild(btn);
+            });
+        }
+
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+            DOM.qText.innerHTML = `<span style="color:var(--primary-color)">प्र. ${currentQuestion + 1}:</span> ${q.q}`;
+            DOM.optContainer.innerHTML = '';
+            const labels = ['A', 'B', 'C', 'D'];
+            
+            q.opt.forEach((optText, i) => {
+                const optDiv = document.createElement('div');
+                optDiv.className = `option ${answers[currentQuestion] === i ? 'selected' : ''}`;
+                optDiv.innerHTML = `<span class="option-label">${labels[i]}</span> <span>${optText}</span>`;
+                optDiv.onclick = () => selectOption(i);
+                DOM.optContainer.appendChild(optDiv);
+            });
+
+            const answeredCount = answers.filter(a => a !== null).length;
+            DOM.progress.style.width = `${(answeredCount / questions.length) * 100}%`;
+            DOM.btnPrev.disabled = currentQuestion === 0;
+            
+            if (currentQuestion === questions.length - 1) {
+                DOM.btnNext.classList.add('hidden'); DOM.btnSubmit.classList.remove('hidden');
+            } else {
+                DOM.btnNext.classList.remove('hidden'); DOM.btnSubmit.classList.add('hidden');
+            }
+            renderPalette();
+        }
+
+        function selectOption(index) { answers[currentQuestion] = index; renderQuestion(); }
+        DOM.btnPrev.onclick = () => { if (currentQuestion > 0) { currentQuestion--; renderQuestion(); } };
+        DOM.btnNext.onclick = () => { if (currentQuestion < questions.length - 1) { currentQuestion++; renderQuestion(); } };
+        DOM.btnSubmit.onclick = () => { if(confirm("क्या आप टेस्ट सबमिट करना चाहते हैं?")) { submitTest(); } };
+
+        function submitTest() {
+            clearInterval(timerInterval);
+            DOM.testScreen.classList.add('hidden'); DOM.resultScreen.classList.remove('hidden');
+            let correct = 0; let wrong = 0; let attempted = 0;
+
+            questions.forEach((q, i) => {
+                if (answers[i] !== null) {
+                    attempted++;
+                    if (answers[i] === q.ans) { correct++; } else { wrong++; }
+                }
+            });
+
+            const percent = Math.round((correct / questions.length) * 100);
+            DOM.scoreVal.innerText = `${correct}/${questions.length}`;
+            DOM.percentVal.innerText = `${percent}%`;
+            DOM.correctVal.innerText = correct; DOM.wrongVal.innerText = wrong;
+            DOM.attemptedVal.innerText = attempted;
+            renderReview();
+        }
+
+        function renderReview() {
+            DOM.reviewContainer.innerHTML = ''; const labels = ['A', 'B', 'C', 'D'];
+            questions.forEach((q, i) => {
+                const userAns = answers[i]; const isCorrect = userAns === q.ans; const isAttempted = userAns !== null;
+                let cardClass = 'unattempted';
+                if (isAttempted) { cardClass = isCorrect ? 'correct' : 'wrong'; }
+
+                const card = document.createElement('div'); card.className = `review-card glass-panel ${cardClass}`;
+                let optionsHtml = '<div class="review-options">';
+                q.opt.forEach((optText, optIndex) => {
+                    let optClass = 'review-option';
+                    if (optIndex === q.ans) { optClass += ' is-correct'; } 
+                    else if (optIndex === userAns && !isCorrect) { optClass += ' is-user-wrong'; }
+                    optionsHtml += `<div class="${optClass}">${labels[optIndex]}. ${optText}</div>`;
+                });
+                optionsHtml += '</div>';
+
+                let statusBadge = '';
+                if (!isAttempted) { statusBadge = '<span style="color:var(--warning); font-weight:bold;">[छोड़ दिया - Unattempted]</span>'; } 
+                else if (isCorrect) { statusBadge = '<span style="color:var(--success); font-weight:bold;">[सही - Correct]</span>'; } 
+                else { statusBadge = '<span style="color:var(--danger); font-weight:bold;">[गलत - Wrong]</span>'; }
+
+                card.innerHTML = `<div class="review-q">प्र. ${i + 1}: ${q.q} ${statusBadge}</div>${optionsHtml}<div class="explanation-box"><div class="explanation-title">समाधान:</div>${q.exp}</div>`;
+                DOM.reviewContainer.appendChild(card);
+            });
+        }
+        init();
+    </script>
+</body>
+</html>
