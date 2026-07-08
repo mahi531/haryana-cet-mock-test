@@ -1,3 +1,224 @@
+<style>
+    /* Styling for Resume Popup */
+    .adv-modal-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px);
+        display: flex; align-items: center; justify-content: center;
+        z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+    }
+    .adv-modal-overlay.active { opacity: 1; pointer-events: all; }
+    .adv-modal {
+        background: white; padding: 30px; border-radius: 16px;
+        text-align: center; max-width: 420px; width: 90%;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2); transform: translateY(-20px); transition: 0.3s ease;
+    }
+    .adv-modal-overlay.active .adv-modal { transform: translateY(0); }
+    [data-theme="dark"] .adv-modal { background: #1f2937; color: #f9fafb; border: 1px solid rgba(255,255,255,0.1); }
+    .adv-btn-group { display: flex; gap: 15px; justify-content: center; margin-top: 25px; }
+    
+    /* Styling for Pause Overlay */
+    .adv-pause-overlay {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(10px);
+        display: none; align-items: center; justify-content: center;
+        z-index: 100; flex-direction: column; border-radius: 16px;
+    }
+    [data-theme="dark"] .adv-pause-overlay { background: rgba(0, 0, 0, 0.8); }
+    .adv-pause-overlay.active { display: flex; }
+    .adv-pause-text { font-size: 2.5rem; font-weight: bold; color: var(--primary, #2563eb); margin-bottom: 25px; letter-spacing: 2px;}
+</style>
+
+<script>
+(function() {
+    // 1. Generate Unique Storage Key for Multiple Tests Support
+    const pathName = window.location.pathname.split('/').pop() || 'default_test.html';
+    const testKey = 'savedTestData_' + pathName;
+
+    // 2. Inject Resume Popup HTML
+    const resumeModal = document.createElement('div');
+    resumeModal.className = 'adv-modal-overlay';
+    resumeModal.innerHTML = `
+        <div class="adv-modal">
+            <h2 style="color: var(--primary, #2563eb); margin-bottom: 10px;">
+                <i class="fa-solid fa-clock-rotate-left"></i> Resume Previous Test?
+            </h2>
+            <p style="color: var(--text-muted, gray); font-size: 0.95rem;">
+                Your previous session for this test was saved automatically. Do you want to resume where you left off?
+            </p>
+            <div class="adv-btn-group">
+                <button class="btn btn-outline" id="adv-btn-new">Start New Test</button>
+                <button class="btn btn-success" id="adv-btn-resume">Resume Test</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(resumeModal);
+
+    // 3. Helper Functions (Safely accesses variables regardless of template version)
+    function getAnswers() { return typeof answers !== 'undefined' ? answers : (typeof userAnswers !== 'undefined' ? userAnswers : {}); }
+    function setAnswers(data) { 
+        if(typeof answers !== 'undefined') { for(let k in data) answers[k] = data[k]; } 
+        else if (typeof userAnswers !== 'undefined') { for(let k in data) userAnswers[k] = data[k]; }
+    }
+    function getCurrentQ() { return typeof currentQ !== 'undefined' ? currentQ : (typeof currentQIndex !== 'undefined' ? currentQIndex : 0); }
+    function setCurrentQ(val) {
+        if(typeof currentQ !== 'undefined') currentQ = val;
+        else if(typeof currentQIndex !== 'undefined') currentQIndex = val;
+    }
+    function getTime() { return typeof totalTime !== 'undefined' ? totalTime : (typeof timeLeft !== 'undefined' ? timeLeft : 0); }
+    function setTime(val) {
+        if(typeof totalTime !== 'undefined') totalTime = val;
+        else if(typeof timeLeft !== 'undefined') timeLeft = val;
+    }
+    function getMarked() { return typeof markedForReview !== 'undefined' ? Array.from(markedForReview) : []; }
+    function setMarked(arr) {
+        if(typeof markedForReview !== 'undefined') {
+            markedForReview.clear();
+            arr.forEach(item => markedForReview.add(item));
+        }
+    }
+    function getIsSubmitted() { return typeof isSubmitted !== 'undefined' ? isSubmitted : false; }
+
+    // 4. Auto Save Logic (Runs every second, only if test is active)
+    setInterval(() => {
+        const testView = document.getElementById('test-view');
+        // Do not save if test is hidden (not started) or already submitted
+        if (!testView || testView.classList.contains('hide') || getIsSubmitted()) return;
+        
+        const state = {
+            answers: getAnswers(),
+            currentQ: getCurrentQ(),
+            time: getTime(),
+            marked: getMarked()
+        };
+        localStorage.setItem(testKey, JSON.stringify(state));
+    }, 1000);
+
+    // 5. Hook into original Submit functions to clear saved data automatically
+    const origProcessResult = typeof processResult === 'function' ? processResult : null;
+    const origSubmitTest = typeof submitTest === 'function' ? submitTest : null;
+    
+    function wrapSubmit(origFunc) {
+        return function() {
+            localStorage.removeItem(testKey); // Delete saved data
+            if(origFunc) origFunc.apply(this, arguments);
+        }
+    }
+    if (origProcessResult) window.processResult = wrapSubmit(origProcessResult);
+    if (origSubmitTest) window.submitTest = wrapSubmit(origSubmitTest);
+
+    // 6. Check for Saved Data on Load
+    let savedData = null;
+    try { 
+        const savedDataStr = localStorage.getItem(testKey);
+        if(savedDataStr) savedData = JSON.parse(savedDataStr); 
+    } catch(e) {}
+
+    // Show popup if valid data exists
+    if (savedData && Object.keys(savedData).length > 0) {
+        setTimeout(() => resumeModal.classList.add('active'), 100);
+    }
+
+    // Handle 'Start New Test' Click
+    document.getElementById('adv-btn-new').onclick = () => {
+        localStorage.removeItem(testKey);
+        resumeModal.classList.remove('active');
+    };
+
+    // Handle 'Resume Test' Click
+    document.getElementById('adv-btn-resume').onclick = () => {
+        resumeModal.classList.remove('active');
+        
+        // Start the test programmatically (hides instructions, starts timer)
+        if(typeof startTest === 'function') startTest();
+        
+        // Instantly override original state with saved data
+        setAnswers(savedData.answers || {});
+        setCurrentQ(savedData.currentQ || 0);
+        setTime(savedData.time);
+        setMarked(savedData.marked || []);
+        
+        // Re-render UI
+        if(typeof loadQuestion === 'function') loadQuestion();
+        else if(typeof renderQuestion === 'function') renderQuestion();
+        
+        if(typeof updatePalette === 'function') updatePalette();
+        else if(typeof updatePaletteUI === 'function') updatePaletteUI();
+    };
+
+    // 7. Inject Pause Feature
+    setTimeout(() => {
+        const timerEl = document.querySelector('.timer') || document.getElementById('timer-display');
+        const testGrid = document.querySelector('.test-grid');
+        
+        if(timerEl && testGrid) {
+            // Create a wrapper to keep layout exactly same without breaking UI
+            const timerWrapper = document.createElement('div');
+            timerWrapper.style.display = 'flex';
+            timerWrapper.style.alignItems = 'center';
+            timerWrapper.style.gap = '10px';
+            
+            timerEl.parentNode.insertBefore(timerWrapper, timerEl);
+            timerWrapper.appendChild(timerEl); // Move timer inside wrapper
+
+            // Add Pause Button
+            const pauseBtn = document.createElement('button');
+            pauseBtn.className = 'btn btn-warning';
+            pauseBtn.style.padding = '5px 15px';
+            pauseBtn.style.fontSize = '1rem';
+            pauseBtn.innerHTML = '<i class="fa-solid fa-pause"></i> Pause';
+            timerWrapper.appendChild(pauseBtn);
+
+            // Create Pause Overlay
+            testGrid.style.position = 'relative'; // ensure overlay stays inside grid
+            const pauseOverlay = document.createElement('div');
+            pauseOverlay.className = 'adv-pause-overlay';
+            pauseOverlay.innerHTML = `
+                <div class="adv-pause-text">TEST PAUSED</div>
+                <button class="btn btn-success" id="adv-btn-resume-pause" style="font-size:1.2rem; padding:12px 35px; border-radius:30px;">
+                    <i class="fa-solid fa-play"></i> Resume
+                </button>
+            `;
+            testGrid.appendChild(pauseOverlay);
+
+            // Logic: Click Pause
+            pauseBtn.onclick = () => {
+                if(typeof timerInterval !== 'undefined') clearInterval(timerInterval); // Stop timer
+                pauseOverlay.classList.add('active'); // Show blur overlay
+            };
+
+            // Logic: Click Resume from Pause
+            document.getElementById('adv-btn-resume-pause').onclick = () => {
+                pauseOverlay.classList.remove('active'); // Hide blur overlay
+                
+                // Restart timer logic universally
+                timerInterval = setInterval(() => {
+                    if (getIsSubmitted()) return;
+                    let t = getTime();
+                    t--;
+                    setTime(t);
+                    
+                    if(timerEl) {
+                        let h = Math.floor(t / 3600);
+                        let m = Math.floor((t % 3600) / 60);
+                        let s = t % 60;
+                        let fmt = h > 0 ? `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}` : `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+                        
+                        timerEl.innerHTML = `<i class="fa-regular fa-clock"></i> ${fmt}`;
+                        if(t <= 300) timerEl.style.color = "var(--danger, red)";
+                    }
+                    
+                    if(t <= 0) {
+                        clearInterval(timerInterval);
+                        if(typeof autoSubmit === 'function') autoSubmit();
+                        else if(typeof submitTest === 'function') submitTest();
+                    }
+                }, 1000);
+            };
+        }
+    }, 500); // Small delay to let existing JS render the DOM first
+})();
+</script>
+
 <!DOCTYPE html>
 <html lang="hi">
 <head>
