@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Haryana CET Group C & D Mock Test</title>
+    <style>
+        :root {
+            --primary: #2563eb; --secondary: #1e40af; --bg-main: #f1f5f9; --bg-card: #ffffff;
+            --text-main: #1e293b; --text-muted: #64748b; --border: #e2e8f0;
+            --not-visited: #cbd5e1; --not-answered: #ef4444; --answered: #22c55e;
+            --marked: #8b5cf6; --ans-marked: #6366f1;
+        }
+        body.dark-mode {
+            --bg-main: #0f172a; --bg-card: #1e293b; --text-main: #f8fafc; --text-muted: #94a3b8;
+            --border: #334155; --not-visited: #475569;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; touch-action: manipulation; }
+        body { background: var(--bg-main); color: var(--text-main); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; user-select: none; }
+        
+        /* Buttons & Utility */
+        .btn { padding: 10px 16px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; transition: 0.2s; font-size: 14px; text-align: center; }
+        .btn-primary { background: var(--primary); }
+        .btn-mark { background: var(--marked); }
+        .btn-clear { background: var(--bg-main); color: var(--text-main); border: 1px solid var(--border); }
+        .btn-prev { background: var(--text-muted); }
+        
+        /* Screens */
+        .screen { display: none; flex-direction: column; height: 100dvh; width: 100vw; position: absolute; top: 0; left: 0; background: var(--bg-main); z-index: 10; }
+        .screen.active { display: flex; }
+        
+        /* Home Screen */
+        #home-screen { align-items: center; justify-content: center; overflow-y: auto; padding: 20px; }
+        .card { background: var(--bg-card); padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 600px; text-align: center; }
+        .test-info { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 25px 0; text-align: left; background: var(--bg-main); padding: 15px; border-radius: 8px; }
+        
+        /* Test Header */
+        header { background: var(--bg-card); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+        .header-title { font-size: 16px; font-weight: bold; color: var(--primary); }
+        .header-controls { display: flex; gap: 10px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: bold; background: #fee2e2; color: #ef4444; padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 5px; }
+        
+        /* Main Test Area */
+        .main-area { display: flex; flex: 1; overflow: hidden; flex-direction: row; }
+        .question-section { flex: 1; display: flex; flex-direction: column; background: var(--bg-card); overflow: hidden; }
+        
+        /* Question Details */
+        .q-header { padding: 12px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; font-weight: bold; font-size: 15px; background: var(--bg-main); }
+        .q-body { flex: 1; padding: 20px; overflow-y: auto; font-size: 16px; line-height: 1.6; }
+        
+        /* Options */
+        .options-list { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
+        .option { padding: 12px 15px; border: 2px solid var(--border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 15px; background: var(--bg-main); font-weight: 500; }
+        .option.selected { border-color: var(--primary); background: rgba(37, 99, 235, 0.1); color: var(--primary); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--border); display: flex; justify-content: center; align-items: center; font-weight: bold; color: var(--text-main); }
+        .option.selected .opt-label { background: var(--primary); color: white; }
+        
+        /* Actions */
+        .q-footer { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; background: var(--bg-card); flex-wrap: wrap; gap: 10px; flex-shrink: 0; }
+        .action-group { display: flex; gap: 10px; flex: 1; }
+        .action-group.right { justify-content: flex-end; }
+        
+        /* Palette */
+        .palette-section { width: 320px; background: var(--bg-card); display: flex; flex-direction: column; border-left: 1px solid var(--border); flex-shrink: 0; }
+        .palette-header { padding: 12px; border-bottom: 1px solid var(--border); text-align: center; font-weight: bold; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; font-size: 12px; border-bottom: 1px solid var(--border); }
+        .stat-item { display: flex; align-items: center; gap: 6px; }
+        .badge { width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 10px; }
+        .s-0 { background: var(--not-visited); color: #000; } .s-1 { background: var(--answered); } .s-2 { background: var(--not-answered); } .s-3 { background: var(--marked); } .s-4 { background: var(--ans-marked); position: relative; }
+        .s-4::after { content: ''; position: absolute; bottom: -2px; right: -2px; width: 6px; height: 6px; background: var(--answered); border-radius: 50%; border: 1px solid white; }
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 15px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; font-size: 12px; }
+        .p-btn.active { outline: 2px solid var(--primary); outline-offset: 2px; }
+        .submit-area { padding: 10px; border-top: 1px solid var(--border); }
+        
+        /* Result Screen */
+        #result-screen { align-items: center; overflow-y: auto; padding: 20px; }
+        .res-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0; }
+        .res-box { padding: 15px; background: var(--bg-main); border-radius: 8px; border: 1px solid var(--border); text-align: center; }
+        .res-box h2 { font-size: 24px; margin-bottom: 5px; }
+        .res-box p { font-size: 12px; color: var(--text-muted); }
+        
+        /* Solutions */
+        #solution-screen { align-items: center; overflow-y: auto; padding: 20px; }
+        .sol-card { background: var(--bg-card); padding: 20px; margin-bottom: 15px; border-radius: 8px; border: 1px solid var(--border); width: 100%; max-width: 800px; }
+        .sol-opt { padding: 10px; margin: 5px 0; border-radius: 5px; border: 1px solid var(--border); display: flex; gap: 10px; align-items: center; }
+        .sol-opt.correct { background: #dcfce7; border-color: #22c55e; color: #166534; font-weight: bold; }
+        .sol-opt.wrong { background: #fee2e2; border-color: #ef4444; color: #991b1b; }
+        .sol-exp { margin-top: 15px; padding: 15px; background: #f8fafc; border-left: 4px solid var(--primary); font-size: 14px; }
+        
+        /* Pause Overlay */
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+
+        /* Mobile View (CRITICAL FIX) */
+        @media (max-width: 768px) {
+            .main-area { flex-direction: column; }
+            .question-section { flex: 1; border-right: none; }
+            .palette-section { width: 100%; height: 35vh; border-top: 2px solid var(--border); border-left: none; flex-shrink: 0; }
+            .q-footer { padding: 10px; }
+            .action-group { flex-direction: column; flex: 1; }
+            .btn { width: 100%; padding: 12px 10px; font-size: 13px; }
+            .res-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <div id="home-screen" class="screen active">
+        <div class="card">
+            <h1 style="color: var(--primary); font-size: 24px; margin-bottom: 5px;">Haryana CET Group C & D</h1>
+            <p style="color: var(--text-muted);">Mock Test - Professional Edition</p>
+            <div class="test-info">
+                <div><strong>Questions:</strong> 100</div>
+                <div><strong>Marks:</strong> 100</div>
+                <div><strong>Time:</strong> 105 Mins</div>
+                <div><strong>Negative Mark:</strong> No</div>
+            </div>
+            <button class="btn btn-primary" style="width: 100%; font-size: 16px; padding: 15px;" onclick="startTest()">START TEST</button>
+            <button class="btn btn-clear" style="width: 100%; margin-top: 15px;" onclick="resetTestData()">Reset All Data</button>
+        </div>
+    </div>
+
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px;">Test Paused</h2>
+        <button class="btn btn-primary" onclick="togglePause()">Resume Test</button>
+    </div>
+
+    <div id="test-screen" class="screen">
+        <header>
+            <div class="header-title">CET Mock Test</div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding: 5px 10px; font-size: 12px;" onclick="toggleTheme()">🌓</button>
+                <button class="btn btn-clear" style="padding: 5px 10px; font-size: 12px;" onclick="togglePause()">⏸</button>
+                <div class="timer-box">⏱ <span id="timer-display">105:00</span></div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--answered);">+1 | <span style="color: var(--not-answered);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <div class="action-group">
+                        <button class="btn btn-mark" onclick="markReview()">Mark & Next</button>
+                        <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                    </div>
+                    <div class="action-group right">
+                        <button class="btn btn-prev" onclick="changeQ(-1)">Previous</button>
+                        <button class="btn btn-primary" onclick="saveNext()">Save & Next</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="palette-section">
+                <div class="palette-header">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">100</div> Not Visited</div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn btn-primary" style="width: 100%; background: var(--answered);" onclick="submitTest()">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-screen" class="screen">
+        <div class="card" style="max-width: 800px; text-align: left;">
+            <h1 style="color: var(--primary); text-align: center;">Performance Dashboard</h1>
+            <div class="res-grid">
+                <div class="res-box" style="border-bottom: 4px solid var(--primary);"><h2 id="r-score" style="color: var(--primary);">0</h2><p>Total Score</p></div>
+                <div class="res-box" style="border-bottom: 4px solid var(--answered);"><h2 id="r-attempt" style="color: var(--answered);">0</h2><p>Attempted</p></div>
+                <div class="res-box" style="border-bottom: 4px solid var(--not-answered);"><h2 id="r-wrong" style="color: var(--not-answered);">0</h2><p>Wrong</p></div>
+                <div class="res-box"><h2 id="r-acc">0%</h2><p>Accuracy</p></div>
+                <div class="res-box"><h2 id="r-skip">0</h2><p>Skipped</p></div>
+                <div class="res-box"><h2 id="r-time">00:00</h2><p>Time Taken</p></div>
+            </div>
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 20px;">
+                <button class="btn btn-primary" style="flex: 1;" onclick="viewSolutions()">View Solutions</button>
+                <button class="btn btn-clear" style="flex: 1;" onclick="resetTestData()">Retake Test</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: var(--bg-card); padding: 15px; border-radius: 8px;">
+                <h2 style="color: var(--primary);">Detailed Solutions</h2>
+                <button class="btn btn-clear" onclick="showScreen('result-screen')">Back</button>
+            </div>
+            <div id="sol-container"></div>
+        </div>
+    </div>
+
+<script>
+    // --- QUESTION DATA (ALL 100 QUESTIONS EXTRACTED FROM PDF) ---
+    const questions = [
+        // GK
+        {q: "असम के कामाख्या मंदिर में मनाया जाने वाला अंबुबाची मेला, कितनी बार आयोजित किया जाता है?", o: ["प्रत्येक वर्ष एक बार", "प्रत्येक तीन वर्ष में एक बार", "प्रत्येक छह वर्ष में एक बार", "प्रत्येक बारह वर्ष में एक बार"], a: 0, e: "सही उत्तर (A) प्रत्येक वर्ष एक बार है। अंबुबाची मेला मानसून के मौसम के दौरान गुवाहाटी, असम के कामाख्या मंदिर में आयोजित होने वाला एक वार्षिक हिंदू मेला है।"},
+        {q: "किसी गैस या तरल के माध्यम से किसी वस्तु की गति का विरोध करने वाले बल को क्या कहा जाता है?", o: ["प्रणोद (भ्रस्ट)", "श्यान बल (विस्कस फोर्स)", "उत्प्लावकता", "तनाव"], a: 1, e: "सही उत्तर (B) श्यान बल है। श्यान बल, जिसे अक्सर केवल 'श्यानता' या 'तरल घर्षण' कहा जाता है, किसी तरल के बहने या उसमें चलने वाली वस्तु के प्रति आंतरिक प्रतिरोध है।"},
+        {q: "2011 की जनगणना के अनुसार, किस भारतीय राज्य ने दूसरी सबसे अधिक साक्षरता दर दर्ज की?", o: ["गोवा", "मिजोरम", "त्रिपुरा", "हिमाचल प्रदेश"], a: 1, e: "सही उत्तर (B) मिजोरम है। 2011 की जनगणना के अनुसार, मिजोरम ने 91.33% की साक्षरता दर दर्ज की, जिससे यह भारत का दूसरा सबसे साक्षर राज्य बन गया। केरल 93.91% के साथ शीर्ष पर है।"},
+        {q: "भुगतान संतुलन के संदर्भ में, निम्नलिखित में कौन सा आमतौर पर चालू खाते में दर्ज किया जाता है?", o: ["प्रत्यक्ष विदेशी निवेश", "पोर्टफोलियो निवेश", "सेवाओं का व्यापार", "बाह्य वाणिज्यिक उधार"], a: 2, e: "सही उत्तर (C) सेवाओं का व्यापार है। चालू खाता 'दृश्य' (वस्तुओं) और 'अदृश्य' (सेवाओं, हस्तांतरण और आय) के लेनदेन को दर्ज करता है।"},
+        {q: "पारंपरिक लोक नृत्य 'धालो' निम्नलिखित में से किस भारतीय राज्य से संबंधित है?", o: ["गोवा", "केरल", "कर्नाटक", "तमिलनाडु"], a: 0, e: "सही उत्तर (A) गोवा है। धालो गोवा के सबसे लोकप्रिय ग्रामीण लोक नृत्यों में से एक है, जो विशेष रूप से महिलाओं द्वारा किया जाता है।"},
+        {q: "देशभक्ति कविता 'सरफरोशी की तमन्ना' के लेखक कौन हैं?", o: ["बिस्मिल्लाह खान", "बिस्मिल अजीमाबादी", "मुहम्मद इकबाल", "राम प्रसाद बिस्मिल"], a: 1, e: "सही उत्तर (B) बिस्मिल अजीमाबादी है। हालांकि यह क्रांतिकारी राम प्रसाद बिस्मिल के साथ जुड़ी हुई है, लेकिन इसे 1921 में पटना के बिस्मिल अजीमाबादी ने लिखा था।"},
+        {q: "पृथ्वी के कोर (क्रोड) के संदर्भ में, 'निफे' (Nife) परत के प्राथमिक धात्विक घटक हैं:", o: ["निकेल और लोहा", "सोडियम और फेरस", "नाइट्रोजन और बॉक्साइट", "सिलिका और निकेल"], a: 0, e: "सही उत्तर (A) निकेल और लोहा है। नाम 'Nife' इसके प्राथमिक घटकों के रासायनिक प्रतीकों से लिया गया हैः निकेल के लिए Ni और फेरम (लोहा) के लिए Fe।"},
+        {q: "भारत में प्रथम औद्योगिक नीति संकल्प 1948 के संबंध में, कौन सा कथन सही है?<br>I. इसने औद्योगिक विकास के लिए निजी और सार्वजनिक दोनों क्षेत्रों के महत्व को स्वीकार किया。<br>II. इसने सरकार को लोहा और इस्पात उद्योग में नए उद्यम शुरू करने का विशेष अधिकार दिया।", o: ["केवल I", "केवल II", "I और II दोनों", "न तो I और न ही II"], a: 2, e: "सही उत्तर (C) I और II दोनों है। इसने आधिकारिक तौर पर 'मिश्रित अर्थव्यवस्था' की अवधारणा पेश की।"},
+        {q: "दलदली क्षेत्रों में पौधों को सांस लेने में मदद करने के लिए मिट्टी से ऊपर की ओर बढ़ने वाली विशिष्ट जड़ों को क्या कहा जाता है?", o: ["प्रॉप जड़ें (स्तंभ मूल)", "स्टिल्ट जड़ें (अवस्तंभ मूल)", "न्यूमेटोफोर्स (श्वसन मूल)", "हॉस्टोरिया"], a: 2, e: "सही उत्तर (C) न्यूमेटोफोर्स है। दलदली क्षेत्रों में ऑक्सीजन की कमी होती है। मैंग्रोव जैसे पौधे विशिष्ट जड़ें विकसित करते हैं जिन्हें न्यूमेटोफोर्स (श्वसन जड़े) कहा जाता है।"},
+        {q: "भारतीय शास्त्रीय संगीत में, वायु वाद्यों (विंड इंस्ट्रूमेंट्स) को किस समूह के रूप में वर्गीकृत किया गया है?", o: ["सुषिर वाद्य", "तत वाद्य", "अवनद्ध वाद्य", "घन वाद्य"], a: 0, e: "सही उत्तर (A) सुषिर वाद्य है। सुषिर वाद्य वायु वाद्यों (एयरोफोन्स) के समूह को संदर्भित करता है।"},
+        {q: "भारत की तीसरी पंचवर्षीय योजना के संबंध में निम्नलिखित में से कौन सा कथन सही है?<br>I. इस योजना को 'गाडगिल योजना' के नाम से भी जाना जाता था。<br>II. इसका उद्देश्य अर्थव्यवस्था को स्वतंत्र बनाना और आत्म-सक्रिय टेक-ऑफ चरण तक पहुँचाना था।", o: ["केवल I", "केवल II", "I और II दोनों", "न तो I और न ही II"], a: 2, e: "सही उत्तर (C) I और II दोनों है। तीसरी पंचवर्षीय योजना (1961-1966) को 'गाडगिल योजना' कहा गया था। इसका लक्ष्य एक आत्मनिर्भर अर्थव्यवस्था स्थापित करना था।"},
+        {q: "ताजमहल की स्थापत्य शैली किन परंपराओं का मिश्रण है?", o: ["भारतीय और चीनी", "इस्लामी, फारसी और भारतीय", "गोथिक और रोमन", "यूनानी और फारसी"], a: 1, e: "सही उत्तर (B) इस्लामी, फारसी और भारतीय है। यह फारसी, इस्लामी (सुलेख और मेहराब डिजाइन), और भारतीय (कमल रूपांकन और पत्थर की नक्काशी) शैलियों का संलयन है।"},
+        {q: "ब्रिटिश राज के दौरान अपना संविधान बनाने वाली एकमात्र रियासत निम्नलिखित में से कौन सी थी?", o: ["हैदराबाद", "जम्मू और कश्मीर", "मैसूर", "त्रावणकोर"], a: 1, e: "सही उत्तर (B) जम्मू और कश्मीर है। 1939 में, महाराजा हरि सिंह ने जम्मू और कश्मीर संविधान अधिनियम प्रख्यापित किया था।"},
+        {q: "शब्द 'नियोलिथिक' का शाब्दिक अर्थ किससे है?", o: ["पुरापाषाण काल", "मध्यपाषाण काल", "नवपाषाण काल", "उत्तर पाषाण काल"], a: 2, e: "सही उत्तर (C) नवपाषाण काल है। 'नियोलिथिक' शब्द ग्रीक शब्द 'neos' (नया) और 'lithos' (पत्थर) से बना है।"},
+        {q: "निम्नलिखित में से कौन सी पुस्तक चेतन भगत द्वारा लिखी गई है?", o: ["हाफ गर्लफ्रेंड", "द गॉड ऑफ स्मॉल थिंग्स", "मिडनाइट्स चिल्ड्रन", "द गाइड"], a: 0, e: "सही उत्तर (A) हाफ गर्लफ्रेंड है। 'हाफ गर्लफ्रेंड' चेतन भगत का एक उपन्यास है, जो 2014 में प्रकाशित हुआ था।"},
+        
+        // Math
+        {q: "1/35 + 1/63 + 1/99 + ...... + 1/255 = ?", o: ["4/85", "6/85", "8/85", "12/85"], a: 1, e: "हर का गुणनखंड करें: 35 = 5x7, 63 = 7x9, ..., 255 = 15x17। श्रृंखला का योग = 1/2[1/5 - 1/17] = 1/2[12/85] = 6/85।"},
+        {q: "64 x 2 - (28 + 14) + 45 - 36 + 19 = ?", o: ["112", "114", "116", "118"], a: 1, e: "= 128 - 42 + 45 - 36 + 19 = 86 + 45 - 36 + 19 = 131 - 36 + 19 = 114।"},
+        {q: "A और B ने कुल 10,000 रुपये का निवेश करके एक व्यवसाय शुरू किया। A ने B से 2,000 रुपये कम निवेश किया। A का लाभ 2,000 रुपये है (कुल लाभ 10,000)। B ने 12 महीने निवेश किया, तो A ने कितने महीने कम (x) निवेश किया?", o: ["5.5 महीने", "6.5 महीने", "7.5 महीने", "8.5 महीने"], a: 2, e: "A=4000, B=6000। A का लाभ=2000, B=8000 (अनुपात 1:4)। (4000*(12-x))/(6000*12) = 1/4 => 12-x=4.5 => x=7.5 महीने।"},
+        {q: "दूध और पानी के एक मिश्रण में 65% दूध है। इस मिश्रण के 50 लीटर में कितना शुद्ध दूध मिलाया जाना चाहिए ताकि दूध की मात्रा 80% हो जाए?", o: ["30.5 लीटर", "35.0 लीटर", "37.5 लीटर", "40.0 लीटर"], a: 2, e: "पानी = 35%। 50 लीटर में पानी = 17.5 लीटर। नया मिश्रण (50+x) जिसमें पानी 20% होगा। (1/5)*(50+x) = 17.5 => x = 37.5 लीटर।"},
+        {q: "9 सेमी त्रिज्या वाले एक ठोस धातु के अर्धगोले को पिघलाकर 9 सेमी आधार त्रिज्या वाले एक शंकु में ढाला जाता है। शंकु की ऊंचाई ज्ञात कीजिए।", o: ["12 सेमी", "18 सेमी", "24 सेमी", "27 सेमी"], a: 1, e: "अर्धगोले का आयतन = शंकु का आयतन। (2/3)*π*r³ = (1/3)*π*R²*h => 2*9 = h => h = 18 सेमी।"},
+        {q: "एक वर्ग और एक आयत के परिमाप समान हैं। यदि आयत की विमाएं 62 सेमी और 22 सेमी हैं, तो वर्ग का क्षेत्रफल ज्ञात कीजिए।", o: ["1664 सेमी²", "1764 सेमी²", "1864 सेमी²", "1964 सेमी²"], a: 1, e: "आयत परिमाप = 2(62+22) = 168 सेमी। वर्ग परिमाप 4a = 168 => a = 42। क्षेत्रफल = 42*42 = 1764 सेमी²।"},
+        {q: "एक त्रिभुज का क्षेत्रफल 350 सेमी² है। यदि इसके आधार में 25% की वृद्धि और ऊंचाई में 12% की कमी की जाती है, तो क्षेत्रफल में प्रतिशत परिवर्तन ज्ञात कीजिए।", o: ["8%", "10%", "12%", "-10%"], a: 1, e: "प्रभावी परिवर्तन = x + y + (xy/100) = 25 - 12 + (25*-12)/100 = 13 - 3 = 10% वृद्धि।"},
+        {q: "एक समबाहु त्रिभुज का क्षेत्रफल 144√3 सेमी² है। इसकी भुजा और ऊंचाई ज्ञात कीजिए।", o: ["भुजा = 24 सेमी, ऊंचाई = 12√3 सेमी", "भुजा = 24 सेमी, ऊंचाई = 24√3 सेमी", "भुजा = 12 सेमी, ऊंचाई = 24√3 सेमी", "भुजा = 18 सेमी, ऊंचाई = 12√3 सेमी"], a: 0, e: "(√3/4)*a² = 144√3 => a = 24 सेमी। ऊंचाई = (√3/2)*a = 12√3 सेमी।"},
+        {q: "एक 240 मीटर लंबी ट्रेन एक प्लेटफॉर्म को 45 सेकंड में और एक सिग्नल पोल को 15 सेकंड में पार करती है। प्लेटफॉर्म की लंबाई ज्ञात कीजिए।", o: ["420 मीटर", "450 मीटर", "480 मीटर", "500 मीटर"], a: 2, e: "ट्रेन गति = 240/15 = 16 मी/से। (240+P)/45 = 16 => P = 720-240 = 480 मीटर।"},
+        {q: "एक आदमी घर से पार्क 5 किमी/घंटा और वापस 7 किमी/घंटा की गति से जाता है। कुल समय 2.4 घंटे है। दूरी ज्ञात कीजिए।", o: ["5 किमी", "6 किमी", "7 किमी", "8 किमी"], a: 2, e: "D/5 + D/7 = 2.4 => 12D/35 = 2.4 => 12D = 84 => D = 7 किमी।"},
+        {q: "12(3/4) + 4(1/8) - 6(5/8) - 3(1/4) = ?", o: ["6", "7", "7(1/4)", "8"], a: 1, e: "(12+4-6-3) + (6/8+1/8-5/8-2/8) = 7 + (0/8) = 7।"},
+        {q: "5 x 0.6 + 4.5 x 0.4 + 6 x 0.2 = ?", o: ["5.8", "6.0", "6.2", "6.4"], a: 1, e: "3.0 + 1.8 + 1.2 = 6.0।"},
+        {q: "[(0.7)⁴ - (0.3)⁴] / [(0.7)² + (0.3)²] = ?", o: ["0.20", "0.30", "0.40", "0.50"], a: 2, e: "a⁴-b⁴ = (a²-b²)(a²+b²)। हर कट जाएगा। (0.7)² - (0.3)² = 0.49 - 0.09 = 0.40।"},
+        {q: "दो क्रमागत विषम संख्याओं का गुणनफल 323 है। छोटी संख्या कौन सी है?", o: ["15", "17", "19", "21"], a: 1, e: "x(x+2)=323 => (x+1)²=324 => x+1=18 => x=17।"},
+        {q: "दो क्रमागत सम संख्याओं का गुणनफल 288 है। बड़ी संख्या कौन सी है?", o: ["14", "16", "18", "20"], a: 2, e: "x(x+2)=288 => (x+1)²=289 => x+1=17 => x=16। बड़ी संख्या 18 है।"},
+        
+        // Reasoning
+        {q: "श्रृंखला पूरी करें: -150, -147, -144, -141, -138, ?, -132", o: ["-136", "-135", "-134", "-133"], a: 1, e: "प्रत्येक पद में +3 की वृद्धि होती है। -138 + 3 = -135।"},
+        {q: "श्रृंखला पूरी करें: Y, ?, I, N, S, X, C, H", o: ["B", "D", "E", "F"], a: 1, e: "वर्णमाला +5 बढ़ती है। Y(25)+5 = 30-26 = 4 (D)।"},
+        {q: "यदि किसी महीने की 1 तारीख को सोमवार है, तो उस महीने का 29वाँ दिन क्या होगा?", o: ["सोमवार", "मंगलवार", "बुधवार", "रविवार"], a: 0, e: "29-1 = 28 दिन। 28/7 शेषफल 0। दिन सोमवार रहेगा।"},
+        {q: "पांच मित्र P, Q, R, S, T उत्तर की ओर मुख करके बैठे हैं। S के दाईं ओर कोई नहीं है। Q के बाईं ओर केवल 2 व्यक्ति हैं। R, P के ठीक दाईं ओर है। Q के ठीक बाईं ओर कौन है?", o: ["P", "R", "T", "S"], a: 1, e: "क्रम: P-R-Q-T-S। Q के ठीक बाईं ओर R है।"},
+        {q: "किन वर्षों के युग्मों के कैलेंडर समान हैं?", o: ["1915 और 1926", "1907 और 1914", "1918 और 1930", "1914 और 1926"], a: 0, e: "1915 से 1926 के बीच 11 वर्ष (3 लीप, 8 सामान्य)। विषम दिन = 14 (शेष 0)।"},
+        {q: "कूट भाषा में 'TEACHER' = 109, 'STUDY' = 114। 'COLLEGE' = ?", o: ["88", "108", "94", "96"], a: 1, e: "(अक्षरों की संख्या का वर्ग) + (वर्णमाला के स्थानों का योग)। 7² + 59 = 108।"},
+        {q: "students study hard = ab cd ef, study makes success = cd gh ij, hard work pays = ef kl mn। 'study hard' = ?", o: ["cd ef", "ab cd", "ef gh", "cd kl"], a: 0, e: "study = cd, hard = ef। उत्तर cd ef।"},
+        {q: "528 : ? :: 436 : 1744 :: 782 : 3128", o: ["2112", "1584", "2116", "2108"], a: 0, e: "दूसरी संख्या = पहली संख्या x 4। 528 x 4 = 2112।"},
+        {q: "शब्दकोश क्रम: 1. Market 2. Margin 3. Marble 4. Mark 5. Marine", o: ["32541", "35241", "32514", "35214"], a: 0, e: "Marble, Margin, Marine, Mark, Market => 3, 2, 5, 4, 1।"},
+        {q: "BCD240 : ? :: DEF120 : GHI360 :: JKL150 : MNO450", o: ["EFG720", "CDE480", "CDE360", "CDE240"], a: 0, e: "अक्षर +3, संख्या x3। BCD -> EFG, 240x3 = 720।"},
+        
+        // English
+        {q: "Replace: The scientists have been conducting experiments on the new vaccine to arrive <b>since three months</b>.", o: ["to conduct experiments ... for three months", "conducting experiments ... for three months", "conducting experiments ... since three months", "No improvement"], a: 1, e: "'three months' एक अवधि (duration) है, इसलिए 'for' का प्रयोग होगा।"},
+        {q: "Replace: A balanced diet <b>will have the effect of strengthening your immune system and protect you</b> from seasonal illnesses.", o: ["will strengthen your immune system", "will have the affect of strengthening", "will affect the strengthening", "No improvement"], a: 0, e: "Parallelism के अनुसार 'will' के बाद strengthen और protect (V1) सही है।"},
+        {q: "Correctly spelt word to replace: The lawyer's argument was not <b>garmane</b> to the charges...", o: ["gerrmane", "germane", "garmine", "No replacement"], a: 1, e: "सही स्पेलिंग 'germane' (प्रासंगिक) है।"},
+        {q: "Nearest in meaning to the word 'aroma'.", o: ["Texture", "Scent", "Flavour", "Colour"], a: 1, e: "Aroma का अर्थ खुशबू, समानार्थी 'Scent' है।"},
+        {q: "One-word: A system of governance where power is held by those belonging to a privileged hereditary class.", o: ["Plutocracy", "Theocracy", "Aristocracy", "Bureaucracy"], a: 2, e: "कुलीनतंत्र (Aristocracy)।"},
+        {q: "Preposition: The new principal became very popular ______ the students within weeks.", o: ["with", "among", "upon", "across"], a: 1, e: "समूह के बीच के लिए 'among' का प्रयोग होता है।"},
+        {q: "Most contrary to 'active'.", o: ["Dynamic", "Spirited", "Sluggish", "Vibrant"], a: 2, e: "Active का विलोम Sluggish (सुस्त) है।"},
+        {q: "Error: The historic fort was <b>thronged by thousands of tourists</b> from across...", o: ["The historic fort was", "thronged by thousands of tourists", "from across the country", "during the festive season."], a: 1, e: "'throng' के साथ passive voice में 'with' आता है (thronged with)।"},
+        {q: "Meaning of idiom: Cast the first stone.", o: ["To be the first one to judge or condemn someone else", "To be the first one to begin constructing", "To be the first person to throw a weapon", "To volunteer for a task"], a: 0, e: "दूसरों की आलोचना करने वाला पहला व्यक्ति बनना।"},
+        {q: "Replace: The new policy... is <b>directed at bringing up</b> a significant change.", o: ["directed in bringing forward", "directed at bringing about", "directed for bringing about", "No improvement"], a: 1, e: "'Bring about' का अर्थ है बदलाव लाना या घटित करना।"},
+        
+        // Haryana GK
+        {q: "हरियाणवी भाषा में लिखा गया पहला उपन्यास है।", o: ["झाडूफिरी", "अमानत एक शहीद की", "सीप का मोती", "लाल धूप"], a: 0, e: "झाडूफिरी (राजाराम शास्त्री द्वारा)।"},
+        {q: "1966 में 'हरियाणा के राज्य कवि' का खिताब किसे दिया गया था?", o: ["श्री राजाराम शास्त्री", "पंडित नेकीराम शर्मा", "श्री उदयभानु हंस", "श्री बिशम्भर नाथ कौशिक"], a: 2, e: "श्री उदयभानु हंस।"},
+        {q: "मासिक पत्रिकाओं में प्रकाशित 'लेटर्स ऑफ़ दुबे' ______ द्वारा लिखे गए थे।", o: ["श्री राजाराम शास्त्री", "पंडित नेकीराम शर्मा", "श्री उदयभानु हंस", "श्री बिशम्भर नाथ कौशिक"], a: 3, e: "श्री बिशम्भर नाथ कौशिक (चाँद पत्रिका में)।"},
+        {q: "हरियाणा _______ राज्य के साथ अपनी सीमाओं को साझा नहीं करता है।", o: ["दिल्ली", "पंजाब", "उत्तरप्रदेश", "गुजरात"], a: 3, e: "गुजरात।"},
+        {q: "हरियाणा को ______ भौगोलिक विशेषताओं में विभाजित किया गया है।", o: ["चार", "तीन", "दो", "छः"], a: 0, e: "चार (शिवालिक, गिरिपाद, जलोढ़, अरावली)।"},
+        {q: "यमुना, हरियाणा की ______ सीमा के पास बहती है।", o: ["दक्षिणी", "पश्चिमी", "पूर्वी", "उत्तरी"], a: 2, e: "पूर्वी सीमा।"},
+        {q: "हरियाणा राज्य में सर्वोच्च पर्वत शिखर कौन-सा है?", o: ["कारो चोटी", "गारो चोटी", "टोसा चोटी", "ड्रोशेर चोटी"], a: 0, e: "कारो (करोह) चोटी, मोरनी पहाड़ियों में।"},
+        {q: "हरियाणा का कुल भौगोलिक क्षेत्रफल कितना है?", o: ["45,612 वर्ग किलोमीटर", "44,212 वर्ग किलोमीटर", "55,412 वर्ग किलोमीटर", "33,612 वर्ग किलोमीटर"], a: 1, e: "44,212 वर्ग किलोमीटर।"},
+        {q: "हरियाणा का उच्च न्यायालय कहाँ स्थित है?", o: ["गुड़गाँव", "अम्बाला", "चंडीगढ़", "फरीदाबाद"], a: 2, e: "चंडीगढ़।"},
+        {q: "कालेसर वन में ______ के पेड़ हैं।", o: ["पीपल", "नीम", "यूकेलिप्टस", "साल"], a: 3, e: "साल के पेड़।"},
+        {q: "हरियाणा के ______ में सबसे कम लिंग अनुपात है लेकिन उच्च साक्षरता दर है।", o: ["सोनीपत", "गुड़गांव", "पंचकुला", "करनाल"], a: 1, e: "गुड़गांव (गुरुग्राम)।"},
+        {q: "हरियाणा के किस जिले को 'धान-का-कटोरा' कहा जाता है?", o: ["पानीपत", "करनाल", "रेवाड़ी", "यमुनानगर"], a: 1, e: "करनाल।"},
+        {q: "हरियाणा में एटलस साइकिल का निर्माण कहाँ होता है?", o: ["रेवाड़ी", "पलवल", "सोनीपत", "रोहतक"], a: 2, e: "सोनीपत (साईकिल सिटी)।"},
+        {q: "हरियाणा की ______ नदी का प्राचीन नाम अरुणा था।", o: ["मार्कंड", "साहिबी", "टांगरी", "घग्गर"], a: 0, e: "मार्कंडा नदी।"},
+        {q: "निम्न में से कौन सबसे अधिक समय तक हरियाणा के मुख्यमंत्री रहे हैं?", o: ["श्री ओमप्रकाश चौटाला", "चौधरी देवीलाल", "श्री बंसीलाल", "राव बिरेंद्र सिंह"], a: 2, e: "श्री बंसीलाल।"},
+        {q: "फतेहाबाद में कुणाल एक ______ होने के कारण महत्वपूर्ण है।", o: ["हरियाणा का औद्योगिक मुख्यालय", "पूर्व हड़प्पा सभ्यता स्थल", "अर्द्ध बहुमूल्य रत्न खनन केन्द्र", "हरियाणा का वन संरक्षक क्षेत्र"], a: 1, e: "पूर्व हड़प्पा सभ्यता स्थल।"},
+        {q: "हरियाणा के ______ को 'धर्मक्षेत्र' (पवित्र स्थान) के नाम से भी जाना जाता है।", o: ["कैथल", "पानीपत", "कुरुक्षेत्र", "सिरसा"], a: 2, e: "कुरुक्षेत्र।"},
+        {q: "श्री विश्वकर्मा कौशल विश्वविद्यालय का स्थायी परिसर कहाँ है?", o: ["पलवल", "नूंह", "यमुनानगर", "चरखी दादरी"], a: 0, e: "पलवल (दुधोला गाँव)।"},
+        {q: "हरियाणा के उद्योग विभाग ने ______ में एक टेक्सटाइल पार्क प्रस्तावित किया है।", o: ["फतेहाबाद", "सिरसा", "भिवानी", "हिसार"], a: 1, e: "सिरसा।"},
+        {q: "हरियाणवी साहित्य ______ भाषा से समृद्ध नहीं है।", o: ["हिंदी", "पाली", "ब्रज", "उर्दू"], a: 1, e: "पाली।"},
+        {q: "उर्दू के क्षेत्र में हरियाणा उर्दू साहित्य अकादमी द्वारा कौन-सा पुरस्कार दिया जाता है?", o: ["साहित्य पुरस्कार", "उर्दू पुरस्कार", "उर्दू रत्न पुरस्कार", "हाली पुरस्कार"], a: 3, e: "हाली पुरस्कार।"},
+        {q: "उदयभानु हंस के साथ-साथ किसे उर्दू में हरियाणा का राज्य कवि घोषित किया गया था?", o: ["पंडित नेकीराम", "भाई परमानंद", "खुशीराम शर्मा", "अनूप चंद आफताब"], a: 3, e: "अनूप चंद आफताब।"},
+        {q: "______ नदी पिंजौर के पास हरियाणा में प्रवेश करती है और फिर राजस्थान में प्रवेश करती है।", o: ["साहिबी", "घग्गर", "कृष्णावती", "दोहन"], a: 1, e: "घग्गर।"},
+        {q: "चरखी दादरी के बाद, क्षेत्रफल की दृष्टि से हरियाणा का सबसे बड़ा जिला कौन-सा है?", o: ["सिरसा", "पंचकुला", "फरीदाबाद", "गुड़गाँव"], a: 0, e: "सिरसा (4277 वर्ग किमी)।"},
+        {q: "फरीदाबाद जिले में दो झीलें ______ और ______ हैं।", o: ["बड़खल, सूरजकुंड", "दमदमा, खलीलपुर", "सुल्तानपुर, भिंडावास", "कोटला, उजीना"], a: 0, e: "बड़खल झील, सूरजकुंड झील।"},
+        
+        // Science
+        {q: "वायुमण्डलीय दाब का मापक यंत्र तथा मात्रक है?", o: ["लैक्टोमीटर तथा लीटर", "बैरोमीटर तथा बार", "हाइग्रोमीटर तथा वाट", "थर्मामीटर तथा केल्विन"], a: 1, e: "बैरोमीटर और बार।"},
+        {q: "मानव नेत्र की स्पष्ट दर्शन की न्यूनतम दूरी होती है?", o: ["20 सेमी", "25 सेमी", "30 सेमी", "अनंत"], a: 1, e: "25 सेंटीमीटर।"},
+        {q: "कैप्सूल का आवरण बना होता है?", o: ["प्रोटीन का", "कैल्शियम का", "स्टार्च का", "सेल्युलोज का"], a: 2, e: "स्टार्च का।"},
+        {q: "अंडे का आवरण बना होता है?", o: ["कैल्शियम कार्बोनेट का", "कैल्शियम फॉस्फेट का", "सोडियम क्लोराइड का", "मैग्नीशियम सल्फेट का"], a: 0, e: "कैल्शियम कार्बोनेट का।"},
+        {q: "मानव मस्तिष्क तथा सिर का अध्ययन से संबंधित शाखा है?", o: ["न्यूरोलॉजी", "फ्रेनोलॉजी", "साइकोलॉजी", "ऑस्टियोलॉजी"], a: 1, e: "फ्रेनोलॉजी (Phrenology)।"},
+        {q: "सबसे हल्की धातु कौन है?", o: ["सोडियम", "मैग्नीशियम", "लीथियम", "एल्युमीनियम"], a: 2, e: "लीथियम (Li)।"},
+        {q: "चावल को पॉलिश करने से कौन विटामिन नष्ट हो जाता है?", o: ["विटामिन A", "विटामिन C", "थाइमिन (विटामिन B1)", "कैल्सिफेरॉल (विटामिन D)"], a: 2, e: "थाइमिन (विटामिन B1)।"},
+        {q: "प्याज तथा लहसुन में गंध किस तत्व के कारण होता है?", o: ["सोडियम", "पोटेशियम", "क्लोरीन", "आयरन"], a: 1, e: "पुस्तक अनुसार पोटेशियम (वास्तव में सल्फर यौगिक)।"},
+        {q: "किस पदार्थ को लगाने से रक्त का बहना रुक जाता है?", o: ["सोडियम क्लोराइड", "फेरिक क्लोराइड", "पोटेशियम साइनाइड", "कॉपर सल्फेट"], a: 1, e: "फेरिक क्लोराइड।"},
+        {q: "सबसे भारी धातु कौन है?", o: ["सोना", "चांदी", "ओसमियम", "सीसा"], a: 2, e: "ओसमियम (Os)।"},
+        {q: "इन्सुलिन की खोज किसने की?", o: ["बैंटिंग एवं बेस्ट", "वाटसन एवं क्रिक", "अलेक्जेंडर फ्लेमिंग", "रॉबर्ट हुक"], a: 0, e: "बैंटिंग एवं बेस्ट (1921)।"},
+        {q: "पारसेक किस भौतिक राशि का मात्रक है?", o: ["समय का", "खगोलीय दूरी का", "प्रकाश की तीव्रता का", "ध्वनि का"], a: 1, e: "खगोलीय दूरी।"},
+        {q: "गाय के दूध का पीला रंग किसके कारण होता है?", o: ["कैसीन", "लैक्टोज", "कैरोटीन", "राइबोफ्लेविन"], a: 2, e: "कैरोटीन नामक वर्णक।"},
+        {q: "मलेरिया का परजीवी क्या होता है?", o: ["बैक्टीरिया", "वायरस", "प्लाज्मोडियम", "फंगी"], a: 2, e: "प्लाज्मोडियम।"},
+        {q: "विकास के उत्परिवर्तन के सिद्धांत को किसने प्रतिपादित किया?", o: ["चार्ल्स डार्विन", "ह्यूगो-डी-ब्रीज", "लैमार्क", "ग्रेगर मेंडल"], a: 1, e: "ह्यूगो-डी-ब्रीज।"},
+        
+        // Hindi
+        {q: "'महर्षि' शब्द में कौन-सी संधि है?", o: ["वृद्धि संधि", "यण संधि", "गुण संधि", "दीर्घ संधि"], a: 2, e: "महा + ऋषि (आ + ऋ = अर्), गुण स्वर संधि।"},
+        {q: "निम्नलिखित में से कौन-सा शब्द 'कमल' का पर्यायवाची नहीं है?", o: ["पंकज", "वारिद", "जलज", "सरोज"], a: 1, e: "'वारिद' बादल का पर्यायवाची है।"},
+        {q: "'नीलकंठ' शब्द में कौन-सा समास है?", o: ["तत्पुरुष समास", "कर्मधारय समास", "अव्ययीभाव समास", "बहुव्रीहि समास"], a: 3, e: "नीला है कंठ जिसका (शिव) - बहुव्रीहि समास।"},
+        {q: "'कृत्रिम' का सही विलोम शब्द क्या होगा?", o: ["स्वाभाविक", "प्राकृतिक", "बनावटी", "असली"], a: 1, e: "कृत्रिम (Artificial) का विलोम प्राकृतिक (Natural)।"},
+        {q: "'आसमान सिर पर उठाना' मुहावरे का सही अर्थ क्या है?", o: ["बहुत अधिक शोर करना", "अत्यधिक क्रोधित होना", "बहुत अभिमान करना", "असंभव कार्य कर दिखाना"], a: 0, e: "बहुत अधिक शोरगुल मचाना।"},
+        {q: "निम्नलिखित में से शुद्ध वर्तनी वाला शब्द छाँटिएः", o: ["आर्शीवाद", "आशिर्वाद", "अशिरवाद", "आशीर्वाद"], a: 3, e: "आशीर्वाद (श पर बड़ी ई, व पर रेफ)।"},
+        {q: "'कवि' शब्द का सही स्त्रीलिंग रूप क्या होगा?", o: ["कवियित्री", "कवित्री", "कवयित्री", "कवयीत्री"], a: 2, e: "कवयित्री।"},
+        {q: "'अत्याचार' शब्द में किस उपसर्ग का प्रयोग हुआ है?", o: ["अत", "अति", "अ", "अत्या"], a: 1, e: "अति + आचार।"},
+        {q: "'जो सब कुछ जानता हो' वाक्यांश के लिए एक उपयुक्त शब्द हैः", o: ["सर्वज्ञ", "अज्ञ", "विशेषज्ञ", "कृतज्ञ"], a: 0, e: "सर्वज्ञ।"},
+        {q: "निम्नलिखित में से कौन-सा वाक्य अशुद्ध है?", o: ["वह बस से यात्रा कर रहा है।", "मुझे भारी प्यास लगी है।", "राम ने रावण को मारा।", "कृपया मेरी बात ध्यान से सुनें।"], a: 1, e: "प्यास 'भारी' नहीं, 'बहुत' होती है।"}
+    ];
+
+    // --- LOGIC & STATE MANAGEMENT ---
+    const STORAGE_KEY = 'hssc_cet_mock_v3'; // Changed key to force fresh state
+    
+    let defaultState = {
+        currentQ: 0, answers: {}, marked: {}, visited: {}, time: 105 * 60, submitted: false
+    };
+    
+    let state = defaultState;
+    try {
+        let saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (saved && typeof saved.currentQ === 'number' && saved.currentQ < questions.length) {
+            state = saved;
+            state.answers = state.answers || {};
+            state.marked = state.marked || {};
+            state.visited = state.visited || {};
+        }
+    } catch (e) {
+        localStorage.removeItem(STORAGE_KEY);
+    }
+
+    let timerInterval = null;
+    let isPaused = false;
+
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    function resetTestData() {
+        if(confirm("Are you sure you want to completely restart the test? All progress will be lost.")) {
+            localStorage.removeItem(STORAGE_KEY);
+            location.reload();
+        }
+    }
+
+    function init() {
+        if(state.submitted) { showResult(); return; }
+        showScreen('test-screen');
+        renderQuestion();
+        renderPalette();
+        updateStats();
+        
+        try { document.documentElement.requestFullscreen().catch(()=>{}); } catch(e){}
+        
+        setInterval(() => { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }, 2000);
+        if (!timerInterval) timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    function startTest() { init(); }
+
+    function updateTimer() {
+        if(isPaused || state.submitted) return;
+        if(state.time <= 0) { submitTest(); return; }
+        state.time--;
+        const m = Math.floor(state.time / 60);
+        const s = state.time % 60;
+        document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+    }
+
+    function toggleTheme() {
+        document.body.classList.toggle('dark-mode');
+    }
+
+    function renderQuestion() {
+        state.visited[state.currentQ] = true;
+        const q = questions[state.currentQ];
+        document.getElementById('q-no').innerText = `Question ${state.currentQ + 1}`;
+        document.getElementById('q-text').innerHTML = q.q;
+        
+        let opts = '';
+        q.o.forEach((opt, i) => {
+            const isSel = state.answers[state.currentQ] === i;
+            const selClass = isSel ? 'selected' : '';
+            const charLabel = String.fromCharCode(65 + i);
+            opts += `
+            <div class="option ${selClass}" onclick="selectOption(${i})">
+                <div class="opt-label">${charLabel}</div>
+                <div style="flex:1;">${opt}</div>
+            </div>`;
+        });
+        document.getElementById('options-box').innerHTML = opts;
+        renderPalette();
+        updateStats();
+    }
+
+    function selectOption(index) {
+        state.answers[state.currentQ] = index;
+        renderQuestion();
+    }
+
+    function clearResponse() {
+        delete state.answers[state.currentQ];
+        delete state.marked[state.currentQ];
+        renderQuestion();
+    }
+
+    function markReview() {
+        state.marked[state.currentQ] = true;
+        changeQ(1);
+    }
+
+    function saveNext() {
+        delete state.marked[state.currentQ];
+        changeQ(1);
+    }
+
+    function changeQ(step) {
+        const next = state.currentQ + step;
+        if(next >= 0 && next < questions.length) {
+            state.currentQ = next;
+            renderQuestion();
+        }
+    }
+
+    function renderPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        questions.forEach((_, i) => {
+            let statusClass = 's-0';
+            if(state.visited[i]) {
+                if(state.answers[i] !== undefined && state.marked[i]) statusClass = 's-4';
+                else if(state.marked[i]) statusClass = 's-3';
+                else if(state.answers[i] !== undefined) statusClass = 's-1';
+                else statusClass = 's-2';
+            }
+            const active = i === state.currentQ ? 'active' : '';
+            grid.innerHTML += `<button class="p-btn ${statusClass} ${active}" onclick="state.currentQ = ${i}; renderQuestion();">${i + 1}</button>`;
+        });
+    }
+
+    function updateStats() {
+        let ans = 0, notans = 0, notvis = 0, mark = 0;
+        questions.forEach((_, i) => {
+            if(!state.visited[i]) notvis++;
+            else if(state.marked[i]) mark++;
+            else if(state.answers[i] !== undefined) ans++;
+            else notans++;
+        });
+        document.getElementById('c-ans').innerText = ans;
+        document.getElementById('c-notans').innerText = notans;
+        document.getElementById('c-notvis').innerText = notvis;
+        document.getElementById('c-mark').innerText = mark;
+    }
+
+    function submitTest() {
+        if(!confirm("Are you sure you want to submit the test?")) return;
+        state.submitted = true;
+        clearInterval(timerInterval);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        showResult();
+    }
+
+    function showResult() {
+        showScreen('result-screen');
+        
+        let score = 0, attempt = 0, wrong = 0;
+        questions.forEach((q, i) => {
+            if(state.answers[i] !== undefined) {
+                attempt++;
+                if(state.answers[i] === q.a) score++;
+                else wrong++;
+            }
+        });
+        
+        const acc = attempt > 0 ? ((score / attempt) * 100).toFixed(1) : 0;
+        const timeTaken = (105 * 60) - state.time;
+        const m = Math.floor(timeTaken / 60), s = timeTaken % 60;
+        
+        document.getElementById('r-score').innerText = `${score}`;
+        document.getElementById('r-attempt').innerText = attempt;
+        document.getElementById('r-wrong').innerText = wrong;
+        document.getElementById('r-acc').innerText = `${acc}%`;
+        document.getElementById('r-skip').innerText = questions.length - attempt;
+        document.getElementById('r-time').innerText = `${m}m ${s}s`;
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        
+        let html = '';
+        questions.forEach((q, i) => {
+            const uAns = state.answers[i];
+            let optHtml = '';
+            q.o.forEach((opt, oIdx) => {
+                let cls = '';
+                if(oIdx === q.a) cls = 'correct';
+                else if(oIdx === uAns && uAns !== q.a) cls = 'wrong';
+                const charLabel = String.fromCharCode(65 + oIdx);
+                optHtml += `<div class="sol-opt ${cls}"><strong>${charLabel}.</strong> <div>${opt}</div></div>`;
+            });
+            
+            html += `
+            <div class="sol-card">
+                <div style="font-weight: bold; font-size: 16px; margin-bottom: 12px; color: var(--primary);">Q${i+1}. ${q.q}</div>
+                ${optHtml}
+                <div class="sol-exp"><strong>विस्तृत हल:</strong><br>${q.e}</div>
+            </div>`;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+
+    // Security Features
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'F12' || (e.ctrlKey && ['u', 'c', 'p', 's'].includes(e.key.toLowerCase()))) {
+            e.preventDefault();
+        }
+    });
+</script>
+</body>
+</html>
