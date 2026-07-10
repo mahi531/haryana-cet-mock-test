@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General Science Mock Test - SET 3</title>
+    <style>
+        :root {
+            /* Light Mode Variables */
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: #2c3e50;
+            --text-muted: #576574;
+            --primary-color: #341f97;
+            --accent-color: #ff9f43;
+            --correct-color: #10ac84;
+            --incorrect-color: #ee5253;
+            --btn-hover: rgba(255, 255, 255, 0.6);
+            --palette-unattempted: #c8d6e5;
+            --palette-attempted: #10ac84;
+            --palette-marked: #9b59b6;
+            --palette-marked-attempted: #8e44ad;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Mode Variables */
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-bg: rgba(16, 20, 24, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f1f2f6;
+            --text-muted: #a4b0be;
+            --primary-color: #54a0ff;
+            --accent-color: #ff9f43;
+            --correct-color: #1dd1a1;
+            --incorrect-color: #ff6b6b;
+            --btn-hover: rgba(255, 255, 255, 0.1);
+            --palette-unattempted: #576574;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            margin: 15px;
+        }
+        .header-title h1 { font-size: 1.5rem; }
+        .header-title p { font-size: 0.9rem; color: var(--text-muted); }
+        .header-controls { display: flex; gap: 15px; align-items: center; }
+        
+        .timer-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0,0,0,0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+        .timer { font-size: 1.2rem; font-weight: bold; }
+        .timer.danger { color: var(--incorrect-color); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        button {
+            cursor: pointer;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+            background: var(--glass-bg);
+            color: var(--text-color);
+            border: 1px solid var(--glass-border);
+        }
+        button:hover { background: var(--btn-hover); }
+        .btn-primary { background: var(--primary-color); color: #fff; border: none; }
+        .btn-primary:hover { background: #2c1a80; }
+        .btn-danger { background: var(--incorrect-color); color: white; border: none; }
+        .btn-warning { background: var(--accent-color); color: white; border: none; }
+        .btn-submit { background: var(--correct-color); color: white; border: none; }
+        .btn-submit:hover { background: #0b8c6b; }
+
+        /* Main Layout */
+        .container {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            margin: 0 15px 15px 15px;
+        }
+        .main-area { flex: 3; display: flex; flex-direction: column; position: relative; }
+        .sidebar { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        /* Progress & Question Area */
+        .progress-bar-bg { background: rgba(0,0,0,0.1); height: 8px; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar-fill { background: var(--primary-color); height: 100%; width: 0%; transition: width 0.3s; }
+        
+        .question-text { font-size: 1.25rem; font-weight: 500; margin-bottom: 20px; line-height: 1.6; }
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            text-align: left;
+            padding: 15px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .option-btn.selected {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+        
+        .action-buttons { display: flex; justify-content: space-between; margin-top: auto; padding-top: 20px; }
+        .action-buttons > div { display: flex; gap: 10px; }
+
+        /* Pause Overlay */
+        .pause-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 10;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+        }
+        .pause-overlay h2 { font-size: 2rem; margin-bottom: 10px; }
+
+        /* Sidebar Stats & Grid */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-item { font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+        .stat-dot { width: 12px; height: 12px; border-radius: 50%; }
+        
+        .q-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .q-grid-btn {
+            padding: 10px 0; text-align: center; border-radius: 8px; font-weight: bold;
+            background: var(--palette-unattempted); color: #2c3e50; border: none;
+        }
+        .q-grid-btn.current { border: 3px solid #2c3e50; }
+        [data-theme="dark"] .q-grid-btn.current { border: 3px solid #fff; color: #fff; }
+        .q-grid-btn.attempted { background: var(--palette-attempted); color: #fff; }
+        .q-grid-btn.marked { background: var(--palette-marked); color: #fff; }
+        .q-grid-btn.marked.attempted { background: var(--palette-marked-attempted); color: #fff; }
+
+        /* Results Screen */
+        .result-screen { display: none; max-width: 1000px; margin: 0 auto; width: 100%; }
+        .result-header { text-align: center; margin-bottom: 30px; }
+        .badge { display: inline-block; padding: 10px 30px; border-radius: 30px; font-size: 1.5rem; font-weight: bold; color: #fff; margin-top: 10px; }
+        .badge.pass { background: var(--correct-color); }
+        .badge.fail { background: var(--incorrect-color); }
+        
+        .result-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-box { text-align: center; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .stat-box h3 { font-size: 2rem; margin-bottom: 5px; }
+
+        .solution-item { margin-bottom: 25px; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .sol-q { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; }
+        .sol-opt { margin-bottom: 8px; padding: 10px; border-radius: 8px; background: var(--glass-bg); }
+        .sol-opt.correct { background: var(--correct-color); color: #fff; }
+        .sol-opt.incorrect { background: var(--incorrect-color); color: #fff; }
+        .sol-exp { margin-top: 15px; font-size: 0.95rem; color: var(--text-color); border-left: 4px solid var(--primary-color); padding-left: 15px; line-height: 1.6; }
+        .sol-exp-title { color: var(--primary-color); font-weight: bold; margin-bottom: 5px; }
+        .sol-fact { margin-top: 5px; background: rgba(0,0,0,0.03); padding: 5px 10px; border-radius: 4px; font-size: 0.9rem;}
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            header { flex-direction: column; gap: 15px; text-align: center; }
+            .action-buttons { flex-direction: column; gap: 15px; }
+            .action-buttons > div { justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="glass-panel">
+        <div class="header-title">
+            <h1>General Science Mock Test - SET 3</h1>
+            <p>25 Important Science Questions (Hindi)</p>
+        </div>
+        <div class="header-controls">
+            <div class="timer-container" id="timer-box">
+                <span>⏱</span>
+                <!-- Timer set to 25:00 -->
+                <span class="timer" id="timer">25:00</span>
+                <button id="pause-btn" onclick="togglePause()">Pause</button>
+            </div>
+            <button onclick="toggleTheme()">🌗 Theme</button>
+            <button class="btn-submit" onclick="submitTest(false)">Submit Test</button>
+        </div>
+    </header>
+
+    <div class="container" id="app-container">
+        
+        <div class="glass-panel main-area">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+            
+            <div id="question-header" style="margin-bottom: 15px; font-weight: 600; color: var(--primary-color);"></div>
+            <div id="question-text" class="question-text"></div>
+            
+            <div class="options-grid" id="options-container">
+                </div>
+
+            <div class="action-buttons">
+                <div>
+                    <button onclick="changeQuestion(-1)" id="prev-btn">Previous</button>
+                    <button onclick="clearSelection()">Clear</button>
+                </div>
+                <div>
+                    <button onclick="toggleMark()" id="mark-btn" class="btn-warning">Mark for Review</button>
+                    <button onclick="changeQuestion(1)" id="next-btn" class="btn-primary">Next</button>
+                </div>
+            </div>
+
+            <div class="pause-overlay" id="pause-overlay">
+                <h2>Test Paused</h2>
+                <p>Questions are hidden to prevent cheating.</p>
+                <br>
+                <button class="btn-primary" onclick="togglePause()">Resume Test</button>
+            </div>
+        </div>
+
+        <div class="glass-panel sidebar">
+            <h3>Question Palette</h3>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-attempted)"></div> Attempted (<span id="count-att">0</span>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-unattempted)"></div> Unattempted (<span id="count-unatt">25</span>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-marked)"></div> Marked (<span id="count-mark">0</span>)</div>
+            </div>
+            <div class="q-grid" id="q-grid">
+                </div>
+            <button class="btn-submit" onclick="submitTest(false)" style="margin-top: 20px; width: 100%; padding: 12px; font-size: 1.1rem;">Final Submit Test</button>
+        </div>
+    </div>
+
+    <div class="glass-panel result-screen" id="result-screen">
+        <div class="result-header">
+            <h2>Test Submitted Successfully</h2>
+            <div class="badge" id="result-badge">Pass</div>
+        </div>
+        <div class="result-stats">
+            <div class="stat-box"><h3 id="res-score">0</h3><p>Score / 25</p></div>
+            <div class="stat-box"><h3 id="res-perc">0%</h3><p>Percentage</p></div>
+            <div class="stat-box"><h3 id="res-corr" style="color: var(--correct-color);">0</h3><p>Correct</p></div>
+            <div class="stat-box"><h3 id="res-incorr" style="color: var(--incorrect-color);">0</h3><p>Incorrect</p></div>
+            <div class="stat-box"><h3 id="res-time">00:00</h3><p>Time Taken</p></div>
+        </div>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <button class="btn-primary" onclick="location.reload()">Restart Test</button>
+        </div>
+        <h3>Detailed Solutions & Facts</h3>
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--glass-border);">
+        <div id="solutions-container"></div>
+    </div>
+
+<script>
+    // 25 Science Questions extracted from image "1000096644.jpg" with extra facts
+    const questions = [
+        {
+            q: "प्रकाश का वेग सर्वप्रथम किसने ज्ञात किया?",
+            opt: ["न्यूटन ने", "रोमर ने", "गैलीलियो ने", "मैक्सवेल ने"],
+            ans: 1,
+            exp: "सही उत्तर: <b>रोमर ने</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> ओले रोमर (Ole Rømer) ने 1676 में बृहस्पति के उपग्रह (Io) के ग्रहण का अवलोकन करके प्रकाश की गति का पहली बार सफलतापूर्वक अनुमान लगाया था।</div>"
+        },
+        {
+            q: "प्रकाश का वेग अधिकतम किस माध्यम में होता है?",
+            opt: ["पानी में", "कांच में", "निर्वात (वायु) में", "हीरे में"],
+            ans: 2,
+            exp: "सही उत्तर: <b>निर्वात (वायु) में</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> निर्वात में प्रकाश की चाल 3 × 10⁸ मी./से. होती है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> किसी माध्यम का घनत्व (अपवर्तनांक) जितना अधिक होगा, उसमें प्रकाश की चाल उतनी ही कम होगी।</div>"
+        },
+        {
+            q: "प्रकाश वर्ष (Light Year) किसकी इकाई है?",
+            opt: ["समय की", "प्रकाश की तीव्रता की", "दूरी की", "द्रव्यमान की"],
+            ans: 2,
+            exp: "सही उत्तर: <b>दूरी की</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> एक प्रकाश वर्ष वह दूरी है जो प्रकाश निर्वात में एक वर्ष में तय करता है (लगभग 9.46 ट्रिलियन किलोमीटर)।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> खगोलीय दूरियां मापने की सबसे बड़ी इकाई पारसेक (Parsec) होती है।</div>"
+        },
+        {
+            q: "मानव आँख की रेटिना (Retina) पर कैसा प्रतिबिम्ब (Image) बनता है?",
+            opt: ["वास्तविक तथा सीधा", "आभासी तथा सीधा", "वास्तविक तथा उल्टा", "आभासी तथा उल्टा"],
+            ans: 2,
+            exp: "सही उत्तर: <b>वास्तविक तथा उल्टा</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> हमारी आँख में उत्तल लेंस (Convex Lens) होता है जो रेटिना पर वास्तविक और उल्टा चित्र बनाता है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> हमारा मस्तिष्क (Brain) ऑप्टिक नर्व से मिले इस उल्टे सिग्नल को सीधा करके समझने की क्षमता रखता है।</div>"
+        },
+        {
+            q: "प्राथमिक रंग (Primary Colors) कौन-कौन से हैं?",
+            opt: ["लाल, पीला, नीला", "लाल, हरा, नीला", "हरा, पीला, नीला", "लाल, सफेद, काला"],
+            ans: 1,
+            exp: "सही उत्तर: <b>लाल, हरा व नीला (RGB)</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> रंगीन टेलीविजन (Color TV) और मोबाइल डिस्प्ले में इन्ही तीन प्राथमिक रंगों का उपयोग होता है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> इन तीनों रंगों के प्रकाश को एक साथ मिलाने पर सफेद (White) रंग बनता है।</div>"
+        },
+        {
+            q: "प्रकाश के वर्णक्रम (Spectrum) में किस रंग का तरंगदैर्ध्य (Wavelength) न्यूनतम होता है?",
+            opt: ["लाल रंग का", "हरे रंग का", "पीले रंग का", "बैंगनी रंग का"],
+            ans: 3,
+            exp: "सही उत्तर: <b>बैंगनी रंग का</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> बैंगनी रंग का तरंगदैर्ध्य सबसे कम होने के कारण इसका प्रकीर्णन (Scattering - फैलाव) सबसे अधिक होता है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> इसके विपरीत, लाल रंग का तरंगदैर्ध्य (Wavelength) सबसे अधिकतम होता है।</div>"
+        },
+        {
+            q: "प्रकाश का रंग किसके द्वारा निश्चित किया जाता है?",
+            opt: ["वेग द्वारा", "आयाम (Amplitude) द्वारा", "तरंगदैर्ध्य (Wavelength) द्वारा", "तीव्रता द्वारा"],
+            ans: 2,
+            exp: "सही उत्तर: <b>तरंगदैर्ध्य (Wavelength) द्वारा</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> अलग-अलग तरंगदैर्ध्य हमारी आँखों में अलग-अलग रंगों की संवेदना उत्पन्न करते हैं।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> लाल रंग का तरंगदैर्ध्य अधिक और बैंगनी का सबसे कम होता है।</div>"
+        },
+        {
+            q: "स्वस्थ नेत्र के लिए स्पष्ट दृष्टि की न्यूनतम दूरी कितनी होती है?",
+            opt: ["10 सेमी०", "20 सेमी०", "25 सेमी०", "अनंत"],
+            ans: 2,
+            exp: "सही उत्तर: <b>25 सेमी०</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> 25 सेमी से कम दूरी पर रखी वस्तु को देखने पर आँखों की सिलिअरी मांसपेशियों (Ciliary muscles) पर बहुत जोर पड़ता है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> एक स्वस्थ आँख के लिए दूर बिंदु (Maximum distance) अनंत (Infinity) होता है।</div>"
+        },
+        {
+            q: "वर्णांधता (Color Blindness) को किस लेंस से दूर किया जा सकता है?",
+            opt: ["अवतल लेंस", "उत्तल लेंस", "बेलनाकार लेंस", "किसी लेंस से नहीं"],
+            ans: 3,
+            exp: "सही उत्तर: <b>किसी लेंस से नहीं</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> वर्णांधता आँखों में शंकु कोशिकाओं (Cone Cells) की कमी के कारण होने वाली एक आनुवंशिक (Genetic) बीमारी है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> इस रोग से पीड़ित व्यक्ति आमतौर पर लाल और हरे रंग में अंतर नहीं कर पाता है।</div>"
+        },
+        {
+            q: "धूप के चश्मे (Sunglasses) का पावर कितना होता है?",
+            opt: ["1 डायोप्टर", "-1 डायोप्टर", "शून्य डायोप्टर", "2 डायोप्टर"],
+            ans: 2,
+            exp: "सही उत्तर: <b>शून्य डायोप्टर</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> लेंस की क्षमता मापने की इकाई डायोप्टर (Diopter) है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> धूप के चश्मे केवल तेज रोशनी और हानिकारक पराबैंगनी (UV) किरणों से बचाते हैं, वे प्रकाश की किरणों को मोड़ते (फोकस) नहीं हैं, इसलिए इनकी क्षमता शून्य होती है।</div>"
+        },
+        {
+            q: "एक सूखे सेल (Dry Cell) में कौन-सी ऊर्जा पायी जाती है?",
+            opt: ["यांत्रिक", "विद्युत", "रासायनिक", "चुम्बकीय"],
+            ans: 2,
+            exp: "सही उत्तर: <b>रासायनिक ऊर्जा</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> सूखा सेल (जैसे टीवी रिमोट का सेल) रासायनिक ऊर्जा को विद्युत ऊर्जा में बदलता है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> इसमें अमोनियम क्लोराइड या जिंक क्लोराइड का पेस्ट इलेक्ट्रोलाइट (विद्युत अपघट्य) के रूप में उपयोग होता है।</div>"
+        },
+        {
+            q: "घरों में पंखें एवं लैम्प (बल्ब) किस क्रम में लगाए जाते हैं?",
+            opt: ["श्रेणी क्रम में (Series)", "समान्तर क्रम में (Parallel)", "मिश्रित क्रम में", "किसी भी क्रम में"],
+            ans: 1,
+            exp: "सही उत्तर: <b>समान्तर क्रम में (Parallel Circuit)</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> समान्तर क्रम में लगाने से सभी उपकरणों को समान वोल्टेज (220V) मिलता है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> इसका सबसे बड़ा फायदा यह है कि यदि कोई एक उपकरण (जैसे बल्ब) फ्यूज हो जाए, तो बाकी उपकरण (जैसे पंखा) सामान्य रूप से काम करते रहते हैं।</div>"
+        },
+        {
+            q: "ट्रांसफार्मर की क्षमता (Rating) को किस यूनिट में व्यक्त किया जाता है?",
+            opt: ["KW (किलोवाट)", "KVA (किलो वोल्ट एम्पीयर)", "HP (हॉर्स पावर)", "kWh"],
+            ans: 1,
+            exp: "सही उत्तर: <b>KVA (किलो वोल्ट एम्पीयर) में</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> ट्रांसफार्मर केवल AC (प्रत्यावर्ती धारा) पर काम करता है, DC (दिष्ट धारा) पर नहीं।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> यह विद्युत शक्ति (Power) को बिना बदले, वोल्टेज को बढ़ाने (Step-up) या घटाने (Step-down) का कार्य करता है।</div>"
+        },
+        {
+            q: "तड़ित चालक (Lightning Conductor) का आविष्कार किसने किया था?",
+            opt: ["न्यूटन ने", "थॉमस एडिसन ने", "बेंजामिन फ्रैंकलिन ने", "निकोला टेस्ला ने"],
+            ans: 2,
+            exp: "सही उत्तर: <b>बेंजामिन फ्रैंकलिन ने</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> तड़ित चालक ऊँची इमारतों को आकाशीय बिजली गिरने से होने वाले नुकसान से बचाता है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> तड़ित चालक मुख्य रूप से तांबे (Copper) के बनाये जाते हैं क्योंकि तांबा विद्युत का बहुत अच्छा सुचालक है।</div>"
+        },
+        {
+            q: "स्थायी चुम्बक (Permanent Magnet) किस धातु के बनाये जाते हैं?",
+            opt: ["नर्म लोहे के", "तांबे के", "इस्पात (Steel) के", "एल्युमीनियम के"],
+            ans: 2,
+            exp: "सही उत्तर: <b>इस्पात (Steel) के</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> इस्पात (Steel) की धारणशीलता (Retentivity) बहुत अधिक होती है, जिससे यह लम्बे समय तक चुम्बकीय गुण बनाये रखता है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> दूसरी ओर, अस्थायी चुम्बक (जैसे विद्युत चुम्बक) नर्म लोहे (Soft Iron) के बनाए जाते हैं क्योंकि वे जल्दी चुम्बकित और विचुम्बकित हो जाते हैं।</div>"
+        },
+        {
+            q: "चुम्बक के समान ध्रुवों (Like Poles) के बीच क्या होता है?",
+            opt: ["आकर्षण (Attraction)", "प्रतिकर्षण (Repulsion)", "कोई प्रभाव नहीं", "पहले आकर्षण फिर प्रतिकर्षण"],
+            ans: 1,
+            exp: "सही उत्तर: <b>प्रतिकर्षण (Repulsion)</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> चुम्बक के दो समान ध्रुव (जैसे North-North या South-South) एक दूसरे को दूर धकेलते हैं (प्रतिकर्षण)।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> चुम्बक के विपरीत ध्रुवों (North-South) के बीच हमेशा आकर्षण (Attraction) होता है।</div>"
+        },
+        {
+            q: "एक ही प्रकार के परमाणुओं (Atoms) से मिलकर बना पदार्थ क्या कहलाता है?",
+            opt: ["यौगिक", "मिश्रण", "तत्व (Element)", "अणु"],
+            ans: 2,
+            exp: "सही उत्तर: <b>तत्व (Element)</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> सोना (Au), चांदी (Ag), लोहा (Fe), ऑक्सीजन (O) आदि सभी तत्वों के उदाहरण हैं।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> तत्वों को किसी भी ज्ञात भौतिक या रासायनिक विधि द्वारा अन्य सरल पदार्थों में विभाजित नहीं किया जा सकता।</div>"
+        },
+        {
+            q: "दो या दो से अधिक तत्वों के एक निश्चित अनुपात (Fixed Ratio) में संयोग करने से बना पदार्थ क्या कहलाता है?",
+            opt: ["मिश्रण", "तत्व", "यौगिक (Compound)", "ठोस"],
+            ans: 2,
+            exp: "सही उत्तर: <b>यौगिक (Compound)</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> जल (H₂O) एक यौगिक है क्योंकि इसमें हाइड्रोजन और ऑक्सीजन हमेशा 2:1 के आयतन अनुपात या 1:8 के द्रव्यमान अनुपात में निश्चित रूप से जुड़े होते हैं।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> जब पदार्थों को किसी भी अनिश्चित अनुपात में मिला दिया जाता है, तो उसे 'मिश्रण' (Mixture) कहते हैं (जैसे हवा या शर्बत)।</div>"
+        },
+        {
+            q: "परमाणु के नाभिक (Nucleus) का आकार लगभग कितना होता है?",
+            opt: ["$10^{-10}$ मीटर", "$10^{-15}$ मीटर", "$10^{-8}$ मीटर", "$10^{-12}$ मीटर"],
+            ans: 1,
+            exp: "सही उत्तर: <b>$10^{-15}$ मीटर (1 फर्मी)</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> सम्पूर्ण परमाणु का आकार लगभग $10^{-10}$ मीटर (1 एंग्स्ट्रॉम) होता है। नाभिक परमाणु के केंद्र में बहुत छोटा हिस्सा होता है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> नाभिक की खोज वैज्ञानिक रदरफोर्ड (Rutherford) ने अल्फा कण प्रकीर्णन प्रयोग द्वारा की थी।</div>"
+        },
+        {
+            q: "नाभिक में मौजूद न्यूट्रॉन तथा प्रोटॉन की संख्याओं के योगफल को क्या कहते हैं?",
+            opt: ["परमाणु संख्या", "द्रव्यमान संख्या (Mass Number)", "समस्थानिक", "परमाणु भार"],
+            ans: 1,
+            exp: "सही उत्तर: <b>द्रव्यमान संख्या (Mass Number)</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> परमाणु में उपस्थित इलेक्ट्रॉन का द्रव्यमान बहुत नगण्य होता है, इसलिए परमाणु का लगभग पूरा द्रव्यमान उसके नाभिक (प्रोटॉन + न्यूट्रॉन) में ही केंद्रित होता है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> केवल प्रोटॉन की संख्या को परमाणु संख्या (Atomic Number) कहा जाता है।</div>"
+        },
+        {
+            q: "नाभिक से निकलने वाले विकिरणों (Radiations) में किसकी वेधन क्षमता (Penetrating Power) सर्वाधिक होती है?",
+            opt: ["अल्फा (α) किरणों की", "बीटा (β) किरणों की", "गामा (γ) किरणों की", "एक्स (X) किरणों की"],
+            ans: 2,
+            exp: "सही उत्तर: <b>गामा (γ) किरणों की</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> गामा किरणें वास्तव में उच्च ऊर्जा वाली विद्युत चुम्बकीय तरंगें (Electromagnetic waves) होती हैं। इनका कोई द्रव्यमान (Mass) या आवेश (Charge) नहीं होता।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> अल्फा (α) किरणों की वेधन क्षमता सबसे कम होती है क्योंकि ये भारी कण होते हैं।</div>"
+        },
+        {
+            q: "लोहे पर जंग (Rust) लगना मुख्य रूप से किसका उदाहरण है?",
+            opt: ["अवकरण (Reduction)", "बहुलकीकरण", "ऑक्सीकरण (Oxidation)", "जस्तीकरण"],
+            ans: 2,
+            exp: "सही उत्तर: <b>ऑक्सीकरण का (Oxidation)</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> नमी और ऑक्सीजन की उपस्थिति में लोहे पर जंग लगता है, जिससे लोहे का भार (Weight) बढ़ जाता है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> लोहे को जंग से बचाने के लिए उस पर जस्ते (Zinc) की परत चढ़ाई जाती है, इस प्रक्रिया को गैल्वेनाइजेशन (Galvanization) कहते हैं।</div>"
+        },
+        {
+            q: "कौन-सा पदार्थ नीले लिटमस पत्र (Litmus paper) को लाल कर देता है?",
+            opt: ["भस्म (Base)", "लवण (Salt)", "अम्ल (Acid)", "क्षार (Alkali)"],
+            ans: 2,
+            exp: "सही उत्तर: <b>अम्ल (Acid)</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> अम्ल का स्वाद हमेशा खट्टा (Sour) होता है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> एक ट्रिक याद रखें: 'अनिल' (अ = अम्ल, नि = नीला, ल = लाल), यानी अम्ल नीले लिटमस को लाल कर देता है। अम्लों का pH मान 7 से कम होता है।</div>"
+        },
+        {
+            q: "कौन-सा पदार्थ लाल लिटमस पत्र को नीला कर देता है?",
+            opt: ["अम्ल (Acid)", "क्षार (Base)", "लवण (Salt)", "शुद्ध जल"],
+            ans: 1,
+            exp: "सही उत्तर: <b>क्षार (Base)</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> क्षार का स्वाद कड़वा (Bitter) होता है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> क्षार लाल लिटमस को नीला कर देते हैं और इनका pH मान हमेशा 7 से अधिक (7 से 14 के बीच) होता है। शुद्ध जल का pH 7 होता है (उदासीन)।</div>"
+        },
+        {
+            q: "NTP पर किसी गैस के एक मोल (Mole) का आयतन कितना होता है?",
+            opt: ["11.2 लीटर", "22.4 लीटर", "10.5 लीटर", "24.2 लीटर"],
+            ans: 1,
+            exp: "सही उत्तर: <b>22.4 लीटर</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> NTP का अर्थ Normal Temperature and Pressure है (0°C तापमान और 1 atm वायुमंडलीय दाब)।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> किसी भी पदार्थ के एक मोल में हमेशा अवाोगाद्रो संख्या (6.022 × 10²³) के बराबर कण (परमाणु या अणु) मौजूद होते हैं।</div>"
+        }
+    ];
+
+    // State Variables
+    let currentIdx = 0;
+    const totalQ = questions.length;
+    let answers = new Array(totalQ).fill(null);
+    let marked = new Array(totalQ).fill(false);
+    
+    // Timer is set to 25 minutes (25 * 60 seconds)
+    let totalTime = 25 * 60; 
+    let timerInterval;
+    let isPaused = false;
+
+    // Initialization
+    function init() {
+        createPalette();
+        loadQuestion(0);
+        updateStats();
+        startTimer();
+    }
+
+    // Theme Logic
+    function toggleTheme() {
+        const doc = document.documentElement;
+        const current = doc.getAttribute('data-theme');
+        doc.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+    }
+
+    // Timer Logic
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if(totalTime <= 0) {
+                clearInterval(timerInterval);
+                submitTest(true);
+                return;
+            }
+            totalTime--;
+            updateTimerDisplay();
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(totalTime / 60).toString().padStart(2, '0');
+        const secs = (totalTime % 60).toString().padStart(2, '0');
+        const timerEl = document.getElementById('timer');
+        timerEl.innerText = `${mins}:${secs}`;
+        
+        if (totalTime < 300) { // Under 5 minutes
+            timerEl.classList.add('danger');
+        } else {
+            timerEl.classList.remove('danger');
+        }
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        const overlay = document.getElementById('pause-overlay');
+        const btn = document.getElementById('pause-btn');
+        
+        if (isPaused) {
+            clearInterval(timerInterval);
+            overlay.style.display = 'flex';
+            btn.innerText = 'Resume';
+            btn.classList.add('btn-warning');
+        } else {
+            startTimer();
+            overlay.style.display = 'none';
+            btn.innerText = 'Pause';
+            btn.classList.remove('btn-warning');
+        }
+    }
+
+    // Quiz Navigation & Rendering
+    function loadQuestion(idx) {
+        currentIdx = idx;
+        const qData = questions[idx];
+        
+        document.getElementById('question-header').innerText = `Question ${idx + 1} of ${totalQ}`;
+        document.getElementById('question-text').innerHTML = qData.q;
+        
+        const optsContainer = document.getElementById('options-container');
+        optsContainer.innerHTML = '';
+        
+        qData.opt.forEach((optText, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn' + (answers[idx] === i ? ' selected' : '');
+            btn.innerHTML = `<span style="font-weight:bold; border:1px solid currentColor; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${String.fromCharCode(65+i)}</span> ${optText}`;
+            btn.onclick = () => selectOption(i);
+            optsContainer.appendChild(btn);
+        });
+
+        // Update progress bar
+        document.getElementById('progress-bar').style.width = `${((idx + 1) / totalQ) * 100}%`;
+
+        // Update buttons
+        document.getElementById('prev-btn').disabled = (idx === 0);
+        document.getElementById('prev-btn').style.opacity = (idx === 0) ? '0.5' : '1';
+        
+        const markBtn = document.getElementById('mark-btn');
+        markBtn.innerText = marked[idx] ? 'Unmark Review' : 'Mark for Review';
+        
+        const nextBtn = document.getElementById('next-btn');
+        if (idx === totalQ - 1) {
+            nextBtn.innerText = 'Submit Test';
+            nextBtn.className = 'btn-danger';
+        } else {
+            nextBtn.innerText = 'Next';
+            nextBtn.className = 'btn-primary';
+        }
+
+        updatePaletteVisuals();
+    }
+
+    function selectOption(optIdx) {
+        answers[currentIdx] = optIdx;
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function clearSelection() {
+        answers[currentIdx] = null;
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function toggleMark() {
+        marked[currentIdx] = !marked[currentIdx];
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function changeQuestion(step) {
+        if (step === 1 && currentIdx === totalQ - 1) {
+            submitTest(false);
+            return;
+        }
+        let newIdx = currentIdx + step;
+        if (newIdx >= 0 && newIdx < totalQ) {
+            loadQuestion(newIdx);
+        }
+    }
+
+    // Palette Logic
+    function createPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'q-grid-btn';
+            btn.id = `pal-btn-${i}`;
+            btn.innerText = i + 1;
+            btn.onclick = () => loadQuestion(i);
+            grid.appendChild(btn);
+        }
+    }
+
+    function updatePaletteVisuals() {
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.getElementById(`pal-btn-${i}`);
+            btn.className = 'q-grid-btn';
+            
+            if (answers[i] !== null && marked[i]) btn.classList.add('marked', 'attempted');
+            else if (marked[i]) btn.classList.add('marked');
+            else if (answers[i] !== null) btn.classList.add('attempted');
+            
+            if (i === currentIdx) btn.classList.add('current');
+        }
+    }
+
+    function updateStats() {
+        let att = 0, mark = 0;
+        for (let i = 0; i < totalQ; i++) {
+            if (answers[i] !== null) att++;
+            if (marked[i]) mark++;
+        }
+        document.getElementById('count-att').innerText = att;
+        document.getElementById('count-unatt').innerText = totalQ - att;
+        document.getElementById('count-mark').innerText = mark;
+        updatePaletteVisuals();
+    }
+
+    // Submission & Results
+    function submitTest(isAuto) {
+        const unatt = answers.filter(a => a === null).length;
+        if (!isAuto && unatt > 0) {
+            const confirmSubmit = confirm(`You have ${unatt} unattempted questions. Are you sure you want to submit?`);
+            if (!confirmSubmit) return;
+        }
+
+        clearInterval(timerInterval);
+        document.getElementById('app-container').style.display = 'none';
+        document.querySelector('.header-controls').style.display = 'none';
+        generateResults();
+    }
+
+    function generateResults() {
+        const resScreen = document.getElementById('result-screen');
+        resScreen.style.display = 'block';
+
+        let correct = 0;
+        let incorrect = 0;
+        
+        answers.forEach((ans, i) => {
+            if (ans !== null) {
+                if (ans === questions[i].ans) correct++;
+                else incorrect++;
+            }
+        });
+
+        const score = correct;
+        const perc = ((score / totalQ) * 100).toFixed(2);
+        
+        // Calculation adjusted for 25 mins
+        const timeTakenSec = (25 * 60) - totalTime;
+        const timeMins = Math.floor(timeTakenSec / 60).toString().padStart(2, '0');
+        const timeSecs = (timeTakenSec % 60).toString().padStart(2, '0');
+
+        document.getElementById('res-score').innerText = score;
+        document.getElementById('res-perc').innerText = perc + '%';
+        document.getElementById('res-corr').innerText = correct;
+        document.getElementById('res-incorr').innerText = incorrect;
+        document.getElementById('res-time').innerText = `${timeMins}:${timeSecs}`;
+
+        const badge = document.getElementById('result-badge');
+        if (perc >= 50) {
+            badge.className = 'badge pass';
+            badge.innerText = 'PASS';
+        } else {
+            badge.className = 'badge fail';
+            badge.innerText = 'FAIL';
+        }
+
+        generateSolutions();
+    }
+
+    function generateSolutions() {
+        const container = document.getElementById('solutions-container');
+        let html = '';
+
+        questions.forEach((q, i) => {
+            const userAns = answers[i];
+            const corrAns = q.ans;
+            
+            html += `<div class="solution-item">
+                        <div class="sol-q">Q${i+1}. ${q.q}</div>`;
+            
+            q.opt.forEach((optText, optIdx) => {
+                let cls = 'sol-opt';
+                let icon = '';
+                
+                if (optIdx === corrAns) {
+                    cls += ' correct';
+                    icon = '✓';
+                } else if (userAns === optIdx && userAns !== corrAns) {
+                    cls += ' incorrect';
+                    icon = '✗';
+                }
+
+                if(icon) {
+                    html += `<div class="${cls}"><strong>${String.fromCharCode(65+optIdx)}</strong>: ${optText} <span style="float:right; font-weight:bold;">${icon}</span></div>`;
+                } else {
+                    html += `<div class="${cls}"><strong>${String.fromCharCode(65+optIdx)}</strong>: ${optText}</div>`;
+                }
+            });
+
+            const userStatus = userAns === null ? "<span style='color:var(--text-muted)'>Unattempted</span>" : 
+                              (userAns === corrAns ? "<span style='color:var(--correct-color)'>Correct</span>" : 
+                              "<span style='color:var(--incorrect-color)'>Incorrect</span>");
+
+            html += `<div style="margin-top: 10px;"><strong>Status:</strong> ${userStatus}</div>`;
+            html += `<div class="sol-exp"><div class="sol-exp-title">Explanation:</div>${q.exp}</div>`;
+            html += `</div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    // Start App
+    window.onload = init;
+</script>
+</body>
+</html>

@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General Science Mock Test - Physics</title>
+    <style>
+        :root {
+            /* Light Mode Variables */
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: #2c3e50;
+            --text-muted: #576574;
+            --primary-color: #341f97;
+            --accent-color: #ff9f43;
+            --correct-color: #10ac84;
+            --incorrect-color: #ee5253;
+            --btn-hover: rgba(255, 255, 255, 0.6);
+            --palette-unattempted: #c8d6e5;
+            --palette-attempted: #10ac84;
+            --palette-marked: #9b59b6;
+            --palette-marked-attempted: #8e44ad;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Mode Variables */
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-bg: rgba(16, 20, 24, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f1f2f6;
+            --text-muted: #a4b0be;
+            --primary-color: #54a0ff;
+            --accent-color: #ff9f43;
+            --correct-color: #1dd1a1;
+            --incorrect-color: #ff6b6b;
+            --btn-hover: rgba(255, 255, 255, 0.1);
+            --palette-unattempted: #576574;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            margin: 15px;
+        }
+        .header-title h1 { font-size: 1.5rem; }
+        .header-title p { font-size: 0.9rem; color: var(--text-muted); }
+        .header-controls { display: flex; gap: 15px; align-items: center; }
+        
+        .timer-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0,0,0,0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+        .timer { font-size: 1.2rem; font-weight: bold; }
+        .timer.danger { color: var(--incorrect-color); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        button {
+            cursor: pointer;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+            background: var(--glass-bg);
+            color: var(--text-color);
+            border: 1px solid var(--glass-border);
+        }
+        button:hover { background: var(--btn-hover); }
+        .btn-primary { background: var(--primary-color); color: #fff; border: none; }
+        .btn-primary:hover { background: #2c1a80; }
+        .btn-danger { background: var(--incorrect-color); color: white; border: none; }
+        .btn-warning { background: var(--accent-color); color: white; border: none; }
+        .btn-submit { background: var(--correct-color); color: white; border: none; }
+        .btn-submit:hover { background: #0b8c6b; }
+
+        /* Main Layout */
+        .container {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            margin: 0 15px 15px 15px;
+        }
+        .main-area { flex: 3; display: flex; flex-direction: column; position: relative; }
+        .sidebar { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        /* Progress & Question Area */
+        .progress-bar-bg { background: rgba(0,0,0,0.1); height: 8px; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar-fill { background: var(--primary-color); height: 100%; width: 0%; transition: width 0.3s; }
+        
+        .question-text { font-size: 1.25rem; font-weight: 500; margin-bottom: 20px; line-height: 1.6; }
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            text-align: left;
+            padding: 15px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .option-btn.selected {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+        
+        .action-buttons { display: flex; justify-content: space-between; margin-top: auto; padding-top: 20px; }
+        .action-buttons > div { display: flex; gap: 10px; }
+
+        /* Pause Overlay */
+        .pause-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 10;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+        }
+        .pause-overlay h2 { font-size: 2rem; margin-bottom: 10px; }
+
+        /* Sidebar Stats & Grid */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-item { font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+        .stat-dot { width: 12px; height: 12px; border-radius: 50%; }
+        
+        .q-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .q-grid-btn {
+            padding: 10px 0; text-align: center; border-radius: 8px; font-weight: bold;
+            background: var(--palette-unattempted); color: #2c3e50; border: none;
+        }
+        .q-grid-btn.current { border: 3px solid #2c3e50; }
+        [data-theme="dark"] .q-grid-btn.current { border: 3px solid #fff; color: #fff; }
+        .q-grid-btn.attempted { background: var(--palette-attempted); color: #fff; }
+        .q-grid-btn.marked { background: var(--palette-marked); color: #fff; }
+        .q-grid-btn.marked.attempted { background: var(--palette-marked-attempted); color: #fff; }
+
+        /* Results Screen */
+        .result-screen { display: none; max-width: 1000px; margin: 0 auto; width: 100%; }
+        .result-header { text-align: center; margin-bottom: 30px; }
+        .badge { display: inline-block; padding: 10px 30px; border-radius: 30px; font-size: 1.5rem; font-weight: bold; color: #fff; margin-top: 10px; }
+        .badge.pass { background: var(--correct-color); }
+        .badge.fail { background: var(--incorrect-color); }
+        
+        .result-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-box { text-align: center; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .stat-box h3 { font-size: 2rem; margin-bottom: 5px; }
+
+        .solution-item { margin-bottom: 25px; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .sol-q { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; }
+        .sol-opt { margin-bottom: 8px; padding: 10px; border-radius: 8px; background: var(--glass-bg); }
+        .sol-opt.correct { background: var(--correct-color); color: #fff; }
+        .sol-opt.incorrect { background: var(--incorrect-color); color: #fff; }
+        .sol-exp { margin-top: 15px; font-size: 0.95rem; color: var(--text-color); border-left: 4px solid var(--primary-color); padding-left: 15px; line-height: 1.6; }
+        .sol-exp-title { color: var(--primary-color); font-weight: bold; margin-bottom: 5px; }
+        .sol-fact { margin-top: 5px; background: rgba(0,0,0,0.03); padding: 5px 10px; border-radius: 4px; font-size: 0.9rem;}
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            header { flex-direction: column; gap: 15px; text-align: center; }
+            .action-buttons { flex-direction: column; gap: 15px; }
+            .action-buttons > div { justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="glass-panel">
+        <div class="header-title">
+            <h1>General Science Mock Test (Physics)</h1>
+            <p>25 Important Physics Questions (Hindi)</p>
+        </div>
+        <div class="header-controls">
+            <div class="timer-container" id="timer-box">
+                <span>⏱</span>
+                <!-- Timer set to 25:00 -->
+                <span class="timer" id="timer">25:00</span>
+                <button id="pause-btn" onclick="togglePause()">Pause</button>
+            </div>
+            <button onclick="toggleTheme()">🌗 Theme</button>
+            <button class="btn-submit" onclick="submitTest(false)">Submit Test</button>
+        </div>
+    </header>
+
+    <div class="container" id="app-container">
+        
+        <div class="glass-panel main-area">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+            
+            <div id="question-header" style="margin-bottom: 15px; font-weight: 600; color: var(--primary-color);"></div>
+            <div id="question-text" class="question-text"></div>
+            
+            <div class="options-grid" id="options-container">
+                </div>
+
+            <div class="action-buttons">
+                <div>
+                    <button onclick="changeQuestion(-1)" id="prev-btn">Previous</button>
+                    <button onclick="clearSelection()">Clear</button>
+                </div>
+                <div>
+                    <button onclick="toggleMark()" id="mark-btn" class="btn-warning">Mark for Review</button>
+                    <button onclick="changeQuestion(1)" id="next-btn" class="btn-primary">Next</button>
+                </div>
+            </div>
+
+            <div class="pause-overlay" id="pause-overlay">
+                <h2>Test Paused</h2>
+                <p>Questions are hidden to prevent cheating.</p>
+                <br>
+                <button class="btn-primary" onclick="togglePause()">Resume Test</button>
+            </div>
+        </div>
+
+        <div class="glass-panel sidebar">
+            <h3>Question Palette</h3>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-attempted)"></div> Attempted (<span id="count-att">0</span>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-unattempted)"></div> Unattempted (<span id="count-unatt">25</span>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-marked)"></div> Marked (<span id="count-mark">0</span>)</div>
+            </div>
+            <div class="q-grid" id="q-grid">
+                </div>
+            <button class="btn-submit" onclick="submitTest(false)" style="margin-top: 20px; width: 100%; padding: 12px; font-size: 1.1rem;">Final Submit Test</button>
+        </div>
+    </div>
+
+    <div class="glass-panel result-screen" id="result-screen">
+        <div class="result-header">
+            <h2>Test Submitted Successfully</h2>
+            <div class="badge" id="result-badge">Pass</div>
+        </div>
+        <div class="result-stats">
+            <div class="stat-box"><h3 id="res-score">0</h3><p>Score / 25</p></div>
+            <div class="stat-box"><h3 id="res-perc">0%</h3><p>Percentage</p></div>
+            <div class="stat-box"><h3 id="res-corr" style="color: var(--correct-color);">0</h3><p>Correct</p></div>
+            <div class="stat-box"><h3 id="res-incorr" style="color: var(--incorrect-color);">0</h3><p>Incorrect</p></div>
+            <div class="stat-box"><h3 id="res-time">00:00</h3><p>Time Taken</p></div>
+        </div>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <button class="btn-primary" onclick="location.reload()">Restart Test</button>
+        </div>
+        <h3>Detailed Solutions & Facts</h3>
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--glass-border);">
+        <div id="solutions-container"></div>
+    </div>
+
+<script>
+    // 25 Physics Questions extracted from image with extra facts
+    const questions = [
+        {
+            q: "यदि किसी वस्तु की चाल आधी कर दी जाए, तो उसकी गतिज ऊर्जा (Kinetic Energy) पर क्या प्रभाव पड़ेगा?",
+            opt: ["दुगुनी हो जाएगी", "आधी रह जाएगी", "एक चौथाई रह जाएगी", "चार गुना हो जाएगी"],
+            ans: 2,
+            exp: "सही उत्तर: <b>एक चौथाई रह जाएगी</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> गतिज ऊर्जा का सूत्र (KE = ½mv²) होता है। चूँकि ऊर्जा वेग के वर्ग (square) के समानुपाती है, इसलिए वेग आधा (½) करने पर ऊर्जा (½)² यानी ¼ रह जाएगी।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> यदि वस्तु का वेग दुगुना कर दिया जाए, तो गतिज ऊर्जा चार गुनी हो जाती है।</div>"
+        },
+        {
+            q: "पृथ्वी की सतह पर गुरुत्वीय त्वरण ('g') का प्रामाणिक मान कितना होता है?",
+            opt: ["9.8 m/s²", "9.8 cm/s²", "98 m/s²", "9.8 km/s²"],
+            ans: 0,
+            exp: "सही उत्तर: <b>9.8 m/s²</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> गुरुत्वीय त्वरण वस्तु के द्रव्यमान पर निर्भर नहीं करता, यह पृथ्वी के द्रव्यमान और त्रिज्या पर निर्भर करता है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> ऊँचाई पर जाने या गहराई में जाने पर 'g' का मान घटता है।</div>"
+        },
+        {
+            q: "'g' (गुरुत्वीय त्वरण) का मान विषुवत रेखा (Equator) पर कितना होता है?",
+            opt: ["अधिकतम", "न्यूनतम", "शून्य", "ध्रुवों के बराबर"],
+            ans: 1,
+            exp: "सही उत्तर: <b>न्यूनतम</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> पृथ्वी पूरी तरह गोल नहीं है, यह विषुवत रेखा पर थोड़ी उभरी हुई है। त्रिज्या अधिक होने के कारण यहाँ गुरुत्वाकर्षण सबसे कम होता है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> विषुवत रेखा पर किसी वस्तु का भार (Weight) सबसे कम महसूस होता है।</div>"
+        },
+        {
+            q: "'g' का मान पृथ्वी के ध्रुवों (Poles) पर क्या होता है?",
+            opt: ["न्यूनतम", "महत्तम (अधिकतम)", "शून्य", "विषुवत रेखा के बराबर"],
+            ans: 1,
+            exp: "सही उत्तर: <b>महत्तम (अधिकतम)</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> ध्रुवों पर पृथ्वी चपटी है, इसलिए वहाँ पृथ्वी के केंद्र से दूरी (त्रिज्या) सबसे कम होती है, जिससे 'g' का मान बढ़ जाता है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> यही कारण है कि ध्रुवों पर ले जाने पर किसी वस्तु का भार सबसे अधिक हो जाता है।</div>"
+        },
+        {
+            q: "पृथ्वी के केन्द्र पर गुरुत्वीय त्वरण ('g') का मान क्या होता है?",
+            opt: ["9.8 m/s²", "अधिकतम", "न्यूनतम", "शून्य"],
+            ans: 3,
+            exp: "सही उत्तर: <b>शून्य</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> पृथ्वी के बिल्कुल केंद्र में, चारों ओर का द्रव्यमान वस्तु को समान बल से खींचता है, जिससे कुल परिणामी गुरुत्वाकर्षण बल शून्य हो जाता है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> इसलिए पृथ्वी के केंद्र पर किसी भी वस्तु का भार (Weight) शून्य हो जाएगा।</div>"
+        },
+        {
+            q: "पृथ्वी के लिए पलायन वेग (Escape Velocity) का मान कितना होता है?",
+            opt: ["11.2 km/s", "2.37 km/s", "42 km/s", "9.8 km/s"],
+            ans: 0,
+            exp: "सही उत्तर: <b>11.2 km/s</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> पलायन वेग वह न्यूनतम वेग है जिससे किसी वस्तु को ऊपर फेंकने पर वह पृथ्वी के गुरुत्वाकर्षण क्षेत्र को पार कर जाए और कभी वापस न आए।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> यह फेंके जाने वाले पिंड के द्रव्यमान (Mass) पर निर्भर नहीं करता है।</div>"
+        },
+        {
+            q: "सूर्य के लिए पलायन वेग का मान कितना है?",
+            opt: ["11.2 km/s", "42 km/s", "2.37 km/s", "24 km/s"],
+            ans: 1,
+            exp: "सही उत्तर: <b>42 km/s</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> सूर्य का द्रव्यमान बहुत अधिक होने के कारण इसका गुरुत्वाकर्षण भी बहुत शक्तिशाली है, इसलिए यहाँ पलायन वेग पृथ्वी से कई गुना अधिक है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> ब्लैक होल (Black Hole) का पलायन वेग प्रकाश की गति (3 लाख किमी/सेकंड) से भी अधिक होता है।</div>"
+        },
+        {
+            q: "चन्द्रमा के लिए पलायन वेग का मान क्या होता है?",
+            opt: ["11.2 km/s", "2.37 km/s", "42 km/s", "9.8 km/s"],
+            ans: 1,
+            exp: "सही उत्तर: <b>2.37 km/s</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> चंद्रमा पर पलायन वेग बहुत कम होने के कारण ही वहाँ कोई वायुमंडल (Atmosphere) नहीं है, क्योंकि गैस के अणु आसानी से अंतरिक्ष में पलायन कर जाते हैं।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> चंद्रमा का गुरुत्वाकर्षण पृथ्वी के गुरुत्वाकर्षण का 1/6 भाग होता है।</div>"
+        },
+        {
+            q: "वायुमंडलीय दाब (Atmospheric Pressure) को किस यंत्र से मापा जाता है?",
+            opt: ["थर्मामीटर", "बैरोमीटर", "हाइड्रोमीटर", "मैनोमीटर"],
+            ans: 1,
+            exp: "सही उत्तर: <b>बैरोमीटर</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> बैरोमीटर का आविष्कार 1643 में इवांजेलिस्ता टोरिसेली (Evangelista Torricelli) ने किया था।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> इसमें मुख्य रूप से पारे (Mercury - Hg) का उपयोग किया जाता है।</div>"
+        },
+        {
+            q: "यदि बैरोमीटर का पाठ्यांक (Reading) अचानक तेजी से नीचे गिरता है, तो यह किसका संकेत है?",
+            opt: ["साफ मौसम का", "वर्षा होने का", "आँधी-तूफान आने का", "ठंड बढ़ने का"],
+            ans: 2,
+            exp: "सही उत्तर: <b>आँधी-तूफान आने का</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> अचानक दबाव गिरना यह दर्शाता है कि उस क्षेत्र में निम्न वायुदाब (Low Pressure) बन गया है, जिसे भरने के लिए चारों ओर से हवा तेजी से आएगी (तूफान)।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> चक्रवात (Cyclone) आने से पहले भी बैरोमीटर की रीडिंग अचानक गिरती है।</div>"
+        },
+        {
+            q: "जब बैरोमीटर का पाठ्यांक धीरे-धीरे नीचे गिरता है, तो मौसम पर क्या प्रभाव पड़ने की संभावना होती है?",
+            opt: ["मौसम साफ रहने की", "वर्षा होने की", "आँधी आने की", "भूकंप आने की"],
+            ans: 1,
+            exp: "सही उत्तर: <b>वर्षा होने की</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> हवा में जलवाष्प (Water Vapor) बढ़ने से हवा का घनत्व कम होता है, जिससे दबाव धीरे-धीरे घटता है और यह बारिश का संकेत होता है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> इसके विपरीत, जब बैरोमीटर का पाठ्यांक धीरे-धीरे ऊपर चढ़ता है, तो यह साफ मौसम का संकेत होता है।</div>"
+        },
+        {
+            q: "बर्फ के दो टुकड़ों को आपस में दबाने पर वे चिपक जाते हैं, इसका क्या कारण है?",
+            opt: ["दाब अधिक होने से बर्फ का गलनांक बढ़ जाता है", "दाब अधिक होने से बर्फ का गलनांक घट जाता है", "दाब का गलनांक पर कोई प्रभाव नहीं पड़ता", "दोनों के बीच वैक्यूम बन जाता है"],
+            ans: 1,
+            exp: "सही उत्तर: <b>दाब अधिक होने से बर्फ का गलनांक घट जाता है</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> इस घटना को भौतिकी में 'पुनर्हिमायन' (Regelation) कहा जाता है। दबाव पड़ने पर बर्फ पिघलकर पानी बनती है, और दबाव हटाते ही वह फिर जम जाती है जिससे टुकड़े चिपक जाते हैं।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> बर्फ पर स्केटिंग करना (Ice Skating) इसी सिद्धांत के कारण संभव हो पाता है।</div>"
+        },
+        {
+            q: "तापमान बढ़ने पर किसी द्रव (Liquid) की श्यानता (Viscosity) पर क्या प्रभाव पड़ता है?",
+            opt: ["बढ़ जाती है", "घट जाती है", "अपरिवर्तित रहती है", "पहले घटती है फिर बढ़ती है"],
+            ans: 1,
+            exp: "सही उत्तर: <b>घट जाती है</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> श्यानता (Viscosity) द्रवों के बहने का विरोध करने का गुण है (जैसे शहद पानी से अधिक श्यान है)।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> गर्म करने पर द्रवों के अणुओं के बीच का आकर्षण बल टूट जाता है, जिससे वे अधिक आसानी से बहने लगते हैं (श्यानता कम हो जाती है)।</div>"
+        },
+        {
+            q: "तापमान बढ़ने पर गैस की श्यानता (Viscosity) में क्या परिवर्तन होता है?",
+            opt: ["घटती है", "बढ़ती है", "शून्य हो जाती है", "कोई परिवर्तन नहीं होता"],
+            ans: 1,
+            exp: "सही उत्तर: <b>बढ़ती है</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> यह द्रवों (Liquids) के बिल्कुल विपरीत है। तापमान बढ़ने पर गैस के अणुओं की गतिज ऊर्जा बढ़ती है, जिससे वे आपस में ज्यादा टकराते हैं और बहने में अधिक रुकावट (श्यानता) पैदा होती है।</div>"
+        },
+        {
+            q: "तेज आँधी आने पर टीन की छत या छप्पर का उड़ जाना किस सिद्धांत पर आधारित है?",
+            opt: ["न्यूटन के नियम", "पास्कल के नियम", "बरनौली के प्रमेय", "आर्कमिडीज के सिद्धांत"],
+            ans: 2,
+            exp: "सही उत्तर: <b>बरनौली के प्रमेय (Bernoulli's Principle)</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> जब छत के ऊपर हवा तेजी से बहती है, तो वहाँ का वायुदाब कम हो जाता है, जबकि छत के नीचे कमरे का वायुदाब अधिक रहता है, जिससे छत ऊपर की ओर उड़ जाती है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> हवाई जहाज़ के पंखों (Wings) को ऊपर उठाने (Lift) का काम भी इसी सिद्धांत पर होता है।</div>"
+        },
+        {
+            q: "यदि झूला झूलते समय कोई व्यक्ति झूले पर खड़ा हो जाए, तो झूले का आवर्तकाल (Time Period):",
+            opt: ["बढ़ जाएगा", "घट जाएगा", "अपरिवर्तित रहेगा", "शून्य हो जाएगा"],
+            ans: 1,
+            exp: "सही उत्तर: <b>घट जाएगा</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> आवर्तकाल पेंडुलम की लंबाई (L) पर निर्भर करता है। व्यक्ति के खड़े होने से उसका 'गुरुत्व केंद्र' (Center of Gravity) ऊपर उठ जाता है, जिससे प्रभावी लंबाई (L) कम हो जाती है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> लंबाई कम होने से आवर्तकाल घटता है, यानी झूला अधिक तेजी से झूलने लगेगा।</div>"
+        },
+        {
+            q: "वायु में ध्वनि तरंगें (Sound Waves) किस प्रकार की होती हैं?",
+            opt: ["अनुप्रस्थ (Transverse)", "अनुदैर्ध्य (Longitudinal)", "विद्युत चुम्बकीय", "इनमें से कोई नहीं"],
+            ans: 1,
+            exp: "सही उत्तर: <b>अनुदैर्ध्य (Longitudinal)</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> अनुदैर्ध्य तरंगों में माध्यम के कण तरंग की दिशा के समानांतर (आगे-पीछे) कंपन करते हैं (Compression and Rarefaction)।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> ध्वनि तरंगों को यात्रा करने के लिए किसी न किसी माध्यम (ठोस, द्रव या गैस) की आवश्यकता होती है, ये निर्वात (Vacuum) में नहीं चल सकतीं।</div>"
+        },
+        {
+            q: "ध्वनि का वेग (Speed of sound) सबसे अधिक किस माध्यम में होता है?",
+            opt: ["वायु में", "जल में", "निर्वात में", "ठोस (जैसे इस्पात) में"],
+            ans: 3,
+            exp: "सही उत्तर: <b>ठोस (जैसे इस्पात) में</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> ध्वनि की चाल माध्यम के घनत्व और प्रत्यास्थता (Elasticity) पर निर्भर करती है। ठोस पदार्थ सबसे अधिक प्रत्यास्थ होते हैं।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> इस्पात (Steel) में ध्वनि की चाल लगभग 5960 मीटर/सेकंड होती है, जबकि वायु में मात्र 343 मीटर/सेकंड होती है।</div>"
+        },
+        {
+            q: "स्पष्ट प्रतिध्वनि (Echo) सुनने के लिए श्रोता और परावर्तक सतह के बीच न्यूनतम दूरी कितनी होनी चाहिए?",
+            opt: ["10 मीटर", "17 मीटर", "25 मीटर", "34 मीटर"],
+            ans: 1,
+            exp: "सही उत्तर: <b>17 मीटर</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> मानव मस्तिष्क में किसी भी ध्वनि का प्रभाव 1/10 सेकंड (0.1s) तक रहता है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> 0.1 सेकंड में ध्वनि लगभग 34 मीटर की दूरी तय करती है। जाने और टकराकर वापस आने के लिए दूरी आधी होनी चाहिए (34/2 = 17 मीटर)।</div>"
+        },
+        {
+            q: "मानव शरीर का सामान्य तापमान फारेनहाइट स्केल पर कितना होता है?",
+            opt: ["37°F", "98.6°F", "104°F", "212°F"],
+            ans: 1,
+            exp: "सही उत्तर: <b>98.6°F</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> सेल्सियस में यह 37°C होता है। और केल्विन (Kelvin) स्केल पर मानव शरीर का तापमान 310 K होता है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> मानव शरीर के तापमान को नियंत्रित करने का काम मस्तिष्क का 'हाइपोथैलेमस' (Hypothalamus) हिस्सा करता है।</div>"
+        },
+        {
+            q: "एक आदर्श कमरे का सामान्य ताप (Room Temperature) डिग्री सेल्सियस में कितना माना जाता है?",
+            opt: ["20°C", "27°C", "37°C", "100°C"],
+            ans: 1,
+            exp: "सही उत्तर: <b>27°C</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> भौतिकी और रसायन विज्ञान के कई प्रयोगों में 27°C को मानक माना जाता है क्योंकि इसे केल्विन में बदलने पर यह बिल्कुल 300 K (273 + 27) आता है, जिससे गणना आसान हो जाती है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> फारेनहाइट में इसे 80.6°F कहा जाता है।</div>"
+        },
+        {
+            q: "विद्युत केतली में पानी के गर्म होने की प्रक्रिया मुख्य रूप से किस विधि द्वारा होती है?",
+            opt: ["चालन (Conduction)", "संवहन (Convection)", "विकिरण (Radiation)", "उपर्युक्त सभी"],
+            ans: 1,
+            exp: "सही उत्तर: <b>संवहन (Convection)</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> द्रवों और गैसों में ऊष्मा का संचार संवहन द्वारा होता है। नीचे का पानी गर्म होकर हल्का होता है और ऊपर उठता है, और ऊपर का ठंडा पानी नीचे आता है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> चालन (Conduction) मुख्य रूप से ठोस पदार्थों (Solids) में होता है।</div>"
+        },
+        {
+            q: "किसी ठोस पदार्थ का बिना द्रव अवस्था में बदले सीधे गैस (वाष्प) में परिवर्तित होना क्या कहलाता है?",
+            opt: ["वाष्पीकरण", "संघनन", "ऊर्ध्वपातन (Sublimation)", "गलन"],
+            ans: 2,
+            exp: "सही उत्तर: <b>ऊर्ध्वपातन (Sublimation)</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> कपूर (Camphor), आयोडीन (Iodine), और सूखी बर्फ (Dry Ice - ठोस कार्बन डाइऑक्साइड) ऊर्ध्वपातन के सबसे बेहतरीन उदाहरण हैं।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> रसायन विज्ञान में अशुद्धियों को अलग करने के लिए इस प्रक्रिया का उपयोग किया जाता है।</div>"
+        },
+        {
+            q: "प्रकाश तरंगें (Light Waves) प्रकृति में किस प्रकार की तरंगें होती हैं?",
+            opt: ["अनुदैर्ध्य तरंगें", "अनुप्रस्थ तरंगें (Transverse Waves)", "यांत्रिक तरंगें", "स्थिर तरंगें"],
+            ans: 1,
+            exp: "सही उत्तर: <b>अनुप्रस्थ तरंगें (Transverse Waves)</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> अनुप्रस्थ तरंगों में माध्यम के कण तरंग के चलने की दिशा के लंबवत (Perpendicular) कंपन करते हैं।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> प्रकाश का ध्रुवण (Polarization) सिद्ध करता है कि प्रकाश एक अनुप्रस्थ तरंग है। ध्वनि तरंगों का ध्रुवण नहीं किया जा सकता।</div>"
+        },
+        {
+            q: "सर्वप्रथम किसने यह सिद्ध किया कि प्रकाश एक प्रकार की विद्युत चुम्बकीय तरंग (Electromagnetic Wave) है?",
+            opt: ["न्यूटन", "आइंस्टीन", "जेम्स क्लार्क मैक्सवेल", "हाइगेन्स"],
+            ans: 2,
+            exp: "सही उत्तर: <b>जेम्स क्लार्क मैक्सवेल</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> मैक्सवेल ने गणितीय समीकरणों के माध्यम से सिद्ध किया कि विद्युत और चुम्बकीय क्षेत्र अंतरिक्ष में प्रकाश की गति से यात्रा करते हैं।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> प्रकाश का 'तरंग सिद्धांत' (Wave Theory) सर्वप्रथम क्रिश्चियन हाइगेन्स (Huygens) ने दिया था।</div>"
+        }
+    ];
+
+    // State Variables
+    let currentIdx = 0;
+    const totalQ = questions.length;
+    let answers = new Array(totalQ).fill(null);
+    let marked = new Array(totalQ).fill(false);
+    
+    // Timer is set to 25 minutes (25 * 60 seconds)
+    let totalTime = 25 * 60; 
+    let timerInterval;
+    let isPaused = false;
+
+    // Initialization
+    function init() {
+        createPalette();
+        loadQuestion(0);
+        updateStats();
+        startTimer();
+    }
+
+    // Theme Logic
+    function toggleTheme() {
+        const doc = document.documentElement;
+        const current = doc.getAttribute('data-theme');
+        doc.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+    }
+
+    // Timer Logic
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if(totalTime <= 0) {
+                clearInterval(timerInterval);
+                submitTest(true);
+                return;
+            }
+            totalTime--;
+            updateTimerDisplay();
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(totalTime / 60).toString().padStart(2, '0');
+        const secs = (totalTime % 60).toString().padStart(2, '0');
+        const timerEl = document.getElementById('timer');
+        timerEl.innerText = `${mins}:${secs}`;
+        
+        if (totalTime < 300) { // Under 5 minutes
+            timerEl.classList.add('danger');
+        } else {
+            timerEl.classList.remove('danger');
+        }
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        const overlay = document.getElementById('pause-overlay');
+        const btn = document.getElementById('pause-btn');
+        
+        if (isPaused) {
+            clearInterval(timerInterval);
+            overlay.style.display = 'flex';
+            btn.innerText = 'Resume';
+            btn.classList.add('btn-warning');
+        } else {
+            startTimer();
+            overlay.style.display = 'none';
+            btn.innerText = 'Pause';
+            btn.classList.remove('btn-warning');
+        }
+    }
+
+    // Quiz Navigation & Rendering
+    function loadQuestion(idx) {
+        currentIdx = idx;
+        const qData = questions[idx];
+        
+        document.getElementById('question-header').innerText = `Question ${idx + 1} of ${totalQ}`;
+        document.getElementById('question-text').innerHTML = qData.q;
+        
+        const optsContainer = document.getElementById('options-container');
+        optsContainer.innerHTML = '';
+        
+        qData.opt.forEach((optText, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn' + (answers[idx] === i ? ' selected' : '');
+            btn.innerHTML = `<span style="font-weight:bold; border:1px solid currentColor; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${String.fromCharCode(65+i)}</span> ${optText}`;
+            btn.onclick = () => selectOption(i);
+            optsContainer.appendChild(btn);
+        });
+
+        // Update progress bar
+        document.getElementById('progress-bar').style.width = `${((idx + 1) / totalQ) * 100}%`;
+
+        // Update buttons
+        document.getElementById('prev-btn').disabled = (idx === 0);
+        document.getElementById('prev-btn').style.opacity = (idx === 0) ? '0.5' : '1';
+        
+        const markBtn = document.getElementById('mark-btn');
+        markBtn.innerText = marked[idx] ? 'Unmark Review' : 'Mark for Review';
+        
+        const nextBtn = document.getElementById('next-btn');
+        if (idx === totalQ - 1) {
+            nextBtn.innerText = 'Submit Test';
+            nextBtn.className = 'btn-danger';
+        } else {
+            nextBtn.innerText = 'Next';
+            nextBtn.className = 'btn-primary';
+        }
+
+        updatePaletteVisuals();
+    }
+
+    function selectOption(optIdx) {
+        answers[currentIdx] = optIdx;
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function clearSelection() {
+        answers[currentIdx] = null;
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function toggleMark() {
+        marked[currentIdx] = !marked[currentIdx];
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function changeQuestion(step) {
+        if (step === 1 && currentIdx === totalQ - 1) {
+            submitTest(false);
+            return;
+        }
+        let newIdx = currentIdx + step;
+        if (newIdx >= 0 && newIdx < totalQ) {
+            loadQuestion(newIdx);
+        }
+    }
+
+    // Palette Logic
+    function createPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'q-grid-btn';
+            btn.id = `pal-btn-${i}`;
+            btn.innerText = i + 1;
+            btn.onclick = () => loadQuestion(i);
+            grid.appendChild(btn);
+        }
+    }
+
+    function updatePaletteVisuals() {
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.getElementById(`pal-btn-${i}`);
+            btn.className = 'q-grid-btn';
+            
+            if (answers[i] !== null && marked[i]) btn.classList.add('marked', 'attempted');
+            else if (marked[i]) btn.classList.add('marked');
+            else if (answers[i] !== null) btn.classList.add('attempted');
+            
+            if (i === currentIdx) btn.classList.add('current');
+        }
+    }
+
+    function updateStats() {
+        let att = 0, mark = 0;
+        for (let i = 0; i < totalQ; i++) {
+            if (answers[i] !== null) att++;
+            if (marked[i]) mark++;
+        }
+        document.getElementById('count-att').innerText = att;
+        document.getElementById('count-unatt').innerText = totalQ - att;
+        document.getElementById('count-mark').innerText = mark;
+        updatePaletteVisuals();
+    }
+
+    // Submission & Results
+    function submitTest(isAuto) {
+        const unatt = answers.filter(a => a === null).length;
+        if (!isAuto && unatt > 0) {
+            const confirmSubmit = confirm(`You have ${unatt} unattempted questions. Are you sure you want to submit?`);
+            if (!confirmSubmit) return;
+        }
+
+        clearInterval(timerInterval);
+        document.getElementById('app-container').style.display = 'none';
+        document.querySelector('.header-controls').style.display = 'none';
+        generateResults();
+    }
+
+    function generateResults() {
+        const resScreen = document.getElementById('result-screen');
+        resScreen.style.display = 'block';
+
+        let correct = 0;
+        let incorrect = 0;
+        
+        answers.forEach((ans, i) => {
+            if (ans !== null) {
+                if (ans === questions[i].ans) correct++;
+                else incorrect++;
+            }
+        });
+
+        const score = correct;
+        const perc = ((score / totalQ) * 100).toFixed(2);
+        
+        // Calculation adjusted for 25 mins
+        const timeTakenSec = (25 * 60) - totalTime;
+        const timeMins = Math.floor(timeTakenSec / 60).toString().padStart(2, '0');
+        const timeSecs = (timeTakenSec % 60).toString().padStart(2, '0');
+
+        document.getElementById('res-score').innerText = score;
+        document.getElementById('res-perc').innerText = perc + '%';
+        document.getElementById('res-corr').innerText = correct;
+        document.getElementById('res-incorr').innerText = incorrect;
+        document.getElementById('res-time').innerText = `${timeMins}:${timeSecs}`;
+
+        const badge = document.getElementById('result-badge');
+        if (perc >= 50) {
+            badge.className = 'badge pass';
+            badge.innerText = 'PASS';
+        } else {
+            badge.className = 'badge fail';
+            badge.innerText = 'FAIL';
+        }
+
+        generateSolutions();
+    }
+
+    function generateSolutions() {
+        const container = document.getElementById('solutions-container');
+        let html = '';
+
+        questions.forEach((q, i) => {
+            const userAns = answers[i];
+            const corrAns = q.ans;
+            
+            html += `<div class="solution-item">
+                        <div class="sol-q">Q${i+1}. ${q.q}</div>`;
+            
+            q.opt.forEach((optText, optIdx) => {
+                let cls = 'sol-opt';
+                let icon = '';
+                
+                if (optIdx === corrAns) {
+                    cls += ' correct';
+                    icon = '✓';
+                } else if (userAns === optIdx && userAns !== corrAns) {
+                    cls += ' incorrect';
+                    icon = '✗';
+                }
+
+                if(icon) {
+                    html += `<div class="${cls}"><strong>${String.fromCharCode(65+optIdx)}</strong>: ${optText} <span style="float:right; font-weight:bold;">${icon}</span></div>`;
+                } else {
+                    html += `<div class="${cls}"><strong>${String.fromCharCode(65+optIdx)}</strong>: ${optText}</div>`;
+                }
+            });
+
+            const userStatus = userAns === null ? "<span style='color:var(--text-muted)'>Unattempted</span>" : 
+                              (userAns === corrAns ? "<span style='color:var(--correct-color)'>Correct</span>" : 
+                              "<span style='color:var(--incorrect-color)'>Incorrect</span>");
+
+            html += `<div style="margin-top: 10px;"><strong>Status:</strong> ${userStatus}</div>`;
+            html += `<div class="sol-exp"><div class="sol-exp-title">Explanation:</div>${q.exp}</div>`;
+            html += `</div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    // Start App
+    window.onload = init;
+</script>
+</body>
+</html>
