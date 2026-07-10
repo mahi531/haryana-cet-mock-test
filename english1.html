@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General English Mock Test - SET 1</title>
+    <style>
+        :root {
+            /* Light Mode Variables */
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: #2c3e50;
+            --text-muted: #576574;
+            --primary-color: #341f97;
+            --accent-color: #ff9f43;
+            --correct-color: #10ac84;
+            --incorrect-color: #ee5253;
+            --btn-hover: rgba(255, 255, 255, 0.6);
+            --palette-unattempted: #c8d6e5;
+            --palette-attempted: #10ac84;
+            --palette-marked: #9b59b6;
+            --palette-marked-attempted: #8e44ad;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Mode Variables */
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-bg: rgba(16, 20, 24, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f1f2f6;
+            --text-muted: #a4b0be;
+            --primary-color: #54a0ff;
+            --accent-color: #ff9f43;
+            --correct-color: #1dd1a1;
+            --incorrect-color: #ff6b6b;
+            --btn-hover: rgba(255, 255, 255, 0.1);
+            --palette-unattempted: #576574;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            margin: 15px;
+        }
+        .header-title h1 { font-size: 1.5rem; }
+        .header-title p { font-size: 0.9rem; color: var(--text-muted); }
+        .header-controls { display: flex; gap: 15px; align-items: center; }
+        
+        .timer-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0,0,0,0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+        .timer { font-size: 1.2rem; font-weight: bold; }
+        .timer.danger { color: var(--incorrect-color); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        button {
+            cursor: pointer;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+            background: var(--glass-bg);
+            color: var(--text-color);
+            border: 1px solid var(--glass-border);
+        }
+        button:hover { background: var(--btn-hover); }
+        .btn-primary { background: var(--primary-color); color: #fff; border: none; }
+        .btn-primary:hover { background: #2c1a80; }
+        .btn-danger { background: var(--incorrect-color); color: white; border: none; }
+        .btn-warning { background: var(--accent-color); color: white; border: none; }
+        .btn-submit { background: var(--correct-color); color: white; border: none; }
+        .btn-submit:hover { background: #0b8c6b; }
+
+        /* Main Layout */
+        .container {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            margin: 0 15px 15px 15px;
+        }
+        .main-area { flex: 3; display: flex; flex-direction: column; position: relative; }
+        .sidebar { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        /* Progress & Question Area */
+        .progress-bar-bg { background: rgba(0,0,0,0.1); height: 8px; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar-fill { background: var(--primary-color); height: 100%; width: 0%; transition: width 0.3s; }
+        
+        .question-text { font-size: 1.25rem; font-weight: 500; margin-bottom: 20px; line-height: 1.6; }
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            text-align: left;
+            padding: 15px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .option-btn.selected {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+        
+        .action-buttons { display: flex; justify-content: space-between; margin-top: auto; padding-top: 20px; }
+        .action-buttons > div { display: flex; gap: 10px; }
+
+        /* Pause Overlay */
+        .pause-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 10;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+        }
+        .pause-overlay h2 { font-size: 2rem; margin-bottom: 10px; }
+
+        /* Sidebar Stats & Grid */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-item { font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+        .stat-dot { width: 12px; height: 12px; border-radius: 50%; }
+        
+        .q-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .q-grid-btn {
+            padding: 10px 0; text-align: center; border-radius: 8px; font-weight: bold;
+            background: var(--palette-unattempted); color: #2c3e50; border: none;
+        }
+        .q-grid-btn.current { border: 3px solid #2c3e50; }
+        [data-theme="dark"] .q-grid-btn.current { border: 3px solid #fff; color: #fff; }
+        .q-grid-btn.attempted { background: var(--palette-attempted); color: #fff; }
+        .q-grid-btn.marked { background: var(--palette-marked); color: #fff; }
+        .q-grid-btn.marked.attempted { background: var(--palette-marked-attempted); color: #fff; }
+
+        /* Results Screen */
+        .result-screen { display: none; max-width: 1000px; margin: 0 auto; width: 100%; }
+        .result-header { text-align: center; margin-bottom: 30px; }
+        .badge { display: inline-block; padding: 10px 30px; border-radius: 30px; font-size: 1.5rem; font-weight: bold; color: #fff; margin-top: 10px; }
+        .badge.pass { background: var(--correct-color); }
+        .badge.fail { background: var(--incorrect-color); }
+        
+        .result-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-box { text-align: center; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .stat-box h3 { font-size: 2rem; margin-bottom: 5px; }
+
+        .solution-item { margin-bottom: 25px; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .sol-q { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; }
+        .sol-opt { margin-bottom: 8px; padding: 10px; border-radius: 8px; background: var(--glass-bg); }
+        .sol-opt.correct { background: var(--correct-color); color: #fff; }
+        .sol-opt.incorrect { background: var(--incorrect-color); color: #fff; }
+        .sol-exp { margin-top: 15px; font-size: 0.95rem; color: var(--text-color); border-left: 4px solid var(--primary-color); padding-left: 15px; line-height: 1.6; }
+        .sol-exp-title { color: var(--primary-color); font-weight: bold; margin-bottom: 5px; }
+        .sol-fact { margin-top: 5px; background: rgba(0,0,0,0.03); padding: 5px 10px; border-radius: 4px; font-size: 0.9rem;}
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            header { flex-direction: column; gap: 15px; text-align: center; }
+            .action-buttons { flex-direction: column; gap: 15px; }
+            .action-buttons > div { justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="glass-panel">
+        <div class="header-title">
+            <h1>General English Mock Test - SET 1</h1>
+            <p>25 Important English Grammar Questions</p>
+        </div>
+        <div class="header-controls">
+            <div class="timer-container" id="timer-box">
+                <span>⏱</span>
+                <span class="timer" id="timer">25:00</span>
+                <button id="pause-btn" onclick="togglePause()">Pause</button>
+            </div>
+            <button onclick="toggleTheme()">🌗 Theme</button>
+            <button class="btn-submit" onclick="submitTest(false)">Submit Test</button>
+        </div>
+    </header>
+
+    <div class="container" id="app-container">
+        
+        <div class="glass-panel main-area">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+            
+            <div id="question-header" style="margin-bottom: 15px; font-weight: 600; color: var(--primary-color);"></div>
+            <div id="question-text" class="question-text"></div>
+            
+            <div class="options-grid" id="options-container">
+                </div>
+
+            <div class="action-buttons">
+                <div>
+                    <button onclick="changeQuestion(-1)" id="prev-btn">Previous</button>
+                    <button onclick="clearSelection()">Clear</button>
+                </div>
+                <div>
+                    <button onclick="toggleMark()" id="mark-btn" class="btn-warning">Mark for Review</button>
+                    <button onclick="changeQuestion(1)" id="next-btn" class="btn-primary">Next</button>
+                </div>
+            </div>
+
+            <div class="pause-overlay" id="pause-overlay">
+                <h2>Test Paused</h2>
+                <p>Questions are hidden to prevent cheating.</p>
+                <br>
+                <button class="btn-primary" onclick="togglePause()">Resume Test</button>
+            </div>
+        </div>
+
+        <div class="glass-panel sidebar">
+            <h3>Question Palette</h3>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-attempted)"></div> Attempted (<span id="count-att">0</span>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-unattempted)"></div> Unattempted (<span id="count-unatt">25</span>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-marked)"></div> Marked (<span id="count-mark">0</span>)</div>
+            </div>
+            <div class="q-grid" id="q-grid">
+                </div>
+            <button class="btn-submit" onclick="submitTest(false)" style="margin-top: 20px; width: 100%; padding: 12px; font-size: 1.1rem;">Final Submit Test</button>
+        </div>
+    </div>
+
+    <div class="glass-panel result-screen" id="result-screen">
+        <div class="result-header">
+            <h2>Test Submitted Successfully</h2>
+            <div class="badge" id="result-badge">Pass</div>
+        </div>
+        <div class="result-stats">
+            <div class="stat-box"><h3 id="res-score">0</h3><p>Score / 25</p></div>
+            <div class="stat-box"><h3 id="res-perc">0%</h3><p>Percentage</p></div>
+            <div class="stat-box"><h3 id="res-corr" style="color: var(--correct-color);">0</h3><p>Correct</p></div>
+            <div class="stat-box"><h3 id="res-incorr" style="color: var(--incorrect-color);">0</h3><p>Incorrect</p></div>
+            <div class="stat-box"><h3 id="res-time">00:00</h3><p>Time Taken</p></div>
+        </div>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <button class="btn-primary" onclick="location.reload()">Restart Test</button>
+        </div>
+        <h3>Detailed Solutions & Facts</h3>
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--glass-border);">
+        <div id="solutions-container"></div>
+    </div>
+
+<script>
+    // 25 English Grammar & Vocabulary Questions with Rules
+    const questions = [
+        {
+            q: "<strong>Idioms/Phrases:</strong> Hard work pays <u>in the long run</u>.",
+            opt: ["always", "over a period of time", "indefinitely", "never"],
+            ans: 1,
+            exp: "Correct Answer: <b>over a period of time</b>.<div class='sol-fact'><b>💡 Rule/Fact:</b> Idiom 'In the long run' ka matlab hota hai 'lamba samay beetne par ya aakhirkaar' (eventually / over a period of time). Sentence ka arth hai ki mehnat lamba samay aane par hamesha fal deti hai.</div>"
+        },
+        {
+            q: "<strong>Idioms/Phrases:</strong> I felt like a <u>fish out of water</u> among the lawyers.",
+            opt: ["special", "happy", "uncomfortable", "proud"],
+            ans: 2,
+            exp: "Correct Answer: <b>uncomfortable</b>.<div class='sol-fact'><b>💡 Rule/Fact:</b> 'A fish out of water' ka arth hai ek aisi sthiti jisme vyakti bahut asahaj (uncomfortable) mehsus karta hai, bilkul waise hi jaise machhli paani ke bahar mehsus karti hai.</div>"
+        },
+        {
+            q: "<strong>Idioms/Phrases:</strong> The Cauvery water issue led to <u>apple of discord</u> between the two Governments.",
+            opt: ["cause of anger", "cause of hatred", "cause of quarrel", "cause of animosity"],
+            ans: 2,
+            exp: "Correct Answer: <b>cause of quarrel</b>.<div class='sol-fact'><b>💡 Rule/Fact:</b> 'Apple of discord' ya 'Bone of contention' dono idioms ka matlab hota hai jhagde ki jad (root cause of a quarrel/dispute).</div>"
+        },
+        {
+            q: "<strong>Sentence Improvement:</strong> The disparity of the GDP between the rich and the poor <u>has broadened in the last some decades</u>.",
+            opt: ["have widened in the last some decades", "has widened in the last few decades", "have broadened in the last few decades", "No improvement"],
+            ans: 1,
+            exp: "Correct Answer: <b>has widened in the last few decades</b>.<div class='sol-fact'><b>💡 Grammar Rule:</b> Yahan subject 'The disparity' (Singular) hai, isliye verb (has) aayega. Disparity (antarr) ke liye 'broadened' ki jagah 'widened' shabd ka istemal zyada correct hai. 'Some decades' se zyada natural English mein 'few decades' bola jata hai.</div>"
+        },
+        {
+            q: "<strong>Sentence Improvement:</strong> <u>How, is beyond my understanding, the boy could fall into the ditch.</u>",
+            opt: ["How the boy could fall into the ditch is beyond my understanding", "Beyond my understanding is how the boy could fall into the ditch", "How could the boy fall into the ditch is beyond my understanding", "No improvement"],
+            ans: 0,
+            exp: "Correct Answer: <b>How the boy could fall into the ditch is beyond my understanding</b>.<div class='sol-fact'><b>💡 Grammar Rule:</b> Noun Clause jab Subject ki tarah behave kare to uski sentence structure Assertive (Subject + Verb) hoti hai, na ki Interrogative. Isliye 'How the boy could fall...' ekdam sahi word order hai.</div>"
+        },
+        {
+            q: "<strong>Sentence Improvement:</strong> The pioneer spacecraft <u>went beyond</u> Pluto.",
+            opt: ["made its way past", "went across", "went after", "No improvement"],
+            ans: 0,
+            exp: "Correct Answer: <b>made its way past</b>.<div class='sol-fact'><b>💡 Rule/Fact:</b> Kisi physical object (jaise planet) ke aage se guzar jaane ke liye 'make its way past' ek behtar aupcharik (formal) expression hai, bajaye 'went beyond' ke.</div>"
+        },
+        {
+            q: "<strong>Sentence Improvement:</strong> The firm buys frozen seafood in bulk, packs it into smaller pouches and then <u>they sell them</u> to the local grocery stores.",
+            opt: ["it sells them", "sell them", "they sell the pouches", "No improvement"],
+            ans: 0,
+            exp: "Correct Answer: <b>it sells them</b>.<div class='sol-fact'><b>💡 Grammar Rule:</b> Yahan pronoun error hai. Subject 'The firm' ek Singular Collective Noun hai, isliye iske liye pronoun 'it' use hoga ('they' nahi). Aur 'pouches' (plural) ke liye 'them' sahi hai.</div>"
+        },
+        {
+            q: "<strong>Sentence Improvement:</strong> I could never repay the debt I owe to my <u>place of study</u>.",
+            opt: ["Alma Mater", "Motherland", "Place of worship", "No improvement"],
+            ans: 0,
+            exp: "Correct Answer: <b>Alma Mater</b>.<div class='sol-fact'><b>💡 Vocabulary Rule:</b> Jis school, college ya university se aapne padhai ki ho, usko English mein 'Alma Mater' (A latin word) kaha jata hai. 'Place of study' ko is word se replace karna sentence ko standard banata hai.</div>"
+        },
+        {
+            q: "<strong>Sentence Improvement:</strong> Since July 2008, our customers <u>will be able to use</u> the ATM network of BBY Bank.",
+            opt: ["have been able to use", "were using", "will have been able to use", "No improvement"],
+            ans: 0,
+            exp: "Correct Answer: <b>have been able to use</b>.<div class='sol-fact'><b>💡 Grammar Rule:</b> Jab sentence mein 'Since/For + Time' diya ho aur past se shuru hokar abhi tak koi action jari ho, to Present Perfect ya Present Perfect Continuous tense ka prayog hota hai. (will be -> have been)</div>"
+        },
+        {
+            q: "<strong>One Word Substitution:</strong> One who is unaffected or indifferent to joy, pain, pleasure or grief.",
+            opt: ["Tolerant", "Resigned", "Passive", "Stoic"],
+            ans: 3,
+            exp: "Correct Answer: <b>Stoic</b>.<div class='sol-fact'><b>💡 Vocabulary Rule:</b> 'Stoic' ek aise vyakti ko bolte hain jo sukh aur dukh, dono mein saman rehta hai. Vah apni bhavnayein (emotions) jaldi jahir nahi karta.</div>"
+        },
+        {
+            q: "<strong>One Word Substitution:</strong> A person who is greatly respected because of wisdom.",
+            opt: ["Veracious", "Vulnerable", "Venerable", "Verger"],
+            ans: 2,
+            exp: "Correct Answer: <b>Venerable</b>.<div class='sol-fact'><b>💡 Vocabulary Rule:</b> 'Venerable' ka arth hai 'sammananiya' (Respectable) khaaskar unki umar (age) ya gyaan (wisdom) ke karan. (Veracious means truthful).</div>"
+        },
+        {
+            q: "<strong>One Word Substitution:</strong> An excessively morbid desire to steal.",
+            opt: ["Stealomania", "Kleptomania", "Cleftomania", "Keptomania"],
+            ans: 1,
+            exp: "Correct Answer: <b>Kleptomania</b>.<div class='sol-fact'><b>💡 Vocabulary Rule:</b> 'Mania' ek root word hai jiska matlab hai pagalpan/intense desire. 'Kleptomania' ka arth hai chori karne ki teevra bimari ya aadat jisme insan apne aapko rok nahi pata.</div>"
+        },
+        {
+            q: "<strong>One Word Substitution:</strong> Intentional destruction of racial groups.",
+            opt: ["Regicide", "Genocide", "Homicide", "Fratricide"],
+            ans: 1,
+            exp: "Correct Answer: <b>Genocide</b>.<div class='sol-fact'><b>💡 Vocabulary Rule:</b> Root word '-cide' ka matlab hatya (killing) hota hai. Genos = race (prajaati). Poori prajati ya nasl ko khatam karna 'Genocide' (Narsanhar) kehlata hai. (Regicide = killing of king, Fratricide = killing of brother).</div>"
+        },
+        {
+            q: "<strong>Correct Spelling:</strong> Find the correctly spelt word.",
+            opt: ["Humorous", "Humourous", "Humourus", "Humorus"],
+            ans: 0,
+            exp: "Correct Answer: <b>Humorous</b>.<div class='sol-fact'><b>💡 Spelling Rule:</b> Halanki 'Humour' mein 'ou' aata hai (British English), lekin jab isme '-ous' suffix lagta hai to 'u' hatt jata hai aur spelling 'Humorous' banti hai.</div>"
+        },
+        {
+            q: "<strong>Correct Spelling:</strong> Find the correctly spelt word.",
+            opt: ["Narcisism", "Narcissism", "Narcisim", "Narsisism"],
+            ans: 1,
+            exp: "Correct Answer: <b>Narcissism</b>.<div class='sol-fact'><b>💡 Spelling Rule:</b> Narcissism (Apne aap mein hi magan rehna ya khud ki tareef karna). Is word mein double 's' (ss) lagatar do baar nahi aata, sirf pehli baar (rciss) aata hai. N-A-R-C-I-S-S-I-S-M.</div>"
+        },
+        {
+            q: "<strong>Synonyms:</strong> Choose the word similar in meaning to GARRULOUS.",
+            opt: ["Talkative", "Sedative", "Vocative", "Positive"],
+            ans: 0,
+            exp: "Correct Answer: <b>Talkative</b>.<div class='sol-fact'><b>💡 Vocabulary Rule:</b> Garrulous ka arth hota hai bahut zyada baat karne wala (Baatuni). Iske anya synonyms 'Loquacious', 'Voluble', aur 'Chatty' hain.</div>"
+        },
+        {
+            q: "<strong>Synonyms:</strong> Choose the word similar in meaning to LABYRINTH.",
+            opt: ["Meandering", "Rotating", "Pacing", "Wriggling"],
+            ans: 0,
+            exp: "Correct Answer: <b>Meandering</b>.<div class='sol-fact'><b>💡 Vocabulary Rule:</b> Labyrinth ka matlab 'bhool-bhulaiya' (Maze) hota hai jisme tedhe-medhe raste hon. Meandering ka matlab bhi 'tedha-medha chalna ya ghumavdar' (Winding) hota hai.</div>"
+        },
+        {
+            q: "<strong>Antonyms:</strong> Choose the word opposite in meaning to CORDIAL.",
+            opt: ["Fast", "Heartfelt", "Friendly", "Hostile"],
+            ans: 3,
+            exp: "Correct Answer: <b>Hostile</b>.<div class='sol-fact'><b>💡 Vocabulary Rule:</b> Cordial ka matlab hota hai 'mitratapurn' (Friendly/Warm). Iska viprit (opposite) 'Hostile' (dushmani ya virodhi bhavna wala) hoga.</div>"
+        },
+        {
+            q: "<strong>Antonyms:</strong> Choose the word opposite in meaning to INSTINCTIVE.",
+            opt: ["Innate", "Rational", "Inherent", "Inborn"],
+            ans: 1,
+            exp: "Correct Answer: <b>Rational</b>.<div class='sol-fact'><b>💡 Vocabulary Rule:</b> Instinctive matlab jo chiz natural ya swabhavik ho bina soche samjhe (Inborn). Iska ulta 'Rational' hoga, jiska matlab hai soch-samajh kar aur tark (logic) ke aadhar par kiya gaya.</div>"
+        },
+        {
+            q: "<strong>Antonyms:</strong> Choose the word opposite in meaning to VENIAL.",
+            opt: ["Minor", "Pardonable", "Unpardonable", "Clean"],
+            ans: 2,
+            exp: "Correct Answer: <b>Unpardonable</b>.<div class='sol-fact'><b>💡 Vocabulary Rule:</b> Venial ka matlab aisi choti galti jise aasani se maaf kiya ja sake (Pardonable/Forgivable). Iska ulta (antonym) 'Unpardonable' (Jise maaf na kiya ja sake) hoga.</div>"
+        },
+        {
+            q: "<strong>Sentence Improvement:</strong> She cries <u>all the time</u>.",
+            opt: ["mostly every time", "day in and day out", "pretty frequently", "No improvement"],
+            ans: 1,
+            exp: "Correct Answer: <b>day in and day out</b>.<div class='sol-fact'><b>💡 Grammar Rule:</b> 'Day in and day out' ek aisi phrase hai jiska arth hai 'lagatar har din' (continuously everyday). Yeh 'all the time' ko replace karne ke liye ek behtar idiomatic expression hai.</div>"
+        },
+        {
+            q: "<strong>Idioms/Phrases:</strong> The police <u>smelt the rat</u> behind the death of the girl.",
+            opt: ["got very much confused", "identified the cause of death", "suspected that something is fishy", "jumped to the conclusion"],
+            ans: 2,
+            exp: "Correct Answer: <b>suspected that something is fishy</b>.<div class='sol-fact'><b>💡 Rule/Fact:</b> 'To smell a rat' idiom ka matlab hota hai kisi galat kaam ki aashanka hona (To suspect that something is wrong / foul play). Yahan police ko daal me kuch kala laga.</div>"
+        },
+        {
+            q: "<strong>Sentence Error:</strong> Find the error in the sentence: 'Neither of the two candidates (a) / have paid (b) / their subscription. (c) / No Error (d)'",
+            opt: ["(a)", "(b)", "(c)", "No Error"],
+            ans: 1,
+            exp: "Correct Answer: <b>(b)</b>.<div class='sol-fact'><b>💡 Grammar Rule:</b> 'Neither of / Either of / Each of' ke baad Noun ya Pronoun Plural aata hai, lekin VERB hamesha Singular aati hai. Isliye 'have paid' ki jagah 'has paid' hona chahiye tha. Part (b) mein error hai.</div>"
+        },
+        {
+            q: "<strong>Sentence Error:</strong> 'It is high time (a) / we start (b) / working hard. (c) / No Error (d)'",
+            opt: ["(a)", "(b)", "(c)", "No Error"],
+            ans: 1,
+            exp: "Correct Answer: <b>(b)</b>.<div class='sol-fact'><b>💡 Grammar Rule:</b> Jab bhi sentence 'It is high time' ya 'It is time' se shuru ho aur uske baad subject (we) aaye, toh hamesha verb ki 2nd form (V2 - Simple Past Tense) ka use hota hai. Yahan 'start' ki jagah 'started' aayega.</div>"
+        },
+        {
+            q: "<strong>Fill in the blanks:</strong> He is completely adept ______ dealing with difficult customers.",
+            opt: ["in", "at", "with", "for"],
+            ans: 1,
+            exp: "Correct Answer: <b>at</b>.<div class='sol-fact'><b>💡 Preposition Rule:</b> 'Adept' ka matlab hota hai kushal ya nipun (Skilful). Adept, Good, aur Bad in teeno adjectives ke baad kisi skill/kaam ko batane ke liye hamesha preposition 'at' ka prayog hota hai (e.g., He is good at English / adept at dealing).</div>"
+        }
+    ];
+
+    // State Variables
+    let currentIdx = 0;
+    const totalQ = questions.length;
+    let answers = new Array(totalQ).fill(null);
+    let marked = new Array(totalQ).fill(false);
+    
+    // Timer is set to 25 minutes (25 * 60 seconds)
+    let totalTime = 25 * 60; 
+    let timerInterval;
+    let isPaused = false;
+
+    // Initialization
+    function init() {
+        createPalette();
+        loadQuestion(0);
+        updateStats();
+        startTimer();
+    }
+
+    // Theme Logic
+    function toggleTheme() {
+        const doc = document.documentElement;
+        const current = doc.getAttribute('data-theme');
+        doc.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+    }
+
+    // Timer Logic
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if(totalTime <= 0) {
+                clearInterval(timerInterval);
+                submitTest(true);
+                return;
+            }
+            totalTime--;
+            updateTimerDisplay();
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(totalTime / 60).toString().padStart(2, '0');
+        const secs = (totalTime % 60).toString().padStart(2, '0');
+        const timerEl = document.getElementById('timer');
+        timerEl.innerText = `${mins}:${secs}`;
+        
+        if (totalTime < 300) { // Under 5 minutes
+            timerEl.classList.add('danger');
+        } else {
+            timerEl.classList.remove('danger');
+        }
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        const overlay = document.getElementById('pause-overlay');
+        const btn = document.getElementById('pause-btn');
+        
+        if (isPaused) {
+            clearInterval(timerInterval);
+            overlay.style.display = 'flex';
+            btn.innerText = 'Resume';
+            btn.classList.add('btn-warning');
+        } else {
+            startTimer();
+            overlay.style.display = 'none';
+            btn.innerText = 'Pause';
+            btn.classList.remove('btn-warning');
+        }
+    }
+
+    // Quiz Navigation & Rendering
+    function loadQuestion(idx) {
+        currentIdx = idx;
+        const qData = questions[idx];
+        
+        document.getElementById('question-header').innerText = `Question ${idx + 1} of ${totalQ}`;
+        document.getElementById('question-text').innerHTML = qData.q;
+        
+        const optsContainer = document.getElementById('options-container');
+        optsContainer.innerHTML = '';
+        
+        qData.opt.forEach((optText, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn' + (answers[idx] === i ? ' selected' : '');
+            btn.innerHTML = `<span style="font-weight:bold; border:1px solid currentColor; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${String.fromCharCode(65+i)}</span> ${optText}`;
+            btn.onclick = () => selectOption(i);
+            optsContainer.appendChild(btn);
+        });
+
+        // Update progress bar
+        document.getElementById('progress-bar').style.width = `${((idx + 1) / totalQ) * 100}%`;
+
+        // Update buttons
+        document.getElementById('prev-btn').disabled = (idx === 0);
+        document.getElementById('prev-btn').style.opacity = (idx === 0) ? '0.5' : '1';
+        
+        const markBtn = document.getElementById('mark-btn');
+        markBtn.innerText = marked[idx] ? 'Unmark Review' : 'Mark for Review';
+        
+        const nextBtn = document.getElementById('next-btn');
+        if (idx === totalQ - 1) {
+            nextBtn.innerText = 'Submit Test';
+            nextBtn.className = 'btn-danger';
+        } else {
+            nextBtn.innerText = 'Next';
+            nextBtn.className = 'btn-primary';
+        }
+
+        updatePaletteVisuals();
+    }
+
+    function selectOption(optIdx) {
+        answers[currentIdx] = optIdx;
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function clearSelection() {
+        answers[currentIdx] = null;
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function toggleMark() {
+        marked[currentIdx] = !marked[currentIdx];
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function changeQuestion(step) {
+        if (step === 1 && currentIdx === totalQ - 1) {
+            submitTest(false);
+            return;
+        }
+        let newIdx = currentIdx + step;
+        if (newIdx >= 0 && newIdx < totalQ) {
+            loadQuestion(newIdx);
+        }
+    }
+
+    // Palette Logic
+    function createPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'q-grid-btn';
+            btn.id = `pal-btn-${i}`;
+            btn.innerText = i + 1;
+            btn.onclick = () => loadQuestion(i);
+            grid.appendChild(btn);
+        }
+    }
+
+    function updatePaletteVisuals() {
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.getElementById(`pal-btn-${i}`);
+            btn.className = 'q-grid-btn';
+            
+            if (answers[i] !== null && marked[i]) btn.classList.add('marked', 'attempted');
+            else if (marked[i]) btn.classList.add('marked');
+            else if (answers[i] !== null) btn.classList.add('attempted');
+            
+            if (i === currentIdx) btn.classList.add('current');
+        }
+    }
+
+    function updateStats() {
+        let att = 0, mark = 0;
+        for (let i = 0; i < totalQ; i++) {
+            if (answers[i] !== null) att++;
+            if (marked[i]) mark++;
+        }
+        document.getElementById('count-att').innerText = att;
+        document.getElementById('count-unatt').innerText = totalQ - att;
+        document.getElementById('count-mark').innerText = mark;
+        updatePaletteVisuals();
+    }
+
+    // Submission & Results
+    function submitTest(isAuto) {
+        const unatt = answers.filter(a => a === null).length;
+        if (!isAuto && unatt > 0) {
+            const confirmSubmit = confirm(`You have ${unatt} unattempted questions. Are you sure you want to submit?`);
+            if (!confirmSubmit) return;
+        }
+
+        clearInterval(timerInterval);
+        document.getElementById('app-container').style.display = 'none';
+        document.querySelector('.header-controls').style.display = 'none';
+        generateResults();
+    }
+
+    function generateResults() {
+        const resScreen = document.getElementById('result-screen');
+        resScreen.style.display = 'block';
+
+        let correct = 0;
+        let incorrect = 0;
+        
+        answers.forEach((ans, i) => {
+            if (ans !== null) {
+                if (ans === questions[i].ans) correct++;
+                else incorrect++;
+            }
+        });
+
+        const score = correct;
+        const perc = ((score / totalQ) * 100).toFixed(2);
+        
+        // Calculation adjusted for 25 mins
+        const timeTakenSec = (25 * 60) - totalTime;
+        const timeMins = Math.floor(timeTakenSec / 60).toString().padStart(2, '0');
+        const timeSecs = (timeTakenSec % 60).toString().padStart(2, '0');
+
+        document.getElementById('res-score').innerText = score;
+        document.getElementById('res-perc').innerText = perc + '%';
+        document.getElementById('res-corr').innerText = correct;
+        document.getElementById('res-incorr').innerText = incorrect;
+        document.getElementById('res-time').innerText = `${timeMins}:${timeSecs}`;
+
+        const badge = document.getElementById('result-badge');
+        if (perc >= 50) {
+            badge.className = 'badge pass';
+            badge.innerText = 'PASS';
+        } else {
+            badge.className = 'badge fail';
+            badge.innerText = 'FAIL';
+        }
+
+        generateSolutions();
+    }
+
+    function generateSolutions() {
+        const container = document.getElementById('solutions-container');
+        let html = '';
+
+        questions.forEach((q, i) => {
+            const userAns = answers[i];
+            const corrAns = q.ans;
+            
+            html += `<div class="solution-item">
+                        <div class="sol-q">Q${i+1}. ${q.q}</div>`;
+            
+            q.opt.forEach((optText, optIdx) => {
+                let cls = 'sol-opt';
+                let icon = '';
+                
+                if (optIdx === corrAns) {
+                    cls += ' correct';
+                    icon = '✓';
+                } else if (userAns === optIdx && userAns !== corrAns) {
+                    cls += ' incorrect';
+                    icon = '✗';
+                }
+
+                if(icon) {
+                    html += `<div class="${cls}"><strong>${String.fromCharCode(65+optIdx)}</strong>: ${optText} <span style="float:right; font-weight:bold;">${icon}</span></div>`;
+                } else {
+                    html += `<div class="${cls}"><strong>${String.fromCharCode(65+optIdx)}</strong>: ${optText}</div>`;
+                }
+            });
+
+            const userStatus = userAns === null ? "<span style='color:var(--text-muted)'>Unattempted</span>" : 
+                              (userAns === corrAns ? "<span style='color:var(--correct-color)'>Correct</span>" : 
+                              "<span style='color:var(--incorrect-color)'>Incorrect</span>");
+
+            html += `<div style="margin-top: 10px;"><strong>Status:</strong> ${userStatus}</div>`;
+            html += `<div class="sol-exp"><div class="sol-exp-title">Explanation:</div>${q.exp}</div>`;
+            html += `</div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    // Start App
+    window.onload = init;
+</script>
+</body>
+</html>
