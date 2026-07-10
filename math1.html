@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haryana CET Group D Math Test - by Mahesh</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --text-main: #333333;
+            --text-muted: #555555;
+            --panel-bg: rgba(255, 255, 255, 0.6);
+            --btn-bg: rgba(255, 255, 255, 0.5);
+            --btn-hover: rgba(255, 255, 255, 0.8);
+            --primary: #4a90e2;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --purple: #6f42c1;
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-bg: rgba(0, 0, 0, 0.35);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8f9fa;
+            --text-muted: #ced4da;
+            --panel-bg: rgba(0, 0, 0, 0.5);
+            --btn-bg: rgba(0, 0, 0, 0.4);
+            --btn-hover: rgba(255, 255, 255, 0.2);
+            --primary: #4facfe;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+        }
+
+        header {
+            width: 100%;
+            max-width: 1200px;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .timer-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--btn-bg);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .timer-pulse {
+            color: var(--danger);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: var(--btn-bg);
+            color: var(--text-main);
+            cursor: pointer;
+            font-weight: 600;
+            border: 1px solid var(--glass-border);
+        }
+
+        button:hover {
+            background: var(--btn-hover);
+        }
+
+        .btn-primary { background: var(--primary); color: #fff; border: none; }
+        .btn-primary:hover { background: #357abd; }
+        
+        .instructions {
+            width: 100%;
+            max-width: 1200px;
+            text-align: center;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--text-main);
+            border-radius: 8px;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            gap: 20px;
+            flex: 1;
+        }
+
+        .left-panel {
+            flex: 3;
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            position: relative;
+        }
+
+        .right-panel {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-header {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .option {
+            padding: 15px 20px;
+            background: var(--panel-bg);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+        }
+
+        .option:hover {
+            border-color: var(--primary);
+        }
+
+        .option.selected {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: auto;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+        }
+
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            overflow-y: auto;
+        }
+
+        .palette-btn {
+            aspect-ratio: 1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            padding: 0;
+            font-size: 0.9rem;
+        }
+
+        .status-unattempted { background: #e0e0e0; color: #333; }
+        .status-attempted { background: var(--success); color: #fff; border: none; }
+        .status-marked { background: var(--purple); color: #fff; border: none; }
+        .status-marked-attempted { background: var(--purple); border: 3px solid var(--success); color: #fff; }
+        .status-current { border: 2px solid var(--primary); transform: scale(1.1); }
+
+        [data-theme="dark"] .status-unattempted { background: #555; color: #fff; border: none; }
+
+        /* Pause overlay */
+        .pause-overlay {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 16px;
+            z-index: 10;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .pause-overlay h2 { font-size: 2rem; margin-bottom: 15px; }
+
+        /* Results Screen */
+        #result-screen {
+            display: none;
+            width: 100%;
+            max-width: 1000px;
+            padding: 30px;
+        }
+        
+        .result-header { text-align: center; margin-bottom: 30px; }
+        .badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+            margin-top: 10px;
+        }
+        .badge.pass { background: var(--success); }
+        .badge.fail { background: var(--danger); }
+
+        .result-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .result-card {
+            background: var(--panel-bg);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        .result-card h3 { font-size: 2rem; margin-bottom: 5px; color: var(--primary); }
+
+        .solution-box {
+            background: var(--panel-bg);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 5px solid;
+        }
+        .sol-correct { border-left-color: var(--success); }
+        .sol-incorrect { border-left-color: var(--danger); }
+        
+        .solution-text { margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--glass-border); color: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            .main-container { flex-direction: column; }
+            .left-panel, .right-panel { flex: none; width: 100%; }
+            .header-controls { flex-wrap: wrap; justify-content: flex-end; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="glass">
+        <h1>Math Test by Mahesh</h1>
+        <div class="header-controls">
+            <button onclick="toggleTheme()" id="theme-btn">🌙 Dark Mode</button>
+            <div class="timer-container" id="timer-box">
+                ⏱ <span id="time-display">50:00</span>
+                <button onclick="togglePause()" id="pause-btn" style="padding: 5px 10px; font-size: 0.9rem;">Pause</button>
+            </div>
+            <button class="btn-primary">Login</button>
+        </div>
+    </header>
+
+    <div class="instructions glass">
+        Haryana CET Group D Mock Test
+    </div>
+
+    <div class="main-container" id="quiz-screen">
+        <div class="left-panel glass">
+            <div class="pause-overlay" id="pause-overlay">
+                <h2>टेस्ट रोक दिया गया है</h2>
+                <p>प्रश्नों को देखने और हल करने के लिए टेस्ट को फिर से शुरू करें।</p><br>
+                <button class="btn-primary" onclick="togglePause()" style="font-size: 1.2rem; padding: 15px 30px;">Resume Test</button>
+            </div>
+
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            
+            <div id="question-content">
+                <div class="question-header" id="q-num">प्रश्न 1</div>
+                <div class="question-text" id="q-text">Loading question...</div>
+                
+                <div class="options-grid" id="options-container">
+                    </div>
+            </div>
+
+            <div class="controls">
+                <button onclick="prevQuestion()">◄ Previous</button>
+                <button onclick="toggleMark()" id="mark-btn">Mark for Review</button>
+                <button onclick="clearSelection()">Clear Option</button>
+                <button onclick="nextQuestion()" class="btn-primary" id="next-btn">Next ►</button>
+            </div>
+        </div>
+
+        <div class="right-panel glass">
+            <h3 style="margin-bottom: 15px; text-align: center;">Question Palette</h3>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="stat-color status-attempted"></div> Attempted (<span id="c-att">0</span>)</div>
+                <div class="stat-item"><div class="stat-color status-unattempted"></div> Unattempted (<span id="c-unatt">25</span>)</div>
+                <div class="stat-item"><div class="stat-color status-marked"></div> Marked (<span id="c-mark">0</span>)</div>
+                <div class="stat-item"><div class="stat-color status-marked-attempted"></div> Mark+Att (<span id="c-markatt">0</span>)</div>
+            </div>
+            <div class="palette-grid" id="palette-container">
+                </div>
+            <button onclick="confirmSubmit()" class="btn-primary" style="margin-top: 20px; width: 100%;">Submit Test</button>
+        </div>
+    </div>
+
+    <div id="result-screen" class="glass">
+        <div class="result-header">
+            <h2>टेस्ट परिणाम (Test Result)</h2>
+            <div id="pass-fail-badge" class="badge"></div>
+        </div>
+        
+        <div class="result-stats">
+            <div class="result-card"><h3><span id="res-score">0</span>/25</h3><p>Score</p></div>
+            <div class="result-card"><h3 id="res-percent">0%</h3><p>Percentage</p></div>
+            <div class="result-card"><h3 id="res-correct" style="color:var(--success)">0</h3><p>Correct</p></div>
+            <div class="result-card"><h3 id="res-incorrect" style="color:var(--danger)">0</h3><p>Incorrect</p></div>
+            <div class="result-card"><h3 id="res-attempted">0</h3><p>Attempted</p></div>
+            <div class="result-card"><h3 id="res-time">00:00</h3><p>Time Taken</p></div>
+        </div>
+
+        <button onclick="location.reload()" class="btn-primary" style="display: block; margin: 0 auto 30px auto; padding: 12px 30px; font-size: 1.1rem;">Restart Test</button>
+
+        <h3 style="margin-bottom: 20px; border-bottom: 2px solid var(--glass-border); padding-bottom: 10px;">विस्तृत हल (Detailed Solutions)</h3>
+        <div id="solutions-container"></div>
+    </div>
+
+    <script>
+        // --- DATA SECTION: 25 Questions (Math Test for Haryana CET Group D) ---
+        const questions = [
+            {
+                q: "यदि U + V = 80 तथा U : V = 5 : 3, तो U - V का मान कितना है?",
+                opt: ["20", "15", "30", "25"], ans: 0,
+                exp: "अनुपात के अनुसार, U + V = 5 + 3 = 8 यूनिट। प्रश्न में 8 यूनिट = 80 => 1 यूनिट = 10। हमें U - V का मान निकालना है, जो (5 - 3) = 2 यूनिट है। अतः 2 × 10 = 20।"
+            },
+            {
+                q: "A = 3/4 तथा 9/16 का महत्तम समापवर्तक (HCF), B = 16/5 तथा 4/25 का लघुत्तम समापवर्तक (LCM) है। A + B का मान कितना है?",
+                opt: ["250/81", "70/23", "271/80", "260/71"], ans: 2,
+                exp: "भिन्नों का HCF = अंशों का HCF / हरों का LCM => A = HCF(3,9)/LCM(4,16) = 3/16। भिन्नों का LCM = अंशों का LCM / हरों का HCF => B = LCM(16,4)/HCF(5,25) = 16/5। A + B = (3/16) + (16/5) = (15+256)/80 = 271/80।"
+            },
+            {
+                q: "किसी वस्तु को 25% लाभ तथा 37.5% हानि पर बेचने से विक्रय मूल्य का अंतर ₹1250 है। जब इसे 12.5% लाभ पर बेचा जाता है तो इसका विक्रय मूल्य कितना होगा?",
+                opt: ["₹1800", "₹2500", "₹2400", "₹2250"], ans: 3,
+                exp: "+25% (लाभ) और -37.5% (हानि) के बीच का कुल अंतर = 62.5%। भिन्न में, 62.5% = 5/8। CP का 5/8 = ₹1250 => CP = 8 × 250 = ₹2000। 12.5% लाभ (1/8 लाभ) पर विक्रय मूल्य = 2000 × (9/8) = ₹2250।"
+            },
+            {
+                q: "49, 62, 37, 55 तथा x का औसत 53 है। x का मान कितना है?",
+                opt: ["56", "68", "76", "62"], ans: 3,
+                exp: "औसत 53 है। प्रत्येक संख्या का 53 से अंतर: -4, +9, -16, +2। कुल अंतर = -9। x को इस -9 की भरपाई करनी होगी। अतः x = 53 + 9 = 62।"
+            },
+            {
+                q: "एक पाई-चार्ट में कंपनी C6 द्वारा 11% लैपटॉप वितरित किए गए हैं। इसका संगत केन्द्रीय कोण कितनी डिग्री का है?",
+                opt: ["51.7°", "45.1°", "39.6°", "52.8°"], ans: 2,
+                exp: "कुल 100% = 360° होता है, तो 1% = 3.6°। C6 का प्रतिशत 11% है, अतः केन्द्रीय कोण = 11 × 3.6° = 39.6°।"
+            },
+            {
+                q: "किसी वस्तु का अंकित मूल्य ₹2500 है। उसे क्रमशः 12% तथा 10% की दो क्रमिक छूटों पर बेचा जाता है। विक्रय मूल्य कितना है?",
+                opt: ["₹1870", "₹2090", "₹1760", "₹1980"], ans: 3,
+                exp: "12% छूट = 3/25 (25 की वस्तु 22 में)। 10% छूट = 1/10 (10 की वस्तु 9 में)। कुल प्रभाव: 250 (अंकित) से 198 (विक्रय)। 250 यूनिट = 2500, तो विक्रय मूल्य = 198 × 10 = ₹1980।"
+            },
+            {
+                q: "महेश का वेतन सुमित के वेतन से ₹12000 अधिक है। यदि महेश तथा सुमित के वेतन का अनुपात 7 : 4 है, तो सुमित का वेतन कितना है?",
+                opt: ["₹16000", "₹12000", "₹18000", "₹20000"], ans: 0,
+                exp: "अनुपात में अंतर = 7 - 4 = 3 यूनिट। 3 यूनिट = ₹12000, तो 1 यूनिट = ₹4000। सुमित का वेतन (4 यूनिट) = 4 × 4000 = ₹16000।"
+            },
+            {
+                q: "7/2 - [3 of 7 ÷ 4 ÷ {(2 ÷ 5) × (25 ÷ 8) ÷ (5 ÷ 2)}] का मान कितना है?",
+                opt: ["-8", "-7", "-1", "-9"], ans: 1,
+                exp: "BODMAS: सबसे छोटे ब्रैकेट {} को हल करें: (2/5) × (25/8) × (2/5) = 1/2। बड़ा ब्रैकेट []: 21 ÷ 4 ÷ (1/2) = 21/2 = 10.5। अंतिम चरण: 7/2 - 21/2 = -14/2 = -7।"
+            },
+            {
+                q: "DD.MM के रूप में लिखित, वर्ष 2019 की माध्यिका तिथि (मीडियन डेट) क्या है?",
+                opt: ["01.07", "30.06", "02.07", "03.07"], ans: 2,
+                exp: "2019 एक साधारण वर्ष है (365 दिन)। माध्यिका दिन = (365 + 1)/2 = 183वाँ दिन। जनवरी से जून तक कुल 181 दिन होते हैं। 182वाँ दिन 1 जुलाई है। 183वाँ दिन = 2 जुलाई। अतः तिथि = 02.07।"
+            },
+            {
+                q: "एक कार 6 मिनट में 300 मीटर की दूरी तय कर सकती है। उसकी औसत गति km/h में कितनी है?",
+                opt: ["50", "3", "12", "6"], ans: 1,
+                exp: "चाल = दूरी / समय = 300 / 6 = 50 मीटर/मिनट। km/h में बदलने के लिए (60/1000) से गुणा करें: 50 × (3/50) = 3 km/h।"
+            },
+            {
+                q: "एक व्यक्ति अपने वेतन का 10% भोजन पर खर्च करता है। वह शेष भाग का 20% ईंधन पर खर्च करता है। यदि उसके पास ₹4680 शेष है, तो उसका वेतन कितना है?",
+                opt: ["₹6000", "₹5000", "₹6500", "₹5500"], ans: 2,
+                exp: "मान लें वेतन 100 है। 10% भोजन पर खर्च => शेष 90 बचा। 90 का 20% (18) ईंधन पर खर्च => शेष 72 यूनिट। 72 यूनिट = ₹4680 => 1 यूनिट = 65। कुल वेतन (100 यूनिट) = ₹6500।"
+            },
+            {
+                q: "शांत जल में एक नाव की गति 8 km/h है। यदि धारा की गति 2 km/h है, तो धारा के प्रतिकूल (Upstream) जाते हुए 2 घंटे में नाव कितनी दूरी तय करेगी?",
+                opt: ["16 km", "14 km", "20 km", "12 km"], ans: 3,
+                exp: "धारा के प्रतिकूल (Upstream) गति = 8 - 2 = 6 km/h। तय की गई दूरी = गति × समय = 6 km/h × 2 घंटे = 12 km।"
+            },
+            {
+                q: "किसी समचतुर्भुज (Rhombus) की परिमाप 20 cm है। इसके एक विकर्ण की लम्बाई 6 cm है। दूसरे विकर्ण की लम्बाई कितनी है?",
+                opt: ["10 cm", "8 cm", "9 cm", "6 cm"], ans: 1,
+                exp: "परिमाप 20 cm है तो भुजा = 20/4 = 5 cm। समचतुर्भुज के विकर्ण 90° पर समद्विभाजित करते हैं। एक विकर्ण आधा = 3 cm। यह 3, 4, 5 का समकोण त्रिभुज बनाता है। अतः दूसरा आधा विकर्ण 4 cm होगा, तो पूरा दूसरा विकर्ण = 8 cm।"
+            },
+            {
+                q: "यदि पाई-चार्ट में कंपनी C1 (12%) तथा कंपनी C3 (18%) है, तो इनके लैपटॉपों की संख्या का अनुपात कितना है?",
+                opt: ["2:1", "12:11", "2:3", "6:11"], ans: 2,
+                exp: "प्रतिशत का अनुपात ही वास्तविक संख्या का अनुपात होता है। C1 : C3 = 12% : 18% = 2:3।"
+            },
+            {
+                q: "कोई व्यक्ति 2 वर्षों के लिए ₹500, 5 वर्षों के लिए ₹600 तथा 6 वर्षों के लिए ₹1000 साधारण ब्याज की समान दर पर जमा करता है। यदि कुल साधारण ब्याज ₹1000 है, तो दर क्या है?",
+                opt: ["15%", "5%", "10%", "20%"], ans: 2,
+                exp: "1 साल के समतुल्य मूलधन बना लें: (500×2) + (600×5) + (1000×6) = 1000 + 3000 + 6000 = ₹10000। ₹10000 पर 1 साल में ₹1000 का ब्याज मिलता है। दर = (1000/10000) × 100 = 10%।"
+            },
+            {
+                q: "8 सोने के सिक्कों का औसत भार 20 g है। चाँदी के 12 सिक्कों का औसत भार 35 g है। 20 सिक्कों के लिए औसत भार कितना है?",
+                opt: ["25 g", "29 g", "21 g", "31 g"], ans: 1,
+                exp: "सिक्कों की संख्या का अनुपात = 8:12 = 2:3। औसत = (2×20 + 3×35) / (2+3) = (40 + 105) / 5 = 145/5 = 29 g।"
+            },
+            {
+                q: "किसी वस्तु को 15% लाभ पर ₹1725 में बेचा जाता है। यदि इसे 15% की हानि पर बेचा जाता है तो विक्रय मूल्य कितना होगा?",
+                opt: ["₹1275", "₹1475", "₹1025", "₹1325"], ans: 0,
+                exp: "115% = ₹1725 => 1% = ₹15। 15% हानि का मतलब है 85%। नया विक्रय मूल्य = 85 × 15 = ₹1275।"
+            },
+            {
+                q: "एक वर्ग की भुजा 6 cm है। वर्ग के अंदर बनने वाले सबसे बड़े वृत्त का क्षेत्रफल कितना है? (Pi = 22/7)",
+                opt: ["198/7 cm²", "318/7 cm²", "252/7 cm²", "156/7 cm²"], ans: 0,
+                exp: "वर्ग के अंदर बने सबसे बड़े वृत्त का व्यास वर्ग की भुजा के बराबर होता है। व्यास = 6 cm तो त्रिज्या = 3 cm। क्षेत्रफल = (22/7) × (3)² = 198/7 cm²।"
+            },
+            {
+                q: "A अकेला किसी कार्य को 30 दिन में कर सकता है। B अकेला 40 दिन में। यदि A से शुरुआत करके वे एकांतर दिनों (Alternate Days) में काम करते हैं, तो कार्य कितने दिनों में पूरा होगा?",
+                opt: ["34.25", "32.33", "16.33", "17.25"], ans: 0,
+                exp: "कुल कार्य (LCM of 30, 40) = 120 यूनिट। A की क्षमता = 4, B की = 3। 2 दिन में कार्य = 7 यूनिट। 17 चक्र (34 दिन) में = 119 यूनिट कार्य होगा। बचा 1 यूनिट A करेगा 1/4 दिन में। कुल समय = 34 + 0.25 = 34.25 दिन।"
+            },
+            {
+                q: "यदि कोई राशि चक्रवृद्धि ब्याज से 2 वर्ष पश्चात ₹4000 तथा 4 वर्ष पश्चात ₹6000 हो जाती है, तो मूल राशि कितनी है?",
+                opt: ["₹2888.88", "₹2666.66", "₹2777.77", "₹2866.66"], ans: 1,
+                exp: "समय अंतराल समान (2 वर्ष) है। 2 वर्षों में धन 6000/4000 = 3/2 गुना बढ़ा। मूलधन (P) भी शुरुआत के 2 वर्षों में 3/2 गुना होकर ₹4000 हुआ होगा। P × 3/2 = 4000 => P = 8000/3 = 2666.66।"
+            },
+            {
+                q: "3/4 of (1/3 ÷ 1/2) + (2 - 2/5) × 3/2 + 2/3 का मान कितना है?",
+                opt: ["107/30", "101/6", "109/17", "103/25"], ans: 0,
+                exp: "भाग 1: (1/3 ÷ 1/2) = 2/3, फिर 3/4 of 2/3 = 1/2। भाग 2: (2 - 2/5) = 8/5, फिर (8/5) × 3/2 = 12/5। जोड़ें: 1/2 + 12/5 + 2/3 = (15 + 72 + 20) / 30 = 107/30।"
+            },
+            {
+                q: "A तथा B मिलकर किसी कार्य को 20 दिन में कर सकते हैं। B तथा C 25 दिन में। C तथा A 15 दिन में। A अकेला उस कार्य को कितने दिनों में कर सकता है?",
+                opt: ["600/17", "600/23", "1200/23", "1200/17"], ans: 1,
+                exp: "कुल कार्य (LCM) = 300। A+B = 15, B+C = 12, C+A = 20। 2(A+B+C) = 47 => A+B+C = 23.5। A की क्षमता = 23.5 - 12 (B+C) = 11.5 यूनिट। A द्वारा लिया गया समय = 300 / 11.5 = 600/23 दिन।"
+            },
+            {
+                q: "पाई चार्ट में लैपटॉपों की कुल संख्या 3800 है। कंपनी C2 (22%) तथा C5 (13%) के लैपटॉपों की संख्या में अंतर कितना है?",
+                opt: ["382", "362", "342", "322"], ans: 2,
+                exp: "प्रतिशत में अंतर = 22% - 13% = 9%। 3800 का 9% = 3800 × (9/100) = 342।"
+            },
+            {
+                q: "किसी घनाभ की लम्बाई 15 cm, चौड़ाई 12 cm तथा ऊंचाई 11 cm है। लम्बाई 6% घटाई और चौड़ाई 8% बढ़ाई जाए (ऊंचाई समान रहे), तो पार्श्व-फलकों (LSA) के क्षेत्रफल में क्या परिवर्तन होगा?",
+                opt: ["22 cm² की कमी", "22 cm² की वृद्धि", "कोई परिवर्तन नहीं", "33 cm² की वृद्धि"], ans: 2,
+                exp: "6 2/3% की कमी = 15 से 14 cm। 8 1/3% की वृद्धि = 12 से 13 cm। LSA = 2h(l+b)। पहले (l+b) = 15+12 = 27 था। अब नया (l+b) = 14+13 = 27 है। चूंकि आधार का योग (27) नहीं बदला और ऊंचाई (11) भी नहीं बदली, इसलिए कोई परिवर्तन नहीं होगा।"
+            },
+            {
+                q: "यदि x + y + z = 400 तथा x : y : z = 1 : 1 : 2 है, तो z का मान कितना है?",
+                opt: ["100", "150", "120", "200"], ans: 3,
+                exp: "कुल यूनिट = 1 + 1 + 2 = 4 यूनिट। 4 यूनिट = 400 => 1 यूनिट = 100। z का मान (2 यूनिट) = 2 × 100 = 200।"
+            }
+        ];
+
+        // --- APP LOGIC ---
+        let currentQuestion = 0;
+        let timerSeconds = 3000; // 50 mins
+        let timerInterval;
+        let isPaused = false;
+        
+        // Arrays to track state
+        const userAnswers = new Array(questions.length).fill(null);
+        // Status: 0=unattempted, 1=attempted, 2=marked, 3=marked+attempted
+        const qStatus = new Array(questions.length).fill(0); 
+
+        function initApp() {
+            renderPalette();
+            renderQuestion(0);
+            updateStats();
+            startTimer();
+        }
+
+        // --- THEME ---
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('theme-btn');
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                btn.innerText = '🌙 Dark Mode';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                btn.innerText = '☀️ Light Mode';
+            }
+        }
+
+        // --- TIMER & PAUSE ---
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if(!isPaused) {
+                    timerSeconds--;
+                    updateTimerDisplay();
+                    if (timerSeconds <= 0) {
+                        clearInterval(timerInterval);
+                        autoSubmit();
+                    }
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const m = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+            const s = (timerSeconds % 60).toString().padStart(2, '0');
+            const tDisplay = document.getElementById('time-display');
+            const tBox = document.getElementById('timer-box');
+            tDisplay.innerText = `${m}:${s}`;
+            
+            if (timerSeconds < 300) { // under 5 mins
+                tBox.classList.add('timer-pulse');
+            } else {
+                tBox.classList.remove('timer-pulse');
+            }
+        }
+
+        function togglePause() {
+            isPaused = !isPaused;
+            const pauseOverlay = document.getElementById('pause-overlay');
+            const pauseBtn = document.getElementById('pause-btn');
+            if(isPaused) {
+                pauseOverlay.style.display = 'flex';
+                pauseBtn.innerText = 'Resume';
+                pauseBtn.classList.add('btn-primary');
+            } else {
+                pauseOverlay.style.display = 'none';
+                pauseBtn.innerText = 'Pause';
+                pauseBtn.classList.remove('btn-primary');
+            }
+        }
+
+        // --- QUESTION LOGIC ---
+        function renderQuestion(idx) {
+            currentQuestion = idx;
+            const q = questions[idx];
+            
+            document.getElementById('q-num').innerText = `प्रश्न ${idx + 1}`;
+            document.getElementById('q-text').innerText = q.q;
+            
+            const optContainer = document.getElementById('options-container');
+            optContainer.innerHTML = '';
+            
+            q.opt.forEach((optText, i) => {
+                const optDiv = document.createElement('div');
+                optDiv.className = `option ${userAnswers[idx] === i ? 'selected' : ''}`;
+                optDiv.innerText = `${String.fromCharCode(65 + i)}. ${optText}`;
+                optDiv.onclick = () => selectOption(i);
+                optContainer.appendChild(optDiv);
+            });
+
+            // Update Progress Bar
+            document.getElementById('progress-bar').style.width = `${((idx + 1) / questions.length) * 100}%`;
+
+            // Update Next button text on last question
+            const nextBtn = document.getElementById('next-btn');
+            if(idx === questions.length - 1) {
+                nextBtn.innerText = 'Submit Test';
+                nextBtn.onclick = confirmSubmit;
+            } else {
+                nextBtn.innerText = 'Next ►';
+                nextBtn.onclick = nextQuestion;
+            }
+
+            // Update mark button text
+            const markBtn = document.getElementById('mark-btn');
+            if(qStatus[idx] === 2 || qStatus[idx] === 3) {
+                markBtn.innerText = 'Unmark';
+            } else {
+                markBtn.innerText = 'Mark for Review';
+            }
+
+            updatePalette();
+        }
+
+        function selectOption(optIdx) {
+            userAnswers[currentQuestion] = optIdx;
+            
+            // Update status
+            if(qStatus[currentQuestion] === 2 || qStatus[currentQuestion] === 3) {
+                qStatus[currentQuestion] = 3; // marked + attempted
+            } else {
+                qStatus[currentQuestion] = 1; // attempted
+            }
+            
+            renderQuestion(currentQuestion);
+            updateStats();
+        }
+
+        function clearSelection() {
+            userAnswers[currentQuestion] = null;
+            if(qStatus[currentQuestion] === 3) {
+                qStatus[currentQuestion] = 2; // marked
+            } else {
+                qStatus[currentQuestion] = 0; // unattempted
+            }
+            renderQuestion(currentQuestion);
+            updateStats();
+        }
+
+        function toggleMark() {
+            const stat = qStatus[currentQuestion];
+            if(stat === 0) qStatus[currentQuestion] = 2;
+            else if(stat === 1) qStatus[currentQuestion] = 3;
+            else if(stat === 2) qStatus[currentQuestion] = 0;
+            else if(stat === 3) qStatus[currentQuestion] = 1;
+            
+            renderQuestion(currentQuestion);
+            updateStats();
+        }
+
+        function nextQuestion() {
+            if(currentQuestion < questions.length - 1) {
+                renderQuestion(currentQuestion + 1);
+            }
+        }
+
+        function prevQuestion() {
+            if(currentQuestion > 0) {
+                renderQuestion(currentQuestion - 1);
+            }
+        }
+
+        // --- PALETTE & STATS ---
+        function renderPalette() {
+            const container = document.getElementById('palette-container');
+            container.innerHTML = '';
+            for(let i = 0; i < questions.length; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'palette-btn';
+                btn.innerText = i + 1;
+                btn.onclick = () => renderQuestion(i);
+                container.appendChild(btn);
+            }
+        }
+
+        function updatePalette() {
+            const btns = document.querySelectorAll('.palette-btn');
+            btns.forEach((btn, i) => {
+                // Reset classes
+                btn.className = 'palette-btn';
+                
+                // Add status class
+                const s = qStatus[i];
+                if(s === 0) btn.classList.add('status-unattempted');
+                if(s === 1) btn.classList.add('status-attempted');
+                if(s === 2) btn.classList.add('status-marked');
+                if(s === 3) btn.classList.add('status-marked-attempted');
+                
+                // Add current focus
+                if(i === currentQuestion) {
+                    btn.classList.add('status-current');
+                }
+            });
+        }
+
+        function updateStats() {
+            let att=0, unatt=0, mark=0, markAtt=0;
+            qStatus.forEach(s => {
+                if(s === 0) unatt++;
+                if(s === 1) att++;
+                if(s === 2) mark++;
+                if(s === 3) markAtt++;
+            });
+            document.getElementById('c-att').innerText = att;
+            document.getElementById('c-unatt').innerText = unatt;
+            document.getElementById('c-mark').innerText = mark;
+            document.getElementById('c-markatt').innerText = markAtt;
+        }
+
+        // --- SUBMISSION ---
+        function confirmSubmit() {
+            const unattempted = qStatus.filter(s => s === 0 || s === 2).length;
+            if(unattempted > 0) {
+                if(confirm(`आपके ${unattempted} प्रश्न अनुत्तरित हैं। क्या आप वास्तव में टेस्ट सबमिट करना चाहते हैं?`)) {
+                    processResults();
+                }
+            } else {
+                if(confirm("क्या आप टेस्ट सबमिट करना चाहते हैं?")) {
+                    processResults();
+                }
+            }
+        }
+
+        function autoSubmit() {
+            alert("समय समाप्त! आपका टेस्ट स्वतः सबमिट किया जा रहा है।");
+            processResults();
+        }
+
+        function processResults() {
+            clearInterval(timerInterval);
+            document.getElementById('quiz-screen').style.display = 'none';
+            document.querySelector('.instructions').style.display = 'none';
+            
+            let correct = 0, incorrect = 0, attempted = 0;
+            
+            userAnswers.forEach((ans, idx) => {
+                if(ans !== null) {
+                    attempted++;
+                    if(ans === questions[idx].ans) correct++;
+                    else incorrect++;
+                }
+            });
+
+            const score = correct;
+            const percent = ((score / questions.length) * 100).toFixed(1);
+            const timeTakenSec = 3000 - timerSeconds;
+            const m = Math.floor(timeTakenSec / 60).toString().padStart(2, '0');
+            const s = (timeTakenSec % 60).toString().padStart(2, '0');
+
+            document.getElementById('res-score').innerText = score;
+            document.getElementById('res-percent').innerText = `${percent}%`;
+            document.getElementById('res-correct').innerText = correct;
+            document.getElementById('res-incorrect').innerText = incorrect;
+            document.getElementById('res-attempted').innerText = attempted;
+            document.getElementById('res-time').innerText = `${m}:${s}`;
+
+            const badge = document.getElementById('pass-fail-badge');
+            if(percent >= 50) {
+                badge.innerText = "🎉 उत्तीर्ण (PASS)";
+                badge.className = "badge pass";
+            } else {
+                badge.innerText = "❌ अनुत्तीर्ण (FAIL)";
+                badge.className = "badge fail";
+            }
+
+            buildSolutions();
+            document.getElementById('result-screen').style.display = 'block';
+            window.scrollTo(0,0);
+        }
+
+        function buildSolutions() {
+            const container = document.getElementById('solutions-container');
+            container.innerHTML = '';
+
+            questions.forEach((q, idx) => {
+                const uAns = userAnswers[idx];
+                const isCorrect = (uAns === q.ans);
+                const hasSkipped = (uAns === null);
+                
+                let boxClass = 'solution-box ';
+                if(hasSkipped) boxClass += 'sol-incorrect'; // Treat skip styling neutral/red
+                else boxClass += isCorrect ? 'sol-correct' : 'sol-incorrect';
+
+                let answerHTML = `<p><strong>आपका उत्तर:</strong> ${hasSkipped ? '<span style="color:var(--warning)">Skipped</span>' : q.opt[uAns]}</p>`;
+                answerHTML += `<p><strong>सही उत्तर:</strong> <span style="color:var(--success)">${q.opt[q.ans]}</span></p>`;
+
+                const solDiv = document.createElement('div');
+                solDiv.className = boxClass;
+                solDiv.innerHTML = `
+                    <h4 style="margin-bottom: 10px; font-size:1.1rem;">प्रश्न ${idx + 1}: ${q.q}</h4>
+                    ${answerHTML}
+                    <div class="solution-text">
+                        <strong>स्मार्ट हल:</strong> ${q.exp}
+                    </div>
+                `;
+                container.appendChild(solDiv);
+            });
+        }
+
+        // Initialize on load
+        window.onload = initApp;
+    </script>
+</body>
+</html>
