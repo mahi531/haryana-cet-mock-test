@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Mock Test - Grammar & Vocab</title>
+    <style>
+        :root {
+            /* Light Mode Variables */
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: #2c3e50;
+            --text-muted: #576574;
+            --primary-color: #341f97;
+            --accent-color: #ff9f43;
+            --correct-color: #10ac84;
+            --incorrect-color: #ee5253;
+            --btn-hover: rgba(255, 255, 255, 0.6);
+            --palette-unattempted: #c8d6e5;
+            --palette-attempted: #10ac84;
+            --palette-marked: #9b59b6;
+            --palette-marked-attempted: #8e44ad;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Mode Variables */
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-bg: rgba(16, 20, 24, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f1f2f6;
+            --text-muted: #a4b0be;
+            --primary-color: #54a0ff;
+            --accent-color: #ff9f43;
+            --correct-color: #1dd1a1;
+            --incorrect-color: #ff6b6b;
+            --btn-hover: rgba(255, 255, 255, 0.1);
+            --palette-unattempted: #576574;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            margin: 15px;
+        }
+        .header-title h1 { font-size: 1.5rem; }
+        .header-title p { font-size: 0.9rem; color: var(--text-muted); font-weight: 600;}
+        .header-controls { display: flex; gap: 15px; align-items: center; }
+        
+        .timer-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0,0,0,0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+        .timer { font-size: 1.2rem; font-weight: bold; }
+        .timer.danger { color: var(--incorrect-color); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        button {
+            cursor: pointer;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+            background: var(--glass-bg);
+            color: var(--text-color);
+            border: 1px solid var(--glass-border);
+        }
+        button:hover { background: var(--btn-hover); }
+        .btn-primary { background: var(--primary-color); color: #fff; border: none; }
+        .btn-primary:hover { background: #2c1a80; }
+        .btn-danger { background: var(--incorrect-color); color: white; border: none; }
+        .btn-warning { background: var(--accent-color); color: white; border: none; }
+        .btn-submit { background: var(--correct-color); color: white; border: none; }
+        .btn-submit:hover { background: #0b8c6b; }
+
+        /* Main Layout */
+        .container {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            margin: 0 15px 15px 15px;
+        }
+        .main-area { flex: 3; display: flex; flex-direction: column; position: relative; }
+        .sidebar { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        /* Progress & Question Area */
+        .progress-bar-bg { background: rgba(0,0,0,0.1); height: 8px; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar-fill { background: var(--primary-color); height: 100%; width: 0%; transition: width 0.3s; }
+        
+        .question-text { font-size: 1.25rem; font-weight: 500; margin-bottom: 20px; line-height: 1.6; }
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            text-align: left;
+            padding: 15px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .option-btn.selected {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+        
+        .action-buttons { display: flex; justify-content: space-between; margin-top: auto; padding-top: 20px; }
+        .action-buttons > div { display: flex; gap: 10px; }
+
+        /* Pause Overlay */
+        .pause-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 10;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+        }
+        .pause-overlay h2 { font-size: 2rem; margin-bottom: 10px; }
+
+        /* Sidebar Stats & Grid */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-item { font-size: 0.85rem; display: flex; align-items: center; gap: 8px; font-weight: bold;}
+        .stat-dot { width: 14px; height: 14px; border-radius: 50%; }
+        
+        .q-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .q-grid-btn {
+            padding: 10px 0; text-align: center; border-radius: 8px; font-weight: bold;
+            background: var(--palette-unattempted); color: #2c3e50; border: none; font-size: 14px;
+        }
+        .q-grid-btn.current { border: 3px solid #2c3e50; transform: scale(1.05);}
+        [data-theme="dark"] .q-grid-btn.current { border: 3px solid #fff; color: #fff; }
+        .q-grid-btn.attempted { background: var(--palette-attempted); color: #fff; }
+        .q-grid-btn.marked { background: var(--palette-marked); color: #fff; }
+        .q-grid-btn.marked.attempted { background: var(--palette-marked-attempted); color: #fff; }
+
+        /* Results Screen */
+        .result-screen { display: none; max-width: 1000px; margin: 0 auto; width: 100%; }
+        .result-header { text-align: center; margin-bottom: 30px; }
+        .badge { display: inline-block; padding: 10px 30px; border-radius: 30px; font-size: 1.5rem; font-weight: bold; color: #fff; margin-top: 10px; }
+        .badge.pass { background: var(--correct-color); }
+        .badge.fail { background: var(--incorrect-color); }
+        
+        .result-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-box { text-align: center; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .stat-box h3 { font-size: 2rem; margin-bottom: 5px; }
+
+        .solution-item { margin-bottom: 25px; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .sol-q { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; color: var(--primary-color); }
+        .sol-opt { margin-bottom: 8px; padding: 10px; border-radius: 8px; background: var(--glass-bg); }
+        .sol-opt.correct { background: var(--correct-color); color: #fff; border:none;}
+        .sol-opt.incorrect { background: var(--incorrect-color); color: #fff; border:none;}
+        .sol-exp { margin-top: 15px; font-size: 0.95rem; color: var(--text-color); border-left: 4px solid var(--primary-color); padding-left: 15px; line-height: 1.6; }
+        .sol-exp-title { color: var(--primary-color); font-weight: bold; margin-bottom: 5px; }
+        .sol-fact { margin-top: 10px; background: rgba(0,0,0,0.05); padding: 10px 15px; border-radius: 6px; font-size: 0.9rem;}
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            header { flex-direction: column; gap: 15px; text-align: center; }
+            .action-buttons { flex-direction: column; gap: 15px; }
+            .action-buttons > div { justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="glass-panel">
+        <div class="header-title">
+            <h1>English Mock Test</h1>
+            <p>25 Questions with Detailed Hindi Explanations & Rules</p>
+        </div>
+        <div class="header-controls">
+            <div class="timer-container" id="timer-box">
+                <span>⏱</span>
+                <!-- Timer set to 25:00 -->
+                <span class="timer" id="timer">25:00</span>
+                <button id="pause-btn" onclick="togglePause()">Pause</button>
+            </div>
+            <button onclick="toggleTheme()">🌗 Theme</button>
+            <button class="btn-submit" onclick="submitTest(false)">Submit Test</button>
+        </div>
+    </header>
+
+    <div class="container" id="app-container">
+        
+        <div class="glass-panel main-area">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+            
+            <div id="question-header" style="margin-bottom: 15px; font-weight: 600; color: var(--primary-color);"></div>
+            <div id="question-text" class="question-text"></div>
+            
+            <div class="options-grid" id="options-container"></div>
+
+            <div class="action-buttons">
+                <div>
+                    <button onclick="changeQuestion(-1)" id="prev-btn">Previous</button>
+                    <button onclick="clearSelection()">Clear</button>
+                </div>
+                <div>
+                    <button onclick="toggleMark()" id="mark-btn" class="btn-warning">Mark for Review</button>
+                    <button onclick="changeQuestion(1)" id="next-btn" class="btn-primary">Next</button>
+                </div>
+            </div>
+
+            <div class="pause-overlay" id="pause-overlay">
+                <h2>Test Paused ⏸️</h2>
+                <p>Questions are hidden to prevent cheating.</p>
+                <br>
+                <button class="btn-primary" onclick="togglePause()">Resume Test</button>
+            </div>
+        </div>
+
+        <div class="glass-panel sidebar">
+            <h3 style="text-align: center; margin-bottom: 15px;">Question Palette</h3>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-attempted)"></div> Attempted (<span id="count-att">0</span>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-unattempted)"></div> Unattempted (<span id="count-unatt">25</span>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-marked)"></div> Marked (<span id="count-mark">0</span>)</div>
+            </div>
+            <div class="q-grid" id="q-grid"></div>
+            <button class="btn-submit" onclick="submitTest(false)" style="margin-top: 20px; width: 100%; padding: 12px; font-size: 1.1rem;">Final Submit Test</button>
+        </div>
+    </div>
+
+    <div class="glass-panel result-screen" id="result-screen">
+        <div class="result-header">
+            <h2>Test Submitted Successfully! 🎉</h2>
+            <div class="badge" id="result-badge">Pass</div>
+        </div>
+        <div class="result-stats">
+            <div class="stat-box"><h3 id="res-score">0</h3><p>Score / 25</p></div>
+            <div class="stat-box"><h3 id="res-perc">0%</h3><p>Percentage</p></div>
+            <div class="stat-box"><h3 id="res-corr" style="color: var(--correct-color);">0</h3><p>Correct</p></div>
+            <div class="stat-box"><h3 id="res-incorr" style="color: var(--incorrect-color);">0</h3><p>Incorrect</p></div>
+            <div class="stat-box"><h3 id="res-time">00:00</h3><p>Time Taken</p></div>
+        </div>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <button class="btn-primary" onclick="location.reload()" style="padding: 15px 40px; font-size: 1.1rem;">Restart Test</button>
+        </div>
+        <h3 style="color: var(--primary-color); font-size: 1.5rem;">Detailed Solutions & Rules 📝</h3>
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--glass-border);">
+        <div id="solutions-container"></div>
+    </div>
+
+<script>
+    // 25 Questions extracted from the provided images (Grammar, Vocab, Error Spotting, Idioms, Improvement)
+    // No Passages included. Using backticks (`) to avoid string quote errors!
+    
+    const questions = [
+        {
+            q: "Find out which part of the sentence has an error. If there is no error, select option (d).<br><br>(a) The manager told the boys / (b) that one ought to work hard / (c) to earn his living. / (d) No error",
+            opt: ["(a)", "(b)", "(c)", "(d) No error"],
+            ans: 2,
+            exp: `सही उत्तर: <b>(c)</b>।<div class="sol-fact"><b>💡 ग्रामर रूल (Pronoun):</b> जब वाक्य का Subject 'one' होता है, तो उसके लिए Possessive Pronoun हमेशा 'one's' का प्रयोग होता है, न कि 'his' का। अतः भाग (c) में 'his' की जगह 'one's' होना चाहिए। सही वाक्य: '...to earn one's living.'</div>`
+        },
+        {
+            q: "Find out which part of the sentence has an error.<br><br>(a) The Nile is said to be the longest / (b) than all other rivers / (c) in the eastern hemisphere. / (d) No error",
+            opt: ["(a)", "(b)", "(c)", "(d) No error"],
+            ans: 0,
+            exp: `सही उत्तर: <b>(a)</b>।<div class="sol-fact"><b>💡 ग्रामर रूल (Adjective):</b> वाक्य के भाग (b) में 'than all other rivers' का प्रयोग हुआ है, जो Comparative Degree की पहचान है। इसलिए भाग (a) में Superlative Degree 'the longest' का प्रयोग गलत है। सही प्रयोग 'longer' होगा: 'The Nile is said to be longer than all other rivers...'</div>`
+        },
+        {
+            q: "Find out which part of the sentence has an error.<br><br>(a) Everything are packed / (b) and were ready / (c) to leave. / (d) No error",
+            opt: ["(a)", "(b)", "(c)", "(d) No error"],
+            ans: 0,
+            exp: `सही उत्तर: <b>(a)</b>।<div class="sol-fact"><b>💡 ग्रामर रूल (Subject-Verb Agreement):</b> Indefinite Pronouns जैसे 'Everything, Something, Nothing' हमेशा Singular (एकवचन) होते हैं और इनके साथ Singular Verb का प्रयोग होता है। अतः 'Everything are' की जगह 'Everything is' (और 'were' की जगह 'was') होना चाहिए।</div>`
+        },
+        {
+            q: "Find out which part of the sentence has an error.<br><br>(a) The thief broke in the / (b) house in the / (c) dead of the night. / (d) No error",
+            opt: ["(a)", "(b)", "(c)", "(d) No error"],
+            ans: 0,
+            exp: `सही उत्तर: <b>(a)</b>।<div class="sol-fact"><b>💡 ग्रामर रूल (Phrasal Verb):</b> जबरदस्ती किसी इमारत या घर में घुसने के लिए phrasal verb 'break into' का प्रयोग किया जाता है। 'broke in' गलत है। सही वाक्य: 'The thief broke into the house...'</div>`
+        },
+        {
+            q: "Find out which part of the sentence has an error.<br><br>(a) It is difficult / (b) to let go / (c) of bad memoirs. / (d) No error",
+            opt: ["(a)", "(b)", "(c)", "(d) No error"],
+            ans: 2,
+            exp: `सही उत्तर: <b>(c)</b>।<div class="sol-fact"><b>💡 वोकैबुलरी यूसेज (Vocabulary Usage):</b> 'Memoirs' का अर्थ किसी की आत्मकथा या संस्मरण (historical account) होता है। बुरी यादों के लिए 'memories' (यादें) का प्रयोग होना चाहिए। सही शब्द 'bad memories' होगा।</div>`
+        },
+        {
+            q: "Fill in the blank with an appropriate word.<br><br>The manager began to doubt the.......................of his assistant.",
+            opt: ["credits", "credentials", "credit", "chances"],
+            ans: 1,
+            exp: `सही उत्तर: <b>credentials</b>।<div class="sol-fact"><b>💡 वोकैब (Meaning):</b> 'Credentials' का अर्थ होता है योग्यता, साख या प्रमाण-पत्र (qualifications or background)। मैनेजर को अपने असिस्टेंट की योग्यता/साख पर शक होने लगा। 'Credits' (श्रेय) यहाँ अनुपयुक्त है।</div>`
+        },
+        {
+            q: "Choose the correct alternative to fill in the blank.<br><br>You should........................the opportunity when it comes.",
+            opt: ["cease", "seize", "sense", "size"],
+            ans: 1,
+            exp: `सही उत्तर: <b>seize</b>।<div class="sol-fact"><b>💡 वोकैब (Idiomatic expression):</b> 'Seize the opportunity' एक प्रचलित वाक्यांश है जिसका अर्थ है 'अवसर का लाभ उठाना' या 'मौका लपकना'। 'Cease' का अर्थ 'रुकना' या 'बंद करना' होता है।</div>`
+        },
+        {
+            q: "Choose the correct alternative to fill in the blank.<br><br>We must........................ourselves to changing circumstances.",
+            opt: ["adopt", "adapt", "adept", "accept"],
+            ans: 1,
+            exp: `सही उत्तर: <b>adapt</b>।<div class="sol-fact"><b>💡 वोकैब (Confusing Words):</b> 'Adapt' का अर्थ होता है 'परिस्थितियों के अनुसार स्वयं को ढालना' या 'अनुकूल बनाना'। 'Adopt' का अर्थ गोद लेना या अपनाना होता है, और 'Adept' का अर्थ निपुण होता है।</div>`
+        },
+        {
+            q: "Choose the correct alternative to fill in the blank.<br><br>You should start........................you are likely to miss the train.",
+            opt: ["indeed", "otherwise", "in fact", "consequently"],
+            ans: 1,
+            exp: `सही उत्तर: <b>otherwise</b>।<div class="sol-fact"><b>💡 ग्रामर (Conjunction):</b> 'Otherwise' का अर्थ होता है 'अन्यथा' या 'वरना'। वाक्य का अर्थ है: "तुम्हें निकल जाना चाहिए, अन्यथा तुम्हारी ट्रेन छूटने की संभावना है।"</div>`
+        },
+        {
+            q: "Choose the correct alternative to fill in the blank.<br><br>The hawkers are selling their.......................in the streets.",
+            opt: ["wire", "warn", "wares", "wear"],
+            ans: 2,
+            exp: `सही उत्तर: <b>wares</b>।<div class="sol-fact"><b>💡 वोकैब (Vocabulary):</b> 'Wares' (वेयर्स) का अर्थ होता है 'बेचने का माल' या 'सामान' (goods for sale)। फेरीवाले (hawkers) सड़कों पर अपना सामान (wares) बेच रहे हैं।</div>`
+        },
+        {
+            q: "Choose the one which best expresses the meaning of the given word. (Synonym)<br><br>TIRADE",
+            opt: ["Denunciation", "Eulogy", "Discredit", "Speech"],
+            ans: 0,
+            exp: `सही उत्तर: <b>Denunciation</b>।<div class="sol-fact"><b>💡 वोकैब (Word Meaning):</b> 'Tirade' (टायरेड) का अर्थ होता है 'कड़ी निंदा' या 'लंबा और क्रोधपूर्ण भाषण' (a long, angry speech of criticism)। इसका सही पर्यायवाची 'Denunciation' (निंदा या भर्त्सना) है। Eulogy (प्रशंसा) इसका विलोम है।</div>`
+        },
+        {
+            q: "Choose the one which best expresses the meaning of the given word. (Synonym)<br><br>VICISSITUDES",
+            opt: ["Sorrows", "Misfortunes", "Changes", "Surprises"],
+            ans: 2,
+            exp: `सही उत्तर: <b>Changes</b>।<div class="sol-fact"><b>💡 वोकैब (Word Meaning):</b> 'Vicissitudes' (विसिसिट्यूड्स) का अर्थ होता है 'परिवर्तन', 'उतार-चढ़ाव' या 'फेरबदल' (a change of circumstances or fortune)। इसलिए इसका सही पर्यायवाची 'Changes' है।</div>`
+        },
+        {
+            q: "Choose the one which best expresses the meaning of the given word. (Synonym)<br><br>CIRCUMSCRIBED",
+            opt: ["Limited", "Entangled", "Destroyed", "Eroded"],
+            ans: 0,
+            exp: `सही उत्तर: <b>Limited</b>।<div class="sol-fact"><b>💡 वोकैब (Word Meaning):</b> 'Circumscribed' (सर्कमस्क्राइब्ड) का अर्थ होता है 'सीमित करना', 'घेरा डालना' या 'प्रतिबंधित करना' (restrict something within limits)। अतः 'Limited' (सीमित) इसका सटीक समानार्थी है।</div>`
+        },
+        {
+            q: "Choose the word opposite in meaning to the given word. (Antonym)<br><br>INDICT",
+            opt: ["Exonerate", "Cross-examine", "Prevail", "Respond"],
+            ans: 0,
+            exp: `सही उत्तर: <b>Exonerate</b>।<div class="sol-fact"><b>💡 वोकैब (Word Meaning):</b> 'Indict' (इंडाइट) का अर्थ होता है 'दोषी ठहराना' या 'औपचारिक रूप से आरोप लगाना' (formally accuse of a serious crime)। इसका विपरीत (Antonym) 'Exonerate' (दोषमुक्त करना या बरी करना) होगा।</div>`
+        },
+        {
+            q: "Choose the word opposite in meaning to the given word. (Antonym)<br><br>VIGOROUS",
+            opt: ["Rough", "Rare", "Feeble", "Artful"],
+            ans: 2,
+            exp: `सही उत्तर: <b>Feeble</b>।<div class="sol-fact"><b>💡 वोकैब (Word Meaning):</b> 'Vigorous' (विगोरस) का अर्थ होता है 'ऊर्जावान', 'मजबूत' या 'जोरदार' (strong and full of energy)। इसका विलोम 'Feeble' (कमजोर या निर्बल) होगा।</div>`
+        },
+        {
+            q: "Choose the word opposite in meaning to the given word. (Antonym)<br><br>DOCILE",
+            opt: ["Good", "Static", "Stupid", "Stubborn"],
+            ans: 3,
+            exp: `सही उत्तर: <b>Stubborn</b>।<div class="sol-fact"><b>💡 वोकैब (Word Meaning):</b> 'Docile' (डोसाइल) का अर्थ होता है 'विनम्र', 'आज्ञाकारी' या 'जिसे आसानी से नियंत्रित किया जा सके' (ready to accept control)। इसका विलोम 'Stubborn' (जिद्दी या अड़ियल) होता है।</div>`
+        },
+        {
+            q: "Choose the alternative which best expresses the meaning of the Idiom/Phrase.<br><br>The representatives of the two states tried to enforce a treaty which was a <b><u>dead letter</u></b>.",
+            opt: ["not well-thought out", "no longer in force", "no longer relevant", "not in keeping with the changing times"],
+            ans: 1,
+            exp: `सही उत्तर: <b>no longer in force</b>।<div class="sol-fact"><b>💡 मुहावरे का अर्थ:</b> 'A dead letter' एक मुहावरा है जिसका अर्थ होता है 'कोई ऐसा नियम, कानून या समझौता जो अब लागू नहीं है' या 'जिसका अब पालन नहीं किया जाता' (no longer in force or valid)।</div>`
+        },
+        {
+            q: "Choose the alternative which best expresses the meaning of the Idiom/Phrase.<br><br>On hearing the news of the kidnapping, she became <b><u>afraid of her own shadow</u></b>.",
+            opt: ["cold and distant", "afraid of her own safety", "very nervous and easily frightened", "afraid of being alone"],
+            ans: 2,
+            exp: `सही उत्तर: <b>very nervous and easily frightened</b>।<div class="sol-fact"><b>💡 मुहावरे का अर्थ:</b> 'Afraid of one's own shadow' का अर्थ होता है 'बहुत अधिक घबराया हुआ होना' या 'छोटी-छोटी बातों से आसानी से डर जाना' (very nervous and easily frightened)।</div>`
+        },
+        {
+            q: "Choose the alternative which best expresses the meaning of the Idiom/Phrase.<br><br><b><u>To be fair and square</u></b>",
+            opt: ["worthy", "honest", "successful", "obedient"],
+            ans: 1,
+            exp: `सही उत्तर: <b>honest</b>।<div class="sol-fact"><b>💡 मुहावरे का अर्थ:</b> 'Fair and square' का अर्थ होता है 'पूरी तरह से ईमानदार और निष्पक्ष' (completely honest and fair)। (उदा: He won the game fair and square).</div>`
+        },
+        {
+            q: "Choose the alternative which best expresses the meaning of the Idiom/Phrase.<br><br>She just needs <b><u>forty winks</u></b> in order to be able to work all night.",
+            opt: ["someone's help", "to take a stroll", "a short nap", "a little cooperation"],
+            ans: 2,
+            exp: `सही उत्तर: <b>a short nap</b>।<div class="sol-fact"><b>💡 मुहावरे का अर्थ:</b> 'Forty winks' का अर्थ होता है 'दिन के समय ली जाने वाली एक छोटी सी झपकी या नींद' (a short sleep, especially during the day)।</div>`
+        },
+        {
+            q: "Choose the alternative which best expresses the meaning of the Idiom/Phrase.<br><br>The minute she arrived at the office, she was given the <b><u>pink slip</u></b>.",
+            opt: ["a raise", "a promotion", "a letter to inform that she had lost her job", "a letter to inform that she'd been transferred"],
+            ans: 2,
+            exp: `सही उत्तर: <b>a letter to inform that she had lost her job</b>।<div class="sol-fact"><b>💡 मुहावरे का अर्थ:</b> 'To be given the pink slip' का अर्थ होता है नौकरी से निकाल दिया जाना (Dismissal from employment)।</div>`
+        },
+        {
+            q: "Choose the correct alternative to improve the underlined part. If no improvement is needed, select (d).<br><br>He is absent <b><u>from</u></b> the meeting.",
+            opt: ["at", "in", "during", "No improvement"],
+            ans: 3,
+            exp: `सही उत्तर: <b>No improvement</b>।<div class="sol-fact"><b>💡 ग्रामर रूल:</b> 'Absent' (अनुपस्थित) के साथ हमेशा preposition <b>'from'</b> का ही प्रयोग किया जाता है (Absent from class, absent from meeting)। इसलिए यह वाक्य पूरी तरह से सही है।</div>`
+        },
+        {
+            q: "Choose the correct alternative to improve the underlined part.<br><br>Sheetal has just <b><u>gone to</u></b> her family in Mumbai.",
+            opt: ["visited", "found", "joined", "No improvement"],
+            ans: 0,
+            exp: `सही उत्तर: <b>visited</b>।<div class="sol-fact"><b>💡 वोकैबुलरी यूसेज (Vocabulary Usage):</b> 'Gone to' का अर्थ होता है 'चले जाना' (और अभी वापस नहीं आना)। लेकिन जब हम किसी परिवार के सदस्य या दोस्त से मिलने जाते हैं, तो 'visited' का प्रयोग अधिक उचित होता है। 'Sheetal has just visited her family' (शीतल ने अभी अपने परिवार से मुलाकात की है)।</div>`
+        },
+        {
+            q: "Choose the correct alternative to improve the underlined part.<br><br>The man <b><u>who had jumped into the lake</u></b> managed to swim ashore.",
+            opt: ["who jumping into the lake", "jumping into the lake", "who jumped into the lake", "No improvement"],
+            ans: 2,
+            exp: `सही उत्तर: <b>who jumped into the lake</b>।<div class="sol-fact"><b>💡 ग्रामर रूल:</b> वाक्य का दूसरा भाग (managed to swim) Past Indefinite Tense में है। आदमी का नदी में कूदना भी उसी समय की एक क्रमिक घटना है, इसलिए यहाँ Past Perfect (had jumped) की आवश्यकता नहीं है। दोनों कार्य Past Indefinite में हो सकते हैं: The man who jumped...</div>`
+        },
+        {
+            q: "Choose the correct alternative to improve the underlined part.<br><br>I <b><u>am working on my assignment</u></b> since Monday.",
+            opt: ["was working on my assignment", "have been working on my assignment", "had to be working on my assignment", "No improvement"],
+            ans: 1,
+            exp: `सही उत्तर: <b>have been working on my assignment</b>।<div class="sol-fact"><b>💡 ग्रामर रूल (Tense):</b> जब वाक्य में 'since' या 'for' के साथ समय (Time) दिया हो, तो वह वाक्य Perfect Continuous Tense में होता है। यहाँ Present Continuous 'am working' गलत है, 'have been working' सही होगा।</div>`
+        }
+    ];
+
+    // State Variables
+    let currentIdx = 0;
+    const totalQ = questions.length;
+    let answers = new Array(totalQ).fill(null);
+    let marked = new Array(totalQ).fill(false);
+    
+    // Timer is set to 25 minutes (25 * 60 seconds)
+    let totalTime = 25 * 60; 
+    let timerInterval;
+    let isPaused = false;
+
+    // Initialization
+    function init() {
+        createPalette();
+        loadQuestion(0);
+        updateStats();
+        startTimer();
+    }
+
+    // Theme Logic
+    function toggleTheme() {
+        const doc = document.documentElement;
+        const current = doc.getAttribute('data-theme');
+        doc.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+    }
+
+    // Timer Logic
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if(totalTime <= 0) {
+                clearInterval(timerInterval);
+                submitTest(true);
+                return;
+            }
+            totalTime--;
+            updateTimerDisplay();
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(totalTime / 60).toString().padStart(2, '0');
+        const secs = (totalTime % 60).toString().padStart(2, '0');
+        const timerEl = document.getElementById('timer');
+        timerEl.innerText = `${mins}:${secs}`;
+        
+        if (totalTime < 300) { // Under 5 minutes
+            timerEl.classList.add('danger');
+        } else {
+            timerEl.classList.remove('danger');
+        }
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        const overlay = document.getElementById('pause-overlay');
+        const btn = document.getElementById('pause-btn');
+        
+        if (isPaused) {
+            clearInterval(timerInterval);
+            overlay.style.display = 'flex';
+            btn.innerText = 'Resume';
+            btn.classList.add('btn-warning');
+        } else {
+            startTimer();
+            overlay.style.display = 'none';
+            btn.innerText = 'Pause';
+            btn.classList.remove('btn-warning');
+        }
+    }
+
+    // Quiz Navigation & Rendering
+    function loadQuestion(idx) {
+        currentIdx = idx;
+        const qData = questions[idx];
+        
+        document.getElementById('question-header').innerText = `Question ${idx + 1} of ${totalQ}`;
+        document.getElementById('question-text').innerHTML = qData.q;
+        
+        const optsContainer = document.getElementById('options-container');
+        optsContainer.innerHTML = '';
+        
+        qData.opt.forEach((optText, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn' + (answers[idx] === i ? ' selected' : '');
+            btn.innerHTML = `<span style="font-weight:bold; border:1px solid currentColor; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${String.fromCharCode(65+i)}</span> ${optText}`;
+            btn.onclick = () => selectOption(i);
+            optsContainer.appendChild(btn);
+        });
+
+        // Update progress bar
+        document.getElementById('progress-bar').style.width = `${((idx + 1) / totalQ) * 100}%`;
+
+        // Update buttons
+        document.getElementById('prev-btn').disabled = (idx === 0);
+        document.getElementById('prev-btn').style.opacity = (idx === 0) ? '0.5' : '1';
+        
+        const markBtn = document.getElementById('mark-btn');
+        markBtn.innerText = marked[idx] ? 'Unmark Review' : 'Mark for Review';
+        
+        const nextBtn = document.getElementById('next-btn');
+        if (idx === totalQ - 1) {
+            nextBtn.innerText = 'Submit Test';
+            nextBtn.className = 'btn-danger';
+        } else {
+            nextBtn.innerText = 'Next';
+            nextBtn.className = 'btn-primary';
+        }
+
+        updatePaletteVisuals();
+    }
+
+    function selectOption(optIdx) {
+        answers[currentIdx] = optIdx;
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function clearSelection() {
+        answers[currentIdx] = null;
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function toggleMark() {
+        marked[currentIdx] = !marked[currentIdx];
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function changeQuestion(step) {
+        if (step === 1 && currentIdx === totalQ - 1) {
+            submitTest(false);
+            return;
+        }
+        let newIdx = currentIdx + step;
+        if (newIdx >= 0 && newIdx < totalQ) {
+            loadQuestion(newIdx);
+        }
+    }
+
+    // Palette Logic
+    function createPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'q-grid-btn';
+            btn.id = `pal-btn-${i}`;
+            btn.innerText = i + 1;
+            btn.onclick = () => loadQuestion(i);
+            grid.appendChild(btn);
+        }
+    }
+
+    function updatePaletteVisuals() {
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.getElementById(`pal-btn-${i}`);
+            btn.className = 'q-grid-btn';
+            
+            if (answers[i] !== null && marked[i]) btn.classList.add('marked', 'attempted');
+            else if (marked[i]) btn.classList.add('marked');
+            else if (answers[i] !== null) btn.classList.add('attempted');
+            
+            if (i === currentIdx) btn.classList.add('current');
+        }
+    }
+
+    function updateStats() {
+        let att = 0, mark = 0;
+        for (let i = 0; i < totalQ; i++) {
+            if (answers[i] !== null) att++;
+            if (marked[i]) mark++;
+        }
+        document.getElementById('count-att').innerText = att;
+        document.getElementById('count-unatt').innerText = totalQ - att;
+        document.getElementById('count-mark').innerText = mark;
+        updatePaletteVisuals();
+    }
+
+    // Submission & Results
+    function submitTest(isAuto) {
+        const unatt = answers.filter(a => a === null).length;
+        if (!isAuto && unatt > 0) {
+            const confirmSubmit = confirm(`You have ${unatt} unattempted questions. Are you sure you want to submit?`);
+            if (!confirmSubmit) return;
+        }
+
+        clearInterval(timerInterval);
+        document.getElementById('app-container').style.display = 'none';
+        document.querySelector('.header-controls').style.display = 'none';
+        generateResults();
+    }
+
+    function generateResults() {
+        const resScreen = document.getElementById('result-screen');
+        resScreen.style.display = 'block';
+
+        let correct = 0;
+        let incorrect = 0;
+        
+        answers.forEach((ans, i) => {
+            if (ans !== null) {
+                if (ans === questions[i].ans) correct++;
+                else incorrect++;
+            }
+        });
+
+        const score = correct;
+        const perc = ((score / totalQ) * 100).toFixed(2);
+        
+        // Calculation adjusted for 25 mins
+        const timeTakenSec = (25 * 60) - totalTime;
+        const timeMins = Math.floor(timeTakenSec / 60).toString().padStart(2, '0');
+        const timeSecs = (timeTakenSec % 60).toString().padStart(2, '0');
+
+        document.getElementById('res-score').innerText = score;
+        document.getElementById('res-perc').innerText = perc + '%';
+        document.getElementById('res-corr').innerText = correct;
+        document.getElementById('res-incorr').innerText = incorrect;
+        document.getElementById('res-time').innerText = `${timeMins}:${timeSecs}`;
+
+        const badge = document.getElementById('result-badge');
+        if (perc >= 50) {
+            badge.className = 'badge pass';
+            badge.innerText = 'PASS';
+        } else {
+            badge.className = 'badge fail';
+            badge.innerText = 'FAIL';
+        }
+
+        generateSolutions();
+    }
+
+    function generateSolutions() {
+        const container = document.getElementById('solutions-container');
+        let html = '';
+
+        questions.forEach((q, i) => {
+            const userAns = answers[i];
+            const corrAns = q.ans;
+            
+            html += `<div class="solution-item">
+                        <div class="sol-q">Q${i+1}. ${q.q}</div>`;
+            
+            q.opt.forEach((optText, optIdx) => {
+                let cls = 'sol-opt';
+                let icon = '';
+                
+                if (optIdx === corrAns) {
+                    cls += ' correct';
+                    icon = '✓';
+                } else if (userAns === optIdx && userAns !== corrAns) {
+                    cls += ' incorrect';
+                    icon = '✗';
+                }
+
+                if(icon) {
+                    html += `<div class="${cls}"><strong>${String.fromCharCode(65+optIdx)}</strong>: ${optText} <span style="float:right; font-weight:bold;">${icon}</span></div>`;
+                } else {
+                    html += `<div class="${cls}"><strong>${String.fromCharCode(65+optIdx)}</strong>: ${optText}</div>`;
+                }
+            });
+
+            const userStatus = userAns === null ? "<span style='color:var(--text-muted)'>Unattempted</span>" : 
+                              (userAns === corrAns ? "<span style='color:var(--correct-color)'>Correct</span>" : 
+                              "<span style='color:var(--incorrect-color)'>Incorrect</span>");
+
+            html += `<div style="margin-top: 10px;"><strong>Status:</strong> ${userStatus}</div>`;
+            html += `<div class="sol-exp"><div class="sol-exp-title">Explanation:</div>${q.exp}</div>`;
+            html += `</div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    // Start App
+    window.onload = init;
+</script>
+</body>
+</html>
