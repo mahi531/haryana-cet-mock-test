@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSSC Group D - 17 Nov 2018 (Shift 2) | 90 Questions Detailed Mock Test</title>
+    <style>
+        :root { --bg-color: #ffffff; --text-main: #1e293b; --text-muted: #64748b; --header-bg: #ffffff; --border-color: #e2e8f0; --primary-blue: #2563eb; --bg-light: #f8fafc; --ans-green: #22c55e; --not-ans-red: #ef4444; --not-visited-grey: #e2e8f0; --marked-purple: #a855f7; --btn-mark: #8b5cf6; --btn-prev: #64748b; --btn-clear: #ffffff; --btn-save: #2563eb; --timer-bg: #fee2e2; --timer-text: #dc2626; --pause-bg: #f59e0b; }
+        .dark-mode { --bg-color: #121212; --text-main: #f1f5f9; --text-muted: #94a3b8; --header-bg: #1e1e1e; --border-color: #333333; --bg-light: #1e1e1e; --btn-clear: #2d2d2d; --timer-bg: #451a1a; --timer-text: #fca5a5; --not-visited-grey: #333333; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; user-select: none; }
+        body { background: var(--bg-color); color: var(--text-main); height: 100vh; display: flex; flex-direction: column; overflow: hidden; transition: background 0.3s, color 0.3s; }
+        .hidden { display: none !important; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--header-bg); border-bottom: 1px solid var(--border-color); z-index: 10; }
+        .test-title { color: var(--primary-blue); font-size: 18px; font-weight: bold; }
+        .header-controls { display: flex; gap: 10px; }
+        .icon-btn, .pause-btn { background: var(--bg-light); border: 1px solid var(--border-color); color: var(--text-main); width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-weight: bold; display: flex; justify-content: center; align-items: center;}
+        .pause-btn { background: var(--pause-bg); color: white; border: none; }
+        .timer-badge { background: var(--timer-bg); color: var(--timer-text); padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 14px; display: flex; align-items: center; gap: 5px; }
+        #test-screen, #home-screen, #result-screen, #solution-screen { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
+        #home-screen { justify-content: center; }
+        .test-container { max-width: 800px; width: 100%; display: flex; flex-direction: column; }
+        .q-header { display: flex; justify-content: space-between; padding-bottom: 12px; border-bottom: 1px solid var(--border-color); margin-bottom: 16px; font-weight: bold; }
+        .q-no { font-size: 18px; }
+        .pos-mark { color: var(--ans-green); } .neg-mark { color: var(--not-ans-red); }
+        .q-text { font-size: 16px; line-height: 1.6; margin-bottom: 20px; font-weight: 500; }
+        .options-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .option-row { display: flex; align-items: center; padding: 12px; background: var(--bg-light); border: 1px solid var(--border-color); border-radius: 8px; cursor: pointer; transition: 0.2s;}
+        .option-row:hover { border-color: var(--primary-blue); }
+        .option-row.selected { background: rgba(37, 99, 235, 0.1); border-color: var(--primary-blue); }
+        .opt-label { background: var(--border-color); color: var(--text-main); font-weight: bold; width: 30px; height: 30px; display: flex; justify-content: center; align-items: center; border-radius: 6px; margin-right: 15px; }
+        .option-row.selected .opt-label { background: var(--primary-blue); color: white; }
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 20px 0; border-top: 1px solid var(--border-color); margin-bottom: 20px; }
+        .btn { padding: 12px; border-radius: 6px; font-weight: bold; cursor: pointer; border: none; font-size: 14px;}
+        .btn:active { opacity: 0.8; }
+        .btn-mark { background: var(--btn-mark); color: white; } .btn-prev { background: var(--btn-prev); color: white; } .btn-clear { background: var(--btn-clear); color: var(--text-main); border: 1px solid var(--border-color); } .btn-save { background: var(--btn-save); color: white; }
+        .palette-title { text-align: center; font-size: 16px; margin-bottom: 15px; font-weight:bold;}
+        .palette-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; font-size: 13px; }
+        .summary-item { display: flex; align-items: center; gap: 8px; }
+        .box { width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 12px; font-weight:bold;}
+        .bg-green { background: var(--ans-green); } .bg-red { background: var(--not-ans-red); } .bg-grey { background: var(--not-visited-grey); color: var(--text-main); } .bg-purple { background: var(--marked-purple); }
+        .palette-grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; }
+        @media (max-width: 600px) { .palette-grid { grid-template-columns: repeat(5, 1fr); } }
+        .palette-btn { aspect-ratio: 1; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; font-size:14px; }
+        .palette-btn.s-not-visited { background: var(--not-visited-grey); color: var(--text-main); } .palette-btn.s-not-answered { background: var(--not-ans-red); color: white; } .palette-btn.s-answered { background: var(--ans-green); color: white; } .palette-btn.s-marked { background: var(--marked-purple); color: white; }
+        .palette-btn.active { outline: 2px solid var(--primary-blue); outline-offset: 2px; }
+        .btn-submit-main { background: var(--ans-green); color: white; width: 100%; padding: 15px; border-radius: 8px; font-weight: bold; border: none; margin-top: 15px; cursor: pointer; font-size:16px;}
+        .card { max-width: 600px; width: 100%; padding: 30px; background: var(--header-bg); border: 1px solid var(--border-color); border-radius: 12px; text-align: center; margin:auto;}
+        .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px; text-align: left; }
+        .detail-item { padding: 15px; background: var(--bg-light); border-radius: 8px; border: 1px solid var(--border-color); }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 100; display: flex; justify-content: center; align-items: center; }
+        .solution-box { width: 100%; max-width: 800px; margin: 0 auto 20px; padding: 20px; border-radius: 12px; background: var(--header-bg); border: 1px solid var(--border-color); }
+        .sol-opt { padding: 10px 15px; margin: 8px 0; border-radius: 8px; border: 1px solid var(--border-color); }
+        .sol-opt.correct { background: rgba(34, 197, 94, 0.15); border-color: var(--ans-green); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--not-ans-red); }
+        .explanation { margin-top: 15px; padding: 15px; background: rgba(37, 99, 235, 0.08); border-left: 5px solid var(--primary-blue); border-radius: 4px; font-size: 15px; line-height: 1.6; color: var(--text-main); }
+        .extra-info { margin-top: 12px; font-size: 14px; padding: 12px; background: #fffbeb; border-left: 5px solid #f59e0b; border-radius: 4px; color: #92400e; font-weight: 500;}
+        .dark-mode .extra-info { background: rgba(245, 158, 11, 0.15); border-color: #f59e0b; color: #fcd34d; }
+    </style>
+</head>
+<body>
+
+    <header id="main-header" class="hidden">
+        <div class="test-title">HSSC Group D (17 Nov 2018 - Shift 2)</div>
+        <div class="header-controls">
+            <button class="icon-btn" onclick="toggleTheme()">🌓</button>
+            <button class="pause-btn" onclick="pauseTest()">⏸</button>
+            <div class="timer-badge">⏱ <span id="timer-display">90:00</span></div>
+        </div>
+    </header>
+
+    <div id="home-screen">
+        <div class="card">
+            <h1 style="color: var(--primary-blue); margin-bottom: 20px;">HSSC Group D (मॉक टेस्ट)</h1>
+            <p style="margin-bottom: 20px; color: var(--text-muted); font-weight: bold; font-size: 16px;">(पीवाईपी: 17 नवंबर 2018 - दूसरी पाली / Shift 2)</p>
+            <div class="details-grid">
+                <div class="detail-item"><span>कुल प्रश्न</span><br><strong style="font-size: 18px;">90</strong></div>
+                <div class="detail-item"><span>कुल अंक</span><br><strong style="font-size: 18px;">90</strong></div>
+                <div class="detail-item"><span>समय</span><br><strong style="font-size: 18px;">90 मिनट</strong></div>
+                <div class="detail-item"><span>नेगेटिव मार्किंग</span><br><strong style="font-size: 18px;">नहीं</strong></div>
+            </div>
+            <button class="btn btn-save" style="width: 100%; padding: 16px; font-size: 18px;" onclick="startTest()">टेस्ट शुरू करें 🚀</button>
+            <button class="btn btn-clear" style="width: 100%; padding: 16px; font-size: 16px; margin-top: 12px;" onclick="resetTest()">टेस्ट रीसेट करें (क्लियर डेटा)</button>
+        </div>
+    </div>
+
+    <div id="test-screen" class="hidden">
+        <div class="test-container">
+            <div class="q-header"><div class="q-no" id="q-number">प्रश्न 1</div><div class="q-marks"><span class="pos-mark">+1</span> | <span class="neg-mark">-0</span></div></div>
+            <div class="q-text" id="q-text">Loading...</div>
+            <div class="options-container" id="options-container"></div>
+            <div class="action-grid">
+                <button class="btn btn-mark" onclick="markForReview()">मार्क और नेक्स्ट</button>
+                <button class="btn btn-prev" onclick="prevQuestion()">पिछला</button>
+                <button class="btn btn-clear" onclick="clearResponse()">क्लियर</button>
+                <button class="btn btn-save" onclick="saveAndNext()">सेव और नेक्स्ट</button>
+            </div>
+            <div class="palette-section">
+                <h3 class="palette-title">प्रश्न पैलेट</h3>
+                <div class="palette-summary">
+                    <div class="summary-item"><div class="box bg-green" id="count-ans">0</div> हल किए गए</div>
+                    <div class="summary-item"><div class="box bg-red" id="count-not-ans">1</div> हल नहीं किए गए</div>
+                    <div class="summary-item"><div class="box bg-grey" id="count-not-vis">89</div> देखे नहीं गए</div>
+                    <div class="summary-item"><div class="box bg-purple" id="count-marked">0</div> चिह्नित</div>
+                </div>
+                <div class="palette-grid" id="palette-grid"></div>
+            </div>
+            <button class="btn-submit-main" onclick="confirmSubmit()">टेस्ट सबमिट करें</button>
+        </div>
+    </div>
+
+    <div id="result-screen" class="hidden">
+        <div class="card">
+            <h1>टेस्ट सफलतापूर्वक सबमिट हो गया! 🎉</h1>
+            <h2 style="font-size: 56px; color: var(--primary-blue); margin: 20px 0;"><span id="score-text">0</span><span style="font-size:30px; color:var(--text-muted)">/90</span></h2>
+            <div class="details-grid">
+                <div class="detail-item">प्रयास किए<br><strong id="res-attempted" style="font-size: 20px;">0</strong></div>
+                <div class="detail-item">सही<br><strong id="res-correct" style="color:var(--ans-green); font-size: 20px;">0</strong></div>
+                <div class="detail-item">गलत<br><strong id="res-wrong" style="color:var(--not-ans-red); font-size: 20px;">0</strong></div>
+                <div class="detail-item">सटीकता<br><strong id="res-accuracy" style="font-size: 20px;">0%</strong></div>
+            </div>
+            <button class="btn btn-save" onclick="showSolutions()" style="width: 100%; padding: 16px; font-size: 16px;">विस्तृत हल (स्मार्ट ट्रिक्स) देखें 📝</button>
+            <button class="btn btn-clear" onclick="resetTest()" style="width: 100%; padding: 16px; margin-top: 12px; font-size: 16px;">फिर से टेस्ट दें</button>
+        </div>
+    </div>
+
+    <div id="solution-screen" class="hidden">
+        <h2 style="margin: 20px 0; color: var(--primary-blue); text-align: center; font-size: 24px;">विस्तृत हल (स्मार्ट ट्रिक्स और एक्स्ट्रा फैक्ट्स)</h2>
+        <div id="solutions-container" style="width: 100%; max-width: 800px; display: flex; flex-direction: column;"></div>
+        <button class="btn btn-save" onclick="location.reload()" style="margin: 30px auto; padding: 16px 40px; font-size: 16px;">होम पेज पर जाएँ</button>
+    </div>
+
+    <div id="submit-modal" class="overlay hidden">
+        <div class="card" style="padding: 30px;">
+            <h2 style="margin-bottom: 15px;">टेस्ट सबमिट करें?</h2>
+            <p style="margin-bottom: 25px; color: var(--text-muted);">क्या आप निश्चित रूप से टेस्ट सबमिट करना चाहते हैं? सबमिट करने के बाद आप उत्तर बदल नहीं पाएंगे।</p>
+            <div style="display:flex; gap:15px;">
+                <button class="btn btn-clear" style="flex:1; padding:14px;" onclick="closeModal('submit-modal')">रद्द करें</button>
+                <button class="btn btn-save" style="flex:1; padding:14px;" onclick="submitTest()">हाँ, सबमिट करें</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pause-modal" class="overlay hidden">
+        <div class="card" style="padding: 30px;">
+            <h2 style="margin-bottom: 15px;">टेस्ट रोका गया ⏸️</h2>
+            <p style="margin-bottom: 25px; color: var(--text-muted);">आपका समय और प्रोग्रेस सेव कर ली गई है। आप जब चाहें वापस यहीं से शुरू कर सकते हैं।</p>
+            <button class="btn btn-save" style="width: 100%; padding: 14px;" onclick="resumeTest()">टेस्ट फिर से शुरू करें ▶️</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            ["राजनीतिक दलों में राजनीति के अपराधीकरण पर एक बहस के मध्य में, अनैतिक राजनैतिक कार्य रोकने के एक आरंभिक उपाय के रूप में प्रति कर्तव्य च्युति कानून (Anti-Defection Law) ________ के माध्यम से लाया गया।", 
+            ["90 वाँ संविधान संशोधन", "91 वाँ संविधान संशोधन", "51 वाँ संविधान संशोधन", "52 वाँ संविधान संशोधन"], 3, 
+            "<b>विस्तृत हल:</b> 52वाँ संविधान संशोधन अधिनियम 1985 में पारित किया गया था। इसका मुख्य उद्देश्य 'आया राम गया राम' की संस्कृति को रोकना था। इसके तहत सांसदों और विधायकों को दल-बदल करने पर अयोग्य घोषित करने का प्रावधान है। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> 1. इसके द्वारा संविधान में 10वीं अनुसूची जोड़ी गई। 2. यह कानून तत्कालीन प्रधानमंत्री राजीव गांधी के कार्यकाल में लाया गया था। 3. 91वें संशोधन (2003) द्वारा इसमें और कड़ाई की गई।</div>"],
+            
+            ["निम्नलिखित में से किस आंदोलन ने गाँधी को एक सच्चा राष्ट्रीय नेता बनाया?", 
+            ["खेडा सत्याग्रह", "असहयोग आंदोलन", "रौलेट सत्याग्रह", "इनमें से कोई नहीं"], 2, 
+            "<b>विस्तृत हल:</b> 1919 का रौलेट सत्याग्रह वह पहला अखिल भारतीय आंदोलन था जिसने महात्मा गांधी को एक राष्ट्रीय स्तर के नेता के रूप में स्थापित किया। इससे पहले चंपारण, खेड़ा और अहमदाबाद मिल हड़ताल क्षेत्रीय स्तर के आंदोलन थे। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> 1. रौलेट एक्ट (1919) को 'बिना वकील, बिना अपील, बिना दलील' का काला कानून कहा गया। 2. इसी के विरोध में जलियांवाला बाग में शांतिपूर्ण सभा हो रही थी जहाँ नरसंहार हुआ।</div>"],
+            
+            ["समीकरणों 2(ax-by)+a+4b=0 और 2(bx+ay)+b-4a=0 को संतुष्ट करने वाले x और y के मान हैं:", 
+            ["x=2, y=7/2", "x=-1/2, y=2", "x=a/2, y=b/2", "x=1, y=1"], 1, 
+            "<b>विस्तृत हल (स्मार्ट अप्रोच):</b> ऐसे प्रश्नों को पारंपरिक तरीके से हल करने में बहुत समय लगता है। इसलिए हम विकल्पों (Options) का उपयोग करेंगे।<br><b>चरण 1:</b> मान लीजिए हम विकल्प B (x = -1/2, y = 2) को पहले समीकरण में रखते हैं।<br><b>चरण 2:</b> 2[a(-1/2) - b(2)] + a + 4b<br>=> 2[-a/2 - 2b] + a + 4b<br>=> -a - 4b + a + 4b = 0.<br><b>चरण 3:</b> समीकरण पूरी तरह से संतुष्ट (LHS = RHS) हो गया है। अतः उत्तर B है। बिना पेन उठाए 10 सेकंड में हल!"],
+            
+            ["यदि -3 बहुपदीय f(x) = 2x² - (a+1)x + 4a का एक शून्य है तो a का मान है:", 
+            ["-3", "0", "1", "3/2"], 0, 
+            "<b>विस्तृत हल:</b> <b>कॉन्सेप्ट:</b> यदि कोई संख्या किसी बहुपद (Polynomial) का शून्यक (zero) है, तो x के स्थान पर वह संख्या रखने पर पूरे बहुपद का मान 0 हो जाता है।<br><b>चरण 1:</b> x = -3 को f(x) = 2x² - (a+1)x + 4a में रखें।<br><b>चरण 2:</b> f(-3) = 2(-3)² - (a+1)(-3) + 4a = 0<br>=> 2(9) - (-3a - 3) + 4a = 0<br>=> 18 + 3a + 3 + 4a = 0<br>=> 7a + 21 = 0 => 7a = -21 => a = -3."],
+            
+            ["एक 5 सें.मी. लंबाई की वस्तु 30 सें.मी. वक्रता त्रिज्या वाले उत्तल दर्पण के सामने 20 सें.मी. की दूरी पर रखी है। प्रतिबिंब का स्थान ________ पर है।", 
+            ["दर्पण के 8.6 सें.मी. पीछे", "दर्पण के 8.6 सें.मी. सामने", "दर्पण के 6.67 सें.मी. पीछे", "दर्पण के 6.67 सें.मी. आगे"], 0, 
+            "<b>विस्तृत हल:</b><br><b>दिया गया है:</b> वक्रता त्रिज्या (R) = +30 cm (उत्तल दर्पण के लिए धनात्मक)। फोकस दूरी (f) = R/2 = +15 cm.<br>वस्तु की दूरी (u) = -20 cm (दर्पण के सामने हमेशा ऋणात्मक)।<br><b>दर्पण सूत्र:</b> 1/f = 1/v + 1/u<br>1/15 = 1/v + (-1/20)<br>1/v = 1/15 + 1/20 = (4 + 3) / 60 = 7/60<br>v = 60/7 = 8.57 cm ≈ 8.6 cm.<br><b>निष्कर्ष:</b> चूँकि v का मान धनात्मक (Positive) है, प्रतिबिंब दर्पण के 8.6 cm पीछे (behind the mirror) बनेगा।"],
+            
+            ["कढ़ाई किया गया शॉल क्या कहलाता है?", 
+            ["कश्मीरी शॉल", "बाघ", "पशमीना", "दोशाला"], 1, 
+            "<b>विस्तृत हल:</b> पंजाब और हरियाणा क्षेत्र में पूरी तरह से सघन कढ़ाई वाले शॉल या ओढ़नी को 'बाघ' (Bagh) कहा जाता है। इसमें कपड़े का आधार दिखाई नहीं देता, पूरी तरह धागों से ढका होता है। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> 1. फुलकारी का अर्थ है 'फूलों की कारीगरी', जो विवाह और शुभ अवसरों पर ओढ़ी जाती है। 2. पश्मीना लद्दाख और कश्मीर क्षेत्र में पाई जाने वाली चंगथंगी बकरी के बालों से बनी विश्व प्रसिद्ध शॉल है।</div>"],
+            
+            ["संविधान की बारहर्वी अनुसूची के अंतर्गत नगर निगमों को दिए गए कार्यकारी मदों की संख्या है:", 
+            ["29", "28", "18", "19"], 2, 
+            "<b>विस्तृत हल:</b> संविधान की 12वीं अनुसूची में नगर पालिकाओं (शहरी स्थानीय निकायों) के कार्यक्षेत्र में आने वाले कुल 18 प्रशासनिक विषयों (Functional items) का उल्लेख है। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> 1. 12वीं अनुसूची को 74वें संविधान संशोधन अधिनियम, 1992 द्वारा जोड़ा गया था। 2. ग्रामीण स्थानीय निकायों (पंचायती राज) के लिए 11वीं अनुसूची में 29 विषय दिए गए हैं।</div>"],
+            
+            ["श्री P दक्षिण की ओर चल रहे हैं। 15 मीटर चलने के बाद वे बाएँ मुडते हैं और 15 मीटर चलते हैं। फिर बाएँ मुडकर 15 मीटर चलते हैं। आरंभिक बिंदु से कितने दूर हैं?", 
+            ["15 मीटर", "30 मीटर", "45 मीटर", "इनमें से कोई नहीं"], 0, 
+            "<b>विस्तृत हल (दिशा परीक्षण):</b><br><b>चरण 1:</b> श्री P दक्षिण (South) की ओर 15 मीटर चलते हैं। (नीचे की ओर)<br><b>चरण 2:</b> वह बाएँ मुड़ते हैं। दक्षिण का बायां मतलब पूर्व (East) दिशा। वह पूर्व में 15 मीटर चलते हैं।<br><b>चरण 3:</b> वह फिर से बाएँ मुड़ते हैं। पूर्व का बायां मतलब उत्तर (North) दिशा। वह उत्तर में 15 मीटर चलते हैं।<br><b>निष्कर्ष:</b> चूँकि वह दक्षिण में 15 मी गए और वापस उत्तर में 15 मी आ गए, तो ये दोनों दूरियाँ रद्द (cancel) हो गईं। अब वह अपने प्रारंभिक बिंदु से ठीक पूर्व दिशा में केवल 15 मीटर की दूरी पर खड़े हैं।"],
+            
+            ["∆ABC में, AB=7 सें.मी., AC=13 सें.मी. और BC=2√30 सें.मी. है तो ∠B है:", 
+            ["120°", "60°", "90°", "45°"], 2, 
+            "<b>विस्तृत हल (पाइथागोरस परीक्षण):</b><br>त्रिभुज के तीनों कोणों या प्रकृति का पता लगाने के लिए भुजाओं का वर्ग (Square) करें।<br>AB² = 7² = 49<br>BC² = (2√30)² = 4 × 30 = 120<br>AC² = 13² = 169<br><b>नियम:</b> जाँच करें कि क्या किन्हीं दो छोटी भुजाओं के वर्गों का योग तीसरी भुजा के वर्ग के बराबर है?<br>AB² + BC² = 49 + 120 = 169<br>AC² = 169<br>चूँकि AB² + BC² = AC² सिद्ध होता है, अतः यह एक समकोण (Right-angled) त्रिभुज है। सबसे बड़ी भुजा (कर्ण) AC है, अतः इसके ठीक सामने का कोण ∠B = 90° होगा।"],
+            
+            ["समरूपता पूर्ण करें। ज्यामिति : यूक्लिड :: निर्देशांक ज्यामिति : ?", 
+            ["रीनी डेस्कार्टस्", "यूलर", "कैंटर", "न्यूटन"], 0, 
+            "<b>विस्तृत हल:</b> यह प्रश्न समरूपता (Analogy) पर आधारित है। जिस प्रकार प्राचीन ग्रीक गणितज्ञ 'यूक्लिड' (Euclid) को 'ज्यामिति का जनक' (Father of Geometry) माना जाता है, उसी प्रकार फ्रांसीसी गणितज्ञ और दार्शनिक 'रेने डेस्कार्टेस' (Rene Descartes) को 'निर्देशांक ज्यामिति का जनक' (Father of Co-ordinate Geometry) कहा जाता है। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> इन्होने ही कार्टेशियन प्रणाली (x, y अक्ष) विकसित की थी। आइजैक न्यूटन कलन (Calculus) के लिए प्रसिद्ध हैं।</div>"],
+            
+            ["ब्लीचिंग पाउडर है:", 
+            ["CaOCl", "CaOCl₂", "CaO₂Cl", "CaO₂Cl₂"], 1, 
+            "<b>विस्तृत हल:</b> ब्लीचिंग पाउडर (विरंजक चूर्ण) का रासायनिक सूत्र कैल्शियम ऑक्सीक्लोराइड (CaOCl₂) होता है। इसका उपयोग मुख्य रूप से कीटाणुनाशक के रूप में, पीने के पानी को शुद्ध करने और कपड़ा उद्योग में विरंजन (bleaching) के लिए किया जाता है। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> यह शुष्क बुझे हुए चूने [Ca(OH)₂] पर क्लोरीन गैस प्रवाहित करके व्यावसायिक रूप से तैयार किया जाता है।</div>"],
+            
+            ["________ के लिए बहुत गणों का उपयोग होते हैं (Several Ganas used to make a...)", 
+            ["मंडल", "जिला", "संघ", "होबली"], 2, 
+            "<b>विस्तृत हल:</b> प्राचीन भारतीय राजनीतिक व्यवस्था में, विशेषकर महाजनपद काल के दौरान, कई छोटे 'गणों' (Ganas - समूह या कबीले) के मिलने से एक बड़े 'संघ' (Sangha - गणराज्य) का निर्माण होता था। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> वैशाली का वज्जि संघ (Vajji Sangha) विश्व के सबसे प्राचीन और शक्तिशाली गणराज्यों (संघों) में से एक था, जो 8 गणों से मिलकर बना था।</div>"],
+            
+            ["निम्नलिखित में से किस नगर को 'भारत का स्कॉटलैंड' कहा जाता है?", 
+            ["शिमला", "कोडगू (कूर्ग)", "ऊटी", "दार्जिलिंग"], 1, 
+            "<b>विस्तृत हल:</b> कर्नाटक राज्य के 'कोडगू' (Coorg/कूर्ग) जिले को अपनी मनमोहक पहाड़ियों, हरे-भरे परिदृश्य और धुंध भरे मौसम के कारण 'भारत का स्कॉटलैंड' (Scotland of India) कहा जाता है। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> कूर्ग पूरे भारत में अपने कॉफी बागानों (Coffee plantations) और मसालों के लिए भी बेहद प्रसिद्ध है।</div>"],
+            
+            ["अक्टूबर 1907 में, लाला लजपत राय द्वारा एक राज्य स्तरीय सम्मेलन आयोजित किया गया था, जिसे ________ कहा गया।", 
+            ["भारत छोड़ो", "आजाद हिंद", "स्वदेशी आंदोलन", "सत्याग्रह"], 2, 
+            "<b>विस्तृत हल:</b> अक्टूबर 1907 में लाला लाजपत राय ने पंजाब क्षेत्र में लोगों को जागरूक करने और विदेशी वस्तुओं के बहिष्कार के लिए एक राज्य स्तरीय सम्मेलन का आयोजन किया था, जिसे 'स्वदेशी आंदोलन' (Swadeshi Andolan) के प्रसार का हिस्सा माना गया। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> स्वदेशी आंदोलन मूल रूप से 1905 के बंगाल विभाजन (लॉर्ड कर्जन द्वारा) के विरोध में पूरे देश में फैल गया था। लाला जी 'लाल-बाल-पाल' की तिकड़ी का अहम हिस्सा थे।</div>"],
+            
+            ["BF, JN, RV, ZD, HL, ? हेतु विकल्पों में से लुप्त अक्षर ज्ञात करें।", 
+            ["PT", "LP", "GK", "QU"], 0, 
+            "<b>विस्तृत हल (स्मार्ट लॉजिक - +8 पैटर्न):</b><br>अक्षरों की स्थिति (Place value) लिखें और पैटर्न खोजें।<br><b>पहला अक्षर:</b> B(2) + 8 = J(10); J(10) + 8 = R(18); R(18) + 8 = Z(26); Z(26) + 8 = H(8) [चूंकि 26 के बाद वापस A से शुरू होता है]; H(8) + 8 = <b>P(16)</b>.<br><b>दूसरा अक्षर:</b> F(6) + 8 = N(14); N(14) + 8 = V(22); V(22) + 8 = D(4) [30-26=4]; D(4) + 8 = L(12); L(12) + 8 = <b>T(20)</b>.<br>अतः अगला पद 'PT' होगा।"],
+            
+            ["यदि 3x - 4y + 5 = 0 और 6x - 8y + k = 0 समान रेखा को दर्शाते हैं, तो k का मान है:", 
+            ["5", "15", "10", "इनमें से कोई नहीं"], 2, 
+            "<b>विस्तृत हल (स्मार्ट ट्रिक):</b><br>जब दो रैखिक समीकरण एक ही रेखा (Coincident lines या संपाती रेखाएं) को दर्शाते हैं, तो उनके गुणांकों का अनुपात एकदम समान होता है।<br>सूत्र: a₁/a₂ = b₁/b₂ = c₁/c₂<br>यहाँ, 3/6 = -4/-8 = 5/k<br>=> 1/2 = 1/2 = 5/k<br>=> 1/2 = 5/k => k = 5 × 2 = 10. (बिना पेन चलाए हल!)"],
+            
+            ["होम रूल लीग आंदोलन ________ द्वारा शुरु किया गया।", 
+            ["विवेकानंद", "सिस्टर निवेदिता", "एम.के. गाँधी", "एनी बेसेंट"], 3, 
+            "<b>विस्तृत हल:</b> 1916 में भारत में स्वशासन (Self-rule) प्राप्त करने के उद्देश्य से 'होम रूल लीग' (Home Rule League) आंदोलन की शुरुआत की गई थी। इसके प्रमुख संस्थापक बाल गंगाधर तिलक और एनी बेसेंट थे। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> तिलक जी ने अप्रैल 1916 में बेलगाम (पुणे) में अपनी लीग स्थापित की, जबकि एनी बेसेंट ने सितंबर 1916 में मद्रास में अपनी लीग की स्थापना की।</div>"],
+            
+            ["यदि 21 जुलाई शनिवार था तो उसी वर्ष 4 जुलाई को ________ था।", 
+            ["बुधवार", "गुरुवार", "शनिवार", "मंगलवार"], 0, 
+            "<b>विस्तृत हल (Odd Days ट्रिक):</b><br>हमें 21 जुलाई का दिन (शनिवार) पता है और 4 जुलाई का दिन निकालना है।<br><b>कुल दिनों का अंतर:</b> 21 - 4 = 17 दिन।<br><b>विषम दिन (Odd days) निकालें:</b> 17 को 7 से भाग दें (17 ÷ 7)। भागफल 2 और शेषफल (Remainder) 3 बचता है।<br>चूँकि हमें तारीख में पीछे (Backwards) जाना है, इसलिए शनिवार से 3 दिन पीछे गिनें: शुक्रवार -> गुरुवार -> बुधवार।<br>अतः 4 जुलाई को बुधवार था।"],
+            
+            ["अंडमान और निकोबार ________ द्वारा पृथक हैं।", 
+            ["10° चैनल", "8° चैनल", "6° चैनल", "12° चैनल"], 0, 
+            "<b>विस्तृत हल:</b> बंगाल की खाड़ी में स्थित अंडमान द्वीप समूह (उत्तर में) और निकोबार द्वीप समूह (दक्षिण में) को '10 डिग्री चैनल' (10° Channel) भौगोलिक रूप से एक-दूसरे से अलग करता है। यह भूमध्य रेखा के उत्तर में 10 डिग्री अक्षांश पर स्थित है। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> 1. 8 डिग्री चैनल मालदीव को भारत के मिनिकॉय द्वीप (लक्षद्वीप) से अलग करता है। 2. 9 डिग्री चैनल मिनिकॉय को मुख्य लक्षद्वीप से अलग करता है।</div>"],
+            
+            ["बिंदुओं (a+b, a-b) और (a-b, a+b) के बीच दूरी है:", 
+            ["0", "a+b", "√8", "इनमें से कोई नहीं"], 3, 
+            "<b>विस्तृत हल:</b><br>निर्देशांक ज्यामिति में दूरी का सूत्र: D = √[(x₂ - x₁)² + (y₂ - y₁)²]<br>x₂ - x₁ = (a - b) - (a + b) = a - b - a - b = -2b<br>y₂ - y₁ = (a + b) - (a - b) = a + b - a + b = +2b<br>D = √[(-2b)² + (2b)²] = √[4b² + 4b²] = √[8b²] = 2b√2.<br>चूँकि 2b√2 दिए गए विकल्पों (0, a+b, √8) में मौजूद नहीं है (यहाँ केवल √8 है, b नहीं है), अतः सही उत्तर 'इनमें से कोई नहीं' होगा।"],
+            
+            ["एक पिता की आयु अपने 5 बच्चों की आयु के योग के बराबर है। 15 वर्ष बाद, बच्चों की आयु का योग पिता की आयु से दोगुना होगा। पिता की आयु ज्ञात करें।", 
+            ["40 वर्षों", "45 वर्षों", "48 वर्षों", "50 वर्षों"], 1, 
+            "<b>विस्तृत हल (समीकरण विधि):</b><br>माना पिता की वर्तमान आयु = F और 5 बच्चों की वर्तमान आयु का योग = S.<br>प्रश्न की पहली शर्त: F = S.<br>15 वर्ष बाद: पिता की आयु = F + 15. चूँकि 5 बच्चे हैं, 15 वर्ष में सभी की आयु 15-15 वर्ष बढ़ेगी। अतः बच्चों की आयु का योग = S + (5 × 15) = S + 75.<br>प्रश्न की दूसरी शर्त: 15 वर्ष बाद बच्चों का योग = 2 × पिता की आयु।<br>S + 75 = 2(F + 15)<br>चूँकि S = F है, तो F + 75 = 2F + 30<br>75 - 30 = 2F - F => F = 45 वर्ष।"],
+            
+            ["निम्नलिखित में से कौन-सा राज्य हरियाणा के पूर्व में है?", 
+            ["राजस्थान", "उत्तर प्रदेश", "हिमाचल प्रदेश", "पंजाब"], 1, 
+            "<b>विस्तृत हल:</b> भौगोलिक दृष्टि से, हरियाणा के ठीक पूर्व (East) में उत्तर प्रदेश राज्य स्थित है। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> 1. हरियाणा और उत्तर प्रदेश के बीच यमुना नदी (320 किमी लंबी) एक प्राकृतिक सीमा (Natural boundary) का निर्माण करती है। 2. हरियाणा के उत्तर में हिमाचल, दक्षिण व पश्चिम में राजस्थान, तथा उत्तर-पश्चिम में पंजाब स्थित है।</div>"],
+            
+            ["प्रत्येकी 1.5 सें.मी. भुजावाले 3 घनों को आर-पार एक दूसरे से जोड़ा गया है, परिणामी ठोस का पृष्ठीय क्षेत्रफल है:", 
+            ["29.75 cm²", "31.5 cm²", "30.25 cm²", "32 cm²"], 1, 
+            "<b>विस्तृत हल (स्मार्ट एप्रोच):</b><br>एक घन में 6 फलक (faces) होते हैं। जब 3 घनों को एक लाइन में जोड़ा जाता है, तो उनके बीच के 4 फलक (2 जोड़ों पर) छिप जाते हैं।<br>कुल फलक = (3 × 6) - 4 = 14 फलक (faces) बाहर दिखाई देंगे।<br>एक वर्गाकार फलक का क्षेत्रफल = भुजा × भुजा = 1.5 × 1.5 = 2.25 cm².<br>अतः परिणामी घनाभ का कुल पृष्ठीय क्षेत्रफल = 14 × 2.25 = 31.5 cm².<br>यह घनाभ का लंबा फॉर्मूला [2(lb+bh+hl)] लगाने से कहीं अधिक तेज़ और आसान तरीका है!"],
+            
+            ["निम्नलिखित में से कौन-सा एक समांतर श्रेणी (AP) बनाएगा?", 
+            ["1, 1, 2.2, 3.3...", "0.3, 0.33, 0.333...", "√2, 2, 2√2, 4...", "7, 7+√2, 7+2√2..."], 3, 
+            "<b>विस्तृत हल:</b> समांतर श्रेणी (Arithmetic Progression) वह श्रृंखला होती है जिसमें किन्हीं भी दो लगातार पदों के बीच का अंतर (common difference 'd') हमेशा समान रहता है।<br>विकल्प (D) को चेक करें:<br>दूसरा पद - पहला पद = (7 + √2) - 7 = √2<br>तीसरा पद - दूसरा पद = (7 + 2√2) - (7 + √2) = √2<br>यहाँ हर स्थिति में अंतर √2 है, अतः यही सही समांतर श्रेणी है।"],
+            
+            ["गणितीय चिन्हों को बदलने पर (सामान्य BODMAS प्रश्न): 10 x 4 - 25 / 5 + 0 का मान:", 
+            ["48", "53", "35", "इनमें से कोई नहीं"], 2, 
+            "<b>विस्तृत हल:</b> BODMAS नियम (Bracket, Of, Division, Multiplication, Addition, Subtraction) के अनुसार सबसे पहले भाग (Division) हल करें:<br>1. 25 / 5 = 5<br>समीकरण बना: 10 × 4 - 5 + 0<br>2. अब गुणा (Multiplication) करें: 10 × 4 = 40<br>समीकरण बना: 40 - 5 + 0<br>3. अब जोड़/घटाव करें: 40 - 5 = 35.<br>अतः सही उत्तर 35 है।"],
+            
+            ["प्रसिद्ध अभिनेत्री जूही चावला हरियाणा के ________ जिले से हैं।", 
+            ["पिंजौर", "रोहतक", "सोनीपत", "अंबाला"], 3, 
+            "<b>विस्तृत हल:</b> प्रसिद्ध बॉलीवुड अभिनेत्री और 1984 की मिस इंडिया विजेता जूही चावला का जन्म 13 नवंबर 1967 को हरियाणा के 'अंबाला' (Ambala) जिले में हुआ था। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> अंबाला कई प्रसिद्ध हस्तियों का जन्मस्थान रहा है, जिनमें दिवंगत राजनेता सुषमा स्वराज, अभिनेता ओम पुरी और परिणीति चोपड़ा शामिल हैं। अंबाला को अपनी वैज्ञानिक उपकरण इंडस्ट्री के कारण 'साइंस सिटी' (Science City) भी कहा जाता है।</div>"],
+            
+            ["चंड़ीगढ उच्च न्यायालय की इमारत का डिजाईन ________ ने बनाया।", 
+            ["एडविन लुटियन्स", "ली कॉर्बुषियर", "लोरी बेकर", "कॉर्नवालिस"], 1, 
+            "<b>विस्तृत हल:</b> पंजाब और हरियाणा उच्च न्यायालय (चंडीगढ़) की भव्य इमारत का डिजाइन प्रसिद्ध फ्रांसीसी-स्विस वास्तुकार 'ली कॉर्बुज़िए' (Le Corbusier) ने तैयार किया था। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> 1. चंडीगढ़ शहर का पूरा मास्टर प्लान (सेक्टर सिस्टम) भी ली कॉर्बुज़िए ने ही तैयार किया था, जो भारत का पहला योजनाबद्ध (planned) शहर है। 2. एडविन लुटियन्स ने नई दिल्ली और संसद भवन का डिजाइन बनाया था।</div>"],
+            
+            ["√2 सें.मी. भुजा के एक वर्ग में उत्कीर्णित वृत्त का क्षेत्रफल है:", 
+            ["1/2 cm²", "π/√2 cm²", "π/4 cm²", "π/2 cm²"], 3, 
+            "<b>विस्तृत हल (स्मार्ट ट्रिक):</b><br>जब किसी वर्ग (Square) के अंदर कोई वृत्त (Circle) बनाया जाता है, तो उस वृत्त का व्यास (Diameter) वर्ग की भुजा के बिल्कुल बराबर होता है।<br>वर्ग की भुजा = √2 cm, अतः वृत्त का व्यास (d) = √2 cm.<br>वृत्त की त्रिज्या (r) = d/2 = √2 / 2 = 1 / √2 cm.<br>वृत्त का क्षेत्रफल = πr² = π × (1 / √2)² = π × (1/2) = π/2 cm².<br>अतः विकल्प D सही है।"],
+            
+            ["________ में पुरातात्विक खोज दर्शाती है कि हरियाणा मौर्य साम्राज्य का भाग था।", 
+            ["सारनाथ", "सीलोन", "सुघ", "कुरुक्षेत्र"], 2, 
+            "<b>विस्तृत हल:</b> हरियाणा के यमुनानगर जिले के पास स्थित 'सुघ' (प्राचीन नाम स्रुघ्न) में हुई पुरातात्विक खुदाई में मौर्यकालीन अवशेष, सिक्के और टेराकोटा की मूर्तियां मिली हैं। इससे यह स्पष्ट होता है कि यह क्षेत्र शक्तिशाली मौर्य साम्राज्य (अशोक के समय) का एक महत्वपूर्ण हिस्सा था। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> सुघ एक प्राचीन बौद्ध केंद्र भी था, जिसका वर्णन चीनी यात्री ह्वेनसांग ने अपनी यात्रा वृतांत में किया है।</div>"],
+            
+            ["हरियाणा की विधानसभा संविधान की ________ अनुसूची में शामिल विषयों पर कानून पारित करती है।", 
+            ["7th", "8th", "9th", "10th"], 0, 
+            "<b>विस्तृत हल:</b> भारतीय संविधान की 7वीं अनुसूची (7th Schedule) में केंद्र और राज्यों के बीच शक्तियों के बंटवारे के लिए तीन सूचियाँ दी गई हैं: 1. संघ सूची 2. राज्य सूची 3. समवर्ती सूची। हरियाणा विधानसभा (या कोई भी राज्य विधानसभा) मुख्य रूप से 'राज्य सूची' और 'समवर्ती सूची' में वर्णित विषयों (जैसे पुलिस, कृषि, स्वास्थ्य) पर कानून पारित करती है। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> 8वीं अनुसूची भाषाओं से, 9वीं भूमि सुधार से और 10वीं दलबदल से संबंधित है।</div>"],
+            
+            ["एशियन खेल 2018 पुरस्कार के लिए किसे 'सर्वाधिक मूल्यवान खिलाडी' (MVP) नामित किया गया है?", 
+            ["मेरी कॉम", "रिकॉको इकी", "भजरंग पूनिया", "पी.वी. सिंधु"], 1, 
+            "<b>विस्तृत हल:</b> 2018 के जकार्ता एशियाई खेलों में जापानी महिला तैराक 'रिकॉको इकी' (Rikako Ikee) को उनके शानदार प्रदर्शन के लिए 'मोस्ट वैल्यूएबल प्लेयर' (MVP) का पुरस्कार दिया गया था। उन्होंने इन खेलों में कुल 6 स्वर्ण और 2 रजत पदक जीते थे। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> बजरंग पूनिया (कुश्ती) ने 2018 एशियाई खेलों में भारत के लिए पहला स्वर्ण पदक जीता था।</div>"],
+            
+            ["अग्र मस्तिष्क (Fore brain) ________ के लिए विशेषज्ञ है।", 
+            ["सुनना", "घ्राण (Smell)", "देखने", "एक सीधी रेखा में चलने"], 1, 
+            "<b>विस्तृत हल:</b> मानव मस्तिष्क के अग्र भाग (Forebrain) में 'घ्राण पालि' (Olfactory lobe/bulb) स्थित होता है, जो मुख्य रूप से सूंघने (Smell) से संबंधित संवेदी सूचनाओं को ग्रहण और प्रोसेस करने का काम करता है। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> 1. सुनना और देखना मुख्य रूप से मध्य मस्तिष्क (Midbrain) और सेरेब्रम के अन्य हिस्सों से जुड़ा है। 2. शरीर का संतुलन और सीधी रेखा में चलना पश्च मस्तिष्क (Hindbrain) के 'सेरिबेलम' (Cerebellum) द्वारा नियंत्रित होता है।</div>"],
+            
+            ["कोशिकाद्रवीय नर बंध्यता (Cytoplasmic male sterility) के संदर्भ में कौन-सा कथन सत्य है? A) यह पादपों में पूर्ण या आंशिक नर बंध्यता है। B) इसका पादप जनन में व्यापक उपयोग है।", 
+            ["केवल A", "केवल B", "A और B दोनों सत्य हैं", "दोनों गलत हैं"], 2, 
+            "<b>विस्तृत हल:</b> कोशिकाद्रवीय नर बंध्यता (CMS) पौधों में एक ऐसी स्थिति है जिसमें नर प्रजनन अंग (पराग कण/Pollen) कार्यशील नहीं होते, जिससे पौधा स्वयं परागण (Self-pollination) नहीं कर पाता। यह हाइब्रिड बीज (Hybrid seeds) के उत्पादन में एक बहुत ही महत्वपूर्ण और व्यापक रूप से उपयोग की जाने वाली तकनीक है। अतः दोनों कथन पूर्णतः सत्य हैं।"],
+            
+            ["समीकरण 4√5 x² + 3x - 2√5 = 0 के हल हैं:", 
+            ["√5", "-2/√5, √5/4", "-2/√5, √5/16", "√5, √5"], 1, 
+            "<b>विस्तृत हल (Middle Term Split ट्रिक):</b><br>समीकरण: ax² + bx + c = 0. यहाँ a = 4√5, c = -2√5.<br>गुणा (a × c) = 4√5 × -2√5 = -40.<br>मध्य पद 3x को ऐसे दो भागों में तोड़ें जिनका गुणा -40 हो और जोड़ 3 हो। ये भाग हैं: +8x और -5x.<br>शून्यक (Roots) निकालने का सीधा शॉर्टकट: इन भागों का चिह्न बदलें और 'a' से भाग दें।<br>रूट 1 = -8 / 4√5 = -2/√5.<br>रूट 2 = +5 / 4√5 = 5/(4√5) = (√5×√5)/(4√5) = √5/4.<br>अतः विकल्प B सही है।"],
+            
+            ["राष्ट्रवाद के संबंध में: A) इससे समेकन द्वारा नए राज्य बन सकते हैं B) इससे संघवाद बहुत-से नए राज्यों में टूट सकता है।", 
+            ["केवल A", "केवल B", "दोनों सत्य हैं", "कोई नहीं"], 2, 
+            "<b>विस्तृत हल:</b> राष्ट्रवाद (Nationalism) का प्रभाव दोतरफा हो सकता है। यह एकीकरण (Consolidation) का कारण बन सकता है, जैसे 19वीं सदी में इटली और जर्मनी का एकीकरण। वहीं दूसरी ओर, यह बड़े साम्राज्यों या संघों के विघटन (Break-up) का कारण भी बन सकता है, जैसे ऑस्ट्रो-हंगेरियन साम्राज्य या 1991 में सोवियत संघ (USSR) का टूटना। अतः दोनों कथन सत्य हैं।"],
+            
+            ["निर्माणाधीन मुंबई-अहमदाबाद बुलेट ट्रेन परियोजना का वित्तीयन ________ द्वारा किया जा रहा है।", 
+            ["जर्मनी", "दक्षिण कोरिया", "जापान", "फ्रांस"], 2, 
+            "<b>विस्तृत हल:</b> भारत की पहली उच्च गति रेल (बुलेट ट्रेन) परियोजना मुंबई से अहमदाबाद के बीच निर्माणाधीन है। इस महत्वाकांक्षी परियोजना के लिए तकनीकी और भारी वित्तीय सहायता (सॉफ्ट लोन) 'जापान' (JICA - Japan International Cooperation Agency) द्वारा प्रदान की जा रही है। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> इस ट्रेन की अधिकतम गति 320 किमी/घंटा होगी और यह जापान की 'शिंकानसेन' (Shinkansen) तकनीक पर आधारित है।</div>"],
+            
+            ["हरियाणा की स्थापना ________ की संसदीय समिति की संस्तुति पर हुई।", 
+            ["सरदार हुकुम सिंह", "तारा सिंह", "छोटू राम", "चौधरी देवी लाल"], 0, 
+            "<b>विस्तृत हल:</b> पंजाब से अलग कर पृथक हरियाणा राज्य के गठन के लिए 23 सितंबर 1965 को लोकसभा अध्यक्ष 'सरदार हुकम सिंह' की अध्यक्षता में एक संसदीय समिति का गठन किया गया था। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> इसी समिति की सिफारिश के आधार पर 1966 में 'जे.सी. शाह आयोग' (सीमा आयोग) का गठन हुआ, जिसने दोनों राज्यों की सीमाएँ तय कीं और अंततः 1 नवंबर 1966 को हरियाणा 17वें राज्य के रूप में अस्तित्व में आया।</div>"],
+            
+            ["यदि 'ICE' का कूट 17 हो, तो 'TEA' का कूट होगा:", 
+            ["18", "19", "26", "27"], 2, 
+            "<b>विस्तृत हल (Place Value ट्रिक):</b><br>अंग्रेजी वर्णमाला में अक्षरों के संख्यात्मक मान (A=1, B=2, C=3...) को जोड़ें।<br>I(9) + C(3) + E(5) = 9 + 3 + 5 = 17.<br>उसी प्रकार TEA के लिए मान निकालें:<br>T(20) + E(5) + A(1) = 20 + 5 + 1 = 26.<br>अतः सही उत्तर 26 है। 10 सेकंड में हल!"],
+            
+            ["इल्बर्ट बिल विवाद के साथ कौन-सा वॉयसरॉय जुडा था?", 
+            ["लार्ड कर्जन", "लार्ड रिपन", "लार्ड लिटन", "लार्ड मेयो"], 1, 
+            "<b>विस्तृत हल:</b> 1883 का 'इल्बर्ट बिल' विवाद वायसराय 'लॉर्ड रिपन' के कार्यकाल की प्रमुख घटना है। इस बिल में भारतीय जजों को भी यूरोपीय (अंग्रेज) अपराधियों के मुकदमे सुनने का अधिकार देने का प्रस्ताव था, जिसका भारत में रह रहे अंग्रेजों ने कड़ा विरोध (श्वेत विद्रोह) किया था। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> लॉर्ड रिपन को भारत में 'स्थानीय स्वशासन का जनक' (Father of Local Self-Government) भी कहा जाता है। उन्होंने वर्नाक्यूलर प्रेस एक्ट को भी रद्द किया था।</div>"],
+            
+            ["श्रृंखला 8, 4, 12, 6, 18, 9, ? में लुप्त संख्या ज्ञात करें।", 
+            ["20", "25", "27", "30"], 2, 
+            "<b>विस्तृत हल (एकांतर/Alternate लॉजिक):</b><br>इस श्रृंखला में भाग (Division) और गुणा (Multiplication) का मिश्रित पैटर्न चल रहा है:<br>8 ÷ 2 = 4<br>4 × 3 = 12<br>12 ÷ 2 = 6<br>6 × 3 = 18<br>18 ÷ 2 = 9<br>अगला पद पैटर्न के अनुसार: 9 × 3 = 27.<br>अतः लुप्त संख्या 27 होगी।"],
+            
+            ["सुल्तानपुर पक्षीविहार (Sultanpur Bird Sanctuary) ________ में स्थित है।", 
+            ["गुरुग्राम", "सुल्तानपुर", "सोनीपत", "अंबाला"], 0, 
+            "<b>विस्तृत हल:</b> 'सुल्तानपुर राष्ट्रीय उद्यान' (पूर्व में पक्षी अभयारण्य) हरियाणा के 'गुरुग्राम' (Gurugram) जिले के सुल्तानपुर गाँव में स्थित है। यह अपने यहाँ सर्दियों में आने वाले 'साइबेरियन सारस' (Siberian Cranes) सहित सैकड़ों प्रजातियों के प्रवासी पक्षियों के लिए विश्व प्रसिद्ध है। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> इसे 1972 में पक्षी अभयारण्य और 1991 में नेशनल पार्क (National Park) का दर्जा दिया गया था। यह इको-टूरिज्म का एक बड़ा केंद्र है।</div>"],
+            
+            ["ताजे पानी के जल निकायों को उनमें मौजूद जल की मात्रा के आधार पर अधिकतम से न्यूनतम में व्यवस्थित कीजिए:", 
+            ["आईस-कैप - भौम जल - नदी", "नदी - आईस-कैप - भौम जल", "भौम जल - आईस-कैप - नदी", "नदी - भौम जल - आईस-कैप"], 0, 
+            "<b>विस्तृत हल:</b> पृथ्वी पर उपलब्ध कुल मीठे/ताजे पानी (Freshwater) का वितरण इस प्रकार है:<br>1. सबसे अधिक मीठा पानी ध्रुवों पर बर्फ की चोटियों और ग्लेशियरों (Ice-caps / Glaciers) में जमा है (लगभग 68.7%)。<br>2. इसके बाद दूसरा स्थान भूमिगत जल (Ground water) का है (लगभग 30.1%)。<br>3. नदियाँ, झीलें और सतही जल सबसे कम मात्रा (लगभग 0.3%) में हैं।<br>अतः सही अवरोही क्रम है: आईस कैप -> भौम जल -> नदी।"],
+            
+            ["हर्षवर्धन राजा द्वारा शासित थानेसर के आसपास ________ था।", 
+            ["कुरुक्षेत्र", "अंबाला", "भिवानी", "पंचकुला"], 0, 
+            "<b>विस्तृत हल:</b> सातवीं शताब्दी के महान शासक सम्राट हर्षवर्धन की प्रारंभिक राजधानी 'थानेसर' (Thanesar) थी। प्राचीन काल में इसे 'स्थाण्वीश्वर' कहा जाता था। यह ऐतिहासिक नगर वर्तमान में हरियाणा के 'कुरुक्षेत्र' (Kurukshetra) जिले में स्थित है। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> बाद में हर्षवर्धन ने अपनी राजधानी थानेसर से हटाकर 'कन्नौज' (उत्तर प्रदेश) स्थानांतरित कर ली थी। चीनी यात्री ह्वेनसांग इन्हीं के शासनकाल में भारत आया था।</div>"],
+            
+            ["हरियाणा भारत में ________ सर्वाधिक जनसंख्या वाला राज्य है (2011 के अनुसार)।", 
+            ["16", "17", "15", "14 (नोट: सही उत्तर 18वाँ है, विकल्प त्रुटिपूर्ण हैं)"], 3, 
+            "<b>विस्तृत हल:</b> 2011 की जनगणना के अंतिम आंकड़ों के अनुसार, जनसंख्या की दृष्टि से हरियाणा भारत का 18वाँ सबसे बड़ा राज्य है। (HSSC के इस मूल प्रश्न के विकल्पों में 18 नहीं था, जो कि एक टाइपिंग त्रुटि थी)। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> हरियाणा की कुल जनसंख्या लगभग 2.53 करोड़ है। क्षेत्रफल की दृष्टि से हरियाणा भारत का 21वाँ राज्य है।</div>"],
+            
+            ["11 वें राज्य विधान सभा चुनाव ________ के दौरान हुए।", 
+            ["2013", "2014", "2015", "2016"], 1, 
+            "<b>विस्तृत हल:</b> हरियाणा की 11वीं विधानसभा के चुनाव अक्टूबर 2014 में हुए थे। इन चुनावों में भारतीय जनता पार्टी (BJP) ने पहली बार अपने दम पर पूर्ण बहुमत प्राप्त किया था और श्री मनोहर लाल खट्टर राज्य के मुख्यमंत्री बने थे। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> वर्तमान में (2024 के बाद से) 15वीं विधानसभा का गठन किया गया है, जिसके मुख्यमंत्री श्री नायब सिंह सैनी हैं।</div>"],
+            
+            ["1930 तक काँग्रेस ने हिंदुस्तानी को राष्ट्रभाषा के रूप में स्वीकार कर लिया था। हिंदुस्तानी ________ का मिश्रण है।", 
+            ["संस्कृत और हिंदी", "हिंदी और उर्दू", "संस्कृत और उर्दू", "संस्कृत, हिंदी और उर्दू"], 1, 
+            "<b>विस्तृत हल:</b> 'हिंदुस्तानी' भाषा मूल रूप से उत्तर भारत में आम बोलचाल के लिए प्रयोग की जाने वाली 'हिंदी' (देवनागरी लिपि) और 'उर्दू' (फारसी लिपि) का एक सहज और मधुर मिश्रण है। महात्मा गांधी भी इसी भाषा को भारत की संपर्क भाषा (Lingua franca) बनाने के प्रबल समर्थक थे।"],
+            
+            ["निम्नलिखित में से किस पर्वतीय श्रेणी पर 'दोडबेट्टा' (Doddabetta) चोटी स्थित है?", 
+            ["नीलगिरी पहाडियाँ", "कार्डामम पहाडियाँ", "अन्नामलाई पहाडियाँ", "नल्लामल पहाडियाँ"], 0, 
+            "<b>विस्तृत हल:</b> 'दोड्डाबेट्टा' (Doddabetta) तमिलनाडु राज्य में 'नीलगिरि पहाड़ियों' (Nilgiri Hills) की सबसे ऊँची चोटी है। इसकी ऊंचाई लगभग 2,637 मीटर है। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> 1. दक्षिण भारत और पश्चिमी घाट की सबसे ऊँची चोटी 'अनाईमुडी' (अन्नामलाई पहाड़ियों में) है। 2. नीलगिरि की पहाड़ियों पर ही पूर्वी घाट और पश्चिमी घाट आपस में मिलते हैं।</div>"],
+            
+            ["हरियाणा राज्य की सीमा ________ राज्यों से लगती है।", 
+            ["5", "6", "4", "3"], 0, 
+            "<b>विस्तृत हल:</b> हरियाणा की भौगोलिक सीमा भारत के 5 राज्यों से लगती है: 1. पंजाब (उत्तर-पश्चिम) 2. हिमाचल प्रदेश (उत्तर) 3. उत्तराखंड (उत्तर-पूर्व) 4. उत्तर प्रदेश (पूर्व) 5. राजस्थान (दक्षिण और पश्चिम)। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> हरियाणा की सबसे लंबी सीमा राजस्थान के साथ और सबसे छोटी सीमा (केवल 11 किमी) उत्तराखंड (देहरादून) के साथ लगती है। इसके अलावा 2 केंद्र शासित प्रदेशों (दिल्ली और चंडीगढ़) से भी सीमा लगती है।</div>"],
+            
+            ["उस द्रव ऊत्तक का नाम बताएँ जो रक्त के समान परंतु रंगहीन है और उसमें प्रोटीन कम होता है:", 
+            ["प्लेटलेट्स", "डायलाइझिंग द्रव", "लसिका (Lymph)", "प्लुरल द्रव"], 2, 
+            "<b>विस्तृत हल:</b> 'लसिका' (Lymph) मानव शरीर में पाया जाने वाला एक द्रव संयोजी ऊतक (Fluid connective tissue) है। यह रक्त प्लाज्मा के समान ही होता है, लेकिन इसमें लाल रक्त कणिकाएं (RBCs) मौजूद नहीं होतीं, जिसके कारण यह रंगहीन (colourless) होता है। इसमें रक्त की तुलना में प्रोटीन भी कम होता है। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> लसिका का मुख्य कार्य शरीर की प्रतिरक्षा प्रणाली (Immune system) को मजबूत करना और ऊतकों से अतिरिक्त द्रव को वापस रक्त में ले जाना है।</div>"],
+            
+            ["भारत में आधुनिक कृषि के संदर्भ में विचार करें: 1. इससे 1950 में हरितक्रांति हुई। 2. केवल गेहूँ के बीज लाये गए। 3. पंजाब, हरियाणा के किसानों ने सबसे पहले प्रयोग किया। 4. HYV बीजों को जल, उर्वरक चाहिए।", 
+            ["2, 3 और 4", "1, 2 और 3", "केवल 3 और 4", "केवल 2 और 3"], 2, 
+            "<b>विस्तृत हल:</b> आइए कथनों की जाँच करें:<br>कथन 1 गलत है: भारत में हरित क्रांति 1960 के दशक (1966-67) में आई थी, न कि 1950 में।<br>कथन 2 गलत है: केवल गेहूं नहीं, बल्कि चावल के HYV (उच्च उपज देने वाले) बीजों का भी प्रयोग किया गया था।<br>कथन 3 सही है: इसके शुरुआती लाभ पंजाब, हरियाणा और पश्चिमी यूपी के किसानों ने ही उठाए थे।<br>कथन 4 सही है: HYV बीजों को पारंपरिक बीजों की तुलना में सिंचाई और रासायनिक उर्वरकों की अधिक आवश्यकता होती है।<br>अतः केवल 3 और 4 सही हैं।"],
+            
+            ["बू अली शाह कलंदर एक ________ थे।", 
+            ["संत सूफी", "राजा", "योद्धा", "सिपाही"], 0, 
+            "<b>विस्तृत हल:</b> शेख शरफुद्दीन 'बू अली शाह कलंदर' 13वीं शताब्दी के चिश्ती संप्रदाय के एक अत्यंत प्रसिद्ध 'सूफी संत' थे। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> इनकी ऐतिहासिक दरगाह हरियाणा के पानीपत शहर में स्थित है। यह हिंदू-मुस्लिम एकता का एक बड़ा प्रतीक है जहाँ प्रतिवर्ष बड़े स्तर पर उर्स (मेला) का आयोजन किया जाता है।</div>"],
+            
+            ["बाघ और फुलकारी का संयोजन ________ कहलाता है।", 
+            ["टोपी", "फाग", "लूर", "चोप"], 3, 
+            "<b>विस्तृत हल:</b> हरियाणा और पंजाब की पारंपरिक कढ़ाई कला में, जब 'बाघ' (पूर्ण कढ़ाई) और 'फुलकारी' (फूलों की कढ़ाई) का एक विशिष्ट संयोजन तैयार किया जाता है, तो उसे 'चोप' (Chope) कहा जाता है। यह आमतौर पर लाल रंग के कपड़े पर पीले रेशमी धागे से बनाया जाता है और नानी अपनी नातिन को विवाह के अवसर पर शगुन के रूप में भेंट करती है।"],
+            
+            ["नीचे दिए गए 3 विकल्पों से भिन्न शब्द ज्ञात करें:", 
+            ["रामायण", "पंचतंत्र", "महाभारत", "उपनिषद"], 1, 
+            "<b>विस्तृत हल (विषम छाँटें):</b><br>रामायण, महाभारत और उपनिषद - ये तीनों प्राचीन भारतीय हिंदू धर्म के अत्यंत पवित्र और प्रमुख धार्मिक/दार्शनिक ग्रंथ हैं।<br>जबकि 'पंचतंत्र' विष्णु शर्मा द्वारा रचित जानवरों की नीति-कथाओं (Moral stories) का एक लौकिक साहित्य/संग्रह है, जिसका धर्म से सीधा संबंध नहीं है। अतः पंचतंत्र भिन्न है।"],
+            
+            ["बाइक पर थियेटर (Theatre on Bikes) योजना ________ द्वारा शुरु किया गया।", 
+            ["सत्यजीत रे", "श्याम बेनेगल", "मनीश जोशी बिस्मिल", "कर्ण प्रसाद"], 2, 
+            "<b>विस्तृत हल:</b> 'थियेटर ऑन बाइक्स' नामक यह अनोखी और रचनात्मक पहल हरियाणा के प्रसिद्ध रंगकर्मी और निर्देशक 'मनीष जोशी बिस्मिल' द्वारा शुरू की गई थी। इसका उद्देश्य नुक्कड़ नाटकों और थिएटर कला को दूर-दराज के गांवों और आम लोगों तक उनके दरवाजे पर पहुँचाना था।"],
+            
+            ["यदि P(E) = 0.73, तो 'E न होने' की प्रायिकता है:", 
+            ["0.3", "0.27", "0.25", "0.37"], 1, 
+            "<b>विस्तृत हल:</b> किसी भी घटना के घटित होने की प्रायिकता P(E) और घटित न होने की प्रायिकता P(not E) का योग हमेशा 1 होता है।<br>सूत्र: P(not E) = 1 - P(E)<br>P(not E) = 1 - 0.73 = 0.27.<br>अतः घटना के न होने की प्रायिकता 0.27 होगी।"],
+            
+            ["यमुना नदी हरियाणा में ________ वन के पास से प्रवेश करती है", 
+            ["कलिसर", "बंडीपुर", "गिर", "सतपुड़ा"], 0, 
+            "<b>विस्तृत हल:</b> यमुना नदी (जो गंगा की सबसे बड़ी सहायक नदी है) हरियाणा राज्य में यमुनानगर जिले के 'कालेसर राष्ट्रीय उद्यान' (Kalesar National Park) और ताजेवाला बैराज के पास से प्रवेश करती है। यह हरियाणा और उत्तर प्रदेश के बीच पूर्वी सीमा बनाती है। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> कालेसर वन अपने लाल जंगली मुर्गों (Red Jungle Fowl) और साल के पेड़ों के लिए प्रसिद्ध है।</div>"],
+            
+            ["निम्नलिखित में से किस पदार्थ की संवेदनशीलता (Resistivity) कम है?", 
+            ["चाँदी", "कांस्टेन्टन", "मैंगेनीन", "काँच"], 0, 
+            "<b>विस्तृत हल:</b> जिस पदार्थ की प्रतिरोधकता (Resistivity) जितनी कम होती है, वह विद्युत का उतना ही अच्छा सुचालक (Conductor) होता है। प्रकृति में 'चाँदी' (Silver) विद्युत और ऊष्मा का सबसे अच्छा सुचालक है, इसलिए दिए गए विकल्पों में इसकी प्रतिरोधकता सबसे कम होती है। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> काँच एक कुचालक (Insulator) है, जिसकी प्रतिरोधकता बहुत अधिक होती है। कांस्टेन्टन और मैंगेनीन मिश्रधातुएं (Alloys) हैं जिनका उपयोग मानक प्रतिरोध बनाने में होता है।</div>"],
+            
+            ["कालक्रमानुसार निम्नलिखित को व्यवस्थित करें: 1. अगस्त प्रस्ताव 2. পূना समझौता 3. तृतीय गोल मेज सम्मेलन", 
+            ["1-2-3", "3-2-1", "2-3-1", "1-3-2"], 2, 
+            "<b>विस्तृत हल:</b> आधुनिक भारतीय इतिहास की इन घटनाओं का सही क्रम इस प्रकार है:<br>1. पूना समझौता (Poona Pact) - 24 सितंबर 1932 (गांधीजी और अंबेडकर के बीच)।<br>2. तृतीय गोलमेज सम्मेलन (Third RTC) - नवंबर से दिसंबर 1932 (लंदन में)।<br>3. अगस्त प्रस्ताव (August Offer) - 8 अगस्त 1940 (वायसराय लिनलिथगो द्वारा)।<br>अतः सही कालानुक्रमिक क्रम 2 -> 3 -> 1 है।"],
+            
+            ["cos² 30°+ sin² 45°- 1/3 tan² 60° का मान है:", 
+            ["0", "1", "1/2", "1/4"], 3, 
+            "<b>विस्तृत हल (स्मार्ट ट्रिक):</b><br>त्रिकोणमितीय सारणी से सीधे मान रखें:<br>cos 30° = √3 / 2<br>sin 45° = 1 / √2<br>tan 60° = √3<br>समीकरण में रखने पर:<br>(√3 / 2)² + (1 / √2)² - 1/3 × (√3)²<br>= 3/4 + 1/2 - 1/3 × 3<br>= 3/4 + 1/2 - 1<br>LCM (4) लेने पर: (3 + 2 - 4) / 4 = 1/4.<br>अतः सही उत्तर 1/4 है।"],
+            
+            ["आज का हरियाणा ब्रिटिश शासन के नियंत्रण में वर्ष ________ को आया।", 
+            ["1803", "1777", "1600", "1781"], 0, 
+            "<b>विस्तृत हल:</b> वर्ष 1803 में द्वितीय आंग्ल-मराठा युद्ध के दौरान, मराठा शासक दौलतराव सिंधिया और ब्रिटिश ईस्ट इंडिया कंपनी के बीच 'सुरजी अंजनगाँव की संधि' हुई थी। इसी ऐतिहासिक संधि के तहत वर्तमान हरियाणा का अधिकांश क्षेत्र अंग्रेजों के सीधे नियंत्रण में आ गया था।"],
+            
+            ["निम्नलिखित में उच्च अभिक्रियाशील धातु है:", 
+            ["सीसा", "लोहा", "ताँबा", "जस्ता"], 3, 
+            "<b>विस्तृत हल:</b> रसायन विज्ञान में धातुओं की सक्रियता श्रेणी (Reactivity Series) के अनुसार, सबसे अधिक प्रतिक्रियाशील से कम की ओर क्रम इस प्रकार होता है: K > Na > Ca > Mg > Al > Zn (जस्ता) > Fe (लोहा) > Pb (सीसा) > H > Cu (तांबा)।<br>दिए गए विकल्पों में जिंक (जस्ता/Zinc) सबसे ऊपर आता है, अतः यह सबसे अधिक अभिक्रियाशील धातु है।"],
+            
+            ["निम्नलिखित में से कौन-सा भुगतान संतुलन (Balance of Payment) सूची के अंतर्गत नहीं आता?", 
+            ["बाह्य ऋणों का बजट", "भारत और विदेशों के बीच अंतरण", "भारत और IMF के बीच अंतरण", "संघ क्षेत्रों को दिए गए अनुदान"], 3, 
+            "<b>विस्तृत हल:</b> भुगतान संतुलन (Balance of Payment - BoP) किसी देश के निवासियों और शेष विश्व (अन्य देशों या अंतरराष्ट्रीय संस्थाओं) के बीच एक विशिष्ट समय अवधि में हुए सभी आर्थिक लेन-देन का एक व्यवस्थित रिकॉर्ड होता है।<br>विकल्प D 'संघ क्षेत्रों (Union Territories) को दिए गए अनुदान' एक आंतरिक घरेलू लेन-देन है जो केंद्र सरकार और राज्यों/UTs के बीच होता है, इसका विदेशी व्यापार या BoP से कोई संबंध नहीं है।"],
+            
+            ["नाभिकीय खनिजों के संबंध में विचार करें: 1. राजस्थान में यूरेनियम 2. केरल में थोरियम 3. ओडिशा में कोई न्यूक्लियर प्लांट नहीं। कौन-सा सत्य नहीं है?", 
+            ["केवल 1", "केवल 2", "केवल 3", "कोई नहीं (अर्थात सभी सत्य हैं)"], 3, 
+            "<b>विस्तृत हल:</b> आइए कथनों की जाँच करें:<br>1. राजस्थान (रोहिल क्षेत्र) और झारखंड (जादूगोड़ा) में यूरेनियम के बड़े भंडार मौजूद हैं। (सत्य)<br>2. केरल के तटीय समुद्री रेत (मोनोजाइट बालू) में थोरियम के विश्व के सबसे बड़े भंडार मौजूद हैं। (सत्य)<br>3. ओडिशा राज्य में वर्तमान में कोई भी नाभिकीय ऊर्जा (Nuclear Power) संयंत्र नहीं है। (सत्य)<br>चूँकि तीनों कथन पूरी तरह से सत्य हैं, इसलिए प्रश्न 'कौन सा सत्य नहीं है' का उत्तर 'कोई नहीं' होगा।"],
+            
+            ["खाने के संबंध में, हरियाणा ________ कहलाता है।", 
+            ["गुलाबों की भूमि", "काँटों की भूमि", "मुस्कानों की भूमि", "रोटी की भूमि (Land of rotis)"], 3, 
+            "<b>विस्तृत हल:</b> हरियाणा मूल रूप से एक कृषि प्रधान राज्य है और यहाँ गेहूं का बंपर उत्पादन होता है। यहाँ के लोगों का मुख्य आहार दूध, दही, मक्खन और रोटियां हैं। इसी समृद्ध आहार संस्कृति और प्रचुर अन्न उत्पादन के कारण हरियाणा को भारत की 'रोटी की भूमि' (Land of rotis / Breadbasket) भी कहा जाता है।"],
+            
+            ["कौन-सा हरियाणा का सबसे छोटा जिला है?", 
+            ["हिसार", "फरीदाबाद", "सोनीपत", "भिवानी"], 1, 
+            "<b>विस्तृत हल:</b> क्षेत्रफल के दृष्टिकोण से, दिए गए विकल्पों में और पूरे हरियाणा में 'फरीदाबाद' राज्य का सबसे छोटा जिला है। इसका कुल क्षेत्रफल मात्र 741 वर्ग किलोमीटर है। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> क्षेत्रफल में सबसे छोटा होने के बावजूद, फरीदाबाद हरियाणा का सबसे अधिक जनसंख्या और जनसंख्या घनत्व वाला जिला है। राज्य का सबसे बड़ा जिला 'सिरसा' (4277 वर्ग किमी) है।</div>"],
+            
+            ["वह संख्या ज्ञात करें जो अन्य 3 संख्याओं से भिन्न है।", 
+            ["12336", "12448", "12556", "12672"], 2, 
+            "<b>विस्तृत हल (रीज़निंग लॉजिक):</b><br>इन बड़ी संख्याओं को ध्यान से देखें, एक खास पैटर्न छिपा है। संख्या के पहले दो अंक और तीसरे अंक का गुणा करने पर अंतिम दो अंक प्राप्त हो रहे हैं:<br>A) 12 × 3 = 36 (सत्य)<br>B) 12 × 4 = 48 (सत्य)<br>D) 12 × 6 = 72 (सत्य)<br>C) 12 × 5 = 60 होना चाहिए था, लेकिन यहाँ 56 दिया गया है।<br>अतः विकल्प C (12556) अन्य सभी से भिन्न (विषम) है।"],
+            
+            ["एक दो अंकों की संख्या का सात गुणा उसके अंकों का स्थान बदलने पर प्राप्त संख्या का चार गुणा है, और अंतर 3 है:", 
+            ["36", "25", "14", "इनमें से कोई नहीं"], 0, 
+            "<b>विस्तृत हल (ऑप्शन एलिमिनेशन ट्रिक):</b><br>परीक्षा में ऐसे प्रश्नों को x-y मानकर हल करने से समय बर्बाद होता है। सीधे विकल्पों की जाँच करें:<br>विकल्प A (36): अंकों का अंतर 6 - 3 = 3 (पहली शर्त पूरी)।<br>अब, 36 का 7 गुना = 36 × 7 = 252.<br>अंक पलटने पर संख्या बनेगी 63. इसका 4 गुना = 63 × 4 = 252.<br>चूँकि 252 = 252 (दोनों शर्तें पूरी हो गईं), अतः सही उत्तर 36 है। 10 सेकंड में हल!"],
+            
+            ["भाषा और संस्कृति के अनुसार राज्यों के पुनर्गठन हेतु 1953 में आयोग ________ की अध्यक्षता में गठित किया गया।", 
+            ["सैय्यद फजल अली", "महात्मा गाँधी", "जवाहर लाल नेहरू", "सुभाषचंद्र बोस"], 0, 
+            "<b>विस्तृत हल:</b> भाषाई आधार पर राज्यों के पुनर्गठन की मांग उठने के बाद, भारत सरकार ने दिसंबर 1953 में 'राज्य पुनर्गठन आयोग' का गठन किया था। इस आयोग के अध्यक्ष सुप्रीम कोर्ट के पूर्व न्यायाधीश 'न्यायमूर्ति फजल अली' थे। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> इस आयोग में दो अन्य सदस्य के.एम. पणिक्कर और एच.एन. कुंजरू थे। इसी आयोग की रिपोर्ट के आधार पर 1956 में 14 राज्य और 6 केंद्र शासित प्रदेश बनाए गए थे।</div>"],
+            
+            ["If you ________ see him, give him my regards.", 
+            ["should", "will", "would", "must"], 0, 
+            "<b>विस्तृत हल (English Grammar):</b> यह एक Conditional sentence (शर्त सूचक वाक्य) है। जब हम किसी ऐसी स्थिति या घटना की बात करते हैं जिसके होने की संभावना कम हो (अर्थात 'संयोग से' या 'by chance'), तो 'If' क्लॉज के साथ 'should' का प्रयोग किया जाता है। इसका अर्थ है: 'यदि तुम संयोग से उससे मिलो, तो मेरा प्रणाम कहना।'"],
+            
+            ["You ________ have written to him yesterday.", 
+            ["dare", "will", "need", "ought to"], 3, 
+            "<b>विस्तृत हल (English Grammar):</b> वाक्य में 'yesterday' का प्रयोग हुआ है और बात अतीत की एक ऐसी नैतिक जिम्मेदारी या उचित कार्य की हो रही है जो 'किया जाना चाहिए था' लेकिन नहीं किया गया। इसके लिए Modal verb 'ought to' के साथ 'have + V3' (ought to have written) का प्रयोग सबसे उपयुक्त होता है।"],
+            
+            ["The battalion operating from the mountain was able to ________", 
+            ["tie up", "tie on", "tie down", "tie with"], 2, 
+            "<b>विस्तृत हल (Phrasal Verb):</b> सैन्य संदर्भ में, 'tie down' एक महत्वपूर्ण Phrasal Verb है जिसका अर्थ होता है 'दुश्मन की हरकतों को प्रतिबंधित करना' या 'उन्हें एक ही जगह पर उलझाए रखना' (to restrict someone's movement or actions)। अतः 'tie down' सही उत्तर है।"],
+            
+            ["It's very kind of you to ________ to speak at the meeting.", 
+            ["Comply", "Agree", "Deny", "Divide"], 1, 
+            "<b>विस्तृत हल:</b> वाक्य का अर्थ है कि किसी ने मीटिंग में बोलने का निमंत्रण या प्रस्ताव स्वीकार कर लिया है। 'प्रस्ताव स्वीकार करने' या 'सहमत होने' के लिए अंग्रेजी का सटीक शब्द 'Agree' होता है। (Comply का अर्थ आज्ञा का पालन करना होता है, जो यहाँ संदर्भ में सही नहीं है)।"],
+            
+            ["Choose the alternative that is opposite in meaning to the given word: Perilous", 
+            ["Delicate", "Healthy", "Safe", "Fine"], 2, 
+            "<b>विस्तृत हल (Antonym):</b> अंग्रेजी शब्द 'Perilous' का अर्थ होता है 'खतरनाक', 'जोखिम भरा' या 'जानलेवा' (Dangerous / Risky)। अतः इसका सटीक विलोम (Opposite word) 'Safe' (सुरक्षित) होगा।"],
+            
+            ["Choose the alternative that is opposite in meaning to the given word: Plenary", 
+            ["Restricted", "Complete", "Mysterious", "Mislead"], 0, 
+            "<b>विस्तृत हल (Antonym):</b> अंग्रेजी शब्द 'Plenary' का अर्थ होता है 'पूर्ण', 'असीमित' या 'बिना किसी प्रतिबंध के' (Absolute / Full / Unqualified)। अतः इसका सटीक विलोम शब्द 'Restricted' (प्रतिबंधित या सीमित) होगा।"],
+            
+            ["I ________ to go out, but I had too much work.", 
+            ["have hoped", "have been hoping", "had been hoping", "hoping"], 2, 
+            "<b>विस्तृत हल (Tense Rule):</b> वाक्य का दूसरा भाग 'but I had too much work' स्पष्ट रूप से Past Tense (अतीत) में है। इसलिए, वाक्य का पहला भाग, जो अतीत में एक लंबे समय से चली आ रही अधूरी इच्छा या उम्मीद को दर्शाता है, Past Perfect Continuous Tense (had been + V-ing) में होना चाहिए। अतः 'had been hoping' सही है।"],
+            
+            ["________ to the bank manager yet?", 
+            ["Do you write", "Have you written", "Were you writing", "Have you been writing"], 1, 
+            "<b>विस्तृत हल (Tense Rule):</b> वाक्य के अंत में 'yet' (अभी तक) कीवर्ड का प्रयोग हुआ है। अंग्रेजी व्याकरण के नियमानुसार, 'yet' का प्रयोग सामान्यतः Present Perfect Tense (Has/Have + V3) के नकारात्मक या प्रश्नवाचक वाक्यों में किया जाता है। अतः 'Have you written' व्याकरण की दृष्टि से बिल्कुल सटीक है।"],
+            
+            ["Aircraft with two pairs of wings, one above the other.", 
+            ["Biography", "Biology", "Biopic", "Biplane"], 3, 
+            "<b>विस्तृत हल (One Word Substitution):</b> उड़न खटोले या पुराने प्रकार के विमान जिनमें पंखों के दो जोड़े (एक के ऊपर एक) होते थे (जैसे राइट ब्रदर्स का विमान), उन्हें तकनीकी भाषा में 'Biplane' (बाइप्लेन) कहा जाता है। (Bi = दो, Plane = विमान)।"],
+            
+            ["Incapable of making mistakes or doing wrong.", 
+            ["Infidel", "Infallible", "Ineligible", "Illiterate"], 1, 
+            "<b>विस्तृत हल (One Word Substitution):</b> वह व्यक्ति जो कभी कोई गलती न करे या जो अचूक हो, उसे अंग्रेजी में 'Infallible' (इनफालिबल) कहा जाता है। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> Infidel का अर्थ काफ़िर या नास्तिक, Ineligible का अर्थ अयोग्य, और Illiterate का अर्थ अनपढ़ होता है।</div>"],
+            
+            ["'पगडी उछालना' मुहावरे का अर्थ है", 
+            ["स्वयं अपना नुकसान करना", "बेइज्जत करना", "आश्चर्य प्रकट करना", "भयभीत होना"], 1, 
+            "<b>विस्तृत हल (हिंदी व्याकरण):</b> भारतीय संस्कृति में 'पगड़ी' को व्यक्ति के सम्मान और इज्जत का सर्वोच्च प्रतीक माना जाता है। इसलिए, 'पगड़ी उछालने' मुहावरे का अर्थ किसी व्यक्ति को भरी सभा में सरेआम 'बेइज्जत करना' या लांछन लगाना होता है।"],
+            
+            ["किसी वस्तु की दूसरी वस्तु से तुलना की जाती है और दोनों में समानता पाई जाती है, तो वहाँ कौन-सा अलंकार होता है?", 
+            ["उपमा", "श्लेष", "छेकानुप्रास", "वक्रोक्ति"], 0, 
+            "<b>विस्तृत हल (अलंकार):</b> जहाँ काव्य में किसी एक व्यक्ति या वस्तु (उपमेय) की तुलना किसी अन्य अत्यंत प्रसिद्ध व्यक्ति या वस्तु (उपमान) से उनके गुण, रूप या स्वभाव के आधार पर की जाती है, वहाँ 'उपमा अलंकार' होता है। इसके वाचक शब्द सा, सी, से, सम, सरिस आदि होते हैं। (जैसे: पीपर पात सरिस मन डोला)।"],
+            
+            ["'आयु' शब्द के साथ कौन-सा उपसर्ग सही लगता है?", 
+            ["सु", "प्र", "चिर", "उप"], 2, 
+            "<b>विस्तृत हल (उपसर्ग):</b> 'आयु' (उम्र) शब्द के आगे 'चिर' (जिसका अर्थ होता है लंबा समय या बहुत काल तक) उपसर्ग लगाने से 'चिरायु' (चिर + आयु) नामक एक नया सार्थक शब्द बनता है, जिसका अर्थ होता है 'लंबी उम्र वाला'। इसे आशीर्वाद के रूप में प्रयोग किया जाता है।"],
+            
+            ["'बहू' शब्द का बहुवचन रूप है", 
+            ["बहूआ", "बहूए", "बहुए", "बहुएँ"], 3, 
+            "<b>विस्तृत हल (वचन):</b> हिंदी व्याकरण के नियमानुसार, जब किसी ऊकारांत (दीर्घ 'ऊ' से समाप्त होने वाले) स्त्रीलिंग शब्द (जैसे बहू, वधू, झाड़ू) का बहुवचन बनाया जाता है, तो अंतिम दीर्घ 'ऊ' को ह्रस्व 'उ' में बदल दिया जाता है और अंत में 'एँ' जोड़ दिया जाता है। अतः बहू का शुद्ध बहुवचन 'बहुएँ' होगा।"],
+            
+            ["गंगा में स्नान = 'गंगा स्नान' यह कौन-सा समास है?", 
+            ["अव्ययी भाव", "बहुव्रीहि", "तत्पुरुष", "द्वन्द्व"], 2, 
+            "<b>विस्तृत हल (समास):</b> जब किसी सामासिक पद का विग्रह करने पर पूर्वपद और उत्तरपद के बीच कोई कारक चिह्न (जैसे - का, की, के, में, पर) प्रकट होता है, तो वहाँ 'तत्पुरुष समास' होता है। 'गंगा स्नान' का विग्रह 'गंगा में स्नान' है, जहाँ 'में' अधिकरण कारक का चिह्न है। अतः यह अधिकरण तत्पुरुष समास है।"],
+            
+            ["'उत्साह' किस रस का स्थायी भाव है?", 
+            ["वीर रस", "करुण रस", "श्रृंगार रस", "शांत रस"], 0, 
+            "<b>विस्तृत हल (रस):</b> किसी कठिन कार्य को करने, युद्ध में जाने या दान देने के लिए हृदय में जो उमंग और जोश का भाव जागृत होता है, उसे 'उत्साह' कहते हैं। यह उत्साह ही 'वीर रस' का स्थायी भाव है। <div class='extra-info'><b>💡 अतिरिक्त जानकारी:</b> करुण रस का स्थायी भाव 'शोक', श्रृंगार रस का 'रति' (प्रेम) और शांत रस का 'निर्वेद' होता है।</div>"],
+            
+            ["निम्नलिखित में से सही वर्तनी का चयन कीजिए", 
+            ["प्रतीक्रीया", "प्रतिक्रीया", "प्रतीक्रिया", "प्रतिक्रिया"], 3, 
+            "<b>विस्तृत हल (वर्तनी शुद्धि):</b> किसी क्रिया (Action) के जवाब में होने वाले कार्य या भाव (Reaction) को हिंदी में 'प्रतिक्रिया' कहा जाता है। इसमें 'प' में पदेन 'र', 'त' पर छोटी 'इ' की मात्रा और 'क' में ऋ की जगह र-पदेन तथा छोटी 'इ' की मात्रा लगती है। अतः शुद्ध रूप विकल्प D है।"],
+            
+            ["'लड़का पुस्तक पढता है' वाक्य में 'पुस्तक' का पद परिचय दीजिए।", 
+            ["व्यक्तिवाचक, पुल्लिंग, कर्ता", "भाव वाचक, पुल्लिंग, कर्म", "व्यक्तिवाचक, स्त्रीलिंग, कर्ता", "जातिवाचक संज्ञा, स्त्रीलिंग, एक वचन, कर्म कारक, 'पढता है' क्रिया का कर्म"], 3, 
+            "<b>विस्तृत हल (पद परिचय):</b><br>1. 'पुस्तक' शब्द किसी विशेष किताब का नाम नहीं है, बल्कि पूरी जाति का बोध कराता है, अतः यह 'जातिवाचक संज्ञा' है।<br>2. हिंदी में पुस्तक 'स्त्रीलिंग' शब्द है (पुस्तक अच्छी है)।<br>3. यह अकेली है, इसलिए 'एकवचन' है।<br>4. वाक्य में पढ़ने का प्रभाव पुस्तक पर पड़ रहा है (क्या पढ़ता है?), इसलिए यह 'कर्म कारक' है।"],
+            
+            ["'हरि ग्रंथ पढेगा' इस वाक्य को कर्मवाच्य (Passive Voice) में लिखिए", 
+            ["हरि से ग्रंथ पढ़ी जाएगी", "हरि से ग्रंथ पढा जाएगा", "हरि ने ग्रंथ पढ़ा।", "हरि से ग्रंथ पढ़ा गया।"], 1, 
+            "<b>विस्तृत हल (वाच्य परिवर्तन):</b> वाक्य भविष्य काल (पढ़ेगा) का है। जब कर्तृवाच्य से कर्मवाच्य बनाया जाता है, तो कर्ता (हरि) के साथ 'से' या 'के द्वारा' लगाया जाता है। क्रिया का रूप कर्म (ग्रंथ - जो कि पुल्लिंग एकवचन है) के अनुसार बदल जाता है। अतः भविष्य काल में सही रूप होगा: 'हरि से ग्रंथ पढ़ा जाएगा'।"],
+            
+            ["जगत् + ईश = 'जगदीश', कौनसी संधि है?", 
+            ["व्यंजन संधि", "विसर्ग संधि", "गुण संधि", "वृद्धि संधि"], 0, 
+            "<b>विस्तृत हल (संधि):</b> यहाँ प्रथम शब्द के अंतिम वर्ण 'त्' (जो कि एक शुद्ध व्यंजन है, स्वर रहित है) का मेल दूसरे शब्द के प्रथम वर्ण 'ई' (स्वर) से हो रहा है। व्यंजन संधि के नियमानुसार, यदि क, च, ट, त, प के बाद कोई स्वर आए, तो वे अपने ही वर्ग के तीसरे वर्ण (त् का द्) में बदल जाते हैं। चूँकि यहाँ व्यंजन का मेल हो रहा है, यह 'व्यंजन संधि' है।"],
+            
+            ["निम्नलिखित में से 'आँख' का पर्यायवाची शब्द नहीं है:", 
+            ["मीन", "नेत्र", "नयन", "अक्षि"], 0, 
+            "<b>विस्तृत हल (पर्यायवाची):</b> नेत्र, नयन, लोचन, चक्षु, दृग और अक्षि - ये सभी 'आँख' (Eye) के प्रसिद्ध पर्यायवाची शब्द हैं। जबकि 'मीन' का अर्थ मछली (Fish) होता है, जिसके अन्य पर्यायवाची मकर, मत्स्य आदि हैं। अतः मीन सही उत्तर है।"],
+            
+            ["सुमेलित कीजिए: (अ. 56, आ. 87, इ. 69, ई. 35) को (1. सत्तासी, 2. छप्पन, 3. पैंतीस, 4. उनहत्तर) से मिलाएँ।", 
+            ["1-अ, 2-इ, 3-आ, 4-ई", "1-आ, 2-अ, 3-ई, 4-इ", "1-इ, 2-ई, 3-अ, 4-आ", "1-आ, 2-अ, 3-इ, 4-ई"], 1, 
+            "<b>विस्तृत हल (हिंदी अंक):</b><br>आइए संख्याओं का सही हिंदी शब्दों से मिलान करें:<br>अ. 56 = छप्पन (सूची 2 का नंबर 2)<br>आ. 87 = सत्तासी (सूची 2 का नंबर 1)<br>इ. 69 = उनहत्तर (सूची 2 का नंबर 4)<br>ई. 35 = पैंतीस (सूची 2 का नंबर 3)<br>अतः सही कूट बना: अ-2, आ-1, इ-4, ई-3, जो कि विकल्प B (1-आ, 2-अ, 3-ई, 4-इ) से मेल खाता है।"]
+        ];
+
+        let state = JSON.parse(localStorage.getItem('mockTestStateCET_Full90_Detailed_Clean')) || { started: false, submitted: false, currentQ: 0, answers: {}, status: {}, timeLeft: 90 * 60 };
+        let timerInterval;
+
+        function initApp() {
+            if (state.submitted) showScreen('result-screen');
+            else if (state.started) { showScreen('test-screen'); document.getElementById('main-header').classList.remove('hidden'); startTimer(); renderPalette(); loadQuestion(state.currentQ); } 
+            else { showScreen('home-screen'); document.getElementById('main-header').classList.add('hidden'); }
+            updateThemeUI();
+        }
+
+        function showScreen(id) { document.querySelectorAll('body > div').forEach(d => { if(d.id && d.id !== 'submit-modal' && d.id !== 'pause-modal') d.classList.add('hidden'); }); document.getElementById(id).classList.remove('hidden'); }
+        function startTest() { state.started = true; state.timeLeft = 90 * 60; state.answers = {}; state.status = {}; for(let i=0; i<questions.length; i++) state.status[i] = 0; saveState(); initApp(); }
+        function saveState() { localStorage.setItem('mockTestStateCET_Full90_Detailed_Clean', JSON.stringify(state)); }
+
+        function loadQuestion(idx) {
+            if (idx < 0) idx = 0; if (idx >= questions.length) idx = questions.length - 1;
+            state.currentQ = idx; if(state.status[idx] === 0) state.status[idx] = 1;
+            document.getElementById('q-number').innerText = `प्रश्न ${idx + 1}`; document.getElementById('q-text').innerHTML = questions[idx][0];
+            let optsHTML = ''; let labels = ['A', 'B', 'C', 'D'];
+            questions[idx][1].forEach((opt, i) => { let isSel = state.answers[idx] === i; optsHTML += `<div class="option-row ${isSel ? 'selected' : ''}" onclick="selectOption(${i})"><div class="opt-label">${labels[i]}</div><div class="opt-text">${opt}</div></div>`; });
+            document.getElementById('options-container').innerHTML = optsHTML; saveState(); renderPalette();
+        }
+
+        function selectOption(optIdx) { state.answers[state.currentQ] = optIdx; loadQuestion(state.currentQ); }
+        function saveAndNext() { state.status[state.currentQ] = state.answers[state.currentQ] !== undefined ? 2 : 1; if(state.currentQ < questions.length - 1) loadQuestion(state.currentQ + 1); else { saveState(); renderPalette(); } }
+        function markForReview() { state.status[state.currentQ] = state.answers[state.currentQ] !== undefined ? 4 : 3; if(state.currentQ < questions.length - 1) loadQuestion(state.currentQ + 1); else { saveState(); renderPalette(); } }
+        function clearResponse() { delete state.answers[state.currentQ]; state.status[state.currentQ] = 1; loadQuestion(state.currentQ); }
+        function prevQuestion() { if(state.currentQ > 0) loadQuestion(state.currentQ - 1); }
+
+        function renderPalette() {
+            let html = ''; let counts = { ans: 0, notAns: 0, notVis: 0, marked: 0 };
+            for(let i=0; i<questions.length; i++) {
+                let s = state.status[i]; let cls = 's-not-visited';
+                if(s===0) counts.notVis++; else if(s===1) { cls='s-not-answered'; counts.notAns++; } else if(s===2) { cls='s-answered'; counts.ans++; } else if(s===3) { cls='s-marked'; counts.marked++; } else if(s===4) { cls='s-marked'; counts.ans++; counts.marked++; }
+                let active = (i === state.currentQ) ? 'active' : ''; if(active && s === 0) cls = 's-not-answered';
+                html += `<button class="palette-btn ${cls} ${active}" onclick="loadQuestion(${i})">${i+1}</button>`;
+            }
+            document.getElementById('palette-grid').innerHTML = html;
+            document.getElementById('count-ans').innerText = counts.ans; document.getElementById('count-not-ans').innerText = counts.notAns; document.getElementById('count-not-vis').innerText = counts.notVis; document.getElementById('count-marked').innerText = counts.marked;
+        }
+
+        function startTimer() { clearInterval(timerInterval); timerInterval = setInterval(() => { if (state.timeLeft <= 0) { clearInterval(timerInterval); submitTest(); return; } state.timeLeft--; let m = Math.floor(state.timeLeft / 60).toString().padStart(2, '0'); let s = (state.timeLeft % 60).toString().padStart(2, '0'); document.getElementById('timer-display').innerText = `${m}:${s}`; if(state.timeLeft % 10 === 0) saveState(); }, 1000); }
+        function pauseTest() { clearInterval(timerInterval); document.getElementById('pause-modal').classList.remove('hidden'); }
+        function resumeTest() { document.getElementById('pause-modal').classList.add('hidden'); startTimer(); }
+        function confirmSubmit() { document.getElementById('submit-modal').classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        function submitTest() { clearInterval(timerInterval); state.submitted = true; saveState(); closeModal('submit-modal'); document.getElementById('main-header').classList.add('hidden'); calculateResult(); showScreen('result-screen'); }
+
+        function calculateResult() {
+            let correct = 0, wrong = 0, attempted = 0;
+            for(let i=0; i<questions.length; i++) { if(state.answers[i] !== undefined) { attempted++; if(state.answers[i] === questions[i][2]) correct++; else wrong++; } }
+            document.getElementById('score-text').innerText = correct; document.getElementById('res-attempted').innerText = attempted;
+            document.getElementById('res-correct').innerText = correct; document.getElementById('res-wrong').innerText = wrong;
+            document.getElementById('res-accuracy').innerText = attempted > 0 ? Math.round((correct/attempted)*100) + '%' : '0%';
+        }
+
+        function showSolutions() {
+            showScreen('solution-screen'); let html = ''; let labels = ['A', 'B', 'C', 'D'];
+            questions.forEach((q, i) => {
+                let uAns = state.answers[i]; let cAns = q[2]; let optsHtml = '';
+                q[1].forEach((opt, oIdx) => { let cls = ''; if(oIdx === cAns) cls = 'correct'; else if(oIdx === uAns && uAns !== cAns) cls = 'wrong'; optsHtml += `<div class="sol-opt ${cls}"><strong>${labels[oIdx]}.</strong> ${opt}</div>`; });
+                html += `<div class="solution-box"><div style="font-weight:bold; margin-bottom:12px; font-size:17px; color:var(--primary-blue);">प्र. ${i+1}. ${q[0]}</div>${optsHtml}<div class="explanation">${q[3]}</div></div>`;
+            });
+            document.getElementById('solutions-container').innerHTML = html;
+        }
+
+        function resetTest() { if(confirm("क्या आप निश्चित रूप से टेस्ट रीसेट करना चाहते हैं? आपकी प्रोग्रेस मिट जाएगी।")) { localStorage.removeItem('mockTestStateCET_Full90_Detailed_Clean'); location.reload(); } }
+        function toggleTheme() { document.body.classList.toggle('dark-mode'); localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light'); }
+        function updateThemeUI() { if(localStorage.getItem('theme') === 'dark') document.body.classList.add('dark-mode'); }
+        window.onload = initApp;
+    </script>
+</body>
+</html>
