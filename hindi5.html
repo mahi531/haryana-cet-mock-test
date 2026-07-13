@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSSC CET Mock Test - कारक (Karak)</title>
+    <style>
+        :root {
+            /* Light Mode Variables */
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: #2c3e50;
+            --text-muted: #576574;
+            --primary-color: #341f97;
+            --accent-color: #ff9f43;
+            --correct-color: #10ac84;
+            --incorrect-color: #ee5253;
+            --btn-hover: rgba(255, 255, 255, 0.6);
+            --palette-unattempted: #c8d6e5;
+            --palette-attempted: #10ac84;
+            --palette-marked: #9b59b6;
+            --palette-marked-attempted: #8e44ad;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Mode Variables */
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-bg: rgba(16, 20, 24, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f1f2f6;
+            --text-muted: #a4b0be;
+            --primary-color: #54a0ff;
+            --accent-color: #ff9f43;
+            --correct-color: #1dd1a1;
+            --incorrect-color: #ff6b6b;
+            --btn-hover: rgba(255, 255, 255, 0.1);
+            --palette-unattempted: #576574;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            margin: 15px;
+        }
+        .header-title h1 { font-size: 1.5rem; }
+        .header-title p { font-size: 0.9rem; color: var(--text-muted); }
+        .header-controls { display: flex; gap: 15px; align-items: center; }
+        
+        .timer-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0,0,0,0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+        .timer { font-size: 1.2rem; font-weight: bold; }
+        .timer.danger { color: var(--incorrect-color); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        button {
+            cursor: pointer;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+            background: var(--glass-bg);
+            color: var(--text-color);
+            border: 1px solid var(--glass-border);
+        }
+        button:hover { background: var(--btn-hover); }
+        .btn-primary { background: var(--primary-color); color: #fff; border: none; }
+        .btn-primary:hover { background: #2c1a80; }
+        .btn-danger { background: var(--incorrect-color); color: white; border: none; }
+        .btn-warning { background: var(--accent-color); color: white; border: none; }
+        .btn-submit { background: var(--correct-color); color: white; border: none; }
+        .btn-submit:hover { background: #0b8c6b; }
+
+        /* Main Layout */
+        .container {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            margin: 0 15px 15px 15px;
+        }
+        .main-area { flex: 3; display: flex; flex-direction: column; position: relative; }
+        .sidebar { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        /* Progress & Question Area */
+        .progress-bar-bg { background: rgba(0,0,0,0.1); height: 8px; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar-fill { background: var(--primary-color); height: 100%; width: 0%; transition: width 0.3s; }
+        
+        .question-text { font-size: 1.25rem; font-weight: 500; margin-bottom: 20px; line-height: 1.6; }
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            text-align: left;
+            padding: 15px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .option-btn.selected {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+        
+        .action-buttons { display: flex; justify-content: space-between; margin-top: auto; padding-top: 20px; }
+        .action-buttons > div { display: flex; gap: 10px; }
+
+        /* Pause Overlay */
+        .pause-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 10;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+        }
+        .pause-overlay h2 { font-size: 2rem; margin-bottom: 10px; }
+
+        /* Sidebar Stats & Grid */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-item { font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+        .stat-dot { width: 12px; height: 12px; border-radius: 50%; }
+        
+        .q-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .q-grid-btn {
+            padding: 10px 0; text-align: center; border-radius: 8px; font-weight: bold;
+            background: var(--palette-unattempted); color: #2c3e50; border: none;
+        }
+        .q-grid-btn.current { border: 3px solid #2c3e50; }
+        [data-theme="dark"] .q-grid-btn.current { border: 3px solid #fff; color: #fff; }
+        .q-grid-btn.attempted { background: var(--palette-attempted); color: #fff; }
+        .q-grid-btn.marked { background: var(--palette-marked); color: #fff; }
+        .q-grid-btn.marked.attempted { background: var(--palette-marked-attempted); color: #fff; }
+
+        /* Results Screen */
+        .result-screen { display: none; max-width: 1000px; margin: 0 auto; width: 100%; }
+        .result-header { text-align: center; margin-bottom: 30px; }
+        .badge { display: inline-block; padding: 10px 30px; border-radius: 30px; font-size: 1.5rem; font-weight: bold; color: #fff; margin-top: 10px; }
+        .badge.pass { background: var(--correct-color); }
+        .badge.fail { background: var(--incorrect-color); }
+        
+        .result-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-box { text-align: center; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .stat-box h3 { font-size: 2rem; margin-bottom: 5px; }
+
+        .solution-item { margin-bottom: 25px; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .sol-q { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; }
+        .sol-opt { margin-bottom: 8px; padding: 10px; border-radius: 8px; background: var(--glass-bg); }
+        .sol-opt.correct { background: var(--correct-color); color: #fff; }
+        .sol-opt.incorrect { background: var(--incorrect-color); color: #fff; }
+        .sol-exp { margin-top: 15px; font-size: 0.95rem; color: var(--text-color); border-left: 4px solid var(--primary-color); padding-left: 15px; line-height: 1.6; }
+        .sol-exp-title { color: var(--primary-color); font-weight: bold; margin-bottom: 5px; }
+        .sol-fact { margin-top: 5px; background: rgba(0,0,0,0.03); padding: 5px 10px; border-radius: 4px; font-size: 0.9rem;}
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            header { flex-direction: column; gap: 15px; text-align: center; }
+            .action-buttons { flex-direction: column; gap: 15px; }
+            .action-buttons > div { justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="glass-panel">
+        <div class="header-title">
+            <h1>HSSC CET Group D Mock Test</h1>
+            <p>25 Important Hindi Grammar Questions (कारक - Karak)</p>
+        </div>
+        <div class="header-controls">
+            <div class="timer-container" id="timer-box">
+                <span>⏱</span>
+                <span class="timer" id="timer">25:00</span>
+                <button id="pause-btn" onclick="togglePause()">Pause</button>
+            </div>
+            <button onclick="toggleTheme()">🌗 Theme</button>
+            <button class="btn-submit" onclick="submitTest(false)">Submit Test</button>
+        </div>
+    </header>
+
+    <div class="container" id="app-container">
+        
+        <div class="glass-panel main-area">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+            
+            <div id="question-header" style="margin-bottom: 15px; font-weight: 600; color: var(--primary-color);"></div>
+            <div id="question-text" class="question-text"></div>
+            
+            <div class="options-grid" id="options-container">
+                </div>
+
+            <div class="action-buttons">
+                <div>
+                    <button onclick="changeQuestion(-1)" id="prev-btn">Previous</button>
+                    <button onclick="clearSelection()">Clear</button>
+                </div>
+                <div>
+                    <button onclick="toggleMark()" id="mark-btn" class="btn-warning">Mark for Review</button>
+                    <button onclick="changeQuestion(1)" id="next-btn" class="btn-primary">Next</button>
+                </div>
+            </div>
+
+            <div class="pause-overlay" id="pause-overlay">
+                <h2>Test Paused</h2>
+                <p>Questions are hidden to prevent cheating.</p>
+                <br>
+                <button class="btn-primary" onclick="togglePause()">Resume Test</button>
+            </div>
+        </div>
+
+        <div class="glass-panel sidebar">
+            <h3>Question Palette</h3>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-attempted)"></div> Attempted (<span id="count-att">0</span>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-unattempted)"></div> Unattempted (<span id="count-unatt">25</span>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-marked)"></div> Marked (<span id="count-mark">0</span>)</div>
+            </div>
+            <div class="q-grid" id="q-grid">
+                </div>
+            <button class="btn-submit" onclick="submitTest(false)" style="margin-top: 20px; width: 100%; padding: 12px; font-size: 1.1rem;">Final Submit Test</button>
+        </div>
+    </div>
+
+    <div class="glass-panel result-screen" id="result-screen">
+        <div class="result-header">
+            <h2>Test Submitted Successfully</h2>
+            <div class="badge" id="result-badge">Pass</div>
+        </div>
+        <div class="result-stats">
+            <div class="stat-box"><h3 id="res-score">0</h3><p>Score / 25</p></div>
+            <div class="stat-box"><h3 id="res-perc">0%</h3><p>Percentage</p></div>
+            <div class="stat-box"><h3 id="res-corr" style="color: var(--correct-color);">0</h3><p>Correct</p></div>
+            <div class="stat-box"><h3 id="res-incorr" style="color: var(--incorrect-color);">0</h3><p>Incorrect</p></div>
+            <div class="stat-box"><h3 id="res-time">00:00</h3><p>Time Taken</p></div>
+        </div>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <button class="btn-primary" onclick="location.reload()">Restart Test</button>
+        </div>
+        <h3>Detailed Solutions & Grammar Rules</h3>
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--glass-border);">
+        <div id="solutions-container"></div>
+    </div>
+
+<script>
+    // 25 Hindi Questions based on Karak (कारक) extracted from images for HSSC CET Group D
+    const questions = [
+        {
+            q: "'राजा सेवक को कम्बल देता है।' वाक्य में रेखांकित शब्द (सेवक को) के लिए कारक का सही क्रमांक है-",
+            opt: ["कर्म कारक", "संबंध कारक", "संप्रदान कारक", "कर्ता कारक"],
+            ans: 2,
+            exp: "सही उत्तर: <b>संप्रदान कारक</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> दान देने के अर्थ में (जब कोई वस्तु हमेशा के लिए दे दी जाए) सम्प्रदान कारक होता है। यहाँ कम्बल दान स्वरूप दिया जा रहा है।</div>"
+        },
+        {
+            q: "'हे राम! तुम कहाँ हो' वाक्य में कौनसा कारक है?",
+            opt: ["संबंध", "अधिकरण", "संबोधन", "सम्प्रदान"],
+            ans: 2,
+            exp: "सही उत्तर: <b>संबोधन</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> किसी को पुकारने, चेतावनी देने या सम्बोधित करने के लिए सम्बोधन कारक (हे, अरे, ओ) का प्रयोग होता है।</div>"
+        },
+        {
+            q: "'से' विभक्ति निम्न में से किस कारक के लिए प्रयुक्त होता है?",
+            opt: ["कर्ता", "कर्म", "सम्प्रदान", "करण"],
+            ans: 3,
+            exp: "सही उत्तर: <b>करण</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'से' विभक्ति का प्रयोग करण कारक (साधन/माध्यम के रूप में) और अपादान कारक (अलग होने के रूप में) दोनों में होता है। दिए गए विकल्पों के अनुसार 'करण' उचित उत्तर है।</div>"
+        },
+        {
+            q: "'को' से किस कारक चिह्न का बोध होता है?",
+            opt: ["कर्म कारक", "करण कारक", "सम्प्रदान कारक", "अधिकरण कारक"],
+            ans: 0,
+            exp: "सही उत्तर: <b>कर्म कारक</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'को' मुख्य रूप से कर्म कारक का परसर्ग (विभक्ति चिह्न) है।</div>"
+        },
+        {
+            q: "निम्न शब्द में अधिकरण कारक का प्रयोग हुआ है-",
+            opt: ["वाहनारूढ़", "सत्ताधीश", "गंगाजल", "रेखाचित्र"],
+            ans: 0,
+            exp: "सही उत्तर: <b>वाहनारूढ़</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'वाहनारूढ़' का समास विग्रह 'वाहन पर आरूढ़ (सवार)' होता है। 'पर' अधिकरण कारक का चिह्न है।</div>"
+        },
+        {
+            q: "'पण्डित दूध पीता है।' इस वाक्य में कारक है-",
+            opt: ["कर्म, करण", "सम्प्रदान, संबंध", "कर्ता, कर्म", "इनमें से कोई नहीं"],
+            ans: 2,
+            exp: "सही उत्तर: <b>कर्ता, कर्म</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> इस वाक्य में 'पण्डित' कर्ता कारक (कार्य करने वाला) है और 'दूध' कर्म कारक (जिस पर प्रभाव पड़े) है।</div>"
+        },
+        {
+            q: "'गरीबों के निमित्त धन इकट्ठा करो' में कौन-सा कारक है?",
+            opt: ["करण कारक", "अपादान कारक", "सम्प्रदान कारक", "कर्ता कारक"],
+            ans: 2,
+            exp: "सही उत्तर: <b>सम्प्रदान कारक</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'के निमित्त', 'के वास्ते', 'के लिए' आदि अव्ययों का प्रयोग सम्प्रदान कारक में होता है।</div>"
+        },
+        {
+            q: "'पेड़ पर पक्षी बैठे हैं।' इस वाक्य में 'पेड़ पर' पद में कौनसा कारक है?",
+            opt: ["करण", "अपादान", "संबंध", "अधिकरण"],
+            ans: 3,
+            exp: "सही उत्तर: <b>अधिकरण</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> क्रिया के आधार या स्थान का बोध कराने वाले संज्ञा रूप को अधिकरण कारक कहते हैं। इसका चिह्न 'में' या 'पर' है।</div>"
+        },
+        {
+            q: "'माँ बच्चे को दूध पिला रही है' में कौनसा कारक है?",
+            opt: ["करण कारक", "सम्प्रदान कारक", "अपादान कारक", "कर्म कारक"],
+            ans: 3,
+            exp: "सही उत्तर: <b>कर्म कारक</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> यहाँ 'बच्चे को' कर्म है, जिस पर क्रिया (पिलाने) का प्रभाव पड़ रहा है। अतः यह कर्म कारक है।</div>"
+        },
+        {
+            q: "किस क्रम में संप्रदान कारक है?",
+            opt: ["हमने चिड़ियाघर में पक्षी देखे।", "गरीब के निमित्त वस्त्र दान करो।", "साँप को लाठी से मारा।", "कलम मेज पर है।"],
+            ans: 1,
+            exp: "सही उत्तर: <b>गरीब के निमित्त वस्त्र दान करो।</b><div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'के निमित्त' का अर्थ 'के लिए' होता है, जो सम्प्रदान कारक का बोध कराता है।</div>"
+        },
+        {
+            q: "'वीरों ने देश के हेतु बलिदान दे दिया' में कौनसा कारक है?",
+            opt: ["कर्ता कारक", "करण कारक", "संप्रदान कारक", "अपादान कारक"],
+            ans: 2,
+            exp: "सही उत्तर: <b>संप्रदान कारक</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'के हेतु' या 'के लिए' का प्रयोग सम्प्रदान कारक में किया जाता है, जहाँ किसी के लिए कोई कार्य किया जाए या कुछ दिया जाए।</div>"
+        },
+        {
+            q: "अपादान कारक के संबंध में कौनसा उदाहरण नहीं है?",
+            opt: ["मैं जयपुर से चला आ रहा हूँ।", "सूर्य पृथ्वी से दूर है।", "राजीव छत से कूद पड़ा।", "सब प्राणी आँखों से देखते हैं।"],
+            ans: 3,
+            exp: "सही उत्तर: <b>सब प्राणी आँखों से देखते हैं।</b><div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'आँखों से देखते हैं' में आँखें कार्य करने का साधन (माध्यम) हैं, इसलिए यहाँ करण कारक है, अपादान नहीं। अन्य सभी में अलगाव या दूरी है।</div>"
+        },
+        {
+            q: "कौन-सा क्रम सही नहीं है?",
+            opt: ["पेड़ से पत्ता गिरा - करण कारक", "ओ लड़के! धीरे चल - संबोधन कारक", "छत के ऊपर चले जाओ - अधिकरण कारक", "आसमान का रंग नीला है - संबंध कारक"],
+            ans: 0,
+            exp: "सही उत्तर: <b>पेड़ से पत्ता गिरा - करण कारक</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'पेड़ से पत्ता गिरा' में पत्ते का पेड़ से अलग होने का भाव है, अतः यह अपादान कारक है, न कि करण कारक।</div>"
+        },
+        {
+            q: "किस क्रम में करण कारक नहीं है?",
+            opt: ["लड़का छत से गिर पड़ा।", "पिताजी कार से कार्यालय जाते हैं।", "बाजार में पैसे से सामान खरीदा जाता है।", "प्राचार्य ने यह आदेश चपरासी के द्वारा भिजवाया है।"],
+            ans: 0,
+            exp: "सही उत्तर: <b>लड़का छत से गिर पड़ा।</b><div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'छत से गिर पड़ा' में अलगाव है, अतः यह अपादान कारक है। अन्य सभी विकल्पों में 'से/के द्वारा' साधन के रूप में प्रयुक्त हुआ है (करण कारक)।</div>"
+        },
+        {
+            q: "'देवेंद्र मैदान में खेल रहा है' पंक्ति में कौनसा कारक है?",
+            opt: ["कर्म कारक", "संबंध कारक", "अपादान कारक", "अधिकरण कारक"],
+            ans: 3,
+            exp: "सही उत्तर: <b>अधिकरण कारक</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'मैदान में' स्थान का बोध करा रहा है। 'में' तथा 'पर' अधिकरण कारक के परसर्ग हैं।</div>"
+        },
+        {
+            q: "रेखांकित का कारक बताइए- 'मेंढक को पत्थर से मत मारो' ('पत्थर से')।",
+            opt: ["अधिकरण कारक", "संबंध कारक", "करण कारक", "कर्म कारक"],
+            ans: 2,
+            exp: "सही उत्तर: <b>करण कारक</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'पत्थर से' मारने का साधन है। कर्ता जिस साधन से क्रिया करता है, उसे करण कारक कहते हैं।</div>"
+        },
+        {
+            q: "किस क्रम में संप्रदान कारक का सही प्रयोग हुआ है?",
+            opt: ["बच्चों के लिए मिठाई लाओ।", "हाथ से घड़ी गिर गई।", "हिमालय से नदी निकलती है।", "आसमान का रंग नीला है।"],
+            ans: 0,
+            exp: "सही उत्तर: <b>बच्चों के लिए मिठाई लाओ।</b><div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'के लिए' सम्प्रदान कारक का परसर्ग है। (विकल्प 2 और 3 अपादान हैं, और 4 संबंध कारक है)।</div>"
+        },
+        {
+            q: "निम्नलिखित में से अपादान कारक का विभक्ति चिह्न है-",
+            opt: ["को", "से (अलग होने के लिए)", "में", "के द्वारा"],
+            ans: 1,
+            exp: "सही उत्तर: <b>से (अलग होने के लिए)</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> अपादान कारक का विभक्ति चिह्न 'से' होता है, जो अलगाव, दूरी, तुलना या डरने के भाव को दर्शाता है।</div>"
+        },
+        {
+            q: "'अमेरिका ने भारत को आर्थिक सहायता दी' में कौनसा कारक है?",
+            opt: ["कर्ता कारक", "अपादान कारक", "संप्रदान कारक", "संबंध कारक"],
+            ans: 2,
+            exp: "सही उत्तर: <b>संप्रदान कारक</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> जब किसी को कुछ दिया जाता है (जैसे- सहायता, दान या उपहार), तो वहाँ कर्म कारक का चिह्न 'को' होने पर भी 'सम्प्रदान कारक' माना जाता है।</div>"
+        },
+        {
+            q: "'अलग होने' के योग में कौनसा कारक प्रयोग होता है?",
+            opt: ["कर्म", "करण", "अपादान", "संबंध"],
+            ans: 2,
+            exp: "सही उत्तर: <b>अपादान</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> जब किसी वस्तु या व्यक्ति का किसी स्थान या वस्तु से अलग होना पाया जाता है, तो वहाँ अपादान कारक होता है।</div>"
+        },
+        {
+            q: "लोगों ने शोरगुल करके डाकुओं को भगाया। उपर्युक्त वाक्य में कारक बताइए।",
+            opt: ["कर्ता कारक", "करण कारक", "सम्प्रदान कारक", "कर्म कारक"],
+            ans: 3,
+            exp: "सही उत्तर: <b>कर्म कारक</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'डाकुओं को' भगाया गया। यहाँ 'डाकू' कर्म है जिस पर क्रिया (भगाना) का फल पड़ रहा है। अतः यहाँ कर्म कारक है।</div>"
+        },
+        {
+            q: "'लड़का पेड़ से गिरा' उपर्युक्त वाक्य का कारक बताइए।",
+            opt: ["संप्रदान कारक", "कर्म कारक", "अपादान कारक", "करण कारक"],
+            ans: 2,
+            exp: "सही उत्तर: <b>अपादान कारक</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> पेड़ से गिरने में अलग होने (अलगाव) का भाव है, इसलिए यहाँ अपादान कारक का प्रयोग हुआ है।</div>"
+        },
+        {
+            q: "कलावती बच्चों ........ पढ़ा रही है। (रिक्त स्थान की पूर्ति करें)",
+            opt: ["से", "पर", "को", "में"],
+            ans: 2,
+            exp: "सही उत्तर: <b>को</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> यहाँ 'बच्चों को' कर्म कारक का प्रयोग होगा, क्योंकि पढ़ाने की क्रिया का सीधा प्रभाव बच्चों पर पड़ रहा है।</div>"
+        },
+        {
+            q: "'झगड़ा मेरे और उसके मध्य में था' में कौन-सा कारक है?",
+            opt: ["संबंध कारक", "अधिकरण कारक", "करण कारक", "कर्म कारक"],
+            ans: 1,
+            exp: "सही उत्तर: <b>अधिकरण कारक</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'मध्य में' स्थान/स्थिति का बोध कराता है। 'में' परसर्ग अधिकरण कारक का सूचक होता है।</div>"
+        },
+        {
+            q: "'सूर्य पृथ्वी से दूर है।' वाक्य में कारक है-",
+            opt: ["करण कारक", "कर्म कारक", "अपादान कारक", "सम्प्रदान कारक"],
+            ans: 2,
+            exp: "सही उत्तर: <b>अपादान कारक</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> अपादान कारक का प्रयोग केवल अलग होने में ही नहीं, बल्कि दूरी बताने (सूर्य पृथ्वी से दूर है), डरने, सीखने और तुलना करने में भी होता है।</div>"
+        }
+    ];
+
+    // State Variables
+    let currentIdx = 0;
+    const totalQ = questions.length;
+    let answers = new Array(totalQ).fill(null);
+    let marked = new Array(totalQ).fill(false);
+    
+    // Timer is set to 25 minutes
+    let totalTime = 25 * 60; 
+    let timerInterval;
+    let isPaused = false;
+
+    // Initialization
+    function init() {
+        createPalette();
+        loadQuestion(0);
+        updateStats();
+        startTimer();
+    }
+
+    // Theme Logic
+    function toggleTheme() {
+        const doc = document.documentElement;
+        const current = doc.getAttribute('data-theme');
+        doc.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+    }
+
+    // Timer Logic
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if(totalTime <= 0) {
+                clearInterval(timerInterval);
+                submitTest(true);
+                return;
+            }
+            totalTime--;
+            updateTimerDisplay();
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(totalTime / 60).toString().padStart(2, '0');
+        const secs = (totalTime % 60).toString().padStart(2, '0');
+        const timerEl = document.getElementById('timer');
+        timerEl.innerText = `${mins}:${secs}`;
+        
+        if (totalTime < 300) { 
+            timerEl.classList.add('danger');
+        } else {
+            timerEl.classList.remove('danger');
+        }
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        const overlay = document.getElementById('pause-overlay');
+        const btn = document.getElementById('pause-btn');
+        
+        if (isPaused) {
+            clearInterval(timerInterval);
+            overlay.style.display = 'flex';
+            btn.innerText = 'Resume';
+            btn.classList.add('btn-warning');
+        } else {
+            startTimer();
+            overlay.style.display = 'none';
+            btn.innerText = 'Pause';
+            btn.classList.remove('btn-warning');
+        }
+    }
+
+    // Quiz Navigation & Rendering
+    function loadQuestion(idx) {
+        currentIdx = idx;
+        const qData = questions[idx];
+        
+        document.getElementById('question-header').innerText = `प्रश्नोत्तरी ${idx + 1} / ${totalQ}`;
+        document.getElementById('question-text').innerHTML = qData.q;
+        
+        const optsContainer = document.getElementById('options-container');
+        optsContainer.innerHTML = '';
+        
+        qData.opt.forEach((optText, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn' + (answers[idx] === i ? ' selected' : '');
+            btn.innerHTML = `<span style="font-weight:bold; border:1px solid currentColor; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${String.fromCharCode(65+i)}</span> ${optText}`;
+            btn.onclick = () => selectOption(i);
+            optsContainer.appendChild(btn);
+        });
+
+        document.getElementById('progress-bar').style.width = `${((idx + 1) / totalQ) * 100}%`;
+
+        document.getElementById('prev-btn').disabled = (idx === 0);
+        document.getElementById('prev-btn').style.opacity = (idx === 0) ? '0.5' : '1';
+        
+        const markBtn = document.getElementById('mark-btn');
+        markBtn.innerText = marked[idx] ? 'Unmark Review' : 'Mark for Review';
+        
+        const nextBtn = document.getElementById('next-btn');
+        if (idx === totalQ - 1) {
+            nextBtn.innerText = 'Submit Test';
+            nextBtn.className = 'btn-danger';
+        } else {
+            nextBtn.innerText = 'Next';
+            nextBtn.className = 'btn-primary';
+        }
+
+        updatePaletteVisuals();
+    }
+
+    function selectOption(optIdx) {
+        answers[currentIdx] = optIdx;
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function clearSelection() {
+        answers[currentIdx] = null;
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function toggleMark() {
+        marked[currentIdx] = !marked[currentIdx];
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function changeQuestion(step) {
+        if (step === 1 && currentIdx === totalQ - 1) {
+            submitTest(false);
+            return;
+        }
+        let newIdx = currentIdx + step;
+        if (newIdx >= 0 && newIdx < totalQ) {
+            loadQuestion(newIdx);
+        }
+    }
+
+    // Palette Logic
+    function createPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'q-grid-btn';
+            btn.id = `pal-btn-${i}`;
+            btn.innerText = i + 1;
+            btn.onclick = () => loadQuestion(i);
+            grid.appendChild(btn);
+        }
+    }
+
+    function updatePaletteVisuals() {
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.getElementById(`pal-btn-${i}`);
+            btn.className = 'q-grid-btn';
+            
+            if (answers[i] !== null && marked[i]) btn.classList.add('marked', 'attempted');
+            else if (marked[i]) btn.classList.add('marked');
+            else if (answers[i] !== null) btn.classList.add('attempted');
+            
+            if (i === currentIdx) btn.classList.add('current');
+        }
+    }
+
+    function updateStats() {
+        let att = 0, mark = 0;
+        for (let i = 0; i < totalQ; i++) {
+            if (answers[i] !== null) att++;
+            if (marked[i]) mark++;
+        }
+        document.getElementById('count-att').innerText = att;
+        document.getElementById('count-unatt').innerText = totalQ - att;
+        document.getElementById('count-mark').innerText = mark;
+        updatePaletteVisuals();
+    }
+
+    // Submission & Results
+    function submitTest(isAuto) {
+        const unatt = answers.filter(a => a === null).length;
+        if (!isAuto && unatt > 0) {
+            const confirmSubmit = confirm(`आपके पास ${unatt} अनुत्तरित प्रश्न हैं। क्या आप निश्चित रूप से सबमिट करना चाहते हैं?`);
+            if (!confirmSubmit) return;
+        }
+
+        clearInterval(timerInterval);
+        document.getElementById('app-container').style.display = 'none';
+        document.querySelector('.header-controls').style.display = 'none';
+        generateResults();
+    }
+
+    function generateResults() {
+        const resScreen = document.getElementById('result-screen');
+        resScreen.style.display = 'block';
+
+        let correct = 0;
+        let incorrect = 0;
+        
+        answers.forEach((ans, i) => {
+            if (ans !== null) {
+                if (ans === questions[i].ans) correct++;
+                else incorrect++;
+            }
+        });
+
+        const score = correct;
+        const perc = ((score / totalQ) * 100).toFixed(2);
+        
+        const timeTakenSec = (25 * 60) - totalTime;
+        const timeMins = Math.floor(timeTakenSec / 60).toString().padStart(2, '0');
+        const timeSecs = (timeTakenSec % 60).toString().padStart(2, '0');
+
+        document.getElementById('res-score').innerText = score;
+        document.getElementById('res-perc').innerText = perc + '%';
+        document.getElementById('res-corr').innerText = correct;
+        document.getElementById('res-incorr').innerText = incorrect;
+        document.getElementById('res-time').innerText = `${timeMins}:${timeSecs}`;
+
+        const badge = document.getElementById('result-badge');
+        if (perc >= 50) {
+            badge.className = 'badge pass';
+            badge.innerText = 'उत्तीर्ण (PASS)';
+        } else {
+            badge.className = 'badge fail';
+            badge.innerText = 'अनुत्तीर्ण (FAIL)';
+        }
+
+        generateSolutions();
+    }
+
+    function generateSolutions() {
+        const container = document.getElementById('solutions-container');
+        let html = '';
+
+        questions.forEach((q, i) => {
+            const userAns = answers[i];
+            const corrAns = q.ans;
+            
+            html += `<div class="solution-item">
+                        <div class="sol-q">Q${i+1}. ${q.q}</div>`;
+            
+            q.opt.forEach((optText, optIdx) => {
+                let cls = 'sol-opt';
+                let icon = '';
+                
+                if (optIdx === corrAns) {
+                    cls += ' correct';
+                    icon = '✓';
+                } else if (userAns === optIdx && userAns !== corrAns) {
+                    cls += ' incorrect';
+                    icon = '✗';
+                }
+
+                if(icon) {
+                    html += `<div class="${cls}"><strong>${String.fromCharCode(65+optIdx)}</strong>: ${optText} <span style="float:right; font-weight:bold;">${icon}</span></div>`;
+                } else {
+                    html += `<div class="${cls}"><strong>${String.fromCharCode(65+optIdx)}</strong>: ${optText}</div>`;
+                }
+            });
+
+            const userStatus = userAns === null ? "<span style='color:var(--text-muted)'>Unattempted</span>" : 
+                              (userAns === corrAns ? "<span style='color:var(--correct-color)'>Correct</span>" : 
+                              "<span style='color:var(--incorrect-color)'>Incorrect</span>");
+
+            html += `<div style="margin-top: 10px;"><strong>Status:</strong> ${userStatus}</div>`;
+            html += `<div class="sol-exp"><div class="sol-exp-title">व्याकरण नियम व व्याख्या (Explanation):</div>${q.exp}</div>`;
+            html += `</div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>

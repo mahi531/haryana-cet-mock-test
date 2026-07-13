@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSSC CET Mock Test - समास (Samas)</title>
+    <style>
+        :root {
+            /* Light Mode Variables */
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: #2c3e50;
+            --text-muted: #576574;
+            --primary-color: #341f97;
+            --accent-color: #ff9f43;
+            --correct-color: #10ac84;
+            --incorrect-color: #ee5253;
+            --btn-hover: rgba(255, 255, 255, 0.6);
+            --palette-unattempted: #c8d6e5;
+            --palette-attempted: #10ac84;
+            --palette-marked: #9b59b6;
+            --palette-marked-attempted: #8e44ad;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Mode Variables */
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-bg: rgba(16, 20, 24, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f1f2f6;
+            --text-muted: #a4b0be;
+            --primary-color: #54a0ff;
+            --accent-color: #ff9f43;
+            --correct-color: #1dd1a1;
+            --incorrect-color: #ff6b6b;
+            --btn-hover: rgba(255, 255, 255, 0.1);
+            --palette-unattempted: #576574;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            margin: 15px;
+        }
+        .header-title h1 { font-size: 1.5rem; }
+        .header-title p { font-size: 0.9rem; color: var(--text-muted); }
+        .header-controls { display: flex; gap: 15px; align-items: center; }
+        
+        .timer-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0,0,0,0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+        .timer { font-size: 1.2rem; font-weight: bold; }
+        .timer.danger { color: var(--incorrect-color); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        button {
+            cursor: pointer;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+            background: var(--glass-bg);
+            color: var(--text-color);
+            border: 1px solid var(--glass-border);
+        }
+        button:hover { background: var(--btn-hover); }
+        .btn-primary { background: var(--primary-color); color: #fff; border: none; }
+        .btn-primary:hover { background: #2c1a80; }
+        .btn-danger { background: var(--incorrect-color); color: white; border: none; }
+        .btn-warning { background: var(--accent-color); color: white; border: none; }
+        .btn-submit { background: var(--correct-color); color: white; border: none; }
+        .btn-submit:hover { background: #0b8c6b; }
+
+        /* Main Layout */
+        .container {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            margin: 0 15px 15px 15px;
+        }
+        .main-area { flex: 3; display: flex; flex-direction: column; position: relative; }
+        .sidebar { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        /* Progress & Question Area */
+        .progress-bar-bg { background: rgba(0,0,0,0.1); height: 8px; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar-fill { background: var(--primary-color); height: 100%; width: 0%; transition: width 0.3s; }
+        
+        .question-text { font-size: 1.25rem; font-weight: 500; margin-bottom: 20px; line-height: 1.6; }
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            text-align: left;
+            padding: 15px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .option-btn.selected {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+        
+        .action-buttons { display: flex; justify-content: space-between; margin-top: auto; padding-top: 20px; }
+        .action-buttons > div { display: flex; gap: 10px; }
+
+        /* Pause Overlay */
+        .pause-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 10;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+        }
+        .pause-overlay h2 { font-size: 2rem; margin-bottom: 10px; }
+
+        /* Sidebar Stats & Grid */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-item { font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+        .stat-dot { width: 12px; height: 12px; border-radius: 50%; }
+        
+        .q-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .q-grid-btn {
+            padding: 10px 0; text-align: center; border-radius: 8px; font-weight: bold;
+            background: var(--palette-unattempted); color: #2c3e50; border: none;
+        }
+        .q-grid-btn.current { border: 3px solid #2c3e50; }
+        [data-theme="dark"] .q-grid-btn.current { border: 3px solid #fff; color: #fff; }
+        .q-grid-btn.attempted { background: var(--palette-attempted); color: #fff; }
+        .q-grid-btn.marked { background: var(--palette-marked); color: #fff; }
+        .q-grid-btn.marked.attempted { background: var(--palette-marked-attempted); color: #fff; }
+
+        /* Results Screen */
+        .result-screen { display: none; max-width: 1000px; margin: 0 auto; width: 100%; }
+        .result-header { text-align: center; margin-bottom: 30px; }
+        .badge { display: inline-block; padding: 10px 30px; border-radius: 30px; font-size: 1.5rem; font-weight: bold; color: #fff; margin-top: 10px; }
+        .badge.pass { background: var(--correct-color); }
+        .badge.fail { background: var(--incorrect-color); }
+        
+        .result-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-box { text-align: center; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .stat-box h3 { font-size: 2rem; margin-bottom: 5px; }
+
+        .solution-item { margin-bottom: 25px; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .sol-q { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; }
+        .sol-opt { margin-bottom: 8px; padding: 10px; border-radius: 8px; background: var(--glass-bg); }
+        .sol-opt.correct { background: var(--correct-color); color: #fff; }
+        .sol-opt.incorrect { background: var(--incorrect-color); color: #fff; }
+        .sol-exp { margin-top: 15px; font-size: 0.95rem; color: var(--text-color); border-left: 4px solid var(--primary-color); padding-left: 15px; line-height: 1.6; }
+        .sol-exp-title { color: var(--primary-color); font-weight: bold; margin-bottom: 5px; }
+        .sol-fact { margin-top: 5px; background: rgba(0,0,0,0.03); padding: 5px 10px; border-radius: 4px; font-size: 0.9rem;}
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            header { flex-direction: column; gap: 15px; text-align: center; }
+            .action-buttons { flex-direction: column; gap: 15px; }
+            .action-buttons > div { justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="glass-panel">
+        <div class="header-title">
+            <h1>HSSC CET Group D Mock Test</h1>
+            <p>25 Important Hindi Grammar Questions (समास - Samas)</p>
+        </div>
+        <div class="header-controls">
+            <div class="timer-container" id="timer-box">
+                <span>⏱</span>
+                <span class="timer" id="timer">25:00</span>
+                <button id="pause-btn" onclick="togglePause()">Pause</button>
+            </div>
+            <button onclick="toggleTheme()">🌗 Theme</button>
+            <button class="btn-submit" onclick="submitTest(false)">Submit Test</button>
+        </div>
+    </header>
+
+    <div class="container" id="app-container">
+        
+        <div class="glass-panel main-area">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+            
+            <div id="question-header" style="margin-bottom: 15px; font-weight: 600; color: var(--primary-color);"></div>
+            <div id="question-text" class="question-text"></div>
+            
+            <div class="options-grid" id="options-container">
+                </div>
+
+            <div class="action-buttons">
+                <div>
+                    <button onclick="changeQuestion(-1)" id="prev-btn">Previous</button>
+                    <button onclick="clearSelection()">Clear</button>
+                </div>
+                <div>
+                    <button onclick="toggleMark()" id="mark-btn" class="btn-warning">Mark for Review</button>
+                    <button onclick="changeQuestion(1)" id="next-btn" class="btn-primary">Next</button>
+                </div>
+            </div>
+
+            <div class="pause-overlay" id="pause-overlay">
+                <h2>Test Paused</h2>
+                <p>Questions are hidden to prevent cheating.</p>
+                <br>
+                <button class="btn-primary" onclick="togglePause()">Resume Test</button>
+            </div>
+        </div>
+
+        <div class="glass-panel sidebar">
+            <h3>Question Palette</h3>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-attempted)"></div> Attempted (<span id="count-att">0</span>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-unattempted)"></div> Unattempted (<span id="count-unatt">25</span>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-marked)"></div> Marked (<span id="count-mark">0</span>)</div>
+            </div>
+            <div class="q-grid" id="q-grid">
+                </div>
+            <button class="btn-submit" onclick="submitTest(false)" style="margin-top: 20px; width: 100%; padding: 12px; font-size: 1.1rem;">Final Submit Test</button>
+        </div>
+    </div>
+
+    <div class="glass-panel result-screen" id="result-screen">
+        <div class="result-header">
+            <h2>Test Submitted Successfully</h2>
+            <div class="badge" id="result-badge">Pass</div>
+        </div>
+        <div class="result-stats">
+            <div class="stat-box"><h3 id="res-score">0</h3><p>Score / 25</p></div>
+            <div class="stat-box"><h3 id="res-perc">0%</h3><p>Percentage</p></div>
+            <div class="stat-box"><h3 id="res-corr" style="color: var(--correct-color);">0</h3><p>Correct</p></div>
+            <div class="stat-box"><h3 id="res-incorr" style="color: var(--incorrect-color);">0</h3><p>Incorrect</p></div>
+            <div class="stat-box"><h3 id="res-time">00:00</h3><p>Time Taken</p></div>
+        </div>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <button class="btn-primary" onclick="location.reload()">Restart Test</button>
+        </div>
+        <h3>Detailed Solutions & Grammar Rules</h3>
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--glass-border);">
+        <div id="solutions-container"></div>
+    </div>
+
+<script>
+    // 25 Hindi Questions based on Samas (समास) extracted from images for HSSC CET Group D
+    const questions = [
+        {
+            q: "'वातावरण' का विग्रह और समास होगा-",
+            opt: ["वातावरण रूपी वात- कर्मधारय", "वात और आवरण- द्वन्द्व", "वात का आवरण- तत्पुरुष", "वात का बना ऐसा आवरण- बहुव्रीहि"],
+            ans: 2,
+            exp: "सही उत्तर: <b>वात का आवरण- तत्पुरुष</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> जब समास विग्रह करने पर कारक की विभक्ति का प्रयोग होता है, तो वहाँ तत्पुरुष समास होता है। 'वात (हवा) का आवरण' में 'का' संबंध कारक की विभक्ति है, अतः यह 'संबंध तत्पुरुष समास' है।</div>"
+        },
+        {
+            q: "'आस-पास' शब्द में कौन-सा समास है-",
+            opt: ["द्वन्द्व", "द्विगु", "कर्मधारय", "तत्पुरुष"],
+            ans: 0,
+            exp: "सही उत्तर: <b>द्वन्द्व</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> जिस समास में दोनों पद प्रधान हों और विग्रह करने पर 'और', 'अथवा', 'या' आदि योजक शब्दों का प्रयोग हो, वहाँ द्वन्द्व समास होता है। आस-पास = 'आस और पास' (या आस-पास आदि समाहार द्वन्द्व)।</div>"
+        },
+        {
+            q: "'हीन-भावना' शब्द में कौनसा समास है?",
+            opt: ["कर्मधारय", "अव्ययीभाव", "द्वन्द्व", "बहुव्रीहि"],
+            ans: 0,
+            exp: "सही उत्तर: <b>कर्मधारय</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> जिस समास का एक पद विशेषण और दूसरा पद विशेष्य (या उपमेय-उपमान) हो, उसे कर्मधारय समास कहते हैं। विग्रह: 'हीन है जो भावना'। यहाँ भावना (विशेष्य) की विशेषता 'हीन' (विशेषण) बता रहा है।</div>"
+        },
+        {
+            q: "किस विकल्प में 'बहुव्रीहि' समास है?",
+            opt: ["पंचपात्र", "चतुरानन", "त्रिभुवन", "चतुर्युग"],
+            ans: 1,
+            exp: "सही उत्तर: <b>चतुरानन</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> बहुव्रीहि समास में दोनों पद मिलकर किसी तीसरे विशेष अर्थ का बोध कराते हैं। चतुरानन = 'चार हैं आनन (मुख) जिसके' अर्थात् ब्रह्मा जी।</div><div class='sol-fact'><b>💡 अन्य तथ्य:</b> पंचपात्र, त्रिभुवन और चतुर्युग में पहला पद संख्यावाची होने के कारण 'द्विगु समास' है।</div>"
+        },
+        {
+            q: "किस विकल्प में 'कर्मधारय' समास नहीं है?",
+            opt: ["महात्मा", "काला साँप", "गजानन", "नीलकमल"],
+            ans: 2,
+            exp: "सही उत्तर: <b>गजानन</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> गजानन का विग्रह 'गज (हाथी) के समान आनन है जिसका' अर्थात् श्री गणेश होता है। यह तीसरे अर्थ की ओर संकेत करता है, अतः यह 'बहुव्रीहि समास' है।</div><div class='sol-fact'><b>💡 अन्य तथ्य:</b> महात्मा (महान है जो आत्मा), काला साँप, नीलकमल (नीला है जो कमल) में विशेषण-विशेष्य का संबंध होने से कर्मधारय समास है।</div>"
+        },
+        {
+            q: "किस विकल्प में 'द्वन्द्व समास' नहीं है?",
+            opt: ["दालभात", "भूतप्रेत", "शुभाशुभ", "शुभागमन"],
+            ans: 3,
+            exp: "सही उत्तर: <b>शुभागमन</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> शुभागमन का विग्रह 'शुभ है जो आगमन' होगा। यह विशेषण-विशेष्य संबंध दर्शाता है, इसलिए यह कर्मधारय समास है।</div><div class='sol-fact'><b>💡 अन्य तथ्य:</b> दाल-भात (दाल और भात), भूत-प्रेत, शुभाशुभ (शुभ या अशुभ) सभी द्वन्द्व समास के उदाहरण हैं।</div>"
+        },
+        {
+            q: "किस शब्द में अव्ययीभाव समास नहीं है?",
+            opt: ["आमरण", "यथासाध्य", "श्रमसाध्य", "आजन्म"],
+            ans: 2,
+            exp: "सही उत्तर: <b>श्रमसाध्य</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'श्रमसाध्य' का विग्रह है 'श्रम से साध्य'। यहाँ 'से' साधन (करण कारक) का बोध कराता है, अतः यह 'करण तत्पुरुष समास' है।</div><div class='sol-fact'><b>💡 अन्य तथ्य:</b> आमरण (मरने तक), यथासाध्य (साध्य के अनुसार) और आजन्म (जन्म से लेकर) में पहला पद अव्यय/उपसर्ग होने के कारण ये अव्ययीभाव समास हैं।</div>"
+        },
+        {
+            q: "किस विकल्प में सही समास-विग्रह नहीं है?",
+            opt: ["घुड़सवार = घोड़े पर सवार", "दहीबड़ा = दही का बड़ा", "मुख्यमंत्री = मुख्य है जो मंत्री", "हंसवाहिनी = हंस है वाहन जिसका, वह"],
+            ans: 1,
+            exp: "सही उत्तर: <b>दहीबड़ा = दही का बड़ा</b> (यह विग्रह गलत है)।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> दहीबड़ा का सही समास विग्रह <b>'दही में डूबा हुआ बड़ा'</b> होता है। यह 'लुप्तपद तत्पुरुष समास' (मध्यमपदलोपी) का एक प्रसिद्ध उदाहरण है।</div>"
+        },
+        {
+            q: "'बलिवेदी' में कारक की दृष्टि से कौनसा समास है?",
+            opt: ["संबंध तत्पुरुष", "अपादान तत्पुरुष", "सम्प्रदान तत्पुरुष", "करण तत्पुरुष"],
+            ans: 2,
+            exp: "सही उत्तर: <b>सम्प्रदान तत्पुरुष</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'बलिवेदी' का विग्रह 'बलि के लिए वेदी' होता है। यहाँ 'के लिए' सम्प्रदान कारक की विभक्ति का लोप हुआ है, अतः यह सम्प्रदान तत्पुरुष समास है।</div><div class='sol-fact'><b>💡 अन्य तथ्य:</b> इसी प्रकार 'रसोईघर' (रसोई के लिए घर) और 'विद्यालय' (विद्या के लिए आलय) में भी सम्प्रदान तत्पुरुष होता है।</div>"
+        },
+        {
+            q: "'सिंह रूपी नर' विग्रह से निर्मित समास है?",
+            opt: ["सिंहनर", "नरसिंह", "नरसिंहा", "सिंहानर"],
+            ans: 1,
+            exp: "सही उत्तर: <b>नरसिंह</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> यह 'कर्मधारय समास' (उपमेय-उपमान संबंध) का उदाहरण है। यहाँ नर की तुलना सिंह (शेर) से की गई है।</div>"
+        },
+        {
+            q: "'यथाशक्ति' शब्द में कौनसा समास है?",
+            opt: ["अव्ययीभाव", "कर्मधारय", "तत्पुरुष", "द्विगु"],
+            ans: 0,
+            exp: "सही उत्तर: <b>अव्ययीभाव</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> जिस समास का प्रथम पद प्रधान हो और वह अव्यय हो (जैसे- यथा, आ, प्रति, अनु, भर, हर), उसे अव्ययीभाव समास कहते हैं। 'यथाशक्ति' का विग्रह 'शक्ति के अनुसार' होता है।</div>"
+        },
+        {
+            q: "'रातोंरात' शब्द का सही समास विग्रह है?",
+            opt: ["रात और रात", "रात में रात", "रात ही रात में", "राति से रात तक"],
+            ans: 2,
+            exp: "सही उत्तर: <b>रात ही रात में</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> जब एक ही शब्द की पुनरावृत्ति (Repetition) होती है और वह अव्यय का कार्य करने लगता है, तो वहाँ 'अव्ययीभाव समास' होता है। जैसे: रातोंरात (रात ही रात में), दिनोंदिन (दिन ही दिन में)।</div>"
+        },
+        {
+            q: "'सत्यासत्य' शब्द का सही विग्रह है?",
+            opt: ["सत्य ही असत्य", "सत्य और असत्य", "सत्य या असत्य", "सत्य का असत्य"],
+            ans: 2,
+            exp: "सही उत्तर: <b>सत्य या असत्य</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> यह 'वैकल्पिक द्वन्द्व समास' का उदाहरण है। प्रायः विलोम शब्दों (Opposites) के बीच विकल्प दर्शाने के लिए 'या' अथवा 'अथवा' योजक का प्रयोग किया जाता है।</div>"
+        },
+        {
+            q: "'चौराहा' में कौनसा समास है-",
+            opt: ["द्विगु समास", "तत्पुरुष समास", "बहुव्रीहि समास", "कर्मधारय समास"],
+            ans: 0,
+            exp: "सही उत्तर: <b>द्विगु समास</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> जिस समास का पहला पद संख्यावाचक विशेषण हो और पूरा पद किसी समूह (समाहार) का बोध कराए, उसे द्विगु समास कहते हैं। चौराहा = 'चार राहों का समूह/समाहार'।</div>"
+        },
+        {
+            q: "'नीलकण्ठ' में समास है-",
+            opt: ["बहुव्रीहि समास", "द्वन्द्व समास", "अव्ययीभाव समास", "द्विगु समास"],
+            ans: 0,
+            exp: "सही उत्तर: <b>बहुव्रीहि समास</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'नीला है कण्ठ जिसका' अर्थात् भगवान शिव। यहाँ नीला और कण्ठ दोनों पद मिलकर तीसरे विशेष व्यक्ति (शिव) की ओर संकेत कर रहे हैं, अतः यह बहुव्रीहि समास है। (यदि बहुव्रीहि विकल्प में न हो, तभी यह कर्मधारय माना जाता है)।</div>"
+        },
+        {
+            q: "'शरणागत' शब्द में कौनसा समास है?",
+            opt: ["बहुव्रीहि", "कर्मधारय", "तत्पुरुष", "अव्ययीभाव"],
+            ans: 2,
+            exp: "सही उत्तर: <b>तत्पुरुष</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'शरणागत' का विग्रह 'शरण को आगत (आया हुआ)' होता है। यहाँ 'को' विभक्ति का लोप है, अतः यह 'कर्म तत्पुरुष समास' है।</div>"
+        },
+        {
+            q: "किस शब्द में करण तत्पुरुष समास है?",
+            opt: ["जीवनमुक्त", "पथभ्रष्ट", "रोगग्रस्त", "स्वर्गपतित"],
+            ans: 2,
+            exp: "सही उत्तर: <b>रोगग्रस्त</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'रोगग्रस्त' का विग्रह 'रोग से ग्रस्त' है। जहाँ 'से/के द्वारा' साधन या जुड़ाव के अर्थ में आता है, वहाँ 'करण तत्पुरुष' होता है।</div><div class='sol-fact'><b>💡 अन्य तथ्य:</b> जीवनमुक्त (जीवन से मुक्त), पथभ्रष्ट (पथ से भ्रष्ट) में 'से' अलग होने के अर्थ में है, इसलिए इनमें 'अपादान तत्पुरुष' है।</div>"
+        },
+        {
+            q: "'ईद-मिलन समारोह' सामासिक पद का विग्रह होगा-",
+            opt: ["ईद का मिलन और समारोह", "ईद और मिलन का समारोह", "ईद के मिलन का समारोह", "ईद का मिलन के समारोह"],
+            ans: 2,
+            exp: "सही उत्तर: <b>ईद के मिलन का समारोह</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> यह 'संबंध तत्पुरुष समास' का उदाहरण है क्योंकि इसमें 'का/के/की' संबंध कारक विभक्तियों का प्रयोग हो रहा है।</div>"
+        },
+        {
+            q: "इनमें 'बहुब्रीहि' समास का उदाहरण है?",
+            opt: ["त्रिफला", "चक्रधर", "यथासंभव", "धर्मवीर"],
+            ans: 1,
+            exp: "सही उत्तर: <b>चक्रधर</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'चक्र को धारण करने वाला' अर्थात् भगवान विष्णु या कृष्ण। कोई भी पद प्रधान न होकर अन्य पद प्रधान होने के कारण यह बहुव्रीहि समास है।</div><div class='sol-fact'><b>💡 अन्य तथ्य:</b> त्रिफला (द्विगु), यथासंभव (अव्ययीभाव), धर्मवीर (अधिकरण तत्पुरुष - धर्म में वीर) हैं।</div>"
+        },
+        {
+            q: "'मृगछौना' शब्द इनमें से किस समास का उदाहरण है?",
+            opt: ["करण तत्पुरुष", "कर्म तत्पुरुष", "संप्रदान तत्पुरुष", "संबंध तत्पुरुष"],
+            ans: 3,
+            exp: "सही उत्तर: <b>संबंध तत्पुरुष</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'मृगछौना' का विग्रह 'मृग (हिरण) का छौना (बच्चा)' होता है। 'का' संबंध कारक है, अतः यह संबंध तत्पुरुष समास है।</div>"
+        },
+        {
+            q: "'परमेश्वर' शब्द में समास है-",
+            opt: ["कर्मधारय", "तत्पुरुष", "अव्ययीभाव", "द्विगु"],
+            ans: 0,
+            exp: "सही उत्तर: <b>कर्मधारय</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'परम है जो ईश्वर'। यहाँ 'ईश्वर' (विशेष्य) की विशेषता 'परम' (महान - विशेषण) बता रहा है। विशेषण-विशेष्य का संबंध होने से यह कर्मधारय समास है।</div>"
+        },
+        {
+            q: "'चौमासा' में समास है-",
+            opt: ["द्वन्द्व", "कर्मधारय", "द्विगु", "तत्पुरुष"],
+            ans: 2,
+            exp: "सही उत्तर: <b>द्विगु</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'चार मासों (महीनों) का समूह या समाहार' - द्विगु समास। जब पहला पद संख्या का बोध कराए और दूसरा पद संज्ञा हो, और दोनों मिलकर समूह का बोध कराएं।</div>"
+        },
+        {
+            q: "'चन्द्रचूड़' सामासिक पद में कौनसा समास है?",
+            opt: ["तत्पुरुष", "द्वन्द्व", "कर्मधारय", "बहुव्रीहि"],
+            ans: 3,
+            exp: "सही उत्तर: <b>बहुव्रीहि</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'चन्द्र है चूड़ (शिखर या सिर) पर जिसके' अर्थात् भगवान शिव। तीसरे विशेष अर्थ के कारण यह बहुव्रीहि समास का प्रसिद्ध उदाहरण है। 'चन्द्रशेखर' में भी यही समास होता है।</div>"
+        },
+        {
+            q: "'तुलसीकृत' सामासिक पद में कौनसा समास है?",
+            opt: ["करण तत्पुरुष", "कर्म तत्पुरुष", "सम्प्रदान तत्पुरुष", "अपादान तत्पुरुष"],
+            ans: 0,
+            exp: "सही उत्तर: <b>करण तत्पुरुष</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> विग्रह- 'तुलसी द्वारा कृत (रचित)'। यहाँ कर्ता/साधन के अर्थ में 'के द्वारा/से' का प्रयोग हुआ है जो करण कारक की पहचान है।</div>"
+        },
+        {
+            q: "'हस्तलिखित' शब्द का सही समास विग्रह है?",
+            opt: ["हस्त से निर्मित किया हुआ", "हस्त द्वारा लिखा हुआ", "हस्त पर लिखा हुआ", "हस्त और लिखित"],
+            ans: 1,
+            exp: "सही उत्तर: <b>हस्त द्वारा लिखा हुआ</b> (या हाथ से लिखा हुआ)।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> यह भी 'करण तत्पुरुष समास' का उदाहरण है क्योंकि लिखने का साधन 'हस्त (हाथ)' है।</div>"
+        }
+    ];
+
+    // State Variables
+    let currentIdx = 0;
+    const totalQ = questions.length;
+    let answers = new Array(totalQ).fill(null);
+    let marked = new Array(totalQ).fill(false);
+    
+    // Timer is set to 25 minutes
+    let totalTime = 25 * 60; 
+    let timerInterval;
+    let isPaused = false;
+
+    // Initialization
+    function init() {
+        createPalette();
+        loadQuestion(0);
+        updateStats();
+        startTimer();
+    }
+
+    // Theme Logic
+    function toggleTheme() {
+        const doc = document.documentElement;
+        const current = doc.getAttribute('data-theme');
+        doc.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+    }
+
+    // Timer Logic
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if(totalTime <= 0) {
+                clearInterval(timerInterval);
+                submitTest(true);
+                return;
+            }
+            totalTime--;
+            updateTimerDisplay();
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(totalTime / 60).toString().padStart(2, '0');
+        const secs = (totalTime % 60).toString().padStart(2, '0');
+        const timerEl = document.getElementById('timer');
+        timerEl.innerText = `${mins}:${secs}`;
+        
+        if (totalTime < 300) { 
+            timerEl.classList.add('danger');
+        } else {
+            timerEl.classList.remove('danger');
+        }
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        const overlay = document.getElementById('pause-overlay');
+        const btn = document.getElementById('pause-btn');
+        
+        if (isPaused) {
+            clearInterval(timerInterval);
+            overlay.style.display = 'flex';
+            btn.innerText = 'Resume';
+            btn.classList.add('btn-warning');
+        } else {
+            startTimer();
+            overlay.style.display = 'none';
+            btn.innerText = 'Pause';
+            btn.classList.remove('btn-warning');
+        }
+    }
+
+    // Quiz Navigation & Rendering
+    function loadQuestion(idx) {
+        currentIdx = idx;
+        const qData = questions[idx];
+        
+        document.getElementById('question-header').innerText = `प्रश्नोत्तरी ${idx + 1} / ${totalQ}`;
+        document.getElementById('question-text').innerHTML = qData.q;
+        
+        const optsContainer = document.getElementById('options-container');
+        optsContainer.innerHTML = '';
+        
+        qData.opt.forEach((optText, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn' + (answers[idx] === i ? ' selected' : '');
+            btn.innerHTML = `<span style="font-weight:bold; border:1px solid currentColor; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${String.fromCharCode(65+i)}</span> ${optText}`;
+            btn.onclick = () => selectOption(i);
+            optsContainer.appendChild(btn);
+        });
+
+        document.getElementById('progress-bar').style.width = `${((idx + 1) / totalQ) * 100}%`;
+
+        document.getElementById('prev-btn').disabled = (idx === 0);
+        document.getElementById('prev-btn').style.opacity = (idx === 0) ? '0.5' : '1';
+        
+        const markBtn = document.getElementById('mark-btn');
+        markBtn.innerText = marked[idx] ? 'Unmark Review' : 'Mark for Review';
+        
+        const nextBtn = document.getElementById('next-btn');
+        if (idx === totalQ - 1) {
+            nextBtn.innerText = 'Submit Test';
+            nextBtn.className = 'btn-danger';
+        } else {
+            nextBtn.innerText = 'Next';
+            nextBtn.className = 'btn-primary';
+        }
+
+        updatePaletteVisuals();
+    }
+
+    function selectOption(optIdx) {
+        answers[currentIdx] = optIdx;
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function clearSelection() {
+        answers[currentIdx] = null;
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function toggleMark() {
+        marked[currentIdx] = !marked[currentIdx];
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function changeQuestion(step) {
+        if (step === 1 && currentIdx === totalQ - 1) {
+            submitTest(false);
+            return;
+        }
+        let newIdx = currentIdx + step;
+        if (newIdx >= 0 && newIdx < totalQ) {
+            loadQuestion(newIdx);
+        }
+    }
+
+    // Palette Logic
+    function createPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'q-grid-btn';
+            btn.id = `pal-btn-${i}`;
+            btn.innerText = i + 1;
+            btn.onclick = () => loadQuestion(i);
+            grid.appendChild(btn);
+        }
+    }
+
+    function updatePaletteVisuals() {
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.getElementById(`pal-btn-${i}`);
+            btn.className = 'q-grid-btn';
+            
+            if (answers[i] !== null && marked[i]) btn.classList.add('marked', 'attempted');
+            else if (marked[i]) btn.classList.add('marked');
+            else if (answers[i] !== null) btn.classList.add('attempted');
+            
+            if (i === currentIdx) btn.classList.add('current');
+        }
+    }
+
+    function updateStats() {
+        let att = 0, mark = 0;
+        for (let i = 0; i < totalQ; i++) {
+            if (answers[i] !== null) att++;
+            if (marked[i]) mark++;
+        }
+        document.getElementById('count-att').innerText = att;
+        document.getElementById('count-unatt').innerText = totalQ - att;
+        document.getElementById('count-mark').innerText = mark;
+        updatePaletteVisuals();
+    }
+
+    // Submission & Results
+    function submitTest(isAuto) {
+        const unatt = answers.filter(a => a === null).length;
+        if (!isAuto && unatt > 0) {
+            const confirmSubmit = confirm(`आपके पास ${unatt} अनुत्तरित प्रश्न हैं। क्या आप निश्चित रूप से सबमिट करना चाहते हैं?`);
+            if (!confirmSubmit) return;
+        }
+
+        clearInterval(timerInterval);
+        document.getElementById('app-container').style.display = 'none';
+        document.querySelector('.header-controls').style.display = 'none';
+        generateResults();
+    }
+
+    function generateResults() {
+        const resScreen = document.getElementById('result-screen');
+        resScreen.style.display = 'block';
+
+        let correct = 0;
+        let incorrect = 0;
+        
+        answers.forEach((ans, i) => {
+            if (ans !== null) {
+                if (ans === questions[i].ans) correct++;
+                else incorrect++;
+            }
+        });
+
+        const score = correct;
+        const perc = ((score / totalQ) * 100).toFixed(2);
+        
+        const timeTakenSec = (25 * 60) - totalTime;
+        const timeMins = Math.floor(timeTakenSec / 60).toString().padStart(2, '0');
+        const timeSecs = (timeTakenSec % 60).toString().padStart(2, '0');
+
+        document.getElementById('res-score').innerText = score;
+        document.getElementById('res-perc').innerText = perc + '%';
+        document.getElementById('res-corr').innerText = correct;
+        document.getElementById('res-incorr').innerText = incorrect;
+        document.getElementById('res-time').innerText = `${timeMins}:${timeSecs}`;
+
+        const badge = document.getElementById('result-badge');
+        if (perc >= 50) {
+            badge.className = 'badge pass';
+            badge.innerText = 'उत्तीर्ण (PASS)';
+        } else {
+            badge.className = 'badge fail';
+            badge.innerText = 'अनुत्तीर्ण (FAIL)';
+        }
+
+        generateSolutions();
+    }
+
+    function generateSolutions() {
+        const container = document.getElementById('solutions-container');
+        let html = '';
+
+        questions.forEach((q, i) => {
+            const userAns = answers[i];
+            const corrAns = q.ans;
+            
+            html += `<div class="solution-item">
+                        <div class="sol-q">Q${i+1}. ${q.q}</div>`;
+            
+            q.opt.forEach((optText, optIdx) => {
+                let cls = 'sol-opt';
+                let icon = '';
+                
+                if (optIdx === corrAns) {
+                    cls += ' correct';
+                    icon = '✓';
+                } else if (userAns === optIdx && userAns !== corrAns) {
+                    cls += ' incorrect';
+                    icon = '✗';
+                }
+
+                if(icon) {
+                    html += `<div class="${cls}"><strong>${String.fromCharCode(65+optIdx)}</strong>: ${optText} <span style="float:right; font-weight:bold;">${icon}</span></div>`;
+                } else {
+                    html += `<div class="${cls}"><strong>${String.fromCharCode(65+optIdx)}</strong>: ${optText}</div>`;
+                }
+            });
+
+            const userStatus = userAns === null ? "<span style='color:var(--text-muted)'>Unattempted</span>" : 
+                              (userAns === corrAns ? "<span style='color:var(--correct-color)'>Correct</span>" : 
+                              "<span style='color:var(--incorrect-color)'>Incorrect</span>");
+
+            html += `<div style="margin-top: 10px;"><strong>Status:</strong> ${userStatus}</div>`;
+            html += `<div class="sol-exp"><div class="sol-exp-title">व्याकरण नियम व व्याख्या (Explanation):</div>${q.exp}</div>`;
+            html += `</div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
