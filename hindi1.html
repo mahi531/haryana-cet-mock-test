@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hindi Grammar Mock Test - SET 1</title>
+    <style>
+        :root {
+            /* Light Mode Variables */
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: #2c3e50;
+            --text-muted: #576574;
+            --primary-color: #341f97;
+            --accent-color: #ff9f43;
+            --correct-color: #10ac84;
+            --incorrect-color: #ee5253;
+            --btn-hover: rgba(255, 255, 255, 0.6);
+            --palette-unattempted: #c8d6e5;
+            --palette-attempted: #10ac84;
+            --palette-marked: #9b59b6;
+            --palette-marked-attempted: #8e44ad;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Mode Variables */
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-bg: rgba(16, 20, 24, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f1f2f6;
+            --text-muted: #a4b0be;
+            --primary-color: #54a0ff;
+            --accent-color: #ff9f43;
+            --correct-color: #1dd1a1;
+            --incorrect-color: #ff6b6b;
+            --btn-hover: rgba(255, 255, 255, 0.1);
+            --palette-unattempted: #576574;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            margin: 15px;
+        }
+        .header-title h1 { font-size: 1.5rem; }
+        .header-title p { font-size: 0.9rem; color: var(--text-muted); }
+        .header-controls { display: flex; gap: 15px; align-items: center; }
+        
+        .timer-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0,0,0,0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+        .timer { font-size: 1.2rem; font-weight: bold; }
+        .timer.danger { color: var(--incorrect-color); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        button {
+            cursor: pointer;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+            background: var(--glass-bg);
+            color: var(--text-color);
+            border: 1px solid var(--glass-border);
+        }
+        button:hover { background: var(--btn-hover); }
+        .btn-primary { background: var(--primary-color); color: #fff; border: none; }
+        .btn-primary:hover { background: #2c1a80; }
+        .btn-danger { background: var(--incorrect-color); color: white; border: none; }
+        .btn-warning { background: var(--accent-color); color: white; border: none; }
+        .btn-submit { background: var(--correct-color); color: white; border: none; }
+        .btn-submit:hover { background: #0b8c6b; }
+
+        /* Main Layout */
+        .container {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            margin: 0 15px 15px 15px;
+        }
+        .main-area { flex: 3; display: flex; flex-direction: column; position: relative; }
+        .sidebar { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        /* Progress & Question Area */
+        .progress-bar-bg { background: rgba(0,0,0,0.1); height: 8px; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar-fill { background: var(--primary-color); height: 100%; width: 0%; transition: width 0.3s; }
+        
+        .question-text { font-size: 1.25rem; font-weight: 500; margin-bottom: 20px; line-height: 1.6; }
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            text-align: left;
+            padding: 15px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .option-btn.selected {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+        
+        .action-buttons { display: flex; justify-content: space-between; margin-top: auto; padding-top: 20px; }
+        .action-buttons > div { display: flex; gap: 10px; }
+
+        /* Pause Overlay */
+        .pause-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 10;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+        }
+        .pause-overlay h2 { font-size: 2rem; margin-bottom: 10px; }
+
+        /* Sidebar Stats & Grid */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-item { font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+        .stat-dot { width: 12px; height: 12px; border-radius: 50%; }
+        
+        .q-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .q-grid-btn {
+            padding: 10px 0; text-align: center; border-radius: 8px; font-weight: bold;
+            background: var(--palette-unattempted); color: #2c3e50; border: none;
+        }
+        .q-grid-btn.current { border: 3px solid #2c3e50; }
+        [data-theme="dark"] .q-grid-btn.current { border: 3px solid #fff; color: #fff; }
+        .q-grid-btn.attempted { background: var(--palette-attempted); color: #fff; }
+        .q-grid-btn.marked { background: var(--palette-marked); color: #fff; }
+        .q-grid-btn.marked.attempted { background: var(--palette-marked-attempted); color: #fff; }
+
+        /* Results Screen */
+        .result-screen { display: none; max-width: 1000px; margin: 0 auto; width: 100%; }
+        .result-header { text-align: center; margin-bottom: 30px; }
+        .badge { display: inline-block; padding: 10px 30px; border-radius: 30px; font-size: 1.5rem; font-weight: bold; color: #fff; margin-top: 10px; }
+        .badge.pass { background: var(--correct-color); }
+        .badge.fail { background: var(--incorrect-color); }
+        
+        .result-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-box { text-align: center; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .stat-box h3 { font-size: 2rem; margin-bottom: 5px; }
+
+        .solution-item { margin-bottom: 25px; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .sol-q { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; }
+        .sol-opt { margin-bottom: 8px; padding: 10px; border-radius: 8px; background: var(--glass-bg); }
+        .sol-opt.correct { background: var(--correct-color); color: #fff; }
+        .sol-opt.incorrect { background: var(--incorrect-color); color: #fff; }
+        .sol-exp { margin-top: 15px; font-size: 0.95rem; color: var(--text-color); border-left: 4px solid var(--primary-color); padding-left: 15px; line-height: 1.6; }
+        .sol-exp-title { color: var(--primary-color); font-weight: bold; margin-bottom: 5px; }
+        .sol-fact { margin-top: 5px; background: rgba(0,0,0,0.03); padding: 5px 10px; border-radius: 4px; font-size: 0.9rem;}
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            header { flex-direction: column; gap: 15px; text-align: center; }
+            .action-buttons { flex-direction: column; gap: 15px; }
+            .action-buttons > div { justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="glass-panel">
+        <div class="header-title">
+            <h1>Hindi Grammar Mock Test - SET 1</h1>
+            <p>25 Important Hindi Grammar Questions (वर्णमाला व उच्चारण स्थान)</p>
+        </div>
+        <div class="header-controls">
+            <div class="timer-container" id="timer-box">
+                <span>⏱</span>
+                <span class="timer" id="timer">25:00</span>
+                <button id="pause-btn" onclick="togglePause()">Pause</button>
+            </div>
+            <button onclick="toggleTheme()">🌗 Theme</button>
+            <button class="btn-submit" onclick="submitTest(false)">Submit Test</button>
+        </div>
+    </header>
+
+    <div class="container" id="app-container">
+        
+        <div class="glass-panel main-area">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+            
+            <div id="question-header" style="margin-bottom: 15px; font-weight: 600; color: var(--primary-color);"></div>
+            <div id="question-text" class="question-text"></div>
+            
+            <div class="options-grid" id="options-container">
+                </div>
+
+            <div class="action-buttons">
+                <div>
+                    <button onclick="changeQuestion(-1)" id="prev-btn">Previous</button>
+                    <button onclick="clearSelection()">Clear</button>
+                </div>
+                <div>
+                    <button onclick="toggleMark()" id="mark-btn" class="btn-warning">Mark for Review</button>
+                    <button onclick="changeQuestion(1)" id="next-btn" class="btn-primary">Next</button>
+                </div>
+            </div>
+
+            <div class="pause-overlay" id="pause-overlay">
+                <h2>Test Paused</h2>
+                <p>Questions are hidden to prevent cheating.</p>
+                <br>
+                <button class="btn-primary" onclick="togglePause()">Resume Test</button>
+            </div>
+        </div>
+
+        <div class="glass-panel sidebar">
+            <h3>Question Palette</h3>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-attempted)"></div> Attempted (<span id="count-att">0</span>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-unattempted)"></div> Unattempted (<span id="count-unatt">25</span>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-marked)"></div> Marked (<span id="count-mark">0</span>)</div>
+            </div>
+            <div class="q-grid" id="q-grid">
+                </div>
+            <button class="btn-submit" onclick="submitTest(false)" style="margin-top: 20px; width: 100%; padding: 12px; font-size: 1.1rem;">Final Submit Test</button>
+        </div>
+    </div>
+
+    <div class="glass-panel result-screen" id="result-screen">
+        <div class="result-header">
+            <h2>Test Submitted Successfully</h2>
+            <div class="badge" id="result-badge">Pass</div>
+        </div>
+        <div class="result-stats">
+            <div class="stat-box"><h3 id="res-score">0</h3><p>Score / 25</p></div>
+            <div class="stat-box"><h3 id="res-perc">0%</h3><p>Percentage</p></div>
+            <div class="stat-box"><h3 id="res-corr" style="color: var(--correct-color);">0</h3><p>Correct</p></div>
+            <div class="stat-box"><h3 id="res-incorr" style="color: var(--incorrect-color);">0</h3><p>Incorrect</p></div>
+            <div class="stat-box"><h3 id="res-time">00:00</h3><p>Time Taken</p></div>
+        </div>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <button class="btn-primary" onclick="location.reload()">Restart Test</button>
+        </div>
+        <h3>Detailed Solutions & Grammar Rules</h3>
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--glass-border);">
+        <div id="solutions-container"></div>
+    </div>
+
+<script>
+    // 25 Hindi Questions extracted from image "1000098623.jpg" with full rules
+    const questions = [
+        {
+            q: "उच्चारण स्थान की दृष्टि से कौन-सा विकल्प शुद्ध है?",
+            opt: ["श - मूर्धन्य", "स - दन्त्य", "च - कण्ठ्य", "ष - तालव्य"],
+            ans: 1,
+            exp: "सही उत्तर: <b>स - दन्त्य</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'लृतुलसानां दन्ताः' नियम के अनुसार 'त' वर्ग (त, थ, द, ध, न), 'ल' और 'स' का उच्चारण स्थान <b>दन्त (दाँत)</b> होता है।</div><div class='sol-fact'><b>💡 अन्य तथ्य:</b> 'श' का उच्चारण स्थान तालव्य (इचुयशानां तालु) तथा 'ष' का उच्चारण स्थान मूर्धन्य (ऋटुरषाणां मूर्धा) होता है।</div>"
+        },
+        {
+            q: "प्लुत स्वर कौन-सा है?",
+            opt: ["अउम", "ओ३म्", "ओम्", "ओम"],
+            ans: 1,
+            exp: "सही उत्तर: <b>ओ३म्</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> जिन स्वरों के उच्चारण में ह्रस्व स्वर से तिगुना (3 गुना) समय लगता है, उन्हें प्लुत स्वर कहते हैं। इसके त्रिमात्रिक रूप को दर्शाने के लिए अंक '३' का प्रयोग किया जाता है, जैसे - ओ३म्।</div>"
+        },
+        {
+            q: "'मुँह' शब्द में प्रयुक्त चंद्रबिंदु है—",
+            opt: ["शिरोरेखा", "अनुस्वार", "अनुनासिक", "नासक्य"],
+            ans: 2,
+            exp: "सही उत्तर: <b>अनुनासिक</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> चंद्रबिंदु (ँ) को अनुनासिक कहा जाता है। इसका उच्चारण नाक और मुँह दोनों से समान रूप से होता है। जबकि बिंदु (ं) को अनुस्वार कहते हैं, जिसका उच्चारण केवल नाक से होता है।</div>"
+        },
+        {
+            q: "किस विकल्प के सभी वर्ण स्पर्श व्यंजन नहीं हैं—",
+            opt: ["क, ठ, द, भ", "ध, च, फ, ख", "ग, ज, य, ब", "ध, झ, घ, प"],
+            ans: 2,
+            exp: "सही उत्तर: <b>ग, ज, य, ब</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> हिंदी वर्णमाला में 'क' वर्ग से लेकर 'म' वर्ग तक के कुल 25 वर्णों को 'स्पर्श व्यंजन' कहा जाता है। लेकिन इस विकल्प में <b>'य'</b> आया है, जो कि एक 'अन्तःस्थ व्यंजन' (य, र, ल, व) है। इसलिए यह विकल्प गलत है।</div>"
+        },
+        {
+            q: "इनमें हिंदी वर्णमाला से संबंधित कौन-सा कथन गलत है—",
+            opt: ["च वर्ग को स्पर्श संघर्षी भी कहते हैं।", "क वर्ग, ह तथा अ-आ कण्ठ्य वर्ण माने गये हैं।", "ड़-ढ़ को उत्क्षिप्त व्यंजन कहते हैं।", "समस्त स्वर अघोष वर्ण हैं।"],
+            ans: 3,
+            exp: "सही उत्तर: <b>समस्त स्वर अघोष वर्ण हैं।</b> (यह कथन गलत है)<div class='sol-fact'><b>💡 व्याकरण नियम:</b> हिंदी व्याकरण के नियम के अनुसार, <b>सभी स्वर 'सघोष' (घोष) होते हैं</b>, अघोष नहीं। कम्पन्न के आधार पर वर्णों को सघोष और अघोष में बाँटा जाता है।</div>"
+        },
+        {
+            q: "इनमें से किस विकल्प के सभी वर्ण मूर्धन्य हैं—",
+            opt: ["ट, ड, ष, फ", "ठ, ण, घ, थ", "ण, ऋ, ढ़, ज्ञ", "र, ड, ष, ट"],
+            ans: 3,
+            exp: "सही उत्तर: <b>र, ड, ष, ट</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> सूत्र 'ऋटुरषाणां मूर्धा' के अनुसार - 'ऋ', 'ट' वर्ग (ट, ठ, ड, ढ़, ण), 'र' और 'ष' का उच्चारण स्थान <b>मूर्धा</b> होता है। विकल्प 4 में सभी वर्ण इसी श्रेणी के हैं।</div>"
+        },
+        {
+            q: "'ड़' का उच्चारण स्थान क्या है?",
+            opt: ["कण्ठ", "तालु", "मूर्धा", "दन्त"],
+            ans: 2,
+            exp: "सही उत्तर: <b>मूर्धा</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'ट' वर्ग का तीसरा अक्षर 'ड' और द्विगुण व्यंजन 'ड़' दोनों का उच्चारण स्थान <b>मूर्धा</b> (मूर्धन्य) ही होता है।</div>"
+        },
+        {
+            q: "निम्न में से संयुक्त व्यंजन कौन-सा है?",
+            opt: ["श्र", "ब", "भ", "श"],
+            ans: 0,
+            exp: "सही उत्तर: <b>श्र</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> दो अलग-अलग व्यंजनों के योग से बनने वाले व्यंजनों को संयुक्त व्यंजन कहते हैं। हिंदी में 4 संयुक्त व्यंजन हैं: क्ष (क्+ष), त्र (त्+र), ज्ञ (ज्+ञ) और <b>श्र (श्+र)</b>।</div>"
+        },
+        {
+            q: "'स्वर' किसका भेद है—",
+            opt: ["संधि", "समास", "वर्ण", "लिंग"],
+            ans: 2,
+            exp: "सही उत्तर: <b>वर्ण</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> भाषा की सबसे छोटी इकाई वर्ण कहलाती है। वर्ण के मुख्य रूप से दो भेद होते हैं: 1. स्वर (Vowels) और 2. व्यंजन (Consonants)।</div>"
+        },
+        {
+            q: "'ऊष्म' वर्ण कौन-सा है?",
+            opt: ["य, र, ल, व", "श, ष, स, ह", "च, छ, ज", "ट, ठ, ड"],
+            ans: 1,
+            exp: "सही उत्तर: <b>श, ष, स, ह</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> जिन वर्णों के उच्चारण में मुँह से गर्म वायु (ऊष्मा) बाहर निकलती है, उन्हें ऊष्म व्यंजन कहते हैं। ये संख्या में चार हैं: श, ष, स, ह। 'य, र, ल, व' अन्तःस्थ व्यंजन कहलाते हैं।</div>"
+        },
+        {
+            q: "अयोगवाह किसे कहा जाता है?",
+            opt: ["महाप्राण को", "अनुस्वार एवं विसर्ग को", "संयुक्त व्यंजन को", "अल्पप्राण को"],
+            ans: 1,
+            exp: "सही उत्तर: <b>अनुस्वार एवं विसर्ग को</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> आचार्य किशोरीदास वाजपेयी के अनुसार, 'अं' (अनुस्वार) और 'अः' (विसर्ग) को अयोगवाह कहा जाता है, क्योंकि ये न तो पूर्णतः स्वर हैं और न ही व्यंजन।</div>"
+        },
+        {
+            q: "ड़ का उच्चारण स्थान है—",
+            opt: ["नासिक्य", "मूर्धन्य", "कण्ठोष्ठ्य", "कण्ठतालव्य"],
+            ans: 1,
+            exp: "सही उत्तर: <b>मूर्धन्य</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'ड़' और 'ढ़' उत्क्षिप्त (फेके हुए) या द्विगुण व्यंजन कहलाते हैं। इनका मूल उच्चारण अंग 'मूर्धा' ही है, इसलिए ये मूर्धन्य वर्ण हैं।</div>"
+        },
+        {
+            q: "हिन्दी में स्पर्श व्यंजनों की संख्या कितनी है?",
+            opt: ["22", ["23"], "24", "25"],
+            ans: 3,
+            exp: "सही उत्तर: <b>25</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> क-वर्ग, च-वर्ग, ट-वर्ग, त-वर्ग, और प-वर्ग; इन पाँचों वर्गों में 5-5 वर्ण होते हैं। इस प्रकार कुल मिलाकर 5 × 5 = 25 स्पर्श व्यंजन होते हैं (क से म तक)।</div>"
+        },
+        {
+            q: "अनुस्वार एवं अनुनासिक का प्रयोग करने संबंधी त्रुटियों को कैसे दूर किया जा सकता है?",
+            opt: ["छपी सामग्री से समृद्ध वातावरण देकर", "अनुस्वार वाले शब्दों की सूची बनवाकर", "स्वयं सही उच्चारण का आदर्श प्रस्तुत कर", "अनुनासिक के नियम बनाकर"],
+            ans: 2,
+            exp: "सही उत्तर: <b>स्वयं सही उच्चारण का आदर्श प्रस्तुत कर</b>।<div class='sol-fact'><b>💡 शिक्षाशास्त्र नियम:</b> भाषा शिक्षण में शिक्षक का स्वयं का शुद्ध उच्चारण सबसे प्रभावी होता है। अनुस्वार और अनुनासिक के अंतर को बच्चे सुनकर और अनुकरण करके सबसे बेहतर ढंग से सीखते हैं।</div>"
+        },
+        {
+            q: "'ट' वर्ग में किस प्रकार के व्यंजन हैं—",
+            opt: ["कण्ठ्य", "तालव्य", "मूर्धन्य", "दन्त्य"],
+            ans: 2,
+            exp: "सही उत्तर: <b>मूर्धन्य</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'ट, ठ, ड, ढ, ण' का उच्चारण जीभ के अग्र भाग को मूर्धा (मसूड़े के ऊपर की छत) से स्पर्श कराके होता है, अतः इन्हें मूर्धन्य व्यंजन कहते हैं।</div>"
+        },
+        {
+            q: "'ध' किस वर्ग का व्यंजन है—",
+            opt: ["ओष्ठ्य", "तालव्य", "दन्त्य", "ऊष्म"],
+            ans: 2,
+            exp: "सही उत्तर: <b>दन्त्य</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'त, थ, द, ध, न' वर्णों का उच्चारण दाँतों की मदद से होता है, इसलिए 'ध' एक <b>दन्त्य</b> व्यंजन है।</div>"
+        },
+        {
+            q: "हिन्दी वर्णमाला में कितने स्वर हैं?",
+            opt: ["दस", "ग्यारह", "तेरह", "बारह"],
+            ans: 1,
+            exp: "सही उत्तर: <b>ग्यारह (11)</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> मानक हिन्दी व्याकरण के अनुसार स्वरों की कुल संख्या 11 है (अ, आ, इ, ई, उ, ऊ, ऋ, ए, ऐ, ओ, औ)। अं और अः को अयोगवाह माना जाता है।</div>"
+        },
+        {
+            q: "हिन्दी वर्णमाला में संयुक्त स्वर कितने हैं?",
+            opt: ["तीन", "पाँच", "चार", "छः"],
+            ans: 2,
+            exp: "सही उत्तर: <b>चार (4)</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> दो अलग-अलग स्वरों के मेल से बनने वाले स्वरों को संयुक्त स्वर कहते हैं। ये चार हैं - ए (अ+इ), ऐ (अ+ए), ओ (अ+उ), औ (अ+ओ)।</div>"
+        },
+        {
+            q: "हिन्दी वर्णमाला में मूल स्वर कितने हैं?",
+            opt: ["चार", "सात", "छः", "पाँच"],
+            ans: 0,
+            exp: "सही उत्तर: <b>चार (4)</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> जिन स्वरों की उत्पत्ति बिना किसी अन्य स्वर की सहायता से स्वतंत्र रूप से हुई है, उन्हें मूल स्वर (या ह्रस्व स्वर) कहते हैं। ये चार हैं - अ, इ, उ, ऋ।</div>"
+        },
+        {
+            q: "हिन्दी वर्णमाला में 'स्पर्श व्यंजन' कितने हैं?",
+            opt: ["25", "10", "20", "15"],
+            ans: 0,
+            exp: "सही उत्तर: <b>25</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> क से लेकर म तक के सभी 25 वर्ण पाँच वर्गीय संरचना में बँधे होने के कारण 'स्पर्श व्यंजन' या 'वर्गीय व्यंजन' कहलाते हैं।</div>"
+        },
+        {
+            q: "हिन्दी वर्णमाला का '11वाँ' व्यंजन कौन-सा है?",
+            opt: ["ढ़", "ठ", "ट", "फ"],
+            ans: 2,
+            exp: "सही उत्तर: <b>ट</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> व्यंजनों की गिनती क-वर्ग (5) + च-वर्ग (5) = 10 के बाद शुरू होती है। अतः 11वाँ व्यंजन 'ट' वर्ग का पहला वर्ण यानी <b>'ट'</b> होता है।</div>"
+        },
+        {
+            q: "इनमें 'नासिक्य' व्यंजन कौन-सा है?",
+            opt: ["म", "प", "य", "इ"],
+            ans: 0,
+            exp: "सही उत्तर: <b>म</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> प्रत्येक वर्ग का पंचम अक्षर (ङ्, ञ्, ण्, न्, म्) पंचमाक्षर कहलाता है और इनका उच्चारण नाक से होने के कारण इन्हें 'नासिक्य व्यंजन' कहा जाता है।</div>"
+        },
+        {
+            q: "इनमें से कौन-सा स्वर दीर्घ है?",
+            opt: ["इ", "उ", "ऋ", "आ"],
+            ans: 3,
+            exp: "सही उत्तर: <b>आ</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> जिन स्वरों के उच्चारण में मूल स्वरों से दुगुना समय लगता है, उन्हें दीर्घ स्वर कहते हैं। दिए गए विकल्पों में 'आ' (अ + a) एक दीर्घ स्वर है, बाकी तीनों मूल स्वर हैं।</div>"
+        },
+        {
+            q: "इनमें 'उत्क्षिप्त' व्यंजन कौन-सा है?",
+            opt: ["ल", "ड़", "र", "फ"],
+            ans: 1,
+            exp: "सही उत्तर: <b>ड़</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> जिन वर्णों के उच्चारण में जीभ झटके से नीचे गिरती है, उन्हें उत्क्षिप्त (फेका हुआ) व्यंजन कहते हैं। ये दो हैं - 'ड़' और 'ढ़'। इन्हें ताड़नजात वर्ण भी कहते हैं।</div>"
+        },
+        {
+            q: "उच्चारण की दृष्टि से कौन-सा वर्ण 'तालव्य' है?",
+            opt: ["ट", "ज", "क", "व"],
+            ans: 1,
+            exp: "सही उत्तर: <b>ज</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> सूत्र 'इचुयशानां तालु' के अनुसार - इ, ई, च-वर्ग (च, छ, ज, झ, ञ), य और श का उच्चारण स्थान <b>तालु (तालव्य)</b> होता है। अतः 'ज' तालव्य वर्ण है।</div>"
+        }
+    ];
+
+    // State Variables
+    let currentIdx = 0;
+    const totalQ = questions.length;
+    let answers = new Array(totalQ).fill(null);
+    let marked = new Array(totalQ).fill(false);
+    
+    // Timer is set to 25 minutes
+    let totalTime = 25 * 60; 
+    let timerInterval;
+    let isPaused = false;
+
+    // Initialization
+    function init() {
+        createPalette();
+        loadQuestion(0);
+        updateStats();
+        startTimer();
+    }
+
+    // Theme Logic
+    function toggleTheme() {
+        const doc = document.documentElement;
+        const current = doc.getAttribute('data-theme');
+        doc.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+    }
+
+    // Timer Logic
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if(totalTime <= 0) {
+                clearInterval(timerInterval);
+                submitTest(true);
+                return;
+            }
+            totalTime--;
+            updateTimerDisplay();
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(totalTime / 60).toString().padStart(2, '0');
+        const secs = (totalTime % 60).toString().padStart(2, '0');
+        const timerEl = document.getElementById('timer');
+        timerEl.innerText = `${mins}:${secs}`;
+        
+        if (totalTime < 300) { 
+            timerEl.classList.add('danger');
+        } else {
+            timerEl.classList.remove('danger');
+        }
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        const overlay = document.getElementById('pause-overlay');
+        const btn = document.getElementById('pause-btn');
+        
+        if (isPaused) {
+            clearInterval(timerInterval);
+            overlay.style.display = 'flex';
+            btn.innerText = 'Resume';
+            btn.classList.add('btn-warning');
+        } else {
+            startTimer();
+            overlay.style.display = 'none';
+            btn.innerText = 'Pause';
+            btn.classList.remove('btn-warning');
+        }
+    }
+
+    // Quiz Navigation & Rendering
+    function loadQuestion(idx) {
+        currentIdx = idx;
+        const qData = questions[idx];
+        
+        document.getElementById('question-header').innerText = `प्रश्नोत्तरी ${idx + 1} / ${totalQ}`;
+        document.getElementById('question-text').innerHTML = qData.q;
+        
+        const optsContainer = document.getElementById('options-container');
+        optsContainer.innerHTML = '';
+        
+        qData.opt.forEach((optText, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn' + (answers[idx] === i ? ' selected' : '');
+            btn.innerHTML = `<span style="font-weight:bold; border:1px solid currentColor; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${String.fromCharCode(65+i)}</span> ${optText}`;
+            btn.onclick = () => selectOption(i);
+            optsContainer.appendChild(btn);
+        });
+
+        document.getElementById('progress-bar').style.width = `${((idx + 1) / totalQ) * 100}%`;
+
+        document.getElementById('prev-btn').disabled = (idx === 0);
+        document.getElementById('prev-btn').style.opacity = (idx === 0) ? '0.5' : '1';
+        
+        const markBtn = document.getElementById('mark-btn');
+        markBtn.innerText = marked[idx] ? 'Unmark Review' : 'Mark for Review';
+        
+        const nextBtn = document.getElementById('next-btn');
+        if (idx === totalQ - 1) {
+            nextBtn.innerText = 'Submit Test';
+            nextBtn.className = 'btn-danger';
+        } else {
+            nextBtn.innerText = 'Next';
+            nextBtn.className = 'btn-primary';
+        }
+
+        updatePaletteVisuals();
+    }
+
+    function selectOption(optIdx) {
+        answers[currentIdx] = optIdx;
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function clearSelection() {
+        answers[currentIdx] = null;
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function toggleMark() {
+        marked[currentIdx] = !marked[currentIdx];
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function changeQuestion(step) {
+        if (step === 1 && currentIdx === totalQ - 1) {
+            submitTest(false);
+            return;
+        }
+        let newIdx = currentIdx + step;
+        if (newIdx >= 0 && newIdx < totalQ) {
+            loadQuestion(newIdx);
+        }
+    }
+
+    // Palette Logic
+    function createPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'q-grid-btn';
+            btn.id = `pal-btn-${i}`;
+            btn.innerText = i + 1;
+            btn.onclick = () => loadQuestion(i);
+            grid.appendChild(btn);
+        }
+    }
+
+    function updatePaletteVisuals() {
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.getElementById(`pal-btn-${i}`);
+            btn.className = 'q-grid-btn';
+            
+            if (answers[i] !== null && marked[i]) btn.classList.add('marked', 'attempted');
+            else if (marked[i]) btn.classList.add('marked');
+            else if (answers[i] !== null) btn.classList.add('attempted');
+            
+            if (i === currentIdx) btn.classList.add('current');
+        }
+    }
+
+    function updateStats() {
+        let att = 0, mark = 0;
+        for (let i = 0; i < totalQ; i++) {
+            if (answers[i] !== null) att++;
+            if (marked[i]) mark++;
+        }
+        document.getElementById('count-att').innerText = att;
+        document.getElementById('count-unatt').innerText = totalQ - att;
+        document.getElementById('count-mark').innerText = mark;
+        updatePaletteVisuals();
+    }
+
+    // Submission & Results
+    function submitTest(isAuto) {
+        const unatt = answers.filter(a => a === null).length;
+        if (!isAuto && unatt > 0) {
+            const confirmSubmit = confirm(`आपके पास ${unatt} अनुत्तरित प्रश्न हैं। क्या आप निश्चित रूप से सबमिट करना चाहते हैं?`);
+            if (!confirmSubmit) return;
+        }
+
+        clearInterval(timerInterval);
+        document.getElementById('app-container').style.display = 'none';
+        document.querySelector('.header-controls').style.display = 'none';
+        generateResults();
+    }
+
+    function generateResults() {
+        const resScreen = document.getElementById('result-screen');
+        resScreen.style.display = 'block';
+
+        let correct = 0;
+        let incorrect = 0;
+        
+        answers.forEach((ans, i) => {
+            if (ans !== null) {
+                if (ans === questions[i].ans) correct++;
+                else incorrect++;
+            }
+        });
+
+        const score = correct;
+        const perc = ((score / totalQ) * 100).toFixed(2);
+        
+        const timeTakenSec = (25 * 60) - totalTime;
+        const timeMins = Math.floor(timeTakenSec / 60).toString().padStart(2, '0');
+        const timeSecs = (timeTakenSec % 60).toString().padStart(2, '0');
+
+        document.getElementById('res-score').innerText = score;
+        document.getElementById('res-perc').innerText = perc + '%';
+        document.getElementById('res-corr').innerText = correct;
+        document.getElementById('res-incorr').innerText = incorrect;
+        document.getElementById('res-time').innerText = `${timeMins}:${timeSecs}`;
+
+        const badge = document.getElementById('result-badge');
+        if (perc >= 50) {
+            badge.className = 'badge pass';
+            badge.innerText = 'उत्तीर्ण (PASS)';
+        } else {
+            badge.className = 'badge fail';
+            badge.innerText = 'अनुत्तीर्ण (FAIL)';
+        }
+
+        generateSolutions();
+    }
+
+    function generateSolutions() {
+        const container = document.getElementById('solutions-container');
+        let html = '';
+
+        questions.forEach((q, i) => {
+            const userAns = answers[i];
+            const corrAns = q.ans;
+            
+            html += `<div class="solution-item">
+                        <div class="sol-q">Q${i+1}. ${q.q}</div>`;
+            
+            q.opt.forEach((optText, optIdx) => {
+                let cls = 'sol-opt';
+                let icon = '';
+                
+                if (optIdx === corrAns) {
+                    cls += ' correct';
+                    icon = '✓';
+                } else if (userAns === optIdx && userAns !== corrAns) {
+                    cls += ' incorrect';
+                    icon = '✗';
+                }
+
+                if(icon) {
+                    html += `<div class="${cls}"><strong>${String.fromCharCode(65+optIdx)}</strong>: ${optText} <span style="float:right; font-weight:bold;">${icon}</span></div>`;
+                } else {
+                    html += `<div class="${cls}"><strong>${String.fromCharCode(65+optIdx)}</strong>: ${optText}</div>`;
+                }
+            });
+
+            const userStatus = userAns === null ? "<span style='color:var(--text-muted)'>Unattempted</span>" : 
+                              (userAns === corrAns ? "<span style='color:var(--correct-color)'>Correct</span>" : 
+                              "<span style='color:var(--incorrect-color)'>Incorrect</span>");
+
+            html += `<div style="margin-top: 10px;"><strong>Status:</strong> ${userStatus}</div>`;
+            html += `<div class="sol-exp"><div class="sol-exp-title">व्याकरण नियम व व्याख्या (Explanation):</div>${q.exp}</div>`;
+            html += `</div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
