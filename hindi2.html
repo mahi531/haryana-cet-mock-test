@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hindi Grammar Mock Test - संज्ञा, सर्वनाम व विशेषण</title>
+    <style>
+        :root {
+            /* Light Mode Variables */
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: #2c3e50;
+            --text-muted: #576574;
+            --primary-color: #341f97;
+            --accent-color: #ff9f43;
+            --correct-color: #10ac84;
+            --incorrect-color: #ee5253;
+            --btn-hover: rgba(255, 255, 255, 0.6);
+            --palette-unattempted: #c8d6e5;
+            --palette-attempted: #10ac84;
+            --palette-marked: #9b59b6;
+            --palette-marked-attempted: #8e44ad;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Mode Variables */
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-bg: rgba(16, 20, 24, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f1f2f6;
+            --text-muted: #a4b0be;
+            --primary-color: #54a0ff;
+            --accent-color: #ff9f43;
+            --correct-color: #1dd1a1;
+            --incorrect-color: #ff6b6b;
+            --btn-hover: rgba(255, 255, 255, 0.1);
+            --palette-unattempted: #576574;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            margin: 15px;
+        }
+        .header-title h1 { font-size: 1.5rem; }
+        .header-title p { font-size: 0.9rem; color: var(--text-muted); }
+        .header-controls { display: flex; gap: 15px; align-items: center; }
+        
+        .timer-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0,0,0,0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+        .timer { font-size: 1.2rem; font-weight: bold; }
+        .timer.danger { color: var(--incorrect-color); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        button {
+            cursor: pointer;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+            background: var(--glass-bg);
+            color: var(--text-color);
+            border: 1px solid var(--glass-border);
+        }
+        button:hover { background: var(--btn-hover); }
+        .btn-primary { background: var(--primary-color); color: #fff; border: none; }
+        .btn-primary:hover { background: #2c1a80; }
+        .btn-danger { background: var(--incorrect-color); color: white; border: none; }
+        .btn-warning { background: var(--accent-color); color: white; border: none; }
+        .btn-submit { background: var(--correct-color); color: white; border: none; }
+        .btn-submit:hover { background: #0b8c6b; }
+
+        /* Main Layout */
+        .container {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            margin: 0 15px 15px 15px;
+        }
+        .main-area { flex: 3; display: flex; flex-direction: column; position: relative; }
+        .sidebar { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        /* Progress & Question Area */
+        .progress-bar-bg { background: rgba(0,0,0,0.1); height: 8px; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar-fill { background: var(--primary-color); height: 100%; width: 0%; transition: width 0.3s; }
+        
+        .question-text { font-size: 1.25rem; font-weight: 500; margin-bottom: 20px; line-height: 1.6; }
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            text-align: left;
+            padding: 15px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .option-btn.selected {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+        
+        .action-buttons { display: flex; justify-content: space-between; margin-top: auto; padding-top: 20px; }
+        .action-buttons > div { display: flex; gap: 10px; }
+
+        /* Pause Overlay */
+        .pause-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 10;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+        }
+        .pause-overlay h2 { font-size: 2rem; margin-bottom: 10px; }
+
+        /* Sidebar Stats & Grid */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-item { font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+        .stat-dot { width: 12px; height: 12px; border-radius: 50%; }
+        
+        .q-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .q-grid-btn {
+            padding: 10px 0; text-align: center; border-radius: 8px; font-weight: bold;
+            background: var(--palette-unattempted); color: #2c3e50; border: none;
+        }
+        .q-grid-btn.current { border: 3px solid #2c3e50; }
+        [data-theme="dark"] .q-grid-btn.current { border: 3px solid #fff; color: #fff; }
+        .q-grid-btn.attempted { background: var(--palette-attempted); color: #fff; }
+        .q-grid-btn.marked { background: var(--palette-marked); color: #fff; }
+        .q-grid-btn.marked.attempted { background: var(--palette-marked-attempted); color: #fff; }
+
+        /* Results Screen */
+        .result-screen { display: none; max-width: 1000px; margin: 0 auto; width: 100%; }
+        .result-header { text-align: center; margin-bottom: 30px; }
+        .badge { display: inline-block; padding: 10px 30px; border-radius: 30px; font-size: 1.5rem; font-weight: bold; color: #fff; margin-top: 10px; }
+        .badge.pass { background: var(--correct-color); }
+        .badge.fail { background: var(--incorrect-color); }
+        
+        .result-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-box { text-align: center; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .stat-box h3 { font-size: 2rem; margin-bottom: 5px; }
+
+        .solution-item { margin-bottom: 25px; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .sol-q { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; }
+        .sol-opt { margin-bottom: 8px; padding: 10px; border-radius: 8px; background: var(--glass-bg); }
+        .sol-opt.correct { background: var(--correct-color); color: #fff; }
+        .sol-opt.incorrect { background: var(--incorrect-color); color: #fff; }
+        .sol-exp { margin-top: 15px; font-size: 0.95rem; color: var(--text-color); border-left: 4px solid var(--primary-color); padding-left: 15px; line-height: 1.6; }
+        .sol-exp-title { color: var(--primary-color); font-weight: bold; margin-bottom: 5px; }
+        .sol-fact { margin-top: 5px; background: rgba(0,0,0,0.03); padding: 5px 10px; border-radius: 4px; font-size: 0.9rem;}
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            header { flex-direction: column; gap: 15px; text-align: center; }
+            .action-buttons { flex-direction: column; gap: 15px; }
+            .action-buttons > div { justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="glass-panel">
+        <div class="header-title">
+            <h1>Hindi Grammar Mock Test</h1>
+            <p>25 Important Hindi Grammar Questions (संज्ञा, सर्वनाम व विशेषण)</p>
+        </div>
+        <div class="header-controls">
+            <div class="timer-container" id="timer-box">
+                <span>⏱</span>
+                <span class="timer" id="timer">25:00</span>
+                <button id="pause-btn" onclick="togglePause()">Pause</button>
+            </div>
+            <button onclick="toggleTheme()">🌗 Theme</button>
+            <button class="btn-submit" onclick="submitTest(false)">Submit Test</button>
+        </div>
+    </header>
+
+    <div class="container" id="app-container">
+        
+        <div class="glass-panel main-area">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+            
+            <div id="question-header" style="margin-bottom: 15px; font-weight: 600; color: var(--primary-color);"></div>
+            <div id="question-text" class="question-text"></div>
+            
+            <div class="options-grid" id="options-container">
+                </div>
+
+            <div class="action-buttons">
+                <div>
+                    <button onclick="changeQuestion(-1)" id="prev-btn">Previous</button>
+                    <button onclick="clearSelection()">Clear</button>
+                </div>
+                <div>
+                    <button onclick="toggleMark()" id="mark-btn" class="btn-warning">Mark for Review</button>
+                    <button onclick="changeQuestion(1)" id="next-btn" class="btn-primary">Next</button>
+                </div>
+            </div>
+
+            <div class="pause-overlay" id="pause-overlay">
+                <h2>Test Paused</h2>
+                <p>Questions are hidden to prevent cheating.</p>
+                <br>
+                <button class="btn-primary" onclick="togglePause()">Resume Test</button>
+            </div>
+        </div>
+
+        <div class="glass-panel sidebar">
+            <h3>Question Palette</h3>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-attempted)"></div> Attempted (<span id="count-att">0</span>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-unattempted)"></div> Unattempted (<span id="count-unatt">25</span>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-marked)"></div> Marked (<span id="count-mark">0</span>)</div>
+            </div>
+            <div class="q-grid" id="q-grid">
+                </div>
+            <button class="btn-submit" onclick="submitTest(false)" style="margin-top: 20px; width: 100%; padding: 12px; font-size: 1.1rem;">Final Submit Test</button>
+        </div>
+    </div>
+
+    <div class="glass-panel result-screen" id="result-screen">
+        <div class="result-header">
+            <h2>Test Submitted Successfully</h2>
+            <div class="badge" id="result-badge">Pass</div>
+        </div>
+        <div class="result-stats">
+            <div class="stat-box"><h3 id="res-score">0</h3><p>Score / 25</p></div>
+            <div class="stat-box"><h3 id="res-perc">0%</h3><p>Percentage</p></div>
+            <div class="stat-box"><h3 id="res-corr" style="color: var(--correct-color);">0</h3><p>Correct</p></div>
+            <div class="stat-box"><h3 id="res-incorr" style="color: var(--incorrect-color);">0</h3><p>Incorrect</p></div>
+            <div class="stat-box"><h3 id="res-time">00:00</h3><p>Time Taken</p></div>
+        </div>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <button class="btn-primary" onclick="location.reload()">Restart Test</button>
+        </div>
+        <h3>Detailed Solutions & Grammar Rules</h3>
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--glass-border);">
+        <div id="solutions-container"></div>
+    </div>
+
+<script>
+    // 25 Hindi Questions extracted from images (संज्ञा, सर्वनाम, विशेषण)
+    const questions = [
+        {
+            q: "'कायर' की भाववाचक संज्ञा है-",
+            opt: ["अकायरता", "कायरत्व", "कायरपन", "कायरता"],
+            ans: 3,
+            exp: "सही उत्तर: <b>कायरता</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> जिन संज्ञा शब्दों से किसी व्यक्ति या वस्तु के गुण, दोष, दशा या भाव का बोध होता है, वे भाववाचक संज्ञा कहलाते हैं। 'कायर' (विशेषण) में 'ता' प्रत्यय लगाने से 'कायरता' भाववाचक संज्ञा बनती है।</div><div class='sol-fact'><b>💡 अन्य तथ्य:</b> भाववाचक संज्ञाओं का निर्माण जातिवाचक संज्ञा, सर्वनाम, विशेषण, क्रिया और अव्यय में प्रत्यय जोड़कर किया जाता है।</div>"
+        },
+        {
+            q: "इनमें से व्यक्तिवाचक संज्ञा कौन-सी है?",
+            opt: ["नदी", "गाय", "गंगा", "आम"],
+            ans: 2,
+            exp: "सही उत्तर: <b>गंगा</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> जो शब्द किसी विशेष व्यक्ति, विशेष स्थान या विशेष वस्तु का बोध कराते हैं, उन्हें व्यक्तिवाचक संज्ञा कहते हैं। 'गंगा' एक विशेष नदी का नाम है।</div><div class='sol-fact'><b>💡 अन्य तथ्य:</b> नदी, गाय और आम 'जातिवाचक संज्ञा' हैं क्योंकि ये अपनी पूरी जाति या वर्ग का बोध कराते हैं।</div>"
+        },
+        {
+            q: "'देवत्व' शब्द में कौन-सी संज्ञा है?",
+            opt: ["जातिवाचक", "भाववाचक", "द्रव्यवाचक", "व्यक्तिवाचक"],
+            ans: 1,
+            exp: "सही उत्तर: <b>भाववाचक</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'देव' (जातिवाचक संज्ञा) शब्द में 'त्व' प्रत्यय जोड़ने से 'देवत्व' (देवता होने का भाव या गुण) बनता है, जो कि भाववाचक संज्ञा का उदाहरण है।</div><div class='sol-fact'><b>💡 अन्य तथ्य:</b> इसी प्रकार पशु से पशुत्व, मनुष्य से मनुष्यत्व और गुरु से गुरुत्व भाववाचक संज्ञाएँ बनती हैं।</div>"
+        },
+        {
+            q: "जातिवाचक संज्ञा कौन-सी है?",
+            opt: ["स्त्री", "बनारस", "यमुना", "गुजरात"],
+            ans: 0,
+            exp: "सही उत्तर: <b>स्त्री</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> जो शब्द किसी प्राणी, वस्तु या स्थान की पूरी जाति (वर्ग) का बोध कराते हैं, वे जातिवाचक संज्ञा कहलाते हैं। 'स्त्री' शब्द संपूर्ण स्त्री जाति का बोध कराता है।</div><div class='sol-fact'><b>💡 अन्य तथ्य:</b> बनारस, यमुना और गुजरात किसी विशेष स्थान/नदी के नाम हैं, अतः ये व्यक्तिवाचक संज्ञाएँ हैं।</div>"
+        },
+        {
+            q: "'बाजार' से किस संज्ञा का बोध होता है?",
+            opt: ["भाववाचक", "समूहवाचक", "जातिवाचक", "व्यक्तिवाचक"],
+            ans: 1,
+            exp: "सही उत्तर: <b>समूहवाचक</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> जिन संज्ञा शब्दों से व्यक्तियों या वस्तुओं के समूह (Collection/Group) का बोध होता है, उन्हें समूहवाचक (या समुदायवाचक) संज्ञा कहते हैं। बाजार में भीड़ या दुकानों का समूह होता है।</div><div class='sol-fact'><b>💡 अन्य तथ्य:</b> कक्षा, सेना, पुलिस, परिवार, गुच्छा आदि भी समूहवाचक संज्ञा के उदाहरण हैं। (मूल रूप से यह जातिवाचक संज्ञा का ही एक उपभेद है)।</div>"
+        },
+        {
+            q: "क्रिया से बनने वाली भाववाचक संज्ञा है-",
+            opt: ["थकावट", "बुराई", "आलस्य", "बुढ़ापा"],
+            ans: 0,
+            exp: "सही उत्तर: <b>थकावट</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'थकना' एक क्रिया (Verb) है। 'थकना' क्रिया में 'आवट' प्रत्यय लगने से 'थकावट' भाववाचक संज्ञा का निर्माण हुआ है।</div><div class='sol-fact'><b>💡 अन्य तथ्य:</b> बुराई (बुरा विशेषण से), आलस्य (आलसी विशेषण से) और बुढ़ापा (बूढ़ा जातिवाचक संज्ञा से) बने हैं।</div>"
+        },
+        {
+            q: "'कवि' शब्द में कौन-सी संज्ञा है?",
+            opt: ["व्यक्तिवाचक", "जातिवाचक", "द्रव्यवाचक", "भाववाचक"],
+            ans: 1,
+            exp: "सही उत्तर: <b>जातिवाचक</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'कवि' शब्द किसी एक विशेष कवि का नहीं, बल्कि संसार के सभी कवियों की जाति (वर्ग) का बोध कराता है, इसलिए यह जातिवाचक संज्ञा है।</div><div class='sol-fact'><b>💡 अन्य तथ्य:</b> यदि 'सूरदास' या 'तुलसीदास' कहा जाए, तो वह व्यक्तिवाचक संज्ञा होगी। व्यवसायों और पदों के नाम प्रायः जातिवाचक होते हैं।</div>"
+        },
+        {
+            q: "कौन-सा शब्द जातिवाचक संज्ञा है?",
+            opt: ["हिमालय", "गंगा", "पवित्रता", "नदी"],
+            ans: 3,
+            exp: "सही उत्तर: <b>नदी</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'नदी' शब्द से सभी नदियों का बोध होता है, अतः यह जातिवाचक है।</div><div class='sol-fact'><b>💡 अन्य तथ्य:</b> हिमालय और गंगा (व्यक्तिवाचक) हैं। 'पवित्रता' (पवित्र + ता) एक भाववाचक संज्ञा है।</div>"
+        },
+        {
+            q: "इनमें विशेषण से बनी भाववाचक संज्ञा कौन-सी है?",
+            opt: ["मातृत्व", "शिशुता", "छुटपन", "बचपन"],
+            ans: 2,
+            exp: "सही उत्तर: <b>छुटपन</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'छोटा' एक विशेषण है। 'छोटा' शब्द में 'पन' प्रत्यय लगने से 'छुटपन' भाववाचक संज्ञा बनती है।</div><div class='sol-fact'><b>💡 अन्य तथ्य:</b> मातृत्व (माता-संज्ञा से), शिशुता (शिशु-संज्ञा से) और बचपन (बच्चा-संज्ञा से) बनी भाववाचक संज्ञाएँ हैं।</div>"
+        },
+        {
+            q: "'आप भला तो जग भला' वाक्य में सर्वनाम के किस भेद का बोध होता है?",
+            opt: ["निजवाचक सर्वनाम", "अनिश्चय वाचक सर्वनाम", "प्रश्नवाचक सर्वनाम", "सम्बन्ध वाचक सर्वनाम"],
+            ans: 0,
+            exp: "सही उत्तर: <b>निजवाचक सर्वनाम</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> जिन सर्वनाम शब्दों का प्रयोग वक्ता (बोलने वाला) स्वयं के लिए (खुद, अपने आप, आप ही) करता है, उन्हें निजवाचक सर्वनाम कहते हैं। यहाँ 'आप' का अर्थ 'स्वयं' से है।</div><div class='sol-fact'><b>💡 अन्य तथ्य:</b> यदि 'आप' का प्रयोग श्रोता को आदर देने के लिए हो (जैसे- आप बैठिए), तो वहाँ यह मध्यम पुरुषवाचक सर्वनाम होता है।</div>"
+        },
+        {
+            q: "आपके बारे में कल कोई कुछ कह रहा था। इस वाक्य में इनमें से किन-किन सर्वनामों का प्रयोग हुआ है?",
+            opt: ["अनिश्चयवाची, मध्यमपुरुष", "निश्चयवाची, मध्यपुरुष", "निजवाचक, संबंधवाचक", "अन्य पुरुष, अनिश्चयवाची"],
+            ans: 0,
+            exp: "सही उत्तर: <b>अनिश्चयवाची, मध्यमपुरुष</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> इस वाक्य में 'आपके' (सुनने वाले के लिए प्रयुक्त - मध्यम पुरुषवाचक) और 'कोई/कुछ' (जिससे निश्चित व्यक्ति या वस्तु का बोध न हो - अनिश्चयवाचक) सर्वनामों का प्रयोग हुआ है।</div>"
+        },
+        {
+            q: "इनमें से किस वाक्य में मध्यम पुरुष सर्वनाम का प्रयोग नहीं हुआ है?",
+            opt: ["आपने तो कमाल कर दिया।", "सुभाष चन्द्र बोस देश भक्त थे। आपने देश सेवा के लिए उच्च पद का भी त्याग कर दिया था।", "तुम दिल्ली से कब आये?", "आप बहुत अच्छा गाती हैं।"],
+            ans: 1,
+            exp: "सही उत्तर: <b>सुभाष चन्द्र बोस देश भक्त थे। आपने देश सेवा...</b><div class='sol-fact'><b>💡 व्याकरण नियम:</b> विकल्प 2 में 'आपने' शब्द सुभाष चन्द्र बोस (किसी तीसरे व्यक्ति, जिसके बारे में बात हो रही है) के लिए आदरसूचक रूप में प्रयुक्त हुआ है। अतः यहाँ यह 'अन्य पुरुषवाचक सर्वनाम' है, न कि मध्यम पुरुष।</div><div class='sol-fact'><b>💡 अन्य तथ्य:</b> अन्य सभी विकल्पों में 'आपने', 'तुम', 'आप' श्रोता (सामने वाले) के लिए प्रयुक्त हुए हैं (मध्यम पुरुष)।</div>"
+        },
+        {
+            q: "'तुम्हारा' में कौन-सा सर्वनाम है?",
+            opt: ["उत्तम पुरुषवाचक सर्वनाम", "मध्यम पुरुषवाचक सर्वनाम", "अनिश्चयवाचक सर्वनाम", "निश्चयवाचक सर्वनाम"],
+            ans: 1,
+            exp: "सही उत्तर: <b>मध्यम पुरुषवाचक सर्वनाम</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> वक्ता जिससे बात करता है (श्रोता), उसके लिए प्रयुक्त सर्वनाम 'मध्यम पुरुष' कहलाते हैं। जैसे- तू, तुम, तुम्हारा, आप, आपका आदि।</div>"
+        },
+        {
+            q: "निम्न में से किस वाक्य में संबंधवाचक सर्वनाम का प्रयोग नहीं हुआ है?",
+            opt: ["आप जो करो, सो थोड़ा है।", "जितना गुड़ डालोगे, उतना मीठा होगा।", "तुम अपनी पुस्तक पढ़ो।", "जैसी करनी, वैसी भरनी।"],
+            ans: 2,
+            exp: "सही उत्तर: <b>तुम अपनी पुस्तक पढ़ो।</b><div class='sol-fact'><b>💡 व्याकरण नियम:</b> जिस सर्वनाम से वाक्य में किसी दूसरे सर्वनाम या संज्ञा से संबंध स्थापित किया जाए, उसे संबंधवाचक सर्वनाम कहते हैं (जो-सो, जितना-उतना, जैसी-वैसी)। विकल्प 3 में 'तुम' (मध्यम पुरुष) और 'अपनी' (निजवाचक) है, संबंधवाचक नहीं।</div>"
+        },
+        {
+            q: "'अपनी खुद की और अपने विद्यार्थियों' वाक्य में रेखांकित शब्द (खुद) में सर्वनाम है-",
+            opt: ["निजवाचक सर्वनाम", "अनिश्चयवाचक सर्वनाम", "पुरुषवाचक सर्वनाम", "संबंधवाचक सर्वनाम"],
+            ans: 0,
+            exp: "सही उत्तर: <b>निजवाचक सर्वनाम</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'खुद', 'स्वयं', 'स्वतः', 'अपने आप' आदि शब्द कर्ता के निजत्व (अपनेपन) का बोध कराते हैं, अतः ये निजवाचक सर्वनाम की श्रेणी में आते हैं।</div>"
+        },
+        {
+            q: "'कोई' शब्द व्याकरण की दृष्टि से है-",
+            opt: ["सर्वनाम", "विशेषण", "अव्यय", "क्रिया"],
+            ans: 0,
+            exp: "सही उत्तर: <b>सर्वनाम</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'कोई' और 'कुछ' अनिश्चयवाचक सर्वनाम हैं। 'कोई' का प्रयोग प्रायः सजीव (प्राणीवाचक) के लिए और 'कुछ' का प्रयोग निर्जीव (वस्तुवाचक) के लिए किया जाता है। (जैसे- बाहर कोई खड़ा है)।</div>"
+        },
+        {
+            q: "'महीप स्वावलम्बी छात्र है, उसे जितना काम करना होता है, उतना वह स्वयं कर लेता है' इस वाक्य में कौन-से सर्वनाम हैं?",
+            opt: ["उत्तमपुरुष वाचक, निश्चयवाची, प्रश्नवाचक", "मध्यमपुरुष वाचक, संबंधवाची, प्रश्नवाचक", "अन्य पुरुष वाचक, अनिश्चयवाची, निश्चयवाची", "निजवाचक, अन्यपुरुष वाचक, संबंधवाचक"],
+            ans: 3,
+            exp: "सही उत्तर: <b>निजवाचक, अन्यपुरुष वाचक, संबंधवाचक</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> वाक्य में 'उसे' और 'वह' (अन्य पुरुषवाचक), 'जितना-उतना' (संबंधवाचक), और 'स्वयं' (निजवाचक) सर्वनामों का सटीक प्रयोग हुआ है।</div>"
+        },
+        {
+            q: "'कौन आया है?' व्याकरण की दृष्टि से है-",
+            opt: ["सर्वनाम, प्रश्नवाचक, पुल्लिंग, एकवचन", "सर्वनाम, पुरुषवाचक, पुल्लिंग, एकवचन", "सर्वनाम, निश्चयवाचक, स्त्रीलिंग, एकवचन", "सर्वनाम, संबंधवाचक, पुल्लिंग, एकवचन"],
+            ans: 0,
+            exp: "सही उत्तर: <b>सर्वनाम, प्रश्नवाचक, पुल्लिंग, एकवचन</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'कौन' एक प्रश्नवाचक सर्वनाम है। वाक्य की क्रिया 'आया है' (पुल्लिंग, एकवचन) से स्पष्ट है कि सर्वनाम भी पुल्लिंग और एकवचन रूप में प्रयुक्त हुआ है।</div>"
+        },
+        {
+            q: "निम्नलिखित में से संज्ञा शब्दों से निर्मित विशेषण चिह्नित कीजिए-",
+            opt: ["भला", "स्वकीय", "वैसा", "कायिक"],
+            ans: 3,
+            exp: "सही उत्तर: <b>कायिक</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'काया' (शरीर) एक संज्ञा शब्द है। इसमें 'इक' प्रत्यय लगने से 'कायिक' (विशेषण) शब्द का निर्माण हुआ है (काया + इक = कायिक)।</div><div class='sol-fact'><b>💡 अन्य तथ्य:</b> 'इक' प्रत्यय लगने पर शब्द के प्रथम स्वर में वृद्धि हो जाती है (जैसे अ का आ, इ का ऐ)।</div>"
+        },
+        {
+            q: "इनमें से कौन-सा विशेषण व्यक्तिवाचक संज्ञा से बना है?",
+            opt: ["पुराना", "कश्मीरी", "भला", "देशी"],
+            ans: 1,
+            exp: "सही उत्तर: <b>कश्मीरी</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'कश्मीर' एक विशेष स्थान का नाम है, अतः यह व्यक्तिवाचक संज्ञा है। कश्मीर शब्द में 'ई' प्रत्यय जोड़कर 'कश्मीरी' (जैसे- कश्मीरी सेब) विशेषण बनाया गया है, जिसे व्यक्तिवाचक विशेषण भी कहते हैं।</div>"
+        },
+        {
+            q: "'वे बड़ी सुंदर मूर्तियाँ बनाते थे' वाक्य में प्रविशेषण है-",
+            opt: ["वे", "सुंदर", "बड़ी", "मूर्तियाँ"],
+            ans: 2,
+            exp: "सही उत्तर: <b>बड़ी</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> जो शब्द विशेषण की भी विशेषता बताते हैं, उन्हें 'प्रविशेषण' कहते हैं। यहाँ 'मूर्तियाँ' (विशेष्य) की विशेषता 'सुंदर' (विशेषण) बता रहा है, और सुंदर की अधिकता 'बड़ी' शब्द बता रहा है। अतः 'बड़ी' प्रविशेषण है।</div>"
+        },
+        {
+            q: "यह नई साड़ी है। वाक्य में 'नई' शब्द व्याकरण की दृष्टि से है-",
+            opt: ["सर्वनाम", "क्रिया", "क्रिया विशेषण", "विशेषण"],
+            ans: 3,
+            exp: "सही उत्तर: <b>विशेषण</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> जो शब्द संज्ञा या सर्वनाम की विशेषता (गुण, दोष, रंग, आकार, अवस्था आदि) बताते हैं, वे विशेषण कहलाते हैं। यहाँ 'साड़ी' (संज्ञा) की विशेषता 'नई' शब्द बता रहा है, अतः यह गुणवाचक विशेषण है।</div>"
+        },
+        {
+            q: "इनमें से विशेषण उपवाक्य कौन-सा है?",
+            opt: ["गुरुजी ने कहा कि वे आज नहीं आएँगे।", "जो रुपए मुझे मिले थे, वे खर्च हो गए।", "मैं ज्यों ही वहाँ पहुँचा, वह चला गया।", "यदि वह कहेगा तो मैं भी चलूँगा।"],
+            ans: 1,
+            exp: "सही उत्तर: <b>जो रुपए मुझे मिले थे, वे खर्च हो गए।</b><div class='sol-fact'><b>💡 व्याकरण नियम:</b> जो आश्रित उपवाक्य प्रधान उपवाक्य की किसी संज्ञा या सर्वनाम की विशेषता बताता है, उसे विशेषण उपवाक्य कहते हैं। यहाँ 'जो रुपए मुझे मिले थे' उपवाक्य 'रुपए' (संज्ञा) की विशेषता बता रहा है। विशेषण उपवाक्य की शुरुआत प्रायः जो, जिसे, जिसने, जिसको आदि से होती है।</div>"
+        },
+        {
+            q: "'विशेषण' की सही परिभाषा है?",
+            opt: ["सर्वनाम की विशेषता बताने वाला शब्द", "संज्ञा व सर्वनाम की विशेषता बताने वाला शब्द", "संज्ञा के स्थान पर प्रयुक्त होने वाला शब्द", "क्रिया की विशेषता बताने वाला शब्द"],
+            ans: 1,
+            exp: "सही उत्तर: <b>संज्ञा व सर्वनाम की विशेषता बताने वाला शब्द</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> वाक्य में संज्ञा अथवा सर्वनाम की विशेषता (गुण, दोष, संख्या, परिमाण आदि) बताने वाले शब्दों को ही विशेषण कहा जाता है। जिस शब्द की विशेषता बताई जाती है, उसे 'विशेष्य' कहते हैं।</div>"
+        },
+        {
+            q: "इनमें कौन-सा शब्द विशेषण नहीं है?",
+            opt: ["भीतर", "गुरुतर", "विश्वस्त", "विगत"],
+            ans: 0,
+            exp: "सही उत्तर: <b>भीतर</b>।<div class='sol-fact'><b>💡 व्याकरण नियम:</b> 'भीतर' शब्द एक अव्यय (क्रियाविशेषण - स्थानवाचक) है, विशेषण नहीं। यह क्रिया के स्थान का बोध कराता है (जैसे- वह भीतर गया)।</div><div class='sol-fact'><b>💡 अन्य तथ्य:</b> गुरुतर (तुलनावस्था का विशेषण), विश्वस्त (भरोसेमंद व्यक्ति - विशेषण), और विगत (बीता हुआ - विशेषण) हैं।</div>"
+        }
+    ];
+
+    // State Variables
+    let currentIdx = 0;
+    const totalQ = questions.length;
+    let answers = new Array(totalQ).fill(null);
+    let marked = new Array(totalQ).fill(false);
+    
+    // Timer is set to 25 minutes
+    let totalTime = 25 * 60; 
+    let timerInterval;
+    let isPaused = false;
+
+    // Initialization
+    function init() {
+        createPalette();
+        loadQuestion(0);
+        updateStats();
+        startTimer();
+    }
+
+    // Theme Logic
+    function toggleTheme() {
+        const doc = document.documentElement;
+        const current = doc.getAttribute('data-theme');
+        doc.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+    }
+
+    // Timer Logic
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if(totalTime <= 0) {
+                clearInterval(timerInterval);
+                submitTest(true);
+                return;
+            }
+            totalTime--;
+            updateTimerDisplay();
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(totalTime / 60).toString().padStart(2, '0');
+        const secs = (totalTime % 60).toString().padStart(2, '0');
+        const timerEl = document.getElementById('timer');
+        timerEl.innerText = `${mins}:${secs}`;
+        
+        if (totalTime < 300) { 
+            timerEl.classList.add('danger');
+        } else {
+            timerEl.classList.remove('danger');
+        }
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        const overlay = document.getElementById('pause-overlay');
+        const btn = document.getElementById('pause-btn');
+        
+        if (isPaused) {
+            clearInterval(timerInterval);
+            overlay.style.display = 'flex';
+            btn.innerText = 'Resume';
+            btn.classList.add('btn-warning');
+        } else {
+            startTimer();
+            overlay.style.display = 'none';
+            btn.innerText = 'Pause';
+            btn.classList.remove('btn-warning');
+        }
+    }
+
+    // Quiz Navigation & Rendering
+    function loadQuestion(idx) {
+        currentIdx = idx;
+        const qData = questions[idx];
+        
+        document.getElementById('question-header').innerText = `प्रश्नोत्तरी ${idx + 1} / ${totalQ}`;
+        document.getElementById('question-text').innerHTML = qData.q;
+        
+        const optsContainer = document.getElementById('options-container');
+        optsContainer.innerHTML = '';
+        
+        qData.opt.forEach((optText, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn' + (answers[idx] === i ? ' selected' : '');
+            btn.innerHTML = `<span style="font-weight:bold; border:1px solid currentColor; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${String.fromCharCode(65+i)}</span> ${optText}`;
+            btn.onclick = () => selectOption(i);
+            optsContainer.appendChild(btn);
+        });
+
+        document.getElementById('progress-bar').style.width = `${((idx + 1) / totalQ) * 100}%`;
+
+        document.getElementById('prev-btn').disabled = (idx === 0);
+        document.getElementById('prev-btn').style.opacity = (idx === 0) ? '0.5' : '1';
+        
+        const markBtn = document.getElementById('mark-btn');
+        markBtn.innerText = marked[idx] ? 'Unmark Review' : 'Mark for Review';
+        
+        const nextBtn = document.getElementById('next-btn');
+        if (idx === totalQ - 1) {
+            nextBtn.innerText = 'Submit Test';
+            nextBtn.className = 'btn-danger';
+        } else {
+            nextBtn.innerText = 'Next';
+            nextBtn.className = 'btn-primary';
+        }
+
+        updatePaletteVisuals();
+    }
+
+    function selectOption(optIdx) {
+        answers[currentIdx] = optIdx;
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function clearSelection() {
+        answers[currentIdx] = null;
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function toggleMark() {
+        marked[currentIdx] = !marked[currentIdx];
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function changeQuestion(step) {
+        if (step === 1 && currentIdx === totalQ - 1) {
+            submitTest(false);
+            return;
+        }
+        let newIdx = currentIdx + step;
+        if (newIdx >= 0 && newIdx < totalQ) {
+            loadQuestion(newIdx);
+        }
+    }
+
+    // Palette Logic
+    function createPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'q-grid-btn';
+            btn.id = `pal-btn-${i}`;
+            btn.innerText = i + 1;
+            btn.onclick = () => loadQuestion(i);
+            grid.appendChild(btn);
+        }
+    }
+
+    function updatePaletteVisuals() {
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.getElementById(`pal-btn-${i}`);
+            btn.className = 'q-grid-btn';
+            
+            if (answers[i] !== null && marked[i]) btn.classList.add('marked', 'attempted');
+            else if (marked[i]) btn.classList.add('marked');
+            else if (answers[i] !== null) btn.classList.add('attempted');
+            
+            if (i === currentIdx) btn.classList.add('current');
+        }
+    }
+
+    function updateStats() {
+        let att = 0, mark = 0;
+        for (let i = 0; i < totalQ; i++) {
+            if (answers[i] !== null) att++;
+            if (marked[i]) mark++;
+        }
+        document.getElementById('count-att').innerText = att;
+        document.getElementById('count-unatt').innerText = totalQ - att;
+        document.getElementById('count-mark').innerText = mark;
+        updatePaletteVisuals();
+    }
+
+    // Submission & Results
+    function submitTest(isAuto) {
+        const unatt = answers.filter(a => a === null).length;
+        if (!isAuto && unatt > 0) {
+            const confirmSubmit = confirm(`आपके पास ${unatt} अनुत्तरित प्रश्न हैं। क्या आप निश्चित रूप से सबमिट करना चाहते हैं?`);
+            if (!confirmSubmit) return;
+        }
+
+        clearInterval(timerInterval);
+        document.getElementById('app-container').style.display = 'none';
+        document.querySelector('.header-controls').style.display = 'none';
+        generateResults();
+    }
+
+    function generateResults() {
+        const resScreen = document.getElementById('result-screen');
+        resScreen.style.display = 'block';
+
+        let correct = 0;
+        let incorrect = 0;
+        
+        answers.forEach((ans, i) => {
+            if (ans !== null) {
+                if (ans === questions[i].ans) correct++;
+                else incorrect++;
+            }
+        });
+
+        const score = correct;
+        const perc = ((score / totalQ) * 100).toFixed(2);
+        
+        const timeTakenSec = (25 * 60) - totalTime;
+        const timeMins = Math.floor(timeTakenSec / 60).toString().padStart(2, '0');
+        const timeSecs = (timeTakenSec % 60).toString().padStart(2, '0');
+
+        document.getElementById('res-score').innerText = score;
+        document.getElementById('res-perc').innerText = perc + '%';
+        document.getElementById('res-corr').innerText = correct;
+        document.getElementById('res-incorr').innerText = incorrect;
+        document.getElementById('res-time').innerText = `${timeMins}:${timeSecs}`;
+
+        const badge = document.getElementById('result-badge');
+        if (perc >= 50) {
+            badge.className = 'badge pass';
+            badge.innerText = 'उत्तीर्ण (PASS)';
+        } else {
+            badge.className = 'badge fail';
+            badge.innerText = 'अनुत्तीर्ण (FAIL)';
+        }
+
+        generateSolutions();
+    }
+
+    function generateSolutions() {
+        const container = document.getElementById('solutions-container');
+        let html = '';
+
+        questions.forEach((q, i) => {
+            const userAns = answers[i];
+            const corrAns = q.ans;
+            
+            html += `<div class="solution-item">
+                        <div class="sol-q">Q${i+1}. ${q.q}</div>`;
+            
+            q.opt.forEach((optText, optIdx) => {
+                let cls = 'sol-opt';
+                let icon = '';
+                
+                if (optIdx === corrAns) {
+                    cls += ' correct';
+                    icon = '✓';
+                } else if (userAns === optIdx && userAns !== corrAns) {
+                    cls += ' incorrect';
+                    icon = '✗';
+                }
+
+                if(icon) {
+                    html += `<div class="${cls}"><strong>${String.fromCharCode(65+optIdx)}</strong>: ${optText} <span style="float:right; font-weight:bold;">${icon}</span></div>`;
+                } else {
+                    html += `<div class="${cls}"><strong>${String.fromCharCode(65+optIdx)}</strong>: ${optText}</div>`;
+                }
+            });
+
+            const userStatus = userAns === null ? "<span style='color:var(--text-muted)'>Unattempted</span>" : 
+                              (userAns === corrAns ? "<span style='color:var(--correct-color)'>Correct</span>" : 
+                              "<span style='color:var(--incorrect-color)'>Incorrect</span>");
+
+            html += `<div style="margin-top: 10px;"><strong>Status:</strong> ${userStatus}</div>`;
+            html += `<div class="sol-exp"><div class="sol-exp-title">व्याकरण नियम व व्याख्या (Explanation):</div>${q.exp}</div>`;
+            html += `</div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
