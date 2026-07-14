@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haryana GK Mock Test - Part 5</title>
+    <style>
+        :root {
+            /* Light Mode Variables */
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: #2c3e50;
+            --text-muted: #576574;
+            --primary-color: #341f97;
+            --accent-color: #ff9f43;
+            --correct-color: #10ac84;
+            --incorrect-color: #ee5253;
+            --btn-hover: rgba(255, 255, 255, 0.6);
+            --palette-unattempted: #c8d6e5;
+            --palette-attempted: #10ac84;
+            --palette-marked: #9b59b6;
+            --palette-marked-attempted: #8e44ad;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Mode Variables */
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-bg: rgba(16, 20, 24, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f1f2f6;
+            --text-muted: #a4b0be;
+            --primary-color: #54a0ff;
+            --accent-color: #ff9f43;
+            --correct-color: #1dd1a1;
+            --incorrect-color: #ff6b6b;
+            --btn-hover: rgba(255, 255, 255, 0.1);
+            --palette-unattempted: #576574;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            margin: 15px;
+        }
+        .header-title h1 { font-size: 1.5rem; }
+        .header-title p { font-size: 0.9rem; color: var(--text-muted); }
+        .header-controls { display: flex; gap: 15px; align-items: center; }
+        
+        .timer-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0,0,0,0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+        .timer { font-size: 1.2rem; font-weight: bold; }
+        .timer.danger { color: var(--incorrect-color); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        button {
+            cursor: pointer;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+            background: var(--glass-bg);
+            color: var(--text-color);
+            border: 1px solid var(--glass-border);
+        }
+        button:hover { background: var(--btn-hover); }
+        .btn-primary { background: var(--primary-color); color: #fff; border: none; }
+        .btn-primary:hover { background: #2c1a80; }
+        .btn-danger { background: var(--incorrect-color); color: white; border: none; }
+        .btn-warning { background: var(--accent-color); color: white; border: none; }
+        .btn-submit { background: var(--correct-color); color: white; border: none; }
+        .btn-submit:hover { background: #0b8c6b; }
+
+        /* Main Layout */
+        .container {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            margin: 0 15px 15px 15px;
+        }
+        .main-area { flex: 3; display: flex; flex-direction: column; position: relative; }
+        .sidebar { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        /* Progress & Question Area */
+        .progress-bar-bg { background: rgba(0,0,0,0.1); height: 8px; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar-fill { background: var(--primary-color); height: 100%; width: 0%; transition: width 0.3s; }
+        
+        .question-text { font-size: 1.25rem; font-weight: 500; margin-bottom: 20px; line-height: 1.6; }
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            text-align: left;
+            padding: 15px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .option-btn.selected {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+        
+        .action-buttons { display: flex; justify-content: space-between; margin-top: auto; padding-top: 20px; }
+        .action-buttons > div { display: flex; gap: 10px; }
+
+        /* Pause Overlay */
+        .pause-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 10;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+        }
+        .pause-overlay h2 { font-size: 2rem; margin-bottom: 10px; }
+
+        /* Sidebar Stats & Grid */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-item { font-size: 0.85rem; display: flex; align-items: center; gap: 8px; }
+        .stat-dot { width: 12px; height: 12px; border-radius: 50%; }
+        
+        .q-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .q-grid-btn {
+            padding: 10px 0; text-align: center; border-radius: 8px; font-weight: bold;
+            background: var(--palette-unattempted); color: #2c3e50; border: none;
+        }
+        .q-grid-btn.current { border: 3px solid #2c3e50; }
+        [data-theme="dark"] .q-grid-btn.current { border: 3px solid #fff; color: #fff; }
+        .q-grid-btn.attempted { background: var(--palette-attempted); color: #fff; }
+        .q-grid-btn.marked { background: var(--palette-marked); color: #fff; }
+        .q-grid-btn.marked.attempted { background: var(--palette-marked-attempted); color: #fff; }
+
+        /* Results Screen */
+        .result-screen { display: none; max-width: 1000px; margin: 0 auto; width: 100%; }
+        .result-header { text-align: center; margin-bottom: 30px; }
+        .badge { display: inline-block; padding: 10px 30px; border-radius: 30px; font-size: 1.5rem; font-weight: bold; color: #fff; margin-top: 10px; }
+        .badge.pass { background: var(--correct-color); }
+        .badge.fail { background: var(--incorrect-color); }
+        
+        .result-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-box { text-align: center; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .stat-box h3 { font-size: 2rem; margin-bottom: 5px; }
+
+        .solution-item { margin-bottom: 25px; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .sol-q { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; }
+        .sol-opt { margin-bottom: 8px; padding: 10px; border-radius: 8px; background: var(--glass-bg); }
+        .sol-opt.correct { background: var(--correct-color); color: #fff; }
+        .sol-opt.incorrect { background: var(--incorrect-color); color: #fff; }
+        .sol-exp { margin-top: 15px; font-size: 0.95rem; color: var(--text-color); border-left: 4px solid var(--primary-color); padding-left: 15px; line-height: 1.6; }
+        .sol-exp-title { color: var(--primary-color); font-weight: bold; margin-bottom: 5px; }
+        .sol-fact { margin-top: 5px; background: rgba(0,0,0,0.03); padding: 5px 10px; border-radius: 4px; font-size: 0.9rem;}
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            header { flex-direction: column; gap: 15px; text-align: center; }
+            .action-buttons { flex-direction: column; gap: 15px; }
+            .action-buttons > div { justify-content: space-between; }
+        }
+        
+        /* Auto-save indicator */
+        .autosave-indicator {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+            text-align: right;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="glass-panel">
+        <div class="header-title">
+            <h1>Haryana GK Mock Test - PART 5</h1>
+            <p>25 Important HSSC Questions (Auto-Save & Shuffled Mode)</p>
+        </div>
+        <div class="header-controls">
+            <div class="timer-container" id="timer-box">
+                <span>⏱</span>
+                <span class="timer" id="timer">25:00</span>
+                <button id="pause-btn" onclick="togglePause()">Pause</button>
+            </div>
+            <button onclick="toggleTheme()">🌗 Theme</button>
+            <button class="btn-submit" onclick="submitTest(false)">Submit Test</button>
+        </div>
+    </header>
+
+    <div class="container" id="app-container">
+        
+        <div class="glass-panel main-area">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+            
+            <div id="question-header" style="margin-bottom: 15px; font-weight: 600; color: var(--primary-color);"></div>
+            <div id="question-text" class="question-text"></div>
+            
+            <div class="options-grid" id="options-container">
+            </div>
+
+            <div class="action-buttons">
+                <div>
+                    <button onclick="changeQuestion(-1)" id="prev-btn">Previous</button>
+                    <button onclick="clearSelection()">Clear</button>
+                </div>
+                <div>
+                    <button onclick="toggleMark()" id="mark-btn" class="btn-warning">Mark for Review</button>
+                    <button onclick="changeQuestion(1)" id="next-btn" class="btn-primary">Next</button>
+                </div>
+            </div>
+            <div class="autosave-indicator" id="autosave-text">Progress Auto-Saved ✔</div>
+
+            <div class="pause-overlay" id="pause-overlay">
+                <h2>Test Paused</h2>
+                <p>Questions are hidden to prevent cheating.</p>
+                <br>
+                <button class="btn-primary" onclick="togglePause()">Resume Test</button>
+            </div>
+        </div>
+
+        <div class="glass-panel sidebar">
+            <h3>Question Palette</h3>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-attempted)"></div> Attempted (<span id="count-att">0</span>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-unattempted)"></div> Unattempted (<span id="count-unatt">25</span>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-marked)"></div> Marked (<span id="count-mark">0</span>)</div>
+            </div>
+            <div class="q-grid" id="q-grid">
+                </div>
+            <button class="btn-submit" onclick="submitTest(false)" style="margin-top: 20px; width: 100%; padding: 12px; font-size: 1.1rem;">Final Submit Test</button>
+        </div>
+    </div>
+
+    <div class="glass-panel result-screen" id="result-screen">
+        <div class="result-header">
+            <h2>Test Submitted Successfully</h2>
+            <div class="badge" id="result-badge">Pass</div>
+        </div>
+        <div class="result-stats">
+            <div class="stat-box"><h3 id="res-score">0</h3><p>Score / 25</p></div>
+            <div class="stat-box"><h3 id="res-perc">0%</h3><p>Percentage</p></div>
+            <div class="stat-box"><h3 id="res-corr" style="color: var(--correct-color);">0</h3><p>Correct</p></div>
+            <div class="stat-box"><h3 id="res-incorr" style="color: var(--incorrect-color);">0</h3><p>Incorrect</p></div>
+            <div class="stat-box"><h3 id="res-time">00:00</h3><p>Time Taken</p></div>
+        </div>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <button class="btn-primary" onclick="restartTest()">Restart Fresh Test</button>
+        </div>
+        <h3>Detailed Solutions & Facts</h3>
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--glass-border);">
+        <div id="solutions-container"></div>
+    </div>
+
+<script>
+    // 25 Original Questions
+    const originalQuestions = [
+        {
+            q: "भारत में सबसे बड़ा हड़प्पाकालीन स्थल कहाँ पाया गया है?",
+            opt: ["भिरडाणा", "राखीगढ़ी", "सीसवाल", "कुणाल"],
+            ans: 1,
+            exp: "सही उत्तर: <b>राखीगढ़ी</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> राखीगढ़ी भारत में सिंधु घाटी सभ्यता का सबसे बड़ा स्थल है जो हरियाणा के हिसार जिले में स्थित है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> यहाँ से अन्नागार और कब्रगाह के साक्ष्य मिले हैं। डॉ. अमरेंद्र नाथ ने यहाँ व्यापक खुदाई करवाई थी।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> यह स्थल सरस्वती और दृषद्वती नदियों के शुष्क क्षेत्र में स्थित है।</div>"
+        },
+        {
+            q: "निम्नलिखित में से हरियाणा के किस जिले में पूर्व हड़प्पाई स्थल कुणाल की खोज हुई?",
+            opt: ["हिसार", "जींद", "फतेहाबाद", "रोहतक"],
+            ans: 2,
+            exp: "सही उत्तर: <b>फतेहाबाद</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> कुणाल फतेहाबाद जिले में सरस्वती नदी के किनारे स्थित है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> यहाँ से चांदी के दो मुकु পণ্ডিত (राजसी मुकुट) प्राप्त हुए हैं, जो इसकी सबसे बड़ी उपलब्धि है।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> यह हड़प्पा पूर्व की संस्कृति का प्रतिनिधित्व करता है तथा यहाँ से उल्टे 'V' आकार के बाणाग्र भी मिले हैं।</div>"
+        },
+        {
+            q: "भिरडाणा, एक सिंधु-सरस्वती घाटी स्थल कहाँ अवस्थित है?",
+            opt: ["रोहतक में", "फतेहाबाद में", "हिसार में", "अम्बाला में"],
+            ans: 1,
+            exp: "सही उत्तर: <b>फतेहाबाद में</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> भिरडाणा फतेहाबाद जिले में स्थित है और इसे सिंधु सभ्यता के सबसे प्राचीन स्थलों में से एक माना जाता है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> कार्बन डेटिंग के अनुसार यह राखीगढ़ी और मोहनजोदड़ो से भी पुराना हो सकता है।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> एल.एस. राव के निर्देशन में यहाँ खुदाई हुई थी, जिसमें लाल रंग के चित्रित मृदभांड प्राप्त हुए हैं।</div>"
+        },
+        {
+            q: "सिंधु घाटी सभ्यता की कलाकृतियों को सुरक्षित रखने के लिए कौन-सा संग्रहालय बनाया गया है?",
+            opt: ["बनावली संग्रहालय", "राखीगढ़ी संग्रहालय", "मोहनजोदड़ो संग्रहालय", "हड़प्पा संग्रहालय"],
+            ans: 1,
+            exp: "सही उत्तर: <b>राखीगढ़ी संग्रहालय</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> राखीगढ़ी (हिसार) में अंतरराष्ट्रीय स्तर का संग्रहालय स्थापित किया जा रहा है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> यहाँ सिंधु घाटी सभ्यता के अवशेष, कंकाल, आभूषण और बर्तन प्रदर्शित किए जाएंगे।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> यह पर्यटन को बढ़ावा देने और ऐतिहासिक धरोहर को सहेजने के लिए राज्य सरकार की एक प्रमुख परियोजना है।</div>"
+        },
+        {
+            q: "मोहनजोदड़ो के बाद हड़प्पा सभ्यता का दूसरा बड़ा पुरास्थल कौन-सा है?",
+            opt: ["बनावली", "राखीगढ़ी", "दक्षखेड़ा", "मिताथल"],
+            ans: 1,
+            exp: "सही उत्तर: <b>राखीगढ़ी</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> आकार और विस्तार के मामले में राखीगढ़ी मोहनजोदड़ो के समकक्ष या उससे भी बड़ा स्थल माना जाने लगा है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> यह 350 हेक्टेयर से अधिक क्षेत्र में फैला हुआ है।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> यहाँ 7 अलग-अलग टीले (RGR-1 से RGR-7) हैं और यहाँ से प्राप्त कंकालों का डीएनए परीक्षण भी किया गया है।</div>"
+        },
+        {
+            q: "दक्ष खेड़ा, एक पुरातात्विक स्थल हरियाणा के किस जिले में स्थित है?",
+            opt: ["हिसार", "रोहतक", "करनाल", "फरीदाबाद"],
+            ans: 1,
+            exp: "सही उत्तर: <b>रोहतक</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> दक्ष खेड़ा (जिसे फरमाना खास भी कहा जाता है) रोहतक जिले में स्थित एक महत्वपूर्ण हड़प्पाकालीन स्थल है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> राखीगढ़ी के बाद यह हरियाणा का दूसरा सबसे बड़ा हड़प्पा स्थल है।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> यहाँ से 65 से अधिक कब्रें (सबसे बड़ा कब्रिस्तान) मिली हैं।</div>"
+        },
+        {
+            q: "प्रसिद्ध हड़प्पा स्थल बनावली वर्तमान में किस राज्य में स्थित है?",
+            opt: ["राजस्थान", "गुजरात", "हिमाचल प्रदेश", "हरियाणा"],
+            ans: 3,
+            exp: "सही उत्तर: <b>हरियाणा</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> बनावली हरियाणा के फतेहाबाद जिले में स्थित है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> इसकी खोज 1973-74 में आर.एस. बिष्ट ने की थी।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> यहाँ से मिट्टी का बना हुआ हल (खिलौना हल) और जौ की अच्छी किस्म के साक्ष्य मिले हैं।</div>"
+        },
+        {
+            q: "थेह पोलर का प्राचीन स्थल हरियाणा में कहाँ स्थित है?",
+            opt: ["कैथल", "फरीदाबाद", "करनाल", "पानीपत"],
+            ans: 0,
+            exp: "सही उत्तर: <b>कैथल</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> थेह पोलर कैथल जिले में स्थित एक ऐतिहासिक गाँव/पुरातात्विक स्थल है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> यह महाभारतकालीन स्थल माना जाता है और प्राचीन काल में यह एक महत्वपूर्ण व्यापारिक केंद्र रहा होगा।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> यह स्थल कैथल शहर के नजदीक ही स्थित है जहाँ से प्राचीन ईंटें और बर्तन मिले हैं।</div>"
+        },
+        {
+            q: "निम्नलिखित में से कौन-सा हड़प्पा घाटी स्थल हरियाणा में प्राचीनतम है?",
+            opt: ["फतेहाबाद", "कुणाल", "भिरडाणा", "राखीगढ़ी"],
+            ans: 2,
+            exp: "सही उत्तर: <b>भिरडाणा</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> रेडियोकार्बन डेटिंग के अनुसार भिरडाणा को भारतीय उपमहाद्वीप में खोजे गए सबसे पुराने हड़प्पा स्थलों में से एक माना गया है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> इसकी स्थापना लगभग 7500 ईसा पूर्व मानी जाती है।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> यहाँ से नृत्य करती हुई लड़की (हड़प्पाई शैली) का भित्तिचित्र एक बर्तन पर उकेरा हुआ मिला है।</div>"
+        },
+        {
+            q: "हरियाणा में नौरंगाबाद टीला किसके निकट स्थित है?",
+            opt: ["भिवानी", "हिसार", "गुरुग्राम", "कुरुक्षेत्र"],
+            ans: 0,
+            exp: "सही उत्तर: <b>भिवानी</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> नौरंगाबाद भिवानी जिले में स्थित है, जिसे प्राचीन काल में 'प्रकृतांक' कहा जाता था।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> यह यौधेय गणराज्य की राजधानी रहा है।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> यहाँ से यौधेयों के सिक्के, सिक्के ढालने के सांचे और कुषाण कालीन अवशेष प्राप्त हुए हैं।</div>"
+        },
+        {
+            q: "सिंधु घाटी सभ्यता का निम्नलिखित में से कौन-सा केंद्र हरियाणा में पाया गया था?",
+            opt: ["मिताथल", "भिरडाणा", "बनावली", "ये सभी"],
+            ans: 3,
+            exp: "सही उत्तर: <b>ये सभी</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> मिताथल, भिरडाणा और बनावली तीनों ही हरियाणा में स्थित महत्वपूर्ण सिंधु घाटी स्थल हैं।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> मिताथल भिवानी में स्थित है, जहाँ से समुद्रगुप्त के सिक्के भी मिले हैं।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> ये सभी स्थल प्राचीन काल में कृषि, व्यापार और नगर-नियोजन की दृष्टि से अत्यधिक उन्नत थे।</div>"
+        },
+        {
+            q: "निम्नलिखित में से कौन-सा युग्म सही सुमेलित है?",
+            opt: ["बनावली - जुता हुआ खेत (मिट्टी का हल)", "कुणाल - राज मुकुट", "राखीगढ़ी - सबसे बड़ा सिंधु घाटी स्थल", "ये सभी"],
+            ans: 3,
+            exp: "सही उत्तर: <b>ये सभी</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> कालीबंगा (राजस्थान) के साथ-साथ बनावली (हरियाणा) से भी कृषि (हल्के साक्ष्य) से जुड़े प्रमाण मिले हैं।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> कुणाल से दो चांदी के राजसी मुकुट मिले हैं।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> राखीगढ़ी आकार में भारत का सबसे बड़ा सिंधु घाटी सभ्यता स्थल है।</div>"
+        },
+        {
+            q: "महाराजा अग्रसेन हरियाणा के किस स्थान से संबंधित हैं?",
+            opt: ["पेहोवा", "रोहतक", "अग्रोहा", "सिरसा"],
+            ans: 2,
+            exp: "सही उत्तर: <b>अग्रोहा</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> महाराजा अग्रसेन की राजधानी अग्रोहा (हिसार) थी, जिसे प्राचीन काल में 'अग्रोदक' कहा जाता था।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> अग्रोहा से 9वीं शताब्दी की एक ईंट मिली है जिस पर संगीत के सात सुर 'सारेगामापाधानिसा' अंकित हैं।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> यह अग्रवाल वैश्य समाज का उद्गम स्थल और प्रमुख तीर्थ है।</div>"
+        },
+        {
+            q: "सैंधव स्थल भगवानपुर हरियाणा के किस जिले में है?",
+            opt: ["अम्बाला", "कुरुक्षेत्र", "पंचकूला", "हिसार"],
+            ans: 1,
+            exp: "सही उत्तर: <b>कुरुक्षेत्र</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> भगवानपुर पुरातात्विक स्थल कुरुक्षेत्र जिले में सरस्वती नदी के दक्षिणी किनारे पर स्थित है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> यहाँ से उत्तर-हड़प्पा और चित्रित धूसर मृदभांड (PGW - आर्य संस्कृति) दोनों के साक्ष्य एक साथ (Overlapping) मिले हैं।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> इसका उत्खनन जे.पी. जोशी ने करवाया था।</div>"
+        },
+        {
+            q: "'द्रोण पर्व' में हरियाणा के किस गणराज्य का उल्लेख मिलता है?",
+            opt: ["कुणिंद गणराज्य", "यौधेय गणराज्य", "अग्र गणराज्य", "अर्जुनयान गणराज्य"],
+            ans: 1,
+            exp: "सही उत्तर: <b>यौधेय गणराज्य</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> महाभारत के द्रोण पर्व में यौधेय गणराज्य के शूरवीरों का स्पष्ट वर्णन मिलता है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> यौधेय महाभारत कालीन योद्धा थे जिन्हें 'बहुधान्यक' क्षेत्र (अत्यधिक समृद्ध भूमि) का स्वामी माना जाता था।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> इनका मुख्य शासन रोहतक और उसके आस-पास के क्षेत्रों में था।</div>"
+        },
+        {
+            q: "324 से 232 ई.पू. तक हरियाणा किस साम्राज्य के अधीन रहा?",
+            opt: ["गुप्त", "मौर्य", "कुषाण", "वर्धन"],
+            ans: 1,
+            exp: "सही उत्तर: <b>मौर्य</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> 324 ईसा पूर्व से 232 ईसा पूर्व तक का काल मौर्य साम्राज्य का है (चंद्रगुप्त मौर्य से लेकर महान अशोक तक)।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> इस दौरान अशोक ने हरियाणा में कई स्तूप बनवाए थे।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> टोपड़ा (यमुनानगर) और सुध से प्राप्त मौर्यकालीन अवशेष इस बात की पुष्टि करते हैं।</div>"
+        },
+        {
+            q: "अर्जुनयान गणराज्य ने किसके साथ मिलकर कुषाणों को पराजित किया था?",
+            opt: ["मालव", "यौधेय", "अग्र", "कुणिंद"],
+            ans: 1,
+            exp: "सही उत्तर: <b>यौधेय</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> अर्जुनयान गणराज्य ने यौधेयों और कुणिंदों के साथ मिलकर विदेशी आक्रमणकारी कुषाणों को हराया था।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> अर्जुनयान का विस्तार मुख्य रूप से महेंद्रगढ़ और राजस्थान के सीमावर्ती क्षेत्रों में था।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> यौधेय इस गठबंधन में सबसे शक्तिशाली गणराज्य था जिसने कुषाणों के प्रसार को रोका।</div>"
+        },
+        {
+            q: "यौधेयों का प्रतीक (राजचिह्न) क्या था?",
+            opt: ["बैल", "मयूर", "सिंह", "हाथी"],
+            ans: 1,
+            exp: "सही उत्तर: <b>मयूर (मोर)</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> यौधेयों के सिक्कों और मुहरों पर प्रमुखता से मयूर का अंकन मिलता है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> मयूर भगवान कार्तिकेय (स्कंद) का वाहन है, और यौधेय स्वयं को कार्तिकेय का वंशज या उपासक मानते थे।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> इनके सिक्कों पर कार्तिकेय की आकृति भी छपी होती थी।</div>"
+        },
+        {
+            q: "ऐतिहासिक साक्ष्य के अनुसार यौधेयों की राजधानी थी?",
+            opt: ["अग्रोहा", "नौरंगाबाद (प्रकृतांक)", "सिरसा", "खोखराकोट"],
+            ans: 1,
+            exp: "सही उत्तर: <b>नौरंगाबाद (प्रकृतांक)</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> यौधेय गणराज्य की मुख्य राजधानी प्रकृतांक (वर्तमान नौरंगाबाद, जिला भिवानी) और रोहतक (रोहीतक) थी।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> नौरंगाबाद से इनके बड़ी मात्रा में सिक्के और सांचे मिले हैं, जो टकसाल होने का प्रमाण हैं।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> रोहतक भी इनका एक प्रमुख प्रशासनिक केंद्र था।</div>"
+        },
+        {
+            q: "पाणिनी ने अपने ग्रंथ अष्टाध्यायी में यौधेयों के लिए किस शब्द का प्रयोग किया है?",
+            opt: ["राजपुत्र", "आयुधजीवी", "शूरवीर", "अजेय"],
+            ans: 1,
+            exp: "सही उत्तर: <b>आयुधजीवी</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> महान वैयाकरण पाणिनी ने 'अष्टाध्यायी' में यौधेयों को 'आयुधजीवी संघ' (शस्त्रों से आजीविका चलाने वाले) कहा है।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> यह इनकी युद्ध कला में निपुणता और सैन्य जीवन शैली को दर्शाता है।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> अष्टाध्यायी संस्कृत व्याकरण का सबसे प्राचीन ग्रंथ है, जिसमें हरियाणा के कई नगरों का उल्लेख है।</div>"
+        },
+        {
+            q: "यौधेयगणों का पूजनीय देवता कौन था?",
+            opt: ["शिव", "विष्णु", "कार्तिकेय", "गणेश"],
+            ans: 2,
+            exp: "सही उत्तर: <b>कार्तिकेय</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> यौधेय युद्धप्रिय लोग थे, इसलिए वे देवताओं के सेनापति कार्तिकेय (स्कंद) की मुख्य रूप से पूजा करते थे।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> इनके द्वारा जारी सिक्कों पर एक ओर कार्तिकेय और दूसरी ओर उनकी पत्नी देवसेना या मयूर का चित्र मिलता है।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> कार्तिकेय को षण्मुख (छह मुख वाले) भी कहा जाता है।</div>"
+        },
+        {
+            q: "निम्न में से किस शासक वर्ग पर विजय के उपरांत यौधेयों ने सिक्के चलाए थे?",
+            opt: ["कुषाणों", "शकों", "हूणों", "गुप्तों"],
+            ans: 0,
+            exp: "सही उत्तर: <b>कुषाणों</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> कुषाणों को पराजित करने की खुशी में और अपनी स्वतंत्रता घोषित करने के लिए यौधेयों ने नए सिक्के जारी किए थे।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> इन सिक्कों पर ब्राह्मी लिपि में 'यौधेय गणस्य जय:' (यौधेय गण की विजय हो) लिखा होता था।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> यौधेयों ने लगभग दूसरी-तीसरी सदी में कुषाण साम्राज्य के पतन में महत्वपूर्ण भूमिका निभाई।</div>"
+        },
+        {
+            q: "यौधेयों ने अपने प्रशासन को सुचारु रूप से चलाने के लिए राज्य को कितने खंडों में बांटा था?",
+            opt: ["दो", "तीन", "चार", "पाँच"],
+            ans: 0,
+            exp: "सही उत्तर: <b>दो</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> यौधेयों ने अपने राज्य को दो प्रमुख खंडों (प्रशासनिक इकाइयों) में बांटा था, जिसके केंद्र रोहतक और सिरसा क्षेत्र माने जाते हैं।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> सिक्कों पर 'द्वि' (दो) शब्द का उल्लेख मिलता है, जो इन दो प्रशासनिक इकाइयों को दर्शाता है।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> बाद के काल में शायद इसे तीन भागों में भी बांटा गया हो (त्रि), लेकिन प्रारंभिक रूप से यह दो भागों में था।</div>"
+        },
+        {
+            q: "कुषाण शासक कनिष्क के सिक्के हरियाणा में कहाँ से प्राप्त हुए हैं?",
+            opt: ["रोहतक", "भिवानी", "मिताथल", "ये सभी"],
+            ans: 3,
+            exp: "सही उत्तर: <b>ये सभी</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> कुषाण कालीन सिक्के मिताथल, नौरंगाबाद, और खोखराकोट (रोहतक) आदि कई स्थानों से प्राप्त हुए हैं।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> कनिष्क कुषाण वंश का सबसे प्रतापी राजा था।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> ये सिक्के कुषाणों के हरियाणा क्षेत्र पर राजनीतिक और व्यापारिक प्रभाव की पुष्टि करते हैं।</div>"
+        },
+        {
+            q: "इंडो-ग्रीक शासकों के सिक्के हरियाणा के किस स्थान से प्राप्त हुए हैं?",
+            opt: ["खोखराकोट", "नौरंगाबाद", "अग्रोहा", "सुध"],
+            ans: 0,
+            exp: "सही उत्तर: <b>खोखराकोट</b>।<div class='sol-fact'><b>💡 तथ्य 1:</b> रोहतक के खोखराकोट से इंडो-ग्रीक (हिंद-यवन) शासकों के सिक्के और सांचे भारी मात्रा में प्राप्त हुए हैं।</div><div class='sol-fact'><b>💡 तथ्य 2:</b> खोखराकोट प्राचीन काल में एक बड़ी टकसाल (सिक्के ढालने का कारखाना) था।</div><div class='sol-fact'><b>💡 तथ्य 3:</b> इंडो-ग्रीक शासकों ने ही भारत में सबसे पहले लेखयुक्त और सोने के सिक्के जारी किए थे।</div>"
+        }
+    ];
+
+    // State Variables
+    let questions = []; // Shuffled array
+    let currentIdx = 0;
+    const totalQ = originalQuestions.length;
+    let answers = [];
+    let marked = [];
+    
+    // Timer is set to 25 minutes
+    let totalTime = 25 * 60; 
+    let timerInterval;
+    let isPaused = false;
+    let isTestSubmitted = false;
+
+    // Initialization with Auto-Save and Shuffle
+    function init() {
+        const savedSession = localStorage.getItem('hssc_mock_p5');
+        
+        if (savedSession) {
+            try {
+                const data = JSON.parse(savedSession);
+                if (data.submitted) {
+                    // Start fresh if last was submitted
+                    setupNewTest();
+                } else {
+                    // Restore Session
+                    questions = data.order.map(i => originalQuestions[i]);
+                    answers = data.answers;
+                    marked = data.marked;
+                    totalTime = data.timeRemaining;
+                    currentIdx = data.currentIdx || 0;
+                }
+            } catch(e) {
+                setupNewTest();
+            }
+        } else {
+            setupNewTest();
+        }
+
+        createPalette();
+        loadQuestion(currentIdx);
+        updateStats();
+        startTimer();
+    }
+
+    function setupNewTest() {
+        let order = Array.from({length: totalQ}, (_, i) => i);
+        // Shuffle Questions
+        for (let i = order.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [order[i], order[j]] = [order[j], order[i]];
+        }
+        
+        questions = order.map(i => originalQuestions[i]);
+        answers = new Array(totalQ).fill(null);
+        marked = new Array(totalQ).fill(false);
+        totalTime = 25 * 60;
+        currentIdx = 0;
+        isTestSubmitted = false;
+        
+        saveState();
+    }
+
+    function saveState(submitted = false) {
+        if (isTestSubmitted && !submitted) return;
+        
+        const currentOrder = questions.map(q => originalQuestions.indexOf(q));
+        const data = {
+            order: currentOrder,
+            answers: answers,
+            marked: marked,
+            timeRemaining: totalTime,
+            currentIdx: currentIdx,
+            submitted: submitted
+        };
+        localStorage.setItem('hssc_mock_p5', JSON.stringify(data));
+        
+        // Blink indicator
+        const ind = document.getElementById('autosave-text');
+        ind.style.opacity = '1';
+        setTimeout(() => ind.style.opacity = '0.4', 1500);
+    }
+
+    function restartTest() {
+        localStorage.removeItem('hssc_mock_p5');
+        location.reload();
+    }
+
+    // Theme Logic
+    function toggleTheme() {
+        const doc = document.documentElement;
+        const current = doc.getAttribute('data-theme');
+        doc.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+    }
+
+    // Timer Logic
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if(totalTime <= 0) {
+                clearInterval(timerInterval);
+                submitTest(true);
+                return;
+            }
+            totalTime--;
+            updateTimerDisplay();
+            // Auto save time every 5 seconds
+            if(totalTime % 5 === 0) saveState();
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(totalTime / 60).toString().padStart(2, '0');
+        const secs = (totalTime % 60).toString().padStart(2, '0');
+        const timerEl = document.getElementById('timer');
+        timerEl.innerText = `${mins}:${secs}`;
+        
+        if (totalTime < 300) { 
+            timerEl.classList.add('danger');
+        } else {
+            timerEl.classList.remove('danger');
+        }
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        const overlay = document.getElementById('pause-overlay');
+        const btn = document.getElementById('pause-btn');
+        
+        if (isPaused) {
+            clearInterval(timerInterval);
+            overlay.style.display = 'flex';
+            btn.innerText = 'Resume';
+            btn.classList.add('btn-warning');
+        } else {
+            startTimer();
+            overlay.style.display = 'none';
+            btn.innerText = 'Pause';
+            btn.classList.remove('btn-warning');
+        }
+    }
+
+    // Quiz Navigation & Rendering
+    function loadQuestion(idx) {
+        currentIdx = idx;
+        const qData = questions[idx];
+        
+        document.getElementById('question-header').innerText = `प्रश्नोत्तरी ${idx + 1} / ${totalQ}`;
+        document.getElementById('question-text').innerHTML = qData.q;
+        
+        const optsContainer = document.getElementById('options-container');
+        optsContainer.innerHTML = '';
+        
+        qData.opt.forEach((optText, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn' + (answers[idx] === i ? ' selected' : '');
+            btn.innerHTML = `<span style="font-weight:bold; border:1px solid currentColor; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${String.fromCharCode(65+i)}</span> ${optText}`;
+            btn.onclick = () => selectOption(i);
+            optsContainer.appendChild(btn);
+        });
+
+        document.getElementById('progress-bar').style.width = `${((idx + 1) / totalQ) * 100}%`;
+
+        document.getElementById('prev-btn').disabled = (idx === 0);
+        document.getElementById('prev-btn').style.opacity = (idx === 0) ? '0.5' : '1';
+        
+        const markBtn = document.getElementById('mark-btn');
+        markBtn.innerText = marked[idx] ? 'Unmark Review' : 'Mark for Review';
+        
+        const nextBtn = document.getElementById('next-btn');
+        if (idx === totalQ - 1) {
+            nextBtn.innerText = 'Submit Test';
+            nextBtn.className = 'btn-danger';
+        } else {
+            nextBtn.innerText = 'Next';
+            nextBtn.className = 'btn-primary';
+        }
+
+        updatePaletteVisuals();
+        saveState();
+    }
+
+    function selectOption(optIdx) {
+        answers[currentIdx] = optIdx;
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function clearSelection() {
+        answers[currentIdx] = null;
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function toggleMark() {
+        marked[currentIdx] = !marked[currentIdx];
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function changeQuestion(step) {
+        if (step === 1 && currentIdx === totalQ - 1) {
+            submitTest(false);
+            return;
+        }
+        let newIdx = currentIdx + step;
+        if (newIdx >= 0 && newIdx < totalQ) {
+            loadQuestion(newIdx);
+        }
+    }
+
+    // Palette Logic
+    function createPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'q-grid-btn';
+            btn.id = `pal-btn-${i}`;
+            btn.innerText = i + 1;
+            btn.onclick = () => loadQuestion(i);
+            grid.appendChild(btn);
+        }
+    }
+
+    function updatePaletteVisuals() {
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.getElementById(`pal-btn-${i}`);
+            if(!btn) continue;
+            
+            btn.className = 'q-grid-btn';
+            
+            if (answers[i] !== null && marked[i]) btn.classList.add('marked', 'attempted');
+            else if (marked[i]) btn.classList.add('marked');
+            else if (answers[i] !== null) btn.classList.add('attempted');
+            
+            if (i === currentIdx) btn.classList.add('current');
+        }
+    }
+
+    function updateStats() {
+        let att = 0, mark = 0;
+        for (let i = 0; i < totalQ; i++) {
+            if (answers[i] !== null) att++;
+            if (marked[i]) mark++;
+        }
+        document.getElementById('count-att').innerText = att;
+        document.getElementById('count-unatt').innerText = totalQ - att;
+        document.getElementById('count-mark').innerText = mark;
+        updatePaletteVisuals();
+    }
+
+    // Submission & Results
+    function submitTest(isAuto) {
+        const unatt = answers.filter(a => a === null).length;
+        if (!isAuto && unatt > 0) {
+            const confirmSubmit = confirm(`आपके पास ${unatt} अनुत्तरित प्रश्न हैं। क्या आप निश्चित रूप से सबमिट करना चाहते हैं?`);
+            if (!confirmSubmit) return;
+        }
+
+        isTestSubmitted = true;
+        saveState(true); // Mark session as submitted so next load is fresh
+        
+        clearInterval(timerInterval);
+        document.getElementById('app-container').style.display = 'none';
+        document.querySelector('.header-controls').style.display = 'none';
+        generateResults();
+    }
+
+    function generateResults() {
+        const resScreen = document.getElementById('result-screen');
+        resScreen.style.display = 'block';
+
+        let correct = 0;
+        let incorrect = 0;
+        
+        answers.forEach((ans, i) => {
+            if (ans !== null) {
+                if (ans === questions[i].ans) correct++;
+                else incorrect++;
+            }
+        });
+
+        const score = correct;
+        const perc = ((score / totalQ) * 100).toFixed(2);
+        
+        const timeTakenSec = (25 * 60) - totalTime;
+        const timeMins = Math.floor(timeTakenSec / 60).toString().padStart(2, '0');
+        const timeSecs = (timeTakenSec % 60).toString().padStart(2, '0');
+
+        document.getElementById('res-score').innerText = score;
+        document.getElementById('res-perc').innerText = perc + '%';
+        document.getElementById('res-corr').innerText = correct;
+        document.getElementById('res-incorr').innerText = incorrect;
+        document.getElementById('res-time').innerText = `${timeMins}:${timeSecs}`;
+
+        const badge = document.getElementById('result-badge');
+        if (perc >= 50) {
+            badge.className = 'badge pass';
+            badge.innerText = 'उत्तीर्ण (PASS)';
+        } else {
+            badge.className = 'badge fail';
+            badge.innerText = 'अनुत्तीर्ण (FAIL)';
+        }
+
+        generateSolutions();
+    }
+
+    function generateSolutions() {
+        const container = document.getElementById('solutions-container');
+        let html = '';
+
+        questions.forEach((q, i) => {
+            const userAns = answers[i];
+            const corrAns = q.ans;
+            
+            html += `<div class="solution-item">
+                        <div class="sol-q">Q${i+1}. ${q.q}</div>`;
+            
+            q.opt.forEach((optText, optIdx) => {
+                let cls = 'sol-opt';
+                let icon = '';
+                
+                if (optIdx === corrAns) {
+                    cls += ' correct';
+                    icon = '✓';
+                } else if (userAns === optIdx && userAns !== corrAns) {
+                    cls += ' incorrect';
+                    icon = '✗';
+                }
+
+                if(icon) {
+                    html += `<div class="${cls}"><strong>${String.fromCharCode(65+optIdx)}</strong>: ${optText} <span style="float:right; font-weight:bold;">${icon}</span></div>`;
+                } else {
+                    html += `<div class="${cls}"><strong>${String.fromCharCode(65+optIdx)}</strong>: ${optText}</div>`;
+                }
+            });
+
+            const userStatus = userAns === null ? "<span style='color:var(--text-muted)'>Unattempted</span>" : 
+                              (userAns === corrAns ? "<span style='color:var(--correct-color)'>Correct</span>" : 
+                              "<span style='color:var(--incorrect-color)'>Incorrect</span>");
+
+            html += `<div style="margin-top: 10px;"><strong>Status:</strong> ${userStatus}</div>`;
+            html += `<div class="sol-exp"><div class="sol-exp-title">व्याख्या व तथ्य (Explanation & Facts):</div>${q.exp}</div>`;
+            html += `</div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
