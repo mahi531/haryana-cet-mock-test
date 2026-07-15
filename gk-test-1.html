@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General Knowledge Mock Test</title>
+    <style>
+        :root {
+            /* Light Mode Variables */
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: #2c3e50;
+            --text-muted: #576574;
+            --primary-color: #341f97;
+            --accent-color: #ff9f43;
+            --correct-color: #10ac84;
+            --incorrect-color: #ee5253;
+            --btn-hover: rgba(255, 255, 255, 0.6);
+            --palette-unattempted: #c8d6e5;
+            --palette-attempted: #10ac84;
+            --palette-marked: #9b59b6;
+            --palette-marked-attempted: #8e44ad;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Mode Variables */
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-bg: rgba(16, 20, 24, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f1f2f6;
+            --text-muted: #a4b0be;
+            --primary-color: #54a0ff;
+            --accent-color: #ff9f43;
+            --correct-color: #1dd1a1;
+            --incorrect-color: #ff6b6b;
+            --btn-hover: rgba(255, 255, 255, 0.1);
+            --palette-unattempted: #576574;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            margin: 15px;
+        }
+        .header-title h1 { font-size: 1.5rem; }
+        .header-title p { font-size: 0.9rem; color: var(--text-muted); font-weight: 600;}
+        .header-controls { display: flex; gap: 15px; align-items: center; }
+        
+        .timer-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0,0,0,0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+        .timer { font-size: 1.2rem; font-weight: bold; }
+        .timer.danger { color: var(--incorrect-color); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        button {
+            cursor: pointer;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+            background: var(--glass-bg);
+            color: var(--text-color);
+            border: 1px solid var(--glass-border);
+        }
+        button:hover { background: var(--btn-hover); }
+        .btn-primary { background: var(--primary-color); color: #fff; border: none; }
+        .btn-primary:hover { background: #2c1a80; }
+        .btn-danger { background: var(--incorrect-color); color: white; border: none; }
+        .btn-warning { background: var(--accent-color); color: white; border: none; }
+        .btn-submit { background: var(--correct-color); color: white; border: none; }
+        .btn-submit:hover { background: #0b8c6b; }
+
+        /* Main Layout */
+        .container {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            margin: 0 15px 15px 15px;
+        }
+        .main-area { flex: 3; display: flex; flex-direction: column; position: relative; }
+        .sidebar { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        /* Progress & Question Area */
+        .progress-bar-bg { background: rgba(0,0,0,0.1); height: 8px; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar-fill { background: var(--primary-color); height: 100%; width: 0%; transition: width 0.3s; }
+        
+        .question-text { font-size: 1.25rem; font-weight: 500; margin-bottom: 20px; line-height: 1.6; }
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            text-align: left;
+            padding: 15px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .option-btn.selected {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+        
+        .action-buttons { display: flex; justify-content: space-between; margin-top: auto; padding-top: 20px; }
+        .action-buttons > div { display: flex; gap: 10px; }
+
+        /* Pause Overlay */
+        .pause-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 10;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+        }
+        .pause-overlay h2 { font-size: 2rem; margin-bottom: 10px; }
+
+        /* Sidebar Stats & Grid */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-item { font-size: 0.85rem; display: flex; align-items: center; gap: 8px; font-weight: bold;}
+        .stat-dot { width: 14px; height: 14px; border-radius: 50%; }
+        
+        .q-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .q-grid-btn {
+            padding: 10px 0; text-align: center; border-radius: 8px; font-weight: bold;
+            background: var(--palette-unattempted); color: #2c3e50; border: none; font-size: 14px;
+        }
+        .q-grid-btn.current { border: 3px solid #2c3e50; transform: scale(1.05);}
+        [data-theme="dark"] .q-grid-btn.current { border: 3px solid #fff; color: #fff; }
+        .q-grid-btn.attempted { background: var(--palette-attempted); color: #fff; }
+        .q-grid-btn.marked { background: var(--palette-marked); color: #fff; }
+        .q-grid-btn.marked.attempted { background: var(--palette-marked-attempted); color: #fff; }
+
+        /* Results Screen */
+        .result-screen { display: none; max-width: 1000px; margin: 0 auto; width: 100%; }
+        .result-header { text-align: center; margin-bottom: 30px; }
+        .badge { display: inline-block; padding: 10px 30px; border-radius: 30px; font-size: 1.5rem; font-weight: bold; color: #fff; margin-top: 10px; }
+        .badge.pass { background: var(--correct-color); }
+        .badge.fail { background: var(--incorrect-color); }
+        
+        .result-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-box { text-align: center; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .stat-box h3 { font-size: 2rem; margin-bottom: 5px; }
+
+        .solution-item { margin-bottom: 25px; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .sol-q { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; color: var(--primary-color); }
+        .sol-opt { margin-bottom: 8px; padding: 10px; border-radius: 8px; background: var(--glass-bg); }
+        .sol-opt.correct { background: var(--correct-color); color: #fff; border:none;}
+        .sol-opt.incorrect { background: var(--incorrect-color); color: #fff; border:none;}
+        .sol-exp { margin-top: 15px; font-size: 0.95rem; color: var(--text-color); border-left: 4px solid var(--primary-color); padding-left: 15px; line-height: 1.6; }
+        .sol-exp-title { color: var(--primary-color); font-weight: bold; margin-bottom: 5px; }
+        .sol-fact { margin-top: 10px; background: rgba(0,0,0,0.05); padding: 10px 15px; border-radius: 6px; font-size: 0.9rem;}
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            header { flex-direction: column; gap: 15px; text-align: center; }
+            .action-buttons { flex-direction: column; gap: 15px; }
+            .action-buttons > div { justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="glass-panel">
+        <div class="header-title">
+            <h1>General Knowledge Mock Test</h1>
+            <p>25 GK Questions with Detailed Solutions & Facts</p>
+        </div>
+        <div class="header-controls">
+            <div class="timer-container" id="timer-box">
+                <b>⏱</b>
+                <b class="timer" id="timer">25:00</b>
+                <button id="pause-btn" onclick="togglePause()">Pause</button>
+            </div>
+            <button onclick="toggleTheme()">🌗 Theme</button>
+            <button class="btn-submit" onclick="submitTest(false)">Submit Test</button>
+        </div>
+    </header>
+
+    <div class="container" id="app-container">
+        
+        <div class="glass-panel main-area">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+            
+            <div id="question-header" style="margin-bottom: 15px; font-weight: 600; color: var(--primary-color);"></div>
+            <div id="question-text" class="question-text"></div>
+            
+            <div class="options-grid" id="options-container"></div>
+
+            <div class="action-buttons">
+                <div>
+                    <button onclick="changeQuestion(-1)" id="prev-btn">Previous</button>
+                    <button onclick="clearSelection()">Clear</button>
+                </div>
+                <div>
+                    <button onclick="toggleMark()" id="mark-btn" class="btn-warning">Mark for Review</button>
+                    <button onclick="changeQuestion(1)" id="next-btn" class="btn-primary">Next</button>
+                </div>
+            </div>
+
+            <div class="pause-overlay" id="pause-overlay">
+                <h2>Test Paused ⏸️</h2>
+                <p>Questions are hidden to prevent cheating.</p>
+                <br>
+                <button class="btn-primary" onclick="togglePause()">Resume Test</button>
+            </div>
+        </div>
+
+        <div class="glass-panel sidebar">
+            <h3 style="text-align: center; margin-bottom: 15px;">Question Palette</h3>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-attempted)"></div> Attempted (<b id="count-att">0</b>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-unattempted)"></div> Unattempted (<b id="count-unatt">25</b>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-marked)"></div> Marked (<b id="count-mark">0</b>)</div>
+            </div>
+            <div class="q-grid" id="q-grid"></div>
+            <button class="btn-submit" onclick="submitTest(false)" style="margin-top: 20px; width: 100%; padding: 12px; font-size: 1.1rem;">Final Submit Test</button>
+        </div>
+    </div>
+
+    <div class="glass-panel result-screen" id="result-screen">
+        <div class="result-header">
+            <h2>Test Submitted Successfully! 🎉</h2>
+            <div class="badge" id="result-badge">Pass</div>
+        </div>
+        <div class="result-stats">
+            <div class="stat-box"><h3 id="res-score">0</h3><p>Score / 25</p></div>
+            <div class="stat-box"><h3 id="res-perc">0%</h3><p>Percentage</p></div>
+            <div class="stat-box"><h3 id="res-corr" style="color: var(--correct-color);">0</h3><p>Correct</p></div>
+            <div class="stat-box"><h3 id="res-incorr" style="color: var(--incorrect-color);">0</h3><p>Incorrect</p></div>
+            <div class="stat-box"><h3 id="res-time">00:00</h3><p>Time Taken</p></div>
+        </div>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <button class="btn-primary" onclick="location.reload()" style="padding: 15px 40px; font-size: 1.1rem;">Restart Test</button>
+        </div>
+        <h3 style="color: var(--primary-color); font-size: 1.5rem;">Detailed Solutions & Rules 📝</h3>
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--glass-border);">
+        <div id="solutions-container"></div>
+    </div>
+
+<script>
+    const questions = [
+        {
+            q: "भारतीय संविधान में 'गणतंत्र' की अवधारणा किस देश के संविधान से ली गई है?",
+            opt: ["जर्मनी", "जापान", "फ्रांस", "ऑस्ट्रेलिया"],
+            ans: 2,
+            exp: `सही उत्तर: <b>फ्रांस</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - फ्रांस के संविधान से 'स्वतंत्रता, समानता और बंधुत्व' (Liberty, Equality and Fraternity) का आदर्श भी लिया गया है।<br> - जर्मनी (वाइमर संविधान) से आपातकाल के दौरान मौलिक अधिकारों का निलंबन लिया गया है।<br> - ऑस्ट्रेलिया के संविधान से समवर्ती सूची (Concurrent List) और संसद् के दोनों सदनों की संयुक्त बैठक का प्रावधान लिया गया है।</div>`
+        },
+        {
+            q: "आज़ादी से पहले के भारत में, गरीबी रेखा की अवधारणा पर चर्चा करने वाले पहले व्यक्ति कौन थे?",
+            opt: ["दादाभाई नौरोजी", "महादेव गोविंद रानाडे", "बी.आर. अम्बेडकर", "एम. के गांधी"],
+            ans: 0,
+            exp: `सही उत्तर: <b>दादाभाई नौरोजी</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - दादाभाई नौरोजी को 'ग्रैंड ओल्ड मैन ऑफ इंडिया' (Grand Old Man of India) कहा जाता है।<br> - उन्होंने 'पॉवर्टी एंड अन-ब्रिटिश रूल इन इंडिया' (Poverty and Un-British Rule in India) नामक प्रसिद्ध पुस्तक लिखी।<br> - वे 'धन के निष्कासन' (Drain of Wealth) का सिद्धांत प्रस्तुत करने वाले पहले व्यक्ति थे।</div>`
+        },
+        {
+            q: "भारत के राष्ट्रपति द्वारा 'राज्य सभा' में कितने सदस्यों को नामित किया जा सकता है?",
+            opt: ["12", "15", "9", "6"],
+            ans: 0,
+            exp: `सही उत्तर: <b>12</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - राष्ट्रपति द्वारा नामित ये 12 सदस्य साहित्य, विज्ञान, कला और समाज सेवा के क्षेत्र में विशेष ज्ञान या व्यावहारिक अनुभव रखने वाले होते हैं।<br> - यह प्रावधान भारतीय संविधान के अनुच्छेद 80 के अंतर्गत आता है।<br> - राज्य सभा में अधिकतम सदस्यों की संख्या 250 निर्धारित की गई है।</div>`
+        },
+        {
+            q: "निम्नलिखित लोक नृत्यों में से कौन-सा राजस्थान से संबंधित है?",
+            opt: ["रऊफ", "लावणी", "कालबेलिया", "बिहु"],
+            ans: 2,
+            exp: `सही उत्तर: <b>कालबेलिया</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - कालबेलिया नृत्य राजस्थान की सपेरा जनजाति द्वारा मुख्य रूप से महिलाओं द्वारा किया जाता है।<br> - इसे 2010 में यूनेस्को (UNESCO) की अमूर्त सांस्कृतिक विरासत (Intangible Cultural Heritage) सूची में शामिल किया गया था।<br> - विकल्पों में दिए गए अन्य नृत्य: रऊफ (जम्मू-कश्मीर), लावणी (महाराष्ट्र) और बिहु (असम) से संबंधित हैं।</div>`
+        },
+        {
+            q: "निम्नलिखित में से कौन-सा त्योहार केरल में मनाया जाता है?",
+            opt: ["बैसाखी", "विशु", "अंबुबाची", "बोनालु"],
+            ans: 1,
+            exp: `सही उत्तर: <b>विशु</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - 'विशु' केरल का एक पारंपरिक त्योहार है जो मलयालम नव वर्ष के रूप में मनाया जाता है (प्रायः अप्रैल के महीने में)।<br> - ओणम भी केरल का एक अत्यंत प्रसिद्ध फसल त्योहार है।<br> - अन्य विकल्प: अंबुबाची मेला (असम के कामाख्या मंदिर में), बोनालु (तेलंगाना) और बैसाखी (पंजाब/उत्तर भारत) में मनाए जाते हैं।</div>`
+        },
+        {
+            q: "अलकनंदा और धौलीगंगा नदी के संगम का स्थान कौन सा है?",
+            opt: ["नंदप्रयाग", "विष्णुप्रयाग", "कर्णप्रयाग", "रुद्रप्रयाग"],
+            ans: 1,
+            exp: `सही उत्तर: <b>विष्णुप्रयाग</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - उत्तराखंड में प्रसिद्ध 'पंच प्रयाग' स्थित हैं जहाँ विभिन्न नदियाँ अलकनंदा से मिलती हैं।<br> - विष्णुप्रयाग: अलकनंदा और धौलीगंगा का संगम।<br> - नंदप्रयाग: अलकनंदा और नंदाकिनी; कर्णप्रयाग: अलकनंदा और पिंडर; रुद्रप्रयाग: अलकनंदा और मंदाकिनी; देवप्रयाग: अलकनंदा और भागीरथी (यहीं से गंगा नाम पड़ता है)।</div>`
+        },
+        {
+            q: "अखिल भारतीय मुस्लिम लीग की स्थापना किस वर्ष हुई थी?",
+            opt: ["1885", "1906", "1920", "1911"],
+            ans: 1,
+            exp: `सही उत्तर: <b>1906</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - मुस्लिम लीग की स्थापना 30 दिसंबर 1906 को ढाका (वर्तमान बांग्लादेश) में हुई थी।<br> - इसके प्रमुख संस्थापकों में आगा खान, नवाब सलीमुल्लाह और वकार-उल-मुल्क शामिल थे।<br> - इसका प्रारंभिक उद्देश्य भारतीय मुसलमानों के राजनीतिक अधिकारों की रक्षा करना और ब्रिटिश सरकार के प्रति निष्ठा बढ़ाना था।</div>`
+        },
+        {
+            q: "निम्नलिखित में से कौन-सा आधुनिक भारतीय भाषाओं के वर्गीकरण में एक परिवार नहीं है?",
+            opt: ["चीन-तिब्बती", "भारतीय-यूरोपीय", "भारतीय-अफ्रीकी", "द्रविड़"],
+            ans: 2,
+            exp: `सही उत्तर: <b>भारतीय-अफ्रीकी</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - भारत में मुख्य रूप से चार भाषा परिवार पाए जाते हैं: इंडो-आर्यन/भारतीय-यूरोपीय (लगभग 78%), द्रविड़ियन (लगभग 20%), ऑस्ट्रो-एशियाटिक और चीन-तिब्बती।<br> - 'भारतीय-अफ्रीकी' नाम का कोई प्रामाणिक भाषा परिवार भारतीय भाषाओं के वर्गीकरण में मौजूद नहीं है।</div>`
+        },
+        {
+            q: "भारत में पहली भूमिगत रेलवे कहाँ शुरू की गई थी?",
+            opt: ["कोलकाता", "मुंबई", "पुणे", "चेन्नई"],
+            ans: 0,
+            exp: `सही उत्तर: <b>कोलकाता</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - भारत की पहली भूमिगत रेलवे (Metro) की शुरुआत 24 अक्टूबर 1984 को कोलकाता में हुई थी।<br> - इसका पहला व्यावसायिक रन एस्प्लेनेड (Esplanade) और भवानीपुर (अब नेताजी भवन) के बीच था।<br> - दिल्ली मेट्रो की शुरुआत इसके काफी बाद 2002 में हुई थी।</div>`
+        },
+        {
+            q: "तंजावुर में बृहदेश्वर मंदिर का निर्माण किसने करवाया था?",
+            opt: ["राजेंद्र प्रथम", "विजयालय", "राजराज प्रथम", "आदित्य प्रथम"],
+            ans: 2,
+            exp: `सही उत्तर: <b>राजराज प्रथम</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - यह मंदिर तमिलनाडु के तंजावुर में स्थित है और भगवान शिव को समर्पित है।<br> - इसका निर्माण महान चोल सम्राट राजराज चोल प्रथम ने लगभग 1010 ईस्वी में पूरा करवाया था।<br> - यह मंदिर द्रविड़ वास्तुकला का एक उत्कृष्ट उदाहरण है और यूनेस्को (UNESCO) विश्व धरोहर स्थल का हिस्सा है।</div>`
+        },
+        {
+            q: "ईरान के शासक नादिरशाह ने दिल्ली शहर को कब लूटा था?",
+            opt: ["1739", "1761", "1771", "1748"],
+            ans: 0,
+            exp: `सही उत्तर: <b>1739</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - नादिरशाह ने 1739 में करनाल के युद्ध में मुग़ल सम्राट मुहम्मद शाह (रंगीला) की सेना को बुरी तरह हराया था।<br> - दिल्ली लूटने के बाद वह अपने साथ प्रसिद्ध 'तख्त-ए-ताऊस' (मयूर सिंहासन) और 'कोहिनूर' हीरा ईरान ले गया था।</div>`
+        },
+        {
+            q: "उस्ताद अमजद अली खान का संबंध किस वाद्य यंत्र से है?",
+            opt: ["सरोद", "सितार", "सारंगी", "वीणा"],
+            ans: 0,
+            exp: `सही उत्तर: <b>सरोद</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - उस्ताद अमजद अली खान भारत के एक विश्व प्रसिद्ध सरोद वादक हैं जो 'ग्वालियर घराने' से ताल्लुक रखते हैं।<br> - कला के क्षेत्र में उनके योगदान के लिए उन्हें 2001 में भारत के दूसरे सर्वोच्च नागरिक सम्मान, 'पद्म विभूषण' से सम्मानित किया गया था।<br> - पंडित रविशंकर 'सितार' के विश्व प्रसिद्ध वादक थे।</div>`
+        },
+        {
+            q: "सहायक संधि नामक प्रणाली को वर्ष 1798 में किसने तैयार किया था?",
+            opt: ["लॉर्ड वेलेज़्ली", "लॉर्ड बेंटिक", "लॉर्ड हेस्टिंग्स", "लॉर्ड डलहौज़ी"],
+            ans: 0,
+            exp: `सही उत्तर: <b>लॉर्ड वेलेज़्ली</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - लॉर्ड वेलेज़्ली ने भारत में ब्रिटिश साम्राज्य के विस्तार के लिए 'सहायक संधि' (Subsidiary Alliance) की शुरुआत की थी।<br> - इस संधि पर हस्ताक्षर करने वाला पहला भारतीय शासक हैदराबाद का निज़ाम (1798) था।<br> - डलहौज़ी ने साम्राज्य विस्तार के लिए 'व्यपगत का सिद्धांत' (Doctrine of Lapse) का उपयोग किया था।</div>`
+        },
+        {
+            q: "भारतीय संविधान के अनुसार, उच्च न्यायालय के न्यायाधीश की नियुक्ति के लिए ऊपरी आयु सीमा क्या है?",
+            opt: ["62 वर्ष", "55 वर्ष", "57 वर्ष", "60 वर्ष"],
+            ans: 0,
+            exp: `सही उत्तर: <b>62 वर्ष</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - भारतीय संविधान के अनुसार, राज्य के उच्च न्यायालय (High Court) के न्यायाधीशों की सेवानिवृत्ति की आयु 62 वर्ष निर्धारित की गई है।<br> - वहीं, भारत के सर्वोच्च न्यायालय (Supreme Court) के न्यायाधीशों की सेवानिवृत्ति की आयु 65 वर्ष है।<br> - उच्च न्यायालय के न्यायाधीशों की नियुक्ति राष्ट्रपति द्वारा की जाती है।</div>`
+        },
+        {
+            q: "'बिकमिंग' (Becoming) किसकी आत्मकथा है?",
+            opt: ["मिशेल ओबामा", "हिलेरी क्लिंटन", "ओपरा विन्फ्रे", "मैलानी ट्रम्प"],
+            ans: 0,
+            exp: `सही उत्तर: <b>मिशेल ओबामा</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - 'Becoming' (2018) अमेरिका की पूर्व प्रथम महिला (First Lady) मिशेल ओबामा का संस्मरण/आत्मकथा है।<br> - मिशेल ओबामा अमेरिका की पहली अफ्रीकी-अमेरिकी प्रथम महिला थीं।<br> - 'ए प्रॉमिस्ड लैंड' (A Promised Land) पूर्व अमेरिकी राष्ट्रपति बराक ओबामा द्वारा लिखी गई प्रसिद्ध पुस्तक है।</div>`
+        },
+        {
+            q: "निम्नलिखित में से कौन सा वाद्य यंत्र 'पंडित बिरजू महाराज' की शिष्या शोवना नारायण से संबंधित है? (नोट: यह प्रश्न प‌द्म श्री पुरस्कार विजेता के संदर्भ में है)",
+            opt: ["मृणालिनी साराभाई", "यामिनी कृष्णमूर्ति", "शोवना नारायण", "कलामंडलम कल्याणिकुट्टी अम्मा"],
+            ans: 2,
+            exp: `सही उत्तर: <b>शोवना नारायण</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - शोवना नारायण भारत की एक अत्यंत प्रसिद्ध और प्रतिष्ठित 'कथक' नृत्यांगना हैं (प्रश्न में टाइपो के कारण वाद्य यंत्र लिखा है, परंतु वे नृत्यांगना हैं)।<br> - वे कथक के लखनऊ घराने के दिग्गज पंडित बिरजू महाराज की प्रमुख शिष्या रही हैं।<br> - उन्हें 1992 में पद्म श्री और बाद में संगीत नाटक अकादमी पुरस्कार से सम्मानित किया गया था।</div>`
+        },
+        {
+            q: "कौन सा राज्य बांग्लादेश के साथ सीमा साझा नहीं करता है?",
+            opt: ["मेघालय", "बिहार", "पश्चिम बंगाल", "मिजोरम"],
+            ans: 1,
+            exp: `सही उत्तर: <b>बिहार</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - भारत के 5 राज्य बांग्लादेश के साथ अपनी सीमा साझा करते हैं: पश्चिम बंगाल, असम, मेघालय, त्रिपुरा और मिजोरम।<br> - भारत अपनी सबसे लंबी अंतरराष्ट्रीय भू-सीमा (लगभग 4,096 किलोमीटर) बांग्लादेश के साथ ही साझा करता है।<br> - बिहार की अंतरराष्ट्रीय सीमा नेपाल के साथ लगती है।</div>`
+        },
+        {
+            q: "संयुक्त राष्ट्र द्वारा प्रति व्यक्ति प्रति दिन न्यूनतम कितना पानी अनुशंसित किया गया है?",
+            opt: ["40 लीटर", "60 लीटर", "50 लीटर", "70 लीटर"],
+            ans: 2,
+            exp: `सही उत्तर: <b>50 लीटर</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - विश्व स्वास्थ्य संगठन (WHO) और यूनिसेफ (UNICEF) के अनुसार, बुनियादी स्वच्छता, पीने और स्वास्थ्य आवश्यकताओं को पूरा करने के लिए प्रति व्यक्ति 50 से 100 लीटर पानी प्रतिदिन आवश्यक है।<br> - जल संरक्षण के प्रति जागरूकता के लिए हर साल 22 मार्च को 'विश्व जल दिवस' (World Water Day) मनाया जाता है।</div>`
+        },
+        {
+            q: "निम्नलिखित में से किस वायसराय के कार्यकाल के दौरान 'वर्नाक्यूलर प्रेस एक्ट' (Vernacular Press Act) पारित किया गया था?",
+            opt: ["लॉर्ड लिटन", "लॉर्ड रिपन", "लॉर्ड मेयो", "लॉर्ड कैनिंग"],
+            ans: 0,
+            exp: `सही उत्तर: <b>लॉर्ड लिटन</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - यह एक्ट 1878 में पारित हुआ था, जिसका मुख्य उद्देश्य भारतीय (देशी) भाषाओं के समाचार पत्रों पर कड़ा प्रतिबंध लगाना था।<br> - इसे 'गैगिंग एक्ट' (मुँह बंद करने वाला कानून) भी कहा जाता था।<br> - बाद में 1882 में 'लॉर्ड रिपन' ने इस अलोकप्रिय कानून को निरस्त कर दिया था।</div>`
+        },
+        {
+            q: "भारतीय शास्त्रीय संगीत के संदर्भ में 'ख्याल' गायकी का प्रवर्तक किसे माना जाता है?",
+            opt: ["तानसेन", "अमीर खुसरो", "बैजू बावरा", "स्वामी हरिदास"],
+            ans: 1,
+            exp: `सही उत्तर: <b>अमीर खुसरो</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - अमीर खुसरो को भारतीय शास्त्रीय संगीत में 'ख्याल' और 'तराना' गायन शैली का जनक माना जाता है।<br> - उन्हें 'तोता-ए-हिंद' (Parrot of India) भी कहा जाता है और वे अलाउद्दीन खिलजी के दरबारी कवि थे।<br> - उन्होंने सितार और तबला जैसे वाद्य यंत्रों का भी आविष्कार किया था।</div>`
+        },
+        {
+            q: "'अष्टध्यायी' के रचयिता कौन थे, जो संस्कृत व्याकरण का एक प्रसिद्ध ग्रंथ है?",
+            opt: ["पतंजलि", "पाणिनी", "कालिदास", "चरक"],
+            ans: 1,
+            exp: `सही उत्तर: <b>पाणिनी</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - 'अष्टाध्यायी' महर्षि पाणिनी द्वारा रचित संस्कृत व्याकरण की सबसे प्राचीन और प्रामाणिक पुस्तक है जिसमें 8 अध्याय हैं।<br> - पतंजलि ने इसी ग्रंथ पर अपनी प्रसिद्ध टीका 'महाभाष्य' की रचना की थी।<br> - महर्षि चरक को प्राचीन भारतीय चिकित्सा विज्ञान (आयुर्वेद) के ग्रंथ 'चरक संहिता' के लिए जाना जाता है।</div>`
+        },
+        {
+            q: "'विजयनगर साम्राज्य' की स्थापना किस नदी के तट पर की गई थी?",
+            opt: ["तुंगभद्रा", "कावेरी", "कृष्णा", "गोदावरी"],
+            ans: 0,
+            exp: `सही उत्तर: <b>तुंगभद्रा</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - विजयनगर साम्राज्य की स्थापना 1336 ईस्वी में हरिहर और बुक्का नामक दो भाइयों ने तुंगभद्रा नदी के दक्षिणी तट पर की थी।<br> - इस साम्राज्य की राजधानी 'हम्पी' थी, जिसके खंडहर वर्तमान में कर्नाटक राज्य में स्थित हैं (यूनेस्को विश्व धरोहर)।<br> - कृष्णदेवराय इस साम्राज्य (तुलुव राजवंश) के सबसे प्रतापी और महान शासक थे।</div>`
+        },
+        {
+            q: "निम्नलिखित में से कौन सा मौलिक अधिकार केवल भारतीय नागरिकों को ही प्राप्त है, विदेशियों को नहीं?",
+            opt: ["अनुच्छेद 14 (कानून के समक्ष समानता)", "अनुच्छेद 21 (जीवन का अधिकार)", "अनुच्छेद 15 (भेदभाव का निषेध)", "अनुच्छेद 20 (दोषसिद्धि के संबंध में संरक्षण)"],
+            ans: 2,
+            exp: `सही उत्तर: <b>अनुच्छेद 15 (धर्म, मूलवंश, जाति, लिंग या जन्म स्थान के आधार पर भेदभाव का निषेध)</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - भारतीय संविधान में केवल नागरिकों को प्राप्त मौलिक अधिकार हैं: अनुच्छेद 15, 16, 19, 29 और 30।<br> - अनुच्छेद 14 (समानता) और अनुच्छेद 21 (जीवन और व्यक्तिगत स्वतंत्रता का अधिकार) नागरिकों और विदेशियों दोनों को समान रूप से प्राप्त हैं।</div>`
+        },
+        {
+            q: "जैन धर्म के 'प्रथम तीर्थंकर' कौन थे?",
+            opt: ["महावीर स्वामी", "पार्श्वनाथ", "ऋषभदेव", "अरिष्टनेमि"],
+            ans: 2,
+            exp: `सही उत्तर: <b>ऋषभदेव</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - जैन धर्म में कुल 24 तीर्थंकर हुए हैं। प्रथम तीर्थंकर ऋषभदेव (जिन्हें आदिनाथ भी कहा जाता है) थे।<br> - 23वें तीर्थंकर पार्श्वनाथ थे, जिनका जन्म वाराणसी में हुआ था।<br> - 24वें और अंतिम तीर्थंकर वर्धमान महावीर स्वामी थे, जिन्हें जैन धर्म का वास्तविक संस्थापक माना जाता है।</div>`
+        },
+        {
+            q: "1919 में जलियांवाला बाग हत्याकांड के विरोध में 'नाइटहुड' (Knighthood) की उपाधि किसने वापस कर दी थी?",
+            opt: ["महात्मा गांधी", "रवीन्द्रनाथ टैगोर", "सुभाष चंद्र बोस", "लाला लाजपत राय"],
+            ans: 1,
+            exp: `सही उत्तर: <b>रवीन्द्रनाथ टैगोर</b>।<div class="sol-fact"><b>💡 अतिरिक्त तथ्य:</b><br> - जलियांवाला बाग हत्याकांड 13 अप्रैल 1919 (बैसाखी के दिन) को पंजाब के अमृतसर में हुआ था।<br> - इस बर्बर घटना के विरोध में रवीन्द्रनाथ टैगोर ने ब्रिटिश सरकार द्वारा दी गई 'नाइटहुड' (सर) की उपाधि लौटा दी थी।<br> - महात्मा गांधी ने भी इसी घटना के विरोध में अपनी 'कैसर-ए-हिंद' की उपाधि वापस कर दी थी।</div>`
+        }
+    ];
+
+    // State Variables
+    let currentIdx = 0;
+    const totalQ = questions.length;
+    let answers = new Array(totalQ).fill(null);
+    let marked = new Array(totalQ).fill(false);
+    
+    // Timer is set to 25 minutes (25 * 60 seconds)
+    let totalTime = 25 * 60; 
+    let timerInterval;
+    let isPaused = false;
+
+    // Initialization
+    function init() {
+        createPalette();
+        loadQuestion(0);
+        updateStats();
+        startTimer();
+    }
+
+    // Theme Logic
+    function toggleTheme() {
+        const doc = document.documentElement;
+        const current = doc.getAttribute('data-theme');
+        doc.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+    }
+
+    // Timer Logic
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if(totalTime <= 0) {
+                clearInterval(timerInterval);
+                submitTest(true);
+                return;
+            }
+            totalTime--;
+            updateTimerDisplay();
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(totalTime / 60).toString().padStart(2, '0');
+        const secs = (totalTime % 60).toString().padStart(2, '0');
+        const timerEl = document.getElementById('timer');
+        timerEl.innerText = `${mins}:${secs}`;
+        
+        if (totalTime < 300) { // Under 5 minutes
+            timerEl.classList.add('danger');
+        } else {
+            timerEl.classList.remove('danger');
+        }
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        const overlay = document.getElementById('pause-overlay');
+        const btn = document.getElementById('pause-btn');
+        
+        if (isPaused) {
+            clearInterval(timerInterval);
+            overlay.style.display = 'flex';
+            btn.innerText = 'Resume';
+            btn.classList.add('btn-warning');
+        } else {
+            startTimer();
+            overlay.style.display = 'none';
+            btn.innerText = 'Pause';
+            btn.classList.remove('btn-warning');
+        }
+    }
+
+    // Quiz Navigation & Rendering
+    function loadQuestion(idx) {
+        currentIdx = idx;
+        const qData = questions[idx];
+        
+        document.getElementById('question-header').innerText = `Question ${idx + 1} of ${totalQ}`;
+        document.getElementById('question-text').innerHTML = qData.q;
+        
+        const optsContainer = document.getElementById('options-container');
+        optsContainer.innerHTML = '';
+        
+        qData.opt.forEach((optText, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn' + (answers[idx] === i ? ' selected' : '');
+            btn.innerHTML = `<div style="font-weight:bold; border:1px solid currentColor; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${String.fromCharCode(65+i)}</div> ${optText}`;
+            btn.onclick = () => selectOption(i);
+            optsContainer.appendChild(btn);
+        });
+
+        // Update progress bar
+        document.getElementById('progress-bar').style.width = `${((idx + 1) / totalQ) * 100}%`;
+
+        // Update buttons
+        document.getElementById('prev-btn').disabled = (idx === 0);
+        document.getElementById('prev-btn').style.opacity = (idx === 0) ? '0.5' : '1';
+        
+        const markBtn = document.getElementById('mark-btn');
+        markBtn.innerText = marked[idx] ? 'Unmark Review' : 'Mark for Review';
+        
+        const nextBtn = document.getElementById('next-btn');
+        if (idx === totalQ - 1) {
+            nextBtn.innerText = 'Submit Test';
+            nextBtn.className = 'btn-danger';
+        } else {
+            nextBtn.innerText = 'Next';
+            nextBtn.className = 'btn-primary';
+        }
+
+        updatePaletteVisuals();
+    }
+
+    function selectOption(optIdx) {
+        answers[currentIdx] = optIdx;
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function clearSelection() {
+        answers[currentIdx] = null;
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function toggleMark() {
+        marked[currentIdx] = !marked[currentIdx];
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function changeQuestion(step) {
+        if (step === 1 && currentIdx === totalQ - 1) {
+            submitTest(false);
+            return;
+        }
+        let newIdx = currentIdx + step;
+        if (newIdx >= 0 && newIdx < totalQ) {
+            loadQuestion(newIdx);
+        }
+    }
+
+    // Palette Logic
+    function createPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'q-grid-btn';
+            btn.id = `pal-btn-${i}`;
+            btn.innerText = i + 1;
+            btn.onclick = () => loadQuestion(i);
+            grid.appendChild(btn);
+        }
+    }
+
+    function updatePaletteVisuals() {
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.getElementById(`pal-btn-${i}`);
+            btn.className = 'q-grid-btn';
+            
+            if (answers[i] !== null && marked[i]) btn.classList.add('marked', 'attempted');
+            else if (marked[i]) btn.classList.add('marked');
+            else if (answers[i] !== null) btn.classList.add('attempted');
+            
+            if (i === currentIdx) btn.classList.add('current');
+        }
+    }
+
+    function updateStats() {
+        let att = 0, mark = 0;
+        for (let i = 0; i < totalQ; i++) {
+            if (answers[i] !== null) att++;
+            if (marked[i]) mark++;
+        }
+        document.getElementById('count-att').innerText = att;
+        document.getElementById('count-unatt').innerText = totalQ - att;
+        document.getElementById('count-mark').innerText = mark;
+        updatePaletteVisuals();
+    }
+
+    // Submission & Results
+    function submitTest(isAuto) {
+        const unatt = answers.filter(a => a === null).length;
+        if (!isAuto && unatt > 0) {
+            const confirmSubmit = confirm(`आपके ${unatt} प्रश्न छूट गए हैं। क्या आप निश्चित रूप से टेस्ट सबमिट करना चाहते हैं?`);
+            if (!confirmSubmit) return;
+        }
+
+        clearInterval(timerInterval);
+        document.getElementById('app-container').style.display = 'none';
+        document.querySelector('.header-controls').style.display = 'none';
+        generateResults();
+    }
+
+    function generateResults() {
+        const resScreen = document.getElementById('result-screen');
+        resScreen.style.display = 'block';
+
+        let correct = 0;
+        let incorrect = 0;
+        
+        answers.forEach((ans, i) => {
+            if (ans !== null) {
+                if (ans === questions[i].ans) correct++;
+                else incorrect++;
+            }
+        });
+
+        const score = correct;
+        const perc = ((score / totalQ) * 100).toFixed(2);
+        
+        // Calculation adjusted for 25 mins
+        const timeTakenSec = (25 * 60) - totalTime;
+        const timeMins = Math.floor(timeTakenSec / 60).toString().padStart(2, '0');
+        const timeSecs = (timeTakenSec % 60).toString().padStart(2, '0');
+
+        document.getElementById('res-score').innerText = score;
+        document.getElementById('res-perc').innerText = perc + '%';
+        document.getElementById('res-corr').innerText = correct;
+        document.getElementById('res-incorr').innerText = incorrect;
+        document.getElementById('res-time').innerText = `${timeMins}:${timeSecs}`;
+
+        const badge = document.getElementById('result-badge');
+        if (perc >= 50) {
+            badge.className = 'badge pass';
+            badge.innerText = 'PASS';
+        } else {
+            badge.className = 'badge fail';
+            badge.innerText = 'FAIL';
+        }
+
+        generateSolutions();
+    }
+
+    function generateSolutions() {
+        const container = document.getElementById('solutions-container');
+        let html = '';
+
+        questions.forEach((q, i) => {
+            const userAns = answers[i];
+            const corrAns = q.ans;
+            
+            html += `<div class="solution-item">
+                        <div class="sol-q">Q${i+1}. ${q.q}</div>`;
+            
+            q.opt.forEach((optText, optIdx) => {
+                let cls = 'sol-opt';
+                let icon = '';
+                
+                if (optIdx === corrAns) {
+                    cls += ' correct';
+                    icon = '✓';
+                } else if (userAns === optIdx && userAns !== corrAns) {
+                    cls += ' incorrect';
+                    icon = '✗';
+                }
+
+                if(icon) {
+                    html += `<div class="${cls}"><b>${String.fromCharCode(65+optIdx)}</b>: ${optText} <div style="float:right; font-weight:bold;">${icon}</div></div>`;
+                } else {
+                    html += `<div class="${cls}"><b>${String.fromCharCode(65+optIdx)}</b>: ${optText}</div>`;
+                }
+            });
+
+            const userStatus = userAns === null ? "<b style='color:var(--text-muted)'>Unattempted</b>" : 
+                              (userAns === corrAns ? "<b style='color:var(--correct-color)'>Correct</b>" : 
+                              "<b style='color:var(--incorrect-color)'>Incorrect</b>");
+
+            html += `<div style="margin-top: 10px;"><b>Status:</b> ${userStatus}</div>`;
+            html += `<div class="sol-exp"><div class="sol-exp-title">Explanation:</div>${q.exp}</div>`;
+            html += `</div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    // Start App
+    window.onload = init;
+</script>
+</body>
+</html>
