@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General Knowledge Mock Test</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: #2c3e50;
+            --text-muted: #576574;
+            --primary-color: #341f97;
+            --accent-color: #ff9f43;
+            --correct-color: #10ac84;
+            --incorrect-color: #ee5253;
+            --btn-hover: rgba(255, 255, 255, 0.6);
+            --palette-unattempted: #c8d6e5;
+            --palette-attempted: #10ac84;
+            --palette-marked: #9b59b6;
+            --palette-marked-attempted: #8e44ad;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-bg: rgba(16, 20, 24, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f1f2f6;
+            --text-muted: #a4b0be;
+            --primary-color: #54a0ff;
+            --accent-color: #ff9f43;
+            --correct-color: #1dd1a1;
+            --incorrect-color: #ff6b6b;
+            --btn-hover: rgba(255, 255, 255, 0.1);
+            --palette-unattempted: #576574;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            margin: 15px;
+        }
+        .header-title h1 { font-size: 1.5rem; }
+        .header-title p { font-size: 0.9rem; color: var(--text-muted); font-weight: 600;}
+        .header-controls { display: flex; gap: 15px; align-items: center; }
+        
+        .timer-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0,0,0,0.1);
+            padding: 8px 15px;
+            border-radius: 20px;
+        }
+        .timer { font-size: 1.2rem; font-weight: bold; }
+        .timer.danger { color: var(--incorrect-color); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        button {
+            cursor: pointer;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+            background: var(--glass-bg);
+            color: var(--text-color);
+            border: 1px solid var(--glass-border);
+        }
+        button:hover { background: var(--btn-hover); }
+        .btn-primary { background: var(--primary-color); color: #fff; border: none; }
+        .btn-primary:hover { background: #2c1a80; }
+        .btn-danger { background: var(--incorrect-color); color: white; border: none; }
+        .btn-warning { background: var(--accent-color); color: white; border: none; }
+        .btn-submit { background: var(--correct-color); color: white; border: none; }
+        .btn-submit:hover { background: #0b8c6b; }
+
+        .container {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            margin: 0 15px 15px 15px;
+        }
+        .main-area { flex: 3; display: flex; flex-direction: column; position: relative; }
+        .sidebar { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        .progress-bar-bg { background: rgba(0,0,0,0.1); height: 8px; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar-fill { background: var(--primary-color); height: 100%; width: 0%; transition: width 0.3s; }
+        
+        .question-text { font-size: 1.25rem; font-weight: 500; margin-bottom: 20px; line-height: 1.6; }
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            text-align: left;
+            padding: 15px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .option-btn.selected {
+            background: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+        
+        .action-buttons { display: flex; justify-content: space-between; margin-top: auto; padding-top: 20px; }
+        .action-buttons > div { display: flex; gap: 10px; }
+
+        .pause-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 10;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+        }
+        .pause-overlay h2 { font-size: 2rem; margin-bottom: 10px; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-item { font-size: 0.85rem; display: flex; align-items: center; gap: 8px; font-weight: bold;}
+        .stat-dot { width: 14px; height: 14px; border-radius: 50%; }
+        
+        .q-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .q-grid-btn {
+            padding: 10px 0; text-align: center; border-radius: 8px; font-weight: bold;
+            background: var(--palette-unattempted); color: #2c3e50; border: none; font-size: 14px;
+        }
+        .q-grid-btn.current { border: 3px solid #2c3e50; transform: scale(1.05);}
+        [data-theme="dark"] .q-grid-btn.current { border: 3px solid #fff; color: #fff; }
+        .q-grid-btn.attempted { background: var(--palette-attempted); color: #fff; }
+        .q-grid-btn.marked { background: var(--palette-marked); color: #fff; }
+        .q-grid-btn.marked.attempted { background: var(--palette-marked-attempted); color: #fff; }
+
+        .result-screen { display: none; max-width: 1000px; margin: 0 auto; width: 100%; }
+        .result-header { text-align: center; margin-bottom: 30px; }
+        .badge { display: inline-block; padding: 10px 30px; border-radius: 30px; font-size: 1.5rem; font-weight: bold; color: #fff; margin-top: 10px; }
+        .badge.pass { background: var(--correct-color); }
+        .badge.fail { background: var(--incorrect-color); }
+        
+        .result-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-box { text-align: center; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .stat-box h3 { font-size: 2rem; margin-bottom: 5px; }
+
+        .solution-item { margin-bottom: 25px; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .sol-q { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; color: var(--primary-color); }
+        .sol-opt { margin-bottom: 8px; padding: 10px; border-radius: 8px; background: var(--glass-bg); }
+        .sol-opt.correct { background: var(--correct-color); color: #fff; border:none;}
+        .sol-opt.incorrect { background: var(--incorrect-color); color: #fff; border:none;}
+        .sol-exp { margin-top: 15px; font-size: 0.95rem; color: var(--text-color); border-left: 4px solid var(--primary-color); padding-left: 15px; line-height: 1.6; }
+        .sol-exp-title { color: var(--primary-color); font-weight: bold; margin-bottom: 5px; }
+        .sol-fact { margin-top: 10px; background: rgba(0,0,0,0.05); padding: 10px 15px; border-radius: 6px; font-size: 0.9rem;}
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            header { flex-direction: column; gap: 15px; text-align: center; }
+            .action-buttons { flex-direction: column; gap: 15px; }
+            .action-buttons > div { justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="glass-panel">
+        <div class="header-title">
+            <h1>General Knowledge Mock Test</h1>
+            <p>25 GK Questions with Detailed Solutions & Facts</p>
+        </div>
+        <div class="header-controls">
+            <div class="timer-container" id="timer-box">
+                <b>⏱</b>
+                <b class="timer" id="timer">25:00</b>
+                <button id="pause-btn" onclick="togglePause()">Pause</button>
+            </div>
+            <button onclick="toggleTheme()">🌗 Theme</button>
+            <button class="btn-submit" onclick="submitTest(false)">Submit Test</button>
+        </div>
+    </header>
+
+    <div class="container" id="app-container">
+        
+        <div class="glass-panel main-area">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+            
+            <div id="question-header" style="margin-bottom: 15px; font-weight: 600; color: var(--primary-color);"></div>
+            <div id="question-text" class="question-text"></div>
+            
+            <div class="options-grid" id="options-container"></div>
+
+            <div class="action-buttons">
+                <div>
+                    <button onclick="changeQuestion(-1)" id="prev-btn">Previous</button>
+                    <button onclick="clearSelection()">Clear</button>
+                </div>
+                <div>
+                    <button onclick="toggleMark()" id="mark-btn" class="btn-warning">Mark for Review</button>
+                    <button onclick="changeQuestion(1)" id="next-btn" class="btn-primary">Next</button>
+                </div>
+            </div>
+
+            <div class="pause-overlay" id="pause-overlay">
+                <h2>Test Paused ⏸️</h2>
+                <p>Questions are hidden to prevent cheating.</p>
+                <br>
+                <button class="btn-primary" onclick="togglePause()">Resume Test</button>
+            </div>
+        </div>
+
+        <div class="glass-panel sidebar">
+            <h3 style="text-align: center; margin-bottom: 15px;">Question Palette</h3>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-attempted)"></div> Attempted (<b id="count-att">0</b>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-unattempted)"></div> Unattempted (<b id="count-unatt">25</b>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-marked)"></div> Marked (<b id="count-mark">0</b>)</div>
+            </div>
+            <div class="q-grid" id="q-grid"></div>
+            <button class="btn-submit" onclick="submitTest(false)" style="margin-top: 20px; width: 100%; padding: 12px; font-size: 1.1rem;">Final Submit Test</button>
+        </div>
+    </div>
+
+    <div class="glass-panel result-screen" id="result-screen">
+        <div class="result-header">
+            <h2>Test Submitted Successfully! 🎉</h2>
+            <div class="badge" id="result-badge">Pass</div>
+        </div>
+        <div class="result-stats">
+            <div class="stat-box"><h3 id="res-score">0</h3><p>Score / 25</p></div>
+            <div class="stat-box"><h3 id="res-perc">0%</h3><p>Percentage</p></div>
+            <div class="stat-box"><h3 id="res-corr" style="color: var(--correct-color);">0</h3><p>Correct</p></div>
+            <div class="stat-box"><h3 id="res-incorr" style="color: var(--incorrect-color);">0</h3><p>Incorrect</p></div>
+            <div class="stat-box"><h3 id="res-time">00:00</h3><p>Time Taken</p></div>
+        </div>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <button class="btn-primary" onclick="location.reload()" style="padding: 15px 40px; font-size: 1.1rem;">Restart Test</button>
+        </div>
+        <h3 style="color: var(--primary-color); font-size: 1.5rem;">Detailed Solutions & Rules 📝</h3>
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--glass-border);">
+        <div id="solutions-container"></div>
+    </div>
+
+<script>
+    const questions = [
+        {
+            "q": "बी.आर. अम्बेडकर स्वतंत्र भारत के पहले _____ मंत्री थे।",
+            "opt": ["वित्त", "श्रम", "रक्षा", "कानून"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>कानून</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - डॉ. बी.आर. अंबेडकर को भारतीय संविधान का जनक (Father of the Indian Constitution) माना जाता है।<br> - वे स्वतंत्र भारत के पहले कानून और न्याय मंत्री थे।<br> - उन्होंने 1956 में बौद्ध धर्म अपना लिया था।<br> - 1990 में उन्हें मरणोपरांत भारत के सर्वोच्च नागरिक सम्मान 'भारत रत्न' से सम्मानित किया गया था।</div>"
+        },
+        {
+            "q": "खिचड़ी, उत्तरायण और लोहड़ी ______ त्योहार के विभिन्न नाम हैं।",
+            "opt": ["मकर संक्रांति", "होली", "दशहरा", "गणेश चतुर्थी"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>मकर संक्रांति</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - मकर संक्रांति एक हिंदू त्योहार है जो सूर्य के मकर राशि में प्रवेश का प्रतीक है।<br> - इसे भारत के विभिन्न हिस्सों में अलग-अलग नामों से जाना जाता है: गुजरात में उत्तरायण, पंजाब में लोहड़ी, असम में माघ बिहू, और तमिलनाडु में पोंगल।<br> - यह त्योहार सर्दियों के अंत और नए फसल के मौसम की शुरुआत का जश्न मनाता है।</div>"
+        },
+        {
+            "q": "टिड्डा के कान उसके _____ पर स्थित होते हैं।",
+            "opt": ["एंटीना", "पेट", "पंखों", "पैरों"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>पेट</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - टिड्डों (Grasshoppers) के कान उनके पेट (abdomen) के पहले खंड के दोनों ओर स्थित होते हैं।<br> - इस श्रवण अंग को टाम्पैनम (tympanum) कहा जाता है।<br> - यह अंग उन्हें ध्वनि तरंगों का पता लगाने और अपने साथियों के साथ संवाद करने में मदद करता है।</div>"
+        },
+        {
+            "q": "_____ को 'भारत के स्कॉटलैंड' के रूप में भी जाना जाता है।",
+            "opt": ["कूर्ग", "गंगटोक", "शिमला", "दार्जिलिंग"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>कूर्ग</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - कूर्ग (Coorg), जिसे कोडागु (Kodagu) भी कहा जाता है, कर्नाटक राज्य का एक सुंदर हिल स्टेशन है।<br> - अपनी हरी-भरी पहाड़ियों, कॉफी बागानों और धुंध भरे परिदृश्य के कारण इसे 'भारत का स्कॉटलैंड' कहा जाता है।<br> - यह कावेरी नदी का उद्गम स्थल (तलकावेरी) भी है।</div>"
+        },
+        {
+            "q": "भारत के पहले 'चंद्र-जांच' (Lunar Probe) को कहा गया था:",
+            "opt": ["सूर्य-1", "चंद्रगुप्त 1", "चंद्रयान-1", "भास्कर-1"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>चंद्रयान-1</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - चंद्रयान-1 भारत का पहला चंद्र मिशन था, जिसे 22 अक्टूबर 2008 को ISRO द्वारा लॉन्च किया गया था।<br> - इस मिशन ने चंद्रमा पर पानी के अणुओं (water molecules) की खोज में महत्वपूर्ण भूमिका निभाई थी।<br> - इसे PSLV-C11 रॉकेट का उपयोग करके लॉन्च किया गया था।</div>"
+        },
+        {
+            "q": "'द ब्लू अम्ब्रेला’ (The Blue Umbrella) पुस्तक किसने लिखी है?",
+            "opt": ["झुम्पा लाहिरी", "रस्किन बॉन्ड", "अरविंद अडिगा", "आर.के. नारायण"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>रस्किन बॉन्ड</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - 'द ब्लू अम्ब्रेला' (1980) रस्किन बॉन्ड द्वारा लिखित एक लोकप्रिय बाल उपन्यास है।<br> - रस्किन बॉन्ड एक ब्रिटिश मूल के भारतीय लेखक हैं, जो बच्चों के साहित्य में अपने योगदान के लिए जाने जाते हैं।<br> - उनकी अन्य प्रसिद्ध कृतियों में 'द रूम ऑन द रूफ' और 'अवर ट्रीज़ स्टिल ग्रो इन देहरा' शामिल हैं।</div>"
+        },
+        {
+            "q": "_____ पद्म विभूषण पुरस्कार प्राप्त करने वाले पहले खिलाड़ी थे।",
+            "opt": ["पंकज आडवाणी", "विश्वनाथन आनंद", "सचिन तेंदुलकर", "मिशेल फरेरा"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>विश्वनाथन आनंद</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - विश्वनाथन आनंद एक भारतीय शतरंज ग्रैंडमास्टर और पूर्व विश्व शतरंज चैंपियन हैं।<br> - उन्हें 2007 में भारत के दूसरे सर्वोच्च नागरिक सम्मान 'पद्म विभूषण' से सम्मानित किया गया था।<br> - वे 'राजीव गांधी खेल रत्न' (अब मेजर ध्यानचंद खेल रत्न) पुरस्कार के पहले प्राप्तकर्ता भी हैं।</div>"
+        },
+        {
+            "q": "'मंगलौर की संधि' पर ब्रिटिश ईस्ट इंडिया कंपनी और _____ के बीच हस्ताक्षर किए गए थे।",
+            "opt": ["बाजी राव द्वितीय", "हैदराबाद के निज़ाम", "टीपू सुल्तान", "अरकोट के नवाब"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>टीपू सुल्तान</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - मंगलौर की संधि (Treaty of Mangalore) 11 मार्च 1784 को हस्ताक्षरित की गई थी।<br> - इसने द्वितीय आंग्ल-मैसूर युद्ध (Second Anglo-Mysore War) का अंत किया।<br> - टीपू सुल्तान को 'मैसूर का बाघ' (Tiger of Mysore) भी कहा जाता था।</div>"
+        },
+        {
+            "q": "भारतीय प्रतिभूति और विनिमय बोर्ड (SEBI) की स्थापना वर्ष _____ में हुई थी।",
+            "opt": ["1974", "2006", "1948", "1992"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>1992</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - SEBI (Securities and Exchange Board of India) भारत में प्रतिभूति बाजार (Securities Market) का नियामक (regulator) है।<br> - यद्यपि इसे 1988 में एक गैर-सांविधिक निकाय के रूप में स्थापित किया गया था, लेकिन इसे SEBI अधिनियम, 1992 के तहत 12 अप्रैल 1992 को वैधानिक (statutory) दर्जा दिया गया।<br> - इसका मुख्यालय मुंबई में स्थित है।</div>"
+        },
+        {
+            "q": "_____ शासकों ने खजुराहो में अपनी धार्मिक राजधानी स्थापित की थी।",
+            "opt": ["गुप्त", "चंदेल", "मौर्य", "चोल"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>चंदेल</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - खजुराहो के मंदिर अपनी जटिल और कामुक (erotic) मूर्तियों के लिए प्रसिद्ध हैं।<br> - इनका निर्माण 950 ईस्वी और 1050 ईस्वी के बीच चंदेल राजवंश के शासकों द्वारा किया गया था।<br> - खजुराहो मध्य प्रदेश के छतरपुर जिले में स्थित है और यह एक यूनेस्को (UNESCO) विश्व धरोहर स्थल है।</div>"
+        },
+        {
+            "q": "किस भारतीय ने परिधान डिजाइन (Costume Design) के लिए वर्ष 1982 में एकेडमी पुरस्कार (Oscar) जीता था?",
+            "opt": ["भानु अथिया", "रितु बेरी", "नीता लुला", "रितु कुमार"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>भानु अथिया</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - भानु अथिया ने रिचर्ड एटनबरो की फिल्म 'गांधी' (1982) के लिए सर्वश्रेष्ठ परिधान डिजाइन (Best Costume Design) का ऑस्कर जीता था।<br> - वे एकेडमी पुरस्कार जीतने वाली पहली भारतीय हैं।<br> - उन्होंने 100 से अधिक बॉलीवुड फिल्मों के लिए परिधान डिजाइन किए हैं।</div>"
+        },
+        {
+            "q": "मानव शरीर में उस एंजाइम का नाम बताएं जो कार्बोहाइड्रेट को तोड़ने में मदद करता है।",
+            "opt": ["लाइपेज (Lipase)", "प्रोटीज (Protease)", "ऐमीलेज (Amylase)", "पेप्टीडेज (Peptidase)"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>ऐमीलेज (Amylase)</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - ऐमीलेज एक एंजाइम है जो स्टार्च (carbohydrates) को शर्करा (sugars) में तोड़ता है।<br> - यह लार (saliva) और अग्न्याशय (pancreas) दोनों में पाया जाता है।<br> - लाइपेज (Lipase) वसा (fats) को तोड़ने में मदद करता है, और प्रोटीज (Protease) प्रोटीन को तोड़ता है।</div>"
+        },
+        {
+            "q": "_____ ने आगरा को अपने साम्राज्य की राजधानी बनाया था।",
+            "opt": ["हुमायूँ", "जहांगीर", "शाहजहाँ", "सिकंदर लोदी"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>सिकंदर लोदी</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - सिकंदर लोदी ने 1504 ईस्वी में आगरा शहर की स्थापना की थी।<br> - 1506 ईस्वी में, उसने दिल्ली सल्तनत की राजधानी को दिल्ली से आगरा स्थानांतरित कर दिया।<br> - मुगलों ने बाद में आगरा पर नियंत्रण कर लिया और यह मुगल साम्राज्य की एक महत्वपूर्ण राजधानी बनी रही (विशेषकर अकबर, जहांगीर और शाहजहां के शासनकाल में)।</div>"
+        },
+        {
+            "q": "किसे 'बिहार का शोक (Sorrow of Bihar)' कहा जाता है?",
+            "opt": ["चंबल", "नर्मदा", "महानदी", "कोसी"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>कोसी</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - कोसी नदी को 'बिहार का शोक' कहा जाता है क्योंकि इसमें बार-बार भयंकर बाढ़ आती है, जिससे भारी तबाही और तबाही होती है।<br> - यह नदी अक्सर अपना मार्ग बदलने के लिए जानी जाती है।<br> - 'दामोदर' नदी को कभी 'बंगाल का शोक' (Sorrow of Bengal) कहा जाता था।</div>"
+        },
+        {
+            "q": "सम्राट अकबर के दरबार में टोडर मल _____ थे।",
+            "opt": ["संस्कृति मंत्री", "शिक्षा मंत्री", "स्टाफ प्रमुख", "वित्त मंत्री"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>वित्त मंत्री</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - राजा टोडर मल मुगल सम्राट अकबर के दरबार के 'नवरत्नों' (Nine Jewels) में से एक थे।<br> - वे अकबर के वित्त मंत्री (Diwan-i-Ashraf) थे।<br> - उन्होंने 'ज़ब्ती' (Zabti) प्रणाली नामक एक नई राजस्व प्रणाली (revenue system) और भूमि माप की एक मानकीकृत प्रणाली शुरू की थी।</div>"
+        },
+        {
+            "q": "बैंकिंग के संदर्भ में, ADF का पूर्ण रूप _______ है।",
+            "opt": ["All Day Finance", "Automated Digital Flow", "Automated Data Flow", "Actual Data Flow"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>Automated Data Flow</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - ADF (Automated Data Flow) भारतीय रिज़र्व बैंक (RBI) द्वारा शुरू की गई एक पहल है।<br> - इसका उद्देश्य यह सुनिश्चित करना है कि बैंक RBI को सटीक और समय पर डेटा इलेक्ट्रॉनिक रूप से प्रस्तुत करें, जिसमें कोई मैन्युअल हस्तक्षेप न हो।</div>"
+        },
+        {
+            "q": "निम्नलिखित में से किन भारतीय शहरों को उनकी स्थिति के कारण 'ज़ीरो माइल सिटी' के रूप में जाना जाता है?",
+            "opt": ["नागपुर", "हैदराबाद", "अहमदाबाद", "दिल्ली"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>नागपुर</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - नागपुर (महाराष्ट्र) को अक्सर 'ज़ीरो माइल सिटी' कहा जाता है क्योंकि माना जाता है कि यह भारत का भौगोलिक केंद्र (geographical center) है।<br> - अंग्रेजों ने यहाँ एक 'ज़ीरो माइल स्टोन' (Zero Mile Stone) स्थापित किया था, जिसका उपयोग दूरी मापने के लिए एक संदर्भ बिंदु के रूप में किया जाता था।<br> - नागपुर को भारत की 'ऑरेंज सिटी' (Orange City) भी कहा जाता है।</div>"
+        },
+        {
+            "q": "चूना पत्थर एक तलछटी चट्टान है, जो मुख्यत: _____ से बना होता है।",
+            "opt": ["सोडियम बायकार्बोनेट", "सोडियम क्लोराइड", "नाइट्रोजन ऑक्साइड", "कैल्शियम कार्बोनेट"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>कैल्शियम कार्बोनेट</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - चूना पत्थर (Limestone) एक प्रकार की तलछटी चट्टान (sedimentary rock) है जो मुख्य रूप से कैल्शियम कार्बोनेट (CaCO3) से बनी होती है, जो अक्सर खनिज कैल्साइट और अर्गोनाइट के रूप में होती है।<br> - यह सीमेंट (cement) बनाने में उपयोग किया जाने वाला एक प्रमुख कच्चा माल है।<br> - यह अक्सर समुद्री जीवों, जैसे कोरल और शेल (shells) के कंकाल के टुकड़ों से बनता है।</div>"
+        },
+        {
+            "q": "एक बैटरी _____ ऊर्जा को विद्युत ऊर्जा में परिवर्तित करती है।",
+            "opt": ["ताप", "रासायनिक", "यांत्रिक", "प्रकाश"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>रासायनिक</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - एक बैटरी एक ऐसा उपकरण है जो रासायनिक ऊर्जा (Chemical energy) को संग्रहीत करता है और इसे विद्युत ऊर्जा (Electrical energy) में परिवर्तित करता है।<br> - यह बैटरी के अंदर होने वाली रेडॉक्स (Redox) प्रतिक्रियाओं के माध्यम से होता है।<br> - डायनमो या जनरेटर यांत्रिक ऊर्जा (Mechanical energy) को विद्युत ऊर्जा में परिवर्तित करता है।</div>"
+        },
+        {
+            "q": "जब हार निश्चित हो जाती थी, तो _____ पुरुषों को 'शाका' (या 'शक') नामक एक अनुष्ठान करना होता था, जो कि उनकी अंतिम लड़ाई थी जिससे वे वापस नहीं आ सके।",
+            "opt": ["राजपूत", "सिख", "मुगल", "मराठा"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>राजपूत</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - 'शाका' (Saka) और 'जौहर' (Jauhar) राजपूतों से जुड़े ऐतिहासिक अनुष्ठान थे।<br> - जब युद्ध में हार निश्चित प्रतीत होती थी, तो राजपूत महिलाएं जौहर (आत्मदाह) करती थीं, और पुरुष शाका (केसरिया वस्त्र पहनकर अंतिम युद्ध) करते थे, जो मृत्यु तक लड़ा जाता था।<br> - चित्तौड़गढ़ (Chittorgarh) में ऐतिहासिक रूप से कई जौहर और शाका हुए हैं।</div>"
+        },
+        {
+            "q": "_____ आधिकारिक तौर पर गोवा का राजकीय खेल है।",
+            "opt": ["हॉकी", "क्रिकेट", "फुटबाल", "कबड्डी"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>फुटबाल</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - फुटबॉल (Football) गोवा का राजकीय खेल (State sport) है।<br> - गोवा में फुटबॉल बहुत लोकप्रिय है और राज्य में एक मजबूत फुटबॉल संस्कृति है।<br> - 'गोवा फुटबॉल एसोसिएशन' (GFA) राज्य में इस खेल को नियंत्रित करता है।</div>"
+        },
+        {
+            "q": "भारत का राष्ट्रीय गीत 'वंदे मातरम' किस प्रसिद्ध उपन्यास से लिया गया है?",
+            "opt": ["गोदान", "आनंदमठ", "गीतांजलि", "देवदास"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>आनंदमठ</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - 'वंदे मातरम' बंकिम चंद्र चट्टोपाध्याय द्वारा लिखित संस्कृत और बंगाली मिश्रित एक कविता है।<br> - इसे उनके प्रसिद्ध उपन्यास 'आनंदमठ' (1882) में शामिल किया गया था, जो संन्यासी विद्रोह (Sannyasi Rebellion) पर आधारित है।<br> - इसे पहली बार 1896 में भारतीय राष्ट्रीय कांग्रेस के कलकत्ता अधिवेशन में गाया गया था।</div>"
+        },
+        {
+            "q": "सौर मंडल का सबसे चमकीला ग्रह कौन सा है?",
+            "opt": ["मंगल", "बुध", "शुक्र", "बृहस्पति"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>शुक्र</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - शुक्र (Venus) रात के आसमान में चंद्रमा के बाद दूसरा सबसे चमकीला प्राकृतिक पिंड है।<br> - यह अपने अत्यधिक परावर्तक बादलों के कारण इतना चमकीला दिखाई देता है।<br> - इसे अक्सर पृथ्वी की 'जुड़वां बहन' (Twin Sister) और 'भोर का तारा' (Morning Star) या 'शाम का तारा' (Evening Star) कहा जाता है।</div>"
+        },
+        {
+            "q": "भारतीय संविधान का कौन सा अनुच्छेद 'अस्पृश्यता के उन्मूलन' (Abolition of Untouchability) से संबंधित है?",
+            "opt": ["अनुच्छेद 14", "अनुच्छेद 15", "अनुच्छेद 16", "अनुच्छेद 17"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>अनुच्छेद 17</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - भारतीय संविधान का अनुच्छेद 17 (Article 17) 'अस्पृश्यता' (Untouchability) को समाप्त करता है और किसी भी रूप में इसके अभ्यास को रोकता है।<br> - यह समानता के अधिकार (Right to Equality - अनुच्छेद 14 से 18) के अंतर्गत एक महत्वपूर्ण मौलिक अधिकार है।<br> - नागरिक अधिकार संरक्षण अधिनियम, 1955 (Civil Rights Protection Act) इसके कार्यान्वयन के लिए दंड का प्रावधान करता है।</div>"
+        },
+        {
+            "q": "'विजयनगर साम्राज्य' की स्थापना किसने की थी?",
+            "opt": ["हरिहर और बुक्का", "कृष्णदेव राय", "पुष्यमित्र शुंग", "राजराजा चोल"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>हरिहर और बुक्का</b>।<div class='sol-fact'><b>💡 अतिरिक्त तथ्य:</b><br> - विजयनगर साम्राज्य की स्थापना 1336 ईस्वी में हरिहर प्रथम और उनके भाई बुक्का राय प्रथम ने की थी।<br> - वे संगम राजवंश (Sangama Dynasty) से संबंधित थे, जो विजयनगर साम्राज्य पर शासन करने वाला पहला राजवंश था।<br> - इस साम्राज्य की राजधानी 'हम्पी' (Hampi) थी, जो वर्तमान कर्नाटक में स्थित है।</div>"
+        }
+    ];
+
+    let currentIdx = 0;
+    const totalQ = questions.length;
+    let answers = new Array(totalQ).fill(null);
+    let marked = new Array(totalQ).fill(false);
+    
+    let totalTime = 25 * 60; 
+    let timerInterval;
+    let isPaused = false;
+
+    function init() {
+        createPalette();
+        loadQuestion(0);
+        updateStats();
+        startTimer();
+    }
+
+    function toggleTheme() {
+        const doc = document.documentElement;
+        const current = doc.getAttribute('data-theme');
+        doc.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+    }
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if(totalTime <= 0) {
+                clearInterval(timerInterval);
+                submitTest(true);
+                return;
+            }
+            totalTime--;
+            updateTimerDisplay();
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(totalTime / 60).toString().padStart(2, '0');
+        const secs = (totalTime % 60).toString().padStart(2, '0');
+        const timerEl = document.getElementById('timer');
+        timerEl.innerText = `${mins}:${secs}`;
+        
+        if (totalTime < 300) { 
+            timerEl.classList.add('danger');
+        } else {
+            timerEl.classList.remove('danger');
+        }
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        const overlay = document.getElementById('pause-overlay');
+        const btn = document.getElementById('pause-btn');
+        
+        if (isPaused) {
+            clearInterval(timerInterval);
+            overlay.style.display = 'flex';
+            btn.innerText = 'Resume';
+            btn.classList.add('btn-warning');
+        } else {
+            startTimer();
+            overlay.style.display = 'none';
+            btn.innerText = 'Pause';
+            btn.classList.remove('btn-warning');
+        }
+    }
+
+    function loadQuestion(idx) {
+        currentIdx = idx;
+        const qData = questions[idx];
+        
+        document.getElementById('question-header').innerText = `Question ${idx + 1} of ${totalQ}`;
+        document.getElementById('question-text').innerHTML = qData.q;
+        
+        const optsContainer = document.getElementById('options-container');
+        optsContainer.innerHTML = '';
+        
+        qData.opt.forEach((optText, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn' + (answers[idx] === i ? ' selected' : '');
+            btn.innerHTML = `<div style="font-weight:bold; border:1px solid currentColor; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${String.fromCharCode(65+i)}</div> ${optText}`;
+            btn.onclick = () => selectOption(i);
+            optsContainer.appendChild(btn);
+        });
+
+        document.getElementById('progress-bar').style.width = `${((idx + 1) / totalQ) * 100}%`;
+
+        document.getElementById('prev-btn').disabled = (idx === 0);
+        document.getElementById('prev-btn').style.opacity = (idx === 0) ? '0.5' : '1';
+        
+        const markBtn = document.getElementById('mark-btn');
+        markBtn.innerText = marked[idx] ? 'Unmark Review' : 'Mark for Review';
+        
+        const nextBtn = document.getElementById('next-btn');
+        if (idx === totalQ - 1) {
+            nextBtn.innerText = 'Submit Test';
+            nextBtn.className = 'btn-danger';
+        } else {
+            nextBtn.innerText = 'Next';
+            nextBtn.className = 'btn-primary';
+        }
+
+        updatePaletteVisuals();
+    }
+
+    function selectOption(optIdx) {
+        answers[currentIdx] = optIdx;
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function clearSelection() {
+        answers[currentIdx] = null;
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function toggleMark() {
+        marked[currentIdx] = !marked[currentIdx];
+        loadQuestion(currentIdx);
+        updateStats();
+    }
+
+    function changeQuestion(step) {
+        if (step === 1 && currentIdx === totalQ - 1) {
+            submitTest(false);
+            return;
+        }
+        let newIdx = currentIdx + step;
+        if (newIdx >= 0 && newIdx < totalQ) {
+            loadQuestion(newIdx);
+        }
+    }
+
+    function createPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'q-grid-btn';
+            btn.id = `pal-btn-${i}`;
+            btn.innerText = i + 1;
+            btn.onclick = () => loadQuestion(i);
+            grid.appendChild(btn);
+        }
+    }
+
+    function updatePaletteVisuals() {
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.getElementById(`pal-btn-${i}`);
+            btn.className = 'q-grid-btn';
+            
+            if (answers[i] !== null && marked[i]) btn.classList.add('marked', 'attempted');
+            else if (marked[i]) btn.classList.add('marked');
+            else if (answers[i] !== null) btn.classList.add('attempted');
+            
+            if (i === currentIdx) btn.classList.add('current');
+        }
+    }
+
+    function updateStats() {
+        let att = 0, mark = 0;
+        for (let i = 0; i < totalQ; i++) {
+            if (answers[i] !== null) att++;
+            if (marked[i]) mark++;
+        }
+        document.getElementById('count-att').innerText = att;
+        document.getElementById('count-unatt').innerText = totalQ - att;
+        document.getElementById('count-mark').innerText = mark;
+        updatePaletteVisuals();
+    }
+
+    function submitTest(isAuto) {
+        const unatt = answers.filter(a => a === null).length;
+        if (!isAuto && unatt > 0) {
+            const confirmSubmit = confirm(`आपके ${unatt} प्रश्न छूट गए हैं। क्या आप निश्चित रूप से टेस्ट सबमिट करना चाहते हैं?`);
+            if (!confirmSubmit) return;
+        }
+
+        clearInterval(timerInterval);
+        document.getElementById('app-container').style.display = 'none';
+        document.querySelector('.header-controls').style.display = 'none';
+        generateResults();
+    }
+
+    function generateResults() {
+        const resScreen = document.getElementById('result-screen');
+        resScreen.style.display = 'block';
+
+        let correct = 0;
+        let incorrect = 0;
+        
+        answers.forEach((ans, i) => {
+            if (ans !== null) {
+                if (ans === questions[i].ans) correct++;
+                else incorrect++;
+            }
+        });
+
+        const score = correct;
+        const perc = ((score / totalQ) * 100).toFixed(2);
+        
+        const timeTakenSec = (25 * 60) - totalTime;
+        const timeMins = Math.floor(timeTakenSec / 60).toString().padStart(2, '0');
+        const timeSecs = (timeTakenSec % 60).toString().padStart(2, '0');
+
+        document.getElementById('res-score').innerText = score;
+        document.getElementById('res-perc').innerText = perc + '%';
+        document.getElementById('res-corr').innerText = correct;
+        document.getElementById('res-incorr').innerText = incorrect;
+        document.getElementById('res-time').innerText = `${timeMins}:${timeSecs}`;
+
+        const badge = document.getElementById('result-badge');
+        if (perc >= 50) {
+            badge.className = 'badge pass';
+            badge.innerText = 'PASS';
+        } else {
+            badge.className = 'badge fail';
+            badge.innerText = 'FAIL';
+        }
+
+        generateSolutions();
+    }
+
+    function generateSolutions() {
+        const container = document.getElementById('solutions-container');
+        let html = '';
+
+        questions.forEach((q, i) => {
+            const userAns = answers[i];
+            const corrAns = q.ans;
+            
+            html += `<div class="solution-item">
+                        <div class="sol-q">Q${i+1}. ${q.q}</div>`;
+            
+            q.opt.forEach((optText, optIdx) => {
+                let cls = 'sol-opt';
+                let icon = '';
+                
+                if (optIdx === corrAns) {
+                    cls += ' correct';
+                    icon = '✓';
+                } else if (userAns === optIdx && userAns !== corrAns) {
+                    cls += ' incorrect';
+                    icon = '✗';
+                }
+
+                if(icon) {
+                    html += `<div class="${cls}"><b>${String.fromCharCode(65+optIdx)}</b>: ${optText} <div style="float:right; font-weight:bold;">${icon}</div></div>`;
+                } else {
+                    html += `<div class="${cls}"><b>${String.fromCharCode(65+optIdx)}</b>: ${optText}</div>`;
+                }
+            });
+
+            const userStatus = userAns === null ? "<b style='color:var(--text-muted)'>Unattempted</b>" : 
+                              (userAns === corrAns ? "<b style='color:var(--correct-color)'>Correct</b>" : 
+                              "<b style='color:var(--incorrect-color)'>Incorrect</b>");
+
+            html += `<div style="margin-top: 10px;"><b>Status:</b> ${userStatus}</div>`;
+            html += `<div class="sol-exp"><div class="sol-exp-title">Explanation:</div>${q.exp}</div>`;
+            html += `</div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
