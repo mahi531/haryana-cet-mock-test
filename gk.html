@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GK Index Page</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: #2c3e50;
+            --text-muted: #576574;
+            --primary-color: #341f97;
+            --accent-color: #ff9f43;
+            --btn-hover: rgba(255, 255, 255, 0.6);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-bg: rgba(16, 20, 24, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f1f2f6;
+            --text-muted: #a4b0be;
+            --primary-color: #54a0ff;
+            --btn-hover: rgba(255, 255, 255, 0.1);
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            margin: 15px;
+        }
+        .header-title h1 { font-size: 1.5rem; color: var(--primary-color); }
+        .header-title p { font-size: 0.9rem; color: var(--text-muted); margin-top: 5px; }
+        
+        button {
+            cursor: pointer;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+            background: var(--glass-bg);
+            color: var(--text-color);
+            border: 1px solid var(--glass-border);
+        }
+        button:hover { background: var(--btn-hover); }
+        
+        .btn-primary { background: var(--primary-color); color: #fff; border: none; }
+        .btn-primary:hover { background: #2c1a80; }
+        [data-theme="dark"] .btn-primary:hover { background: #3a8ff0; }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 15px;
+            flex: 1;
+        }
+
+        .knowledge-logo {
+            font-size: 1.5rem;
+            padding: 20px 50px;
+            border-radius: 50px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: var(--shadow);
+            border: 2px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: var(--primary-color);
+        }
+        [data-theme="dark"] .knowledge-logo { color: var(--text-color); }
+        
+        .knowledge-logo:hover {
+            transform: scale(1.05);
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .grid-container {
+            display: none;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 1200px;
+            margin-bottom: 40px;
+        }
+
+        .index-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 30px 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .index-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-color);
+        }
+        
+        .index-card h2 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: var(--text-color);
+        }
+        
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="glass-panel">
+        <div class="header-title">
+            <h1>General Knowledge Hub</h1>
+            <p>Main Index Page</p>
+        </div>
+        <div>
+            <button onclick="toggleTheme()">🌗 Theme Toggle</button>
+        </div>
+    </header>
+
+    <div class="main-container">
+        
+        <button id="knowledge-btn" class="knowledge-logo">
+            <span style="font-size: 2rem;">🧠</span> Click for General Knowledge
+        </button>
+
+        <div id="cards-container" class="grid-container">
+            <!-- Cards will be injected here -->
+        </div>
+
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const doc = document.documentElement;
+            const current = doc.getAttribute('data-theme');
+            doc.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+        }
+
+        const container = document.getElementById('cards-container');
+        const logoBtn = document.getElementById('knowledge-btn');
+        let cardsRendered = false; 
+
+        logoBtn.addEventListener('click', function() {
+            if (container.style.display === 'grid') {
+                container.style.display = 'none';
+            } else {
+                container.style.display = 'grid';
+                
+                if (!cardsRendered) {
+                    for (let i = 1; i <= 20; i++) {
+                        const card = document.createElement('div');
+                        card.className = 'glass-panel index-card';
+                        
+                        // Simple string concatenation used to fix the error
+                        card.innerHTML = '<div class="card-icon">📚</div>' +
+                                         '<h2>GK Set ' + i + '</h2>' +
+                                         '<p style="color: var(--text-muted); margin-bottom: 20px;">25 Questions</p>' +
+                                         '<button class="btn-primary" style="padding: 8px 20px; font-size: 0.9rem;">Open Test</button>';
+                        
+                        card.onclick = function() {
+                            window.location.href = 'GK_Mock_Test_' + i + '.html';
+                        };
+                        
+                        container.appendChild(card);
+                    }
+                    cardsRendered = true;
+                }
+            }
+        });
+    </script>
+
+</body>
+</html>
