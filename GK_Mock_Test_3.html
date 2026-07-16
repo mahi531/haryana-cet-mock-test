@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General Knowledge Mock Test - Auto Save</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: #2c3e50;
+            --text-muted: #576574;
+            --primary-color: #341f97;
+            --accent-color: #ff9f43;
+            --correct-color: #10ac84;
+            --incorrect-color: #ee5253;
+            --btn-hover: rgba(255, 255, 255, 0.6);
+            --palette-unattempted: #c8d6e5;
+            --palette-attempted: #10ac84;
+            --palette-marked: #9b59b6;
+            --palette-marked-attempted: #8e44ad;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-bg: rgba(16, 20, 24, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f1f2f6;
+            --text-muted: #a4b0be;
+            --primary-color: #54a0ff;
+            --accent-color: #ff9f43;
+            --correct-color: #1dd1a1;
+            --incorrect-color: #ff6b6b;
+            --btn-hover: rgba(255, 255, 255, 0.1);
+            --palette-unattempted: #576574;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body { background: var(--bg-gradient); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; transition: all 0.3s ease; }
+
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: var(--shadow); padding: 20px; }
+
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; margin: 15px; }
+        .header-title h1 { font-size: 1.5rem; }
+        .header-title p { font-size: 0.9rem; color: var(--text-muted); font-weight: 600;}
+        .header-controls { display: flex; gap: 15px; align-items: center; }
+        
+        .timer-container { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.1); padding: 8px 15px; border-radius: 20px; }
+        .timer { font-size: 1.2rem; font-weight: bold; }
+        .timer.danger { color: var(--incorrect-color); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        .auto-save-toast { position: fixed; top: 20px; right: 50%; transform: translateX(50%); background: var(--primary-color); color: white; padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; opacity: 0; transition: opacity 0.5s; z-index: 1000; pointer-events: none;}
+
+        button { cursor: pointer; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; transition: all 0.2s; background: var(--glass-bg); color: var(--text-color); border: 1px solid var(--glass-border); }
+        button:hover { background: var(--btn-hover); }
+        .btn-primary { background: var(--primary-color); color: #fff; border: none; }
+        .btn-primary:hover { background: #2c1a80; }
+        .btn-danger { background: var(--incorrect-color); color: white; border: none; }
+        .btn-warning { background: var(--accent-color); color: white; border: none; }
+        .btn-submit { background: var(--correct-color); color: white; border: none; }
+        .btn-submit:hover { background: #0b8c6b; }
+
+        .container { display: flex; flex: 1; gap: 20px; margin: 0 15px 15px 15px; }
+        .main-area { flex: 3; display: flex; flex-direction: column; position: relative; }
+        .sidebar { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        .progress-bar-bg { background: rgba(0,0,0,0.1); height: 8px; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar-fill { background: var(--primary-color); height: 100%; width: 0%; transition: width 0.3s; }
+        
+        .question-text { font-size: 1.25rem; font-weight: 500; margin-bottom: 20px; line-height: 1.6; }
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { text-align: left; padding: 15px; font-size: 1rem; display: flex; align-items: center; gap: 15px; }
+        .option-btn.selected { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+        
+        .action-buttons { display: flex; justify-content: space-between; margin-top: auto; padding-top: 20px; }
+        .action-buttons > div { display: flex; gap: 10px; }
+
+        .pause-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 10; display: none; flex-direction: column; align-items: center; justify-content: center; border-radius: 16px; }
+        .pause-overlay h2 { font-size: 2rem; margin-bottom: 10px; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-item { font-size: 0.85rem; display: flex; align-items: center; gap: 8px; font-weight: bold;}
+        .stat-dot { width: 14px; height: 14px; border-radius: 50%; }
+        
+        .q-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .q-grid-btn { padding: 10px 0; text-align: center; border-radius: 8px; font-weight: bold; background: var(--palette-unattempted); color: #2c3e50; border: none; font-size: 14px; }
+        .q-grid-btn.current { border: 3px solid #2c3e50; transform: scale(1.05);}
+        [data-theme="dark"] .q-grid-btn.current { border: 3px solid #fff; color: #fff; }
+        .q-grid-btn.attempted { background: var(--palette-attempted); color: #fff; }
+        .q-grid-btn.marked { background: var(--palette-marked); color: #fff; }
+        .q-grid-btn.marked.attempted { background: var(--palette-marked-attempted); color: #fff; }
+
+        .result-screen { display: none; max-width: 1000px; margin: 0 auto; width: 100%; padding-bottom: 50px;}
+        .result-header { text-align: center; margin-bottom: 30px; }
+        .badge { display: inline-block; padding: 10px 30px; border-radius: 30px; font-size: 1.5rem; font-weight: bold; color: #fff; margin-top: 10px; }
+        .badge.pass { background: var(--correct-color); }
+        .badge.fail { background: var(--incorrect-color); }
+        
+        .result-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-box { text-align: center; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .stat-box h3 { font-size: 2rem; margin-bottom: 5px; }
+
+        .solution-item { margin-bottom: 25px; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .sol-q { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; color: var(--primary-color); }
+        .sol-opt { margin-bottom: 8px; padding: 10px; border-radius: 8px; background: var(--glass-bg); }
+        .sol-opt.correct { background: var(--correct-color); color: #fff; border:none;}
+        .sol-opt.incorrect { background: var(--incorrect-color); color: #fff; border:none;}
+        .sol-exp { margin-top: 15px; font-size: 0.95rem; color: var(--text-color); border-left: 4px solid var(--primary-color); padding-left: 15px; line-height: 1.6; }
+        .sol-exp-title { color: var(--primary-color); font-weight: bold; margin-bottom: 5px; }
+        .sol-fact { margin-top: 10px; background: rgba(0,0,0,0.05); padding: 15px; border-radius: 6px; font-size: 0.9rem;}
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            header { flex-direction: column; gap: 15px; text-align: center; }
+            .action-buttons { flex-direction: column; gap: 15px; }
+            .action-buttons > div { justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auto-save-toast" id="save-toast">Progress Auto-Saved! 💾</div>
+
+    <header class="glass-panel">
+        <div class="header-title">
+            <h1>General Knowledge Mock Test</h1>
+            <p>25 GK Questions with Detailed Solutions & Facts | Auto-Save Enabled</p>
+        </div>
+        <div class="header-controls">
+            <div class="timer-container" id="timer-box">
+                <b>⏱</b>
+                <b class="timer" id="timer">25:00</b>
+                <button id="pause-btn" onclick="togglePause()">Pause</button>
+            </div>
+            <button onclick="toggleTheme()">🌗 Theme</button>
+            <button class="btn-submit" onclick="submitTest(false)">Submit Test</button>
+        </div>
+    </header>
+
+    <div class="container" id="app-container">
+        
+        <div class="glass-panel main-area">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+            
+            <div id="question-header" style="margin-bottom: 15px; font-weight: 600; color: var(--primary-color);"></div>
+            <div id="question-text" class="question-text"></div>
+            
+            <div class="options-grid" id="options-container"></div>
+
+            <div class="action-buttons">
+                <div>
+                    <button onclick="changeQuestion(-1)" id="prev-btn">Previous</button>
+                    <button onclick="clearSelection()">Clear</button>
+                </div>
+                <div>
+                    <button onclick="toggleMark()" id="mark-btn" class="btn-warning">Mark for Review</button>
+                    <button onclick="changeQuestion(1)" id="next-btn" class="btn-primary">Next</button>
+                </div>
+            </div>
+
+            <div class="pause-overlay" id="pause-overlay">
+                <h2>Test Paused ⏸️</h2>
+                <p>Questions are hidden to prevent cheating.</p>
+                <br>
+                <button class="btn-primary" onclick="togglePause()">Resume Test</button>
+            </div>
+        </div>
+
+        <div class="glass-panel sidebar">
+            <h3 style="text-align: center; margin-bottom: 15px;">Question Palette</h3>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-attempted)"></div> Attempted (<b id="count-att">0</b>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-unattempted)"></div> Unattempted (<b id="count-unatt">25</b>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-marked)"></div> Marked (<b id="count-mark">0</b>)</div>
+            </div>
+            <div class="q-grid" id="q-grid"></div>
+            <button class="btn-danger" onclick="resetTest()" style="margin-top: 10px; width: 100%; padding: 8px;">Reset Data</button>
+            <button class="btn-submit" onclick="submitTest(false)" style="margin-top: 10px; width: 100%; padding: 12px; font-size: 1.1rem;">Final Submit Test</button>
+        </div>
+    </div>
+
+    <div class="glass-panel result-screen" id="result-screen">
+        <div class="result-header">
+            <h2>Test Submitted Successfully! 🎉</h2>
+            <div class="badge" id="result-badge">Pass</div>
+        </div>
+        <div class="result-stats">
+            <div class="stat-box"><h3 id="res-score">0</h3><p>Score / 25</p></div>
+            <div class="stat-box"><h3 id="res-perc">0%</h3><p>Percentage</p></div>
+            <div class="stat-box"><h3 id="res-corr" style="color: var(--correct-color);">0</h3><p>Correct</p></div>
+            <div class="stat-box"><h3 id="res-incorr" style="color: var(--incorrect-color);">0</h3><p>Incorrect</p></div>
+            <div class="stat-box"><h3 id="res-time">00:00</h3><p>Time Taken</p></div>
+        </div>
+        <div style="text-align: center; margin-bottom: 30px;">
+            <button class="btn-primary" onclick="resetTest()" style="padding: 15px 40px; font-size: 1.1rem;">Start New Test</button>
+        </div>
+        <h3 style="color: var(--primary-color); font-size: 1.5rem; text-align: center;">Detailed Solutions & Facts 📝</h3>
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--glass-border);">
+        <div id="solutions-container"></div>
+    </div>
+
+<script>
+    const questions = [
+        {
+            "q": "भारत के किस राज्य पर 'अहोम वंश' का शासन था?",
+            "opt": ["ओडिशा", "कर्नाटक", "असम", "राजस्थान"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>असम</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - अहोम वंश की स्थापना 1228 ईस्वी में चाओलुंग सुकफा ने की थी।<br> - इन्होंने असम (ब्रह्मपुत्र घाटी) पर लगभग 600 वर्षों तक शासन किया।<br> - अहोम सेना ने 1671 में लचित बोरफुकन के नेतृत्व में 'सरायघाट के युद्ध' में मुगलों को हराया था।<br> - अहोम लोग इतिहास लिखने के शौकीन थे, उनके ऐतिहासिक ग्रंथों को 'बुरंजी' कहा जाता था।</div>"
+        },
+        {
+            "q": "श्रीलंका में निम्नलिखित में से कौन-सी चोटी सबसे ऊंची है?",
+            "opt": ["हकगाला", "किरीगलपोट्टा", "माउंट पेड्रो", "बाइबल रॉक"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>माउंट पेड्रो</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - माउंट पेड्रो को 'पिदुरुतलागला' (Pidurutalagala) के नाम से भी जाना जाता है।<br> - इसकी समुद्र तल से ऊंचाई लगभग 2,524 मीटर (8,281 फीट) है।<br> - यह चोटी श्रीलंका के मध्य प्रांत में स्थित है।<br> - इसके शिखर पर देश का मुख्य रडार स्टेशन और ट्रांसमीटर लगा है, इसलिए यहाँ आम जनता का प्रवेश वर्जित है।</div>"
+        },
+        {
+            "q": "अर्थशास्त्र में कौन-सा सिद्धांत यह प्रतिपादित करता है कि कोई देश वही निर्यात करता है जिसका वह कुशलतापूर्वक और बहुतायत में उत्पादन करता है?",
+            "opt": ["सोलोव-स्वान मॉडल", "कारनॉट कंपीटीशन", "हैक्सचर-ओहलीन मॉडल", "इनपुट-आउटपुट मॉडल"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>हैक्सचर-ओहलीन मॉडल</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - इसे 'कारक-अनुपात सिद्धांत' (Factor-Proportion Theory) भी कहा जाता है।<br> - इस मॉडल को स्वीडिश अर्थशास्त्री एली हेक्सचर और बर्टिल ओहलीन ने विकसित किया था।<br> - यह 2x2x2 मॉडल पर आधारित है (दो देश, दो वस्तुएं और उत्पादन के दो कारक - श्रम और पूंजी)।<br> - यह सिद्धांत डेविड रिकार्डो के 'तुलनात्मक लाभ सिद्धांत' (Comparative Advantage) का ही विस्तार है।</div>"
+        },
+        {
+            "q": "निम्नलिखित में से भारत का सबसे बड़ा कंटेनर पोर्ट कौन-सा है?",
+            "opt": ["एन्नोर पोर्ट", "छत्रपति शिवाजी पोर्ट", "पारादीप पोर्ट", "जवाहरलाल नेहरू पोर्ट"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>जवाहरलाल नेहरू पोर्ट</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - जवाहरलाल नेहरू पोर्ट ट्रस्ट (JNPT) को पहले 'न्हावा शेवा' (Nhava Sheva) पोर्ट कहा जाता था।<br> - यह महाराष्ट्र के नवी मुंबई में अरब सागर तट पर स्थित है।<br> - यह भारत का पहला 100% 'लैंडलॉर्ड' (Landlord) मॉडल वाला प्रमुख बंदरगाह बन गया है।<br> - यह पोर्ट भारत के कुल कंटेनर व्यापार का 50% से अधिक हिस्सा अकेले संभालता है।</div>"
+        },
+        {
+            "q": "वर्ष 2026 में इसरो (ISRO) द्वारा भारत के किस महत्वाकांक्षी मानव अंतरिक्ष मिशन के तहत पहले मानवरहित क्रू मॉड्यूल का सफल प्रक्षेपण किया गया है?",
+            "opt": ["चंद्रयान-4", "गगनयान (Gaganyaan)", "सुक्रयान-1", "मंगलयान-2"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>गगनयान (Gaganyaan)</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - गगनयान भारतीय अंतरिक्ष अनुसंधान संगठन (ISRO) का पहला मानव अंतरिक्ष उड़ान कार्यक्रम है।<br> - इसका लक्ष्य 3 अंतरिक्ष यात्रियों के दल को 3 दिनों के लिए 400 किलोमीटर की कक्षा में भेजना और सुरक्षित वापस लाना है।<br> - मानव मिशन से पहले परीक्षण के लिए 'व्योममित्र' (Vyommitra) नामक एक ह्यूमनाइड रोबोट (महिला रोबोट) को अंतरिक्ष में भेजा जा रहा है।<br> - इस मिशन के लिए GSLV Mk III (अब LVM3) रॉकेट का उपयोग किया जा रहा है।</div>"
+        },
+        {
+            "q": "'बायोपा' किस प्रदेश की जनजातियों की एक पारंपरिक पगड़ी (हैडगियर) है?",
+            "opt": ["झारखंड", "केरल", "अरुणाचल प्रदेश", "गोवा"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>अरुणाचल प्रदेश</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - 'बायोपा' (Byopa) अरुणाचल प्रदेश की न्याशी (Nyishi) जनजाति के पुरुषों द्वारा पहनी जाने वाली एक विशेष पारंपरिक टोपी है।<br> - इसे बेंत (cane) से बुना जाता है और पारंपरिक रूप से इसके ऊपर 'ग्रेट हॉर्नबिल' पक्षी की चोंच लगाई जाती थी (अब संरक्षण के कारण फाइबर का उपयोग होता है)।<br> - न्याशी जनजाति अरुणाचल प्रदेश का सबसे बड़ा जातीय समूह है।<br> - इस जनजाति का सबसे प्रमुख त्योहार 'न्योकुम' (Nyokum) है जो फसल की बुवाई के समय मनाया जाता है।</div>"
+        },
+        {
+            "q": "दूरसंचार विभाग द्वारा विकसित व्यापक पेंशन प्रबंधन प्रणाली का नाम बताइए।",
+            "opt": ["सम्पन्न (SAMPANN)", "समाधान (SAMADHAN)", "आचरण (ACHARAN)", "विज्ञान (VIGYAN)"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>सम्पन्न (SAMPANN)</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - SAMPANN का पूर्ण रूप 'System for Accounting and Management of Pension' है।<br> - इसे 2018 में संचार मंत्रालय के तहत दूरसंचार विभाग (DoT) द्वारा लॉन्च किया गया था।<br> - इसका मुख्य उद्देश्य बिना किसी बिचौलिए के पेंशनरों के बैंक खातों में सीधे और समय पर पेंशन जमा करना है।<br> - यह पोर्टल पेंशनरों को अपनी शिकायतों को ट्रैक करने की सुविधा भी प्रदान करता है।</div>"
+        },
+        {
+            "q": "मस्तिष्क के उस भाग को पहचानिए जो शारीरिक मुद्रा, संतुलन और साम्यावस्था को नियंत्रित करता है।",
+            "opt": ["ब्रेनस्टेम", "डायएनसेफेलॉन", "सेरेबेलम", "सेरेब्रम"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>सेरेबेलम (Cerebellum)</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - सेरेबेलम को 'अनुमस्तिष्क' या 'छोटा दिमाग' (Little Brain) भी कहा जाता है।<br> - यह मस्तिष्क के पिछले हिस्से (Hindbrain) में स्थित होता है।<br> - यह शरीर के संतुलन, मुद्रा और ऐच्छिक मांसपेशियों (जैसे चलना, साइकिल चलाना) के समन्वय को नियंत्रित करता है।<br> - शराब (Alcohol) का सेवन सीधे सेरेबेलम को प्रभावित करता है, जिससे व्यक्ति का शारीरिक संतुलन बिगड़ जाता है।</div>"
+        },
+        {
+            "q": "शरीर के किस भाग में रक्त का उत्पादन होता है?",
+            "opt": ["हृदय", "मस्तिष्क", "अस्थि-मज्जा", "फेफड़ा"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>अस्थि-मज्जा (Bone Marrow)</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - हड्डियों के अंदर पाए जाने वाले स्पंजी ऊतक को अस्थि-मज्जा कहते हैं।<br> - लाल रक्त कोशिकाओं (RBC), श्वेत रक्त कोशिकाओं (WBC) और प्लेटलेट्स का निर्माण 'लाल अस्थि-मज्जा' (Red Bone Marrow) में होता है।<br> - रक्त कोशिकाओं के निर्माण की इस वैज्ञानिक प्रक्रिया को 'हेमेटोपोएसिस' (Hematopoiesis) कहा जाता है।<br> - वयस्कों में यह मुख्य रूप से पसलियों (ribs), उरोस्थि (sternum) और श्रोणि (pelvis) की हड्डियों में सक्रिय रहता है।</div>"
+        },
+        {
+            "q": "निम्नलिखित में से बांग्लादेश का राष्ट्रीय खेल कौन-सा है?",
+            "opt": ["खो-खो", "क्रिकेट", "कबड्डी", "बॉक्सिंग"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>कबड्डी</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - कबड्डी को 1972 में आधिकारिक रूप से बांग्लादेश का राष्ट्रीय खेल घोषित किया गया था।<br> - बांग्लादेश में कबड्डी को पारंपरिक रूप से 'हा-डू-डू' (Ha-du-du) के नाम से भी जाना जाता है।<br> - एक मानक कबड्डी मैच में एक टीम से एक समय में 7 खिलाड़ी मैदान पर खेलते हैं।<br> - बांग्लादेश एमेच्योर कबड्डी फेडरेशन की स्थापना 1973 में हुई थी।</div>"
+        },
+        {
+            "q": "स्वतंत्र भारत का दौरा करने वाले पहले रूसी प्रधानमंत्री कौन थे?",
+            "opt": ["निकोलाई बुल्गानिन", "मिखाइल गोर्वाचेव", "बोरिस येल्तसिन", "ब्लादिमीर पुतिन"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>निकोलाई बुल्गानिन</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - निकोलाई बुल्गानिन (सोवियत संघ के प्रधानमंत्री) ने 1955 में भारत का ऐतिहासिक दौरा किया था।<br> - उनके साथ सोवियत कम्युनिस्ट पार्टी के प्रथम सचिव निकिता ख्रुश्चेव भी भारत आए थे।<br> - इस यात्रा ने शीत युद्ध के दौर में भारत और सोवियत संघ के बीच मजबूत आर्थिक और रक्षा संबंधों की नींव रखी।<br> - इस समय भारत के प्रधानमंत्री पंडित जवाहरलाल नेहरू थे।</div>"
+        },
+        {
+            "q": "'ब्लीडर' शब्द किस खेल से जुड़ा है?",
+            "opt": ["वॉलीबॉल", "क्रिकेट", "तैराकी", "बॉक्सिंग"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>बॉक्सिंग</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - बॉक्सिंग में 'ब्लीडर' (Bleeder) उस मुक्केबाज को कहा जाता है जिसकी त्वचा आसानी से कट जाती है और मैच के दौरान खून बहने लगता है।<br> - बॉक्सिंग मैच जिस घेरे में लड़ा जाता है, उसे 'रिंग' (Ring) कहते हैं, जो आकार में चौकोर होता है।<br> - अपरकट (Uppercut), जैब (Jab), हुक (Hook) और नॉकआउट (KO) बॉक्सिंग के अन्य प्रसिद्ध शब्द हैं।<br> - मुहम्मद अली और माइक टायसन बॉक्सिंग इतिहास के सबसे महान खिलाड़ियों में गिने जाते हैं।</div>"
+        },
+        {
+            "q": "किसी भारतीय राज्य के सबसे लंबे समय तक सेवा में रहने वाले राज्यपाल कौन हैं/थे?",
+            "opt": ["एन डी तिवारी", "लक्ष्मी कांत झा", "प‌द्मजा नायडू", "सरोजिनी नायडू"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>प‌द्मजा नायडू</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - पद्मजा नायडू ने 1956 से 1967 (लगभग 11 वर्ष) तक पश्चिम बंगाल की राज्यपाल के रूप में कार्य किया।<br> - वह प्रसिद्ध भारतीय स्वतंत्रता सेनानी और कवयित्री सरोजिनी नायडू की बेटी थीं।<br> - 1956 में उन्हें उनके समाज सेवा के कार्यों के लिए 'पद्म विभूषण' से भी सम्मानित किया गया था।<br> - दार्जिलिंग में स्थित विश्व प्रसिद्ध 'पद्मजा नायडू हिमालयन जूलॉजिकल पार्क' का नाम उन्हीं के सम्मान में रखा गया है।</div>"
+        },
+        {
+            "q": "निम्नलिखित में से अवध का अंतिम नवाब कौन था?",
+            "opt": ["मुहम्मद मुकीम", "वाजीद अली शाह", "सादत अली खान", "अमजद अली खान"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>वाजीद अली शाह</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - वाजिद अली शाह अवध के ग्यारहवें और अंतिम नवाब थे, जिनका शासनकाल 1847 से 1856 तक रहा।<br> - 1856 में लॉर्ड डलहौजी ने 'कुशासन' (Maladministration) का झूठा आरोप लगाकर अवध को ब्रिटिश साम्राज्य में मिला लिया था।<br> - इसके बाद वाजिद अली शाह को पेंशन देकर कलकत्ता (मेटियाब्रुज) निर्वासित कर दिया गया।<br> - उनकी पहली पत्नी 'बेगम हजरत महल' ने 1857 के प्रथम स्वतंत्रता संग्राम में लखनऊ से विद्रोह का नेतृत्व किया था।</div>"
+        },
+        {
+            "q": "दिसंबर 2018 में, हैवलॉक द्वीप का नाम बदलकर क्या कर दिया गया?",
+            "opt": ["नेताजी सुभाष बोस आइलैंड", "स्वहीद द्वीप", "वीर सावरकर आइलैंड", "स्वराज द्वीप"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>स्वराज द्वीप</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - 30 दिसंबर 2018 को अंडमान और निकोबार के 'हैवलॉक द्वीप' का नाम बदलकर 'स्वराज द्वीप' कर दिया गया।<br> - इसी दिन रॉस द्वीप का नाम 'नेताजी सुभाष चंद्र बोस द्वीप' और नील द्वीप का नाम 'शहीद द्वीप' रखा गया था।<br> - यह बदलाव नेताजी सुभाष चंद्र बोस द्वारा 1943 में पोर्ट ब्लेयर में पहली बार तिरंगा फहराने की 75वीं वर्षगांठ के अवसर पर किया गया।<br> - स्वराज द्वीप अपने 'राधानगर बीच' (Radhanagar Beach) के लिए प्रसिद्ध है, जिसे एशिया के सर्वश्रेष्ठ समुद्र तटों में गिना जाता है।</div>"
+        },
+        {
+            "q": "पवन चक्की (टर्बाइन) कौन-सी ऊर्जा को यांत्रिक शक्ति में परिवर्तित करती है?",
+            "opt": ["रासायनिक", "गतिज", "गुरुत्वीय", "नाभिकीय"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>गतिज</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - पवन चक्की (Windmill) बहती हुई हवा की गतिज ऊर्जा (Kinetic Energy) को टरबाइन ब्लेड के माध्यम से यांत्रिक ऊर्जा में बदलती है।<br> - इसके बाद इससे जुड़ा जनरेटर इस यांत्रिक ऊर्जा को विद्युत ऊर्जा (Electrical Energy) में परिवर्तित कर देता है।<br> - भारत में तमिलनाडु राज्य पवन ऊर्जा के उत्पादन में पहले स्थान पर है।<br> - हवा की गति और शक्ति को मापने के लिए 'एनीमोमीटर' (Anemometer) यंत्र का उपयोग किया जाता है।</div>"
+        },
+        {
+            "q": "किसी नम्य विनिमय दर प्रणाली में विनिमय दरों के बारे में दीर्घकालिक पूर्वानुमान लगाने के लिए किस सिद्धांत का उपयोग किया जाता है?",
+            "opt": ["क्रय-शक्ति समानता सिद्धांत", "भुगतान संतुलन का सिद्धांत", "पोर्टफोलियो बैलेंस एप्रोच", "ब्याज दर दृष्टिकोण"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>क्रय-शक्ति समानता सिद्धांत</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - क्रय-शक्ति समानता (Purchasing Power Parity - PPP) सिद्धांत 1918 में स्वीडिश अर्थशास्त्री गुस्ताव कैसल द्वारा प्रतिपादित किया गया था।<br> - यह सिद्धांत मानता है कि दो देशों की मुद्राओं के बीच विनिमय दर दोनों देशों में मुद्रास्फीति (महंगाई) के अंतर को दर्शाती है।<br> - विश्व बैंक विभिन्न देशों के सकल घरेलू उत्पाद (GDP) और रहन-सहन के स्तर की तुलना करने के लिए PPP का उपयोग करता है।<br> - PPP के आधार पर, भारत वर्तमान में दुनिया की तीसरी सबसे बड़ी अर्थव्यवस्था (अमेरिका और चीन के बाद) है।</div>"
+        },
+        {
+            "q": "किस चिकित्सकीय स्थिति में आंख की ऑप्टिक तंत्रिका क्षतिग्रस्त होती है, और समय के साथ उसकी हालत और अधिक बिगड़ती जाती है।",
+            "opt": ["मोतियाबिंद", "ग्लूकोमा (कांचबिंदु)", "ड्राई आई सिंड्रोम", "एज-रिलेटेड मेक्युलर डीजेनेरेशन"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>ग्लूकोमा (कांचबिंदु)</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - ग्लूकोमा को आम बोलचाल में 'काला मोतियाबिंद' भी कहा जाता है।<br> - यह आंख के अंदर द्रव का दबाव (Intraocular pressure) असामान्य रूप से बढ़ जाने के कारण होता है।<br> - बढ़ा हुआ दबाव 'ऑप्टिक तंत्रिका' (Optic nerve) को नष्ट कर देता है, जिससे धीरे-धीरे स्थायी अंधापन आ सकता है।<br> - ऑप्टिक तंत्रिका का मुख्य कार्य आंख के रेटिना से दृश्य संकेतों को मस्तिष्क तक ले जाना है।</div>"
+        },
+        {
+            "q": "'द बुद्धा एंड हिज धम्म' पुस्तक के लेखक कौन हैं?",
+            "opt": ["जवाहरलाल नेहरू", "सरोजिनी नायडू", "राजमोहन गांधी", "बी आर आंबेडकर"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>बी आर आंबेडकर</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - यह पुस्तक डॉ. बी.आर. अंबेडकर द्वारा लिखी गई थी और उनके निधन (दिसंबर 1956) के बाद 1957 में मरणोपरांत प्रकाशित हुई।<br> - यह पुस्तक बुद्ध के जीवन और बौद्ध धर्म के सिद्धांतों पर अंबेडकर जी के विचारों का प्रामाणिक ग्रंथ मानी जाती है।<br> - डॉ. अंबेडकर ने 14 अक्टूबर 1956 को नागपुर के 'दीक्षाभूमि' में अपने लाखों अनुयायियों के साथ बौद्ध धर्म ग्रहण किया था।<br> - उनकी अन्य प्रसिद्ध रचनाओं में 'एनिहिलेशन ऑफ कास्ट' (Annihilation of Caste) और 'द अनटचेबल्स' शामिल हैं।</div>"
+        },
+        {
+            "q": "वर्ष 2026 में देश के नए मुख्य चुनाव आयुक्त (Chief Election Commissioner) के रूप में किसे नियुक्त किया गया है? (पीडीएफ स्रोत के अनुसार)",
+            "opt": ["राजीव कुमार", "ज्ञानेश कुमार", "सुखबीर सिंह संधू", "अनूप चंद्र पांडे"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>ज्ञानेश कुमार</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - पीडीएफ स्रोत के अनुसार ज्ञानेश कुमार को उत्तर माना गया है (ध्यान दें: 2024 में ज्ञानेश कुमार और सुखबीर सिंह संधू को चुनाव आयुक्त (Election Commissioner) नियुक्त किया गया था)।<br> - भारत का चुनाव आयोग (ECI) संविधान के भाग XV और अनुच्छेद 324 के तहत स्थापित एक स्वतंत्र संवैधानिक निकाय है।<br> - चुनाव आयोग में वर्तमान में एक मुख्य चुनाव आयुक्त (CEC) और दो चुनाव आयुक्त होते हैं।<br> - इनकी नियुक्ति भारत के राष्ट्रपति द्वारा एक चयन समिति की सिफारिश पर की जाती है।</div>"
+        },
+        {
+            "q": "कीड़ों के अध्ययन को क्या कहा जाता है?",
+            "opt": ["एन्थ्रोपोलोजी", "ओर्निथोलोजी", "जिओलोजी", "एन्टोमोलोजी"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>एन्टोमोलोजी</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - एन्टोमोलोजी (Entomology) प्राणी विज्ञान (Zoology) की एक शाखा है जिसमें कीट-पतंगों (Insects) का वैज्ञानिक अध्ययन किया जाता है।<br> - कीड़े 'आर्थ्रोपोडा' (Arthropoda) संघ के अंतर्गत आते हैं, जो जीव जगत (Animal Kingdom) का सबसे बड़ा संघ है।<br> - पृथ्वी पर ज्ञात जीवों में से लगभग दो-तिहाई प्रजातियां कीड़ों की ही हैं।<br> - विलियम किर्बी (William Kirby) को आधुनिक कीट विज्ञान का जनक माना जाता है।</div>"
+        },
+        {
+            "q": "अप्रैल 2019 तक प्राप्त जानकारी के अनुसार, भारत में किसी राज्य के मुख्यमंत्री पद पर सर्वाधिक समय तक रहने वाले व्यक्ति का नाम बताइए।",
+            "opt": ["जयललिता", "शीला दीक्षित", "ज्योति बसु", "पावन चामलिंग"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>पावन चामलिंग</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - पवन चामलिंग ने सिक्किम के मुख्यमंत्री के रूप में लगातार 24 साल 165 दिन (1994 से 2019 तक) कार्य किया, जो अप्रैल 2019 तक एक रिकॉर्ड था।<br> - उन्होंने 1993 में 'सिक्किम डेमोक्रेटिक फ्रंट' (SDF) नामक राजनीतिक दल की स्थापना की थी।<br> - उनके कार्यकाल के दौरान ही 2016 में सिक्किम भारत का पहला '100% जैविक राज्य' (Organic State) बना था।<br> - नवीन अपडेट के अनुसार, 2023 में ओडिशा के मुख्यमंत्री नवीन पटनायक भारत के दूसरे सबसे लंबे समय तक सेवा करने वाले मुख्यमंत्री बन गए हैं।</div>"
+        },
+        {
+            "q": "एक वर्ष में लोकसभा के सामान्यतः कितने सत्र आयोजित किए जाते हैं?",
+            "opt": ["5", "2", "3", "7"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>3</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - भारतीय संसद के एक वर्ष में सामान्यतः तीन सत्र आयोजित होते हैं: 1. बजट सत्र, 2. मानसून सत्र, 3. शीतकालीन सत्र।<br> - बजट सत्र (फरवरी से मई) साल का पहला, सबसे लंबा और सबसे महत्वपूर्ण सत्र होता है।<br> - शीतकालीन सत्र (नवंबर से दिसंबर) आमतौर पर वर्ष का सबसे छोटा सत्र होता है।<br> - संविधान के अनुच्छेद 85 के अनुसार, संसद के दो सत्रों के बीच का अंतराल किसी भी स्थिति में 6 महीने से अधिक नहीं हो सकता (अर्थात वर्ष में न्यूनतम 2 सत्र अनिवार्य हैं)।</div>"
+        },
+        {
+            "q": "'चेपू' किस देश का एक अनूठा सांस्कृतिक प्रतीक है?",
+            "opt": ["चीन", "नेपाल", "म्यांमार (बर्मा)", "भूटान"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>नेपाल</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - 'चेपू' (Chepu) नेपाल की काठमांडू घाटी की नेवार संस्कृति (Newar Culture) का एक प्रसिद्ध पौराणिक प्राणी है।<br> - इसे एक भयंकर रक्षक प्रतीक के रूप में माना जाता है और अक्सर नेपाल में घरों व मंदिरों के मुख्य प्रवेश द्वारों (तोरण) पर उकेरा जाता है।<br> - किंवदंतियों के अनुसार, चेपू को गरुड़ (भगवान विष्णु का वाहन) का बड़ा भाई माना जाता है।<br> - इसे बुरी शक्तियों और नकारात्मक ऊर्जा से बचाने वाला सबसे बहादुर जीव माना जाता है।</div>"
+        },
+        {
+            "q": "'सारागढ़ी की लड़ाई' किस वर्ष में लड़ी गई थी?",
+            "opt": ["1878", "1897", "1854", "1867"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>1897</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - सारागढ़ी का ऐतिहासिक युद्ध 12 सितंबर 1897 को तिराह अभियान के दौरान (वर्तमान पाकिस्तान के खैबर पख्तूनख्वा में) लड़ा गया था।<br> - इस युद्ध में ब्रिटिश भारतीय सेना की 36वीं सिख रेजीमेंट के मात्र 21 सैनिकों ने 10,000 से अधिक अफगान पश्तून आदिवासियों का डटकर सामना किया था।<br> - इस वीर सिख टुकड़ी का नेतृत्व हवलदार ईशर सिंह ने किया था।<br> - सभी 21 शहीद सिख सैनिकों को मरणोपरांत 'इंडियन ऑर्डर ऑफ मेरिट' (IOM) से सम्मानित किया गया, जो उस समय भारतीयों के लिए सर्वोच्च वीरता पुरस्कार था।</div>"
+        }
+    ];
+
+    let currentIdx = 0;
+    const totalQ = questions.length;
+    let answers = new Array(totalQ).fill(null);
+    let marked = new Array(totalQ).fill(false);
+    
+    let totalTime = 25 * 60; 
+    let timerInterval;
+    let isPaused = false;
+
+    function init() {
+        if (!loadProgress()) {
+            answers = new Array(totalQ).fill(null);
+            marked = new Array(totalQ).fill(false);
+            totalTime = 25 * 60;
+            currentIdx = 0;
+        }
+        createPalette();
+        loadQuestion(currentIdx);
+        updateStats();
+        startTimer();
+    }
+
+    function toggleTheme() {
+        const doc = document.documentElement;
+        const current = doc.getAttribute('data-theme');
+        doc.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+    }
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if(totalTime <= 0) {
+                clearInterval(timerInterval);
+                submitTest(true);
+                return;
+            }
+            totalTime--;
+            updateTimerDisplay();
+            
+            // Background Auto Save every 30 seconds
+            if(totalTime % 30 === 0) saveProgress(false);
+
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(totalTime / 60).toString().padStart(2, '0');
+        const secs = (totalTime % 60).toString().padStart(2, '0');
+        const timerEl = document.getElementById('timer');
+        timerEl.innerText = `${mins}:${secs}`;
+        
+        if (totalTime < 300) { 
+            timerEl.classList.add('danger');
+        } else {
+            timerEl.classList.remove('danger');
+        }
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        const overlay = document.getElementById('pause-overlay');
+        const btn = document.getElementById('pause-btn');
+        
+        if (isPaused) {
+            clearInterval(timerInterval);
+            overlay.style.display = 'flex';
+            btn.innerText = 'Resume';
+            btn.classList.add('btn-warning');
+        } else {
+            startTimer();
+            overlay.style.display = 'none';
+            btn.innerText = 'Pause';
+            btn.classList.remove('btn-warning');
+        }
+    }
+
+    function loadQuestion(idx) {
+        currentIdx = idx;
+        const qData = questions[idx];
+        
+        document.getElementById('question-header').innerText = `Question ${idx + 1} of ${totalQ}`;
+        document.getElementById('question-text').innerHTML = qData.q;
+        
+        const optsContainer = document.getElementById('options-container');
+        optsContainer.innerHTML = '';
+        
+        qData.opt.forEach((optText, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn' + (answers[idx] === i ? ' selected' : '');
+            btn.innerHTML = `<div style="font-weight:bold; border:1px solid currentColor; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${String.fromCharCode(65+i)}</div> ${optText}`;
+            btn.onclick = () => selectOption(i);
+            optsContainer.appendChild(btn);
+        });
+
+        document.getElementById('progress-bar').style.width = `${((idx + 1) / totalQ) * 100}%`;
+
+        document.getElementById('prev-btn').disabled = (idx === 0);
+        document.getElementById('prev-btn').style.opacity = (idx === 0) ? '0.5' : '1';
+        
+        const markBtn = document.getElementById('mark-btn');
+        markBtn.innerText = marked[idx] ? 'Unmark Review' : 'Mark for Review';
+        
+        const nextBtn = document.getElementById('next-btn');
+        if (idx === totalQ - 1) {
+            nextBtn.innerText = 'Submit Test';
+            nextBtn.className = 'btn-danger';
+        } else {
+            nextBtn.innerText = 'Next';
+            nextBtn.className = 'btn-primary';
+        }
+
+        updatePaletteVisuals();
+    }
+
+    // --- AUTO SAVE FUNCTIONS ---
+    function saveProgress(showToast = true) {
+        const testState = {
+            answers: answers,
+            marked: marked,
+            totalTime: totalTime,
+            currentIdx: currentIdx
+        };
+        localStorage.setItem('gkMockTestState_PDF3', JSON.stringify(testState));
+        
+        if(showToast) {
+            const toast = document.getElementById('save-toast');
+            toast.style.opacity = '1';
+            setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+        }
+    }
+
+    function loadProgress() {
+        const savedState = localStorage.getItem('gkMockTestState_PDF3');
+        if (savedState) {
+            const state = JSON.parse(savedState);
+            answers = state.answers;
+            marked = state.marked;
+            totalTime = state.totalTime;
+            currentIdx = state.currentIdx || 0;
+            return true;
+        }
+        return false;
+    }
+
+    function clearProgress() {
+        localStorage.removeItem('gkMockTestState_PDF3');
+    }
+
+    function resetTest() {
+        if(confirm("Are you sure you want to start a new test? All current progress will be lost.")) {
+            clearProgress();
+            location.reload();
+        }
+    }
+    // ----------------------------
+
+    function selectOption(optIdx) {
+        answers[currentIdx] = optIdx;
+        loadQuestion(currentIdx);
+        updateStats();
+        saveProgress(true); // Save on interaction
+    }
+
+    function clearSelection() {
+        answers[currentIdx] = null;
+        loadQuestion(currentIdx);
+        updateStats();
+        saveProgress(true);
+    }
+
+    function toggleMark() {
+        marked[currentIdx] = !marked[currentIdx];
+        loadQuestion(currentIdx);
+        updateStats();
+        saveProgress(true);
+    }
+
+    function changeQuestion(step) {
+        if (step === 1 && currentIdx === totalQ - 1) {
+            submitTest(false);
+            return;
+        }
+        let newIdx = currentIdx + step;
+        if (newIdx >= 0 && newIdx < totalQ) {
+            currentIdx = newIdx;
+            loadQuestion(newIdx);
+            saveProgress(false);
+        }
+    }
+
+    function createPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'q-grid-btn';
+            btn.id = `pal-btn-${i}`;
+            btn.innerText = i + 1;
+            btn.onclick = () => { currentIdx = i; loadQuestion(i); saveProgress(false); };
+            grid.appendChild(btn);
+        }
+    }
+
+    function updatePaletteVisuals() {
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.getElementById(`pal-btn-${i}`);
+            btn.className = 'q-grid-btn';
+            
+            if (answers[i] !== null && marked[i]) btn.classList.add('marked', 'attempted');
+            else if (marked[i]) btn.classList.add('marked');
+            else if (answers[i] !== null) btn.classList.add('attempted');
+            
+            if (i === currentIdx) btn.classList.add('current');
+        }
+    }
+
+    function updateStats() {
+        let att = 0, mark = 0;
+        for (let i = 0; i < totalQ; i++) {
+            if (answers[i] !== null) att++;
+            if (marked[i]) mark++;
+        }
+        document.getElementById('count-att').innerText = att;
+        document.getElementById('count-unatt').innerText = totalQ - att;
+        document.getElementById('count-mark').innerText = mark;
+        updatePaletteVisuals();
+    }
+
+    function submitTest(isAuto) {
+        const unatt = answers.filter(a => a === null).length;
+        if (!isAuto && unatt > 0) {
+            const confirmSubmit = confirm(`आपके ${unatt} प्रश्न छूट गए हैं। क्या आप निश्चित रूप से टेस्ट सबमिट करना चाहते हैं?`);
+            if (!confirmSubmit) return;
+        }
+
+        clearInterval(timerInterval);
+        document.getElementById('app-container').style.display = 'none';
+        document.querySelector('.header-controls').style.display = 'none';
+        clearProgress(); // Clear saved state on submit
+        generateResults();
+    }
+
+    function generateResults() {
+        const resScreen = document.getElementById('result-screen');
+        resScreen.style.display = 'block';
+
+        let correct = 0;
+        let incorrect = 0;
+        
+        answers.forEach((ans, i) => {
+            if (ans !== null) {
+                if (ans === questions[i].ans) correct++;
+                else incorrect++;
+            }
+        });
+
+        const score = correct;
+        const perc = ((score / totalQ) * 100).toFixed(2);
+        
+        const timeTakenSec = (25 * 60) - totalTime;
+        const timeMins = Math.floor(timeTakenSec / 60).toString().padStart(2, '0');
+        const timeSecs = (timeTakenSec % 60).toString().padStart(2, '0');
+
+        document.getElementById('res-score').innerText = score;
+        document.getElementById('res-perc').innerText = perc + '%';
+        document.getElementById('res-corr').innerText = correct;
+        document.getElementById('res-incorr').innerText = incorrect;
+        document.getElementById('res-time').innerText = `${timeMins}:${timeSecs}`;
+
+        const badge = document.getElementById('result-badge');
+        if (perc >= 50) {
+            badge.className = 'badge pass';
+            badge.innerText = 'PASS';
+        } else {
+            badge.className = 'badge fail';
+            badge.innerText = 'FAIL';
+        }
+
+        generateSolutions();
+    }
+
+    function generateSolutions() {
+        const container = document.getElementById('solutions-container');
+        let html = '';
+
+        questions.forEach((q, i) => {
+            const userAns = answers[i];
+            const corrAns = q.ans;
+            
+            html += `<div class="solution-item">
+                        <div class="sol-q">Q${i+1}. ${q.q}</div>`;
+            
+            q.opt.forEach((optText, optIdx) => {
+                let cls = 'sol-opt';
+                let icon = '';
+                
+                if (optIdx === corrAns) {
+                    cls += ' correct';
+                    icon = '✓';
+                } else if (userAns === optIdx && userAns !== corrAns) {
+                    cls += ' incorrect';
+                    icon = '✗';
+                }
+
+                if(icon) {
+                    html += `<div class="${cls}"><b>${String.fromCharCode(65+optIdx)}</b>: ${optText} <div style="float:right; font-weight:bold;">${icon}</div></div>`;
+                } else {
+                    html += `<div class="${cls}"><b>${String.fromCharCode(65+optIdx)}</b>: ${optText}</div>`;
+                }
+            });
+
+            const userStatus = userAns === null ? "<b style='color:var(--text-muted)'>Unattempted</b>" : 
+                              (userAns === corrAns ? "<b style='color:var(--correct-color)'>Correct</b>" : 
+                              "<b style='color:var(--incorrect-color)'>Incorrect</b>");
+
+            html += `<div style="margin-top: 10px;"><b>Status:</b> ${userStatus}</div>`;
+            html += `<div class="sol-exp"><div class="sol-exp-title">Explanation:</div>${q.exp}</div>`;
+            html += `</div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
