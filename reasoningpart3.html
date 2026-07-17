@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSSC mock test wala - HSSC CET Group D (Reasoning Part-2)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: #2c3e50;
+            --text-muted: #576574;
+            --primary-color: #341f97;
+            --accent-color: #ff9f43;
+            --correct-color: #10ac84;
+            --incorrect-color: #ee5253;
+            --btn-hover: rgba(255, 255, 255, 0.6);
+            --palette-unattempted: #c8d6e5;
+            --palette-attempted: #10ac84;
+            --palette-marked: #9b59b6;
+            --palette-marked-attempted: #8e44ad;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-bg: rgba(16, 20, 24, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f1f2f6;
+            --text-muted: #a4b0be;
+            --primary-color: #54a0ff;
+            --accent-color: #ff9f43;
+            --correct-color: #1dd1a1;
+            --incorrect-color: #ff6b6b;
+            --btn-hover: rgba(255, 255, 255, 0.1);
+            --palette-unattempted: #576574;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body { background: var(--bg-gradient); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; transition: all 0.3s ease; }
+
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: var(--shadow); padding: 20px; }
+
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; margin: 15px; }
+        .header-title h1 { font-size: 1.5rem; }
+        .header-title p { font-size: 0.9rem; color: var(--text-muted); font-weight: 600;}
+        .header-controls { display: flex; gap: 15px; align-items: center; }
+        
+        .timer-container { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.1); padding: 8px 15px; border-radius: 20px; }
+        .timer { font-size: 1.2rem; font-weight: bold; }
+        .timer.danger { color: var(--incorrect-color); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        .auto-save-toast { position: fixed; top: 20px; right: 50%; transform: translateX(50%); background: var(--primary-color); color: white; padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; opacity: 0; transition: opacity 0.5s; z-index: 1000; pointer-events: none;}
+
+        button { cursor: pointer; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; transition: all 0.2s; background: var(--glass-bg); color: var(--text-color); border: 1px solid var(--glass-border); }
+        button:hover { background: var(--btn-hover); }
+        .btn-primary { background: var(--primary-color); color: #fff; border: none; }
+        .btn-primary:hover { background: #2c1a80; }
+        .btn-danger { background: var(--incorrect-color); color: white; border: none; }
+        .btn-warning { background: var(--accent-color); color: white; border: none; }
+        .btn-submit { background: var(--correct-color); color: white; border: none; }
+        .btn-submit:hover { background: #0b8c6b; }
+
+        .container { display: flex; flex: 1; gap: 20px; margin: 0 15px 15px 15px; }
+        .main-area { flex: 3; display: flex; flex-direction: column; position: relative; }
+        .sidebar { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        .progress-bar-bg { background: rgba(0,0,0,0.1); height: 8px; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar-fill { background: var(--primary-color); height: 100%; width: 0%; transition: width 0.3s; }
+        
+        .question-text { font-size: 1.25rem; font-weight: 500; margin-bottom: 20px; line-height: 1.6; }
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { text-align: left; padding: 15px; font-size: 1rem; display: flex; align-items: center; gap: 15px; }
+        .option-btn.selected { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+        
+        .action-buttons { display: flex; justify-content: space-between; margin-top: auto; padding-top: 20px; }
+        .action-buttons > div { display: flex; gap: 10px; }
+
+        .pause-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 10; display: none; flex-direction: column; align-items: center; justify-content: center; border-radius: 16px; }
+        .pause-overlay h2 { font-size: 2rem; margin-bottom: 10px; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-item { font-size: 0.85rem; display: flex; align-items: center; gap: 8px; font-weight: bold;}
+        .stat-dot { width: 14px; height: 14px; border-radius: 50%; }
+        
+        .q-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .q-grid-btn { padding: 10px 0; text-align: center; border-radius: 8px; font-weight: bold; background: var(--palette-unattempted); color: #2c3e50; border: none; font-size: 14px; }
+        .q-grid-btn.current { border: 3px solid #2c3e50; transform: scale(1.05);}
+        [data-theme="dark"] .q-grid-btn.current { border: 3px solid #fff; color: #fff; }
+        .q-grid-btn.attempted { background: var(--palette-attempted); color: #fff; }
+        .q-grid-btn.marked { background: var(--palette-marked); color: #fff; }
+        .q-grid-btn.marked.attempted { background: var(--palette-marked-attempted); color: #fff; }
+
+        .result-screen { display: none; max-width: 1000px; margin: 0 auto; width: 100%; padding-bottom: 50px;}
+        .result-header { text-align: center; margin-bottom: 30px; }
+        .badge { display: inline-block; padding: 10px 30px; border-radius: 30px; font-size: 1.5rem; font-weight: bold; color: #fff; margin-top: 10px; }
+        .badge.pass { background: var(--correct-color); }
+        .badge.fail { background: var(--incorrect-color); }
+        
+        .result-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-box { text-align: center; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .stat-box h3 { font-size: 2rem; margin-bottom: 5px; }
+
+        .solution-item { margin-bottom: 25px; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .sol-q { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; color: var(--primary-color); }
+        .sol-opt { margin-bottom: 8px; padding: 10px; border-radius: 8px; background: var(--glass-bg); }
+        .sol-opt.correct { background: var(--correct-color); color: #fff; border:none;}
+        .sol-opt.incorrect { background: var(--incorrect-color); color: #fff; border:none;}
+        .sol-exp { margin-top: 15px; font-size: 0.95rem; color: var(--text-color); border-left: 4px solid var(--primary-color); padding-left: 15px; line-height: 1.6; }
+        .sol-exp-title { color: var(--primary-color); font-weight: bold; margin-bottom: 5px; }
+        .sol-fact { margin-top: 10px; background: rgba(0,0,0,0.05); padding: 15px; border-radius: 6px; font-size: 0.9rem;}
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            header { flex-direction: column; gap: 15px; text-align: center; }
+            .action-buttons { flex-direction: column; gap: 15px; }
+            .action-buttons > div { justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auto-save-toast" id="save-toast">Progress Auto-Saved! 💾</div>
+
+    <header class="glass-panel">
+        <div class="header-title">
+            <h1>HSSC mock test wala - Reasoning Part-2</h1>
+            <p>HSSC CET Group D Special | 25 Selected PYP Questions with Smart Solutions</p>
+        </div>
+        <div class="header-controls">
+            <div class="timer-container" id="timer-box">
+                <b>⏱</b>
+                <b class="timer" id="timer">35:00</b>
+                <button id="pause-btn" onclick="togglePause()">Pause</button>
+            </div>
+            <button onclick="toggleTheme()">🌗 Theme</button>
+            <button class="btn-submit" onclick="submitTest(false)">Submit Test</button>
+        </div>
+    </header>
+
+    <div class="container" id="app-container">
+        
+        <div class="glass-panel main-area">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+            
+            <div id="question-header" style="margin-bottom: 15px; font-weight: 600; color: var(--primary-color);"></div>
+            <div id="question-text" class="question-text"></div>
+            
+            <div class="options-grid" id="options-container"></div>
+
+            <div class="action-buttons">
+                <div>
+                    <button onclick="changeQuestion(-1)" id="prev-btn">Previous</button>
+                    <button onclick="clearSelection()">Clear</button>
+                </div>
+                <div>
+                    <button onclick="toggleMark()" id="mark-btn" class="btn-warning">Mark for Review</button>
+                    <button onclick="changeQuestion(1)" id="next-btn" class="btn-primary">Next</button>
+                </div>
+            </div>
+
+            <div class="pause-overlay" id="pause-overlay">
+                <h2>Test Paused ⏸️</h2>
+                <p>Questions are hidden to prevent cheating.</p>
+                <br>
+                <button class="btn-primary" onclick="togglePause()">Resume Test</button>
+            </div>
+        </div>
+
+        <div class="glass-panel sidebar">
+            <h3 style="text-align: center; margin-bottom: 15px;">Question Palette</h3>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-attempted)"></div> Attempted (<b id="count-att">0</b>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-unattempted)"></div> Unattempted (<b id="count-unatt">25</b>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-marked)"></div> Marked (<b id="count-mark">0</b>)</div>
+            </div>
+            <div class="q-grid" id="q-grid"></div>
+            <button class="btn-danger" onclick="resetTest()" style="margin-top: 10px; width: 100%; padding: 8px;">Reset Data</button>
+            <button class="btn-submit" onclick="submitTest(false)" style="margin-top: 10px; width: 100%; padding: 12px; font-size: 1.1rem;">Final Submit Test</button>
+        </div>
+    </div>
+
+    <div class="glass-panel result-screen" id="result-screen">
+        <div class="result-header">
+            <h2>Test Submitted Successfully! 🎉</h2>
+            <div class="badge" id="result-badge">Pass</div>
+        </div>
+        <div class="result-stats">
+            <div class="stat-box"><h3 id="res-score">0</h3><p>Score / 25</p></div>
+            <div class="stat-box"><h3 id="res-perc">0%</h3><p>Percentage</p></div>
+            <div class="stat-box"><h3 id="res-corr" style="color: var(--correct-color);">0</h3><p>Correct</p></div>
+            <div class="stat-box"><h3 id="res-incorr" style="color: var(--incorrect-color);">0</h3><p>Incorrect</p></div>
+            <div class="stat-box"><h3 id="res-time">00:00</h3><p>Time Taken</p></div>
+        </div>
+        
+        <div id="result-action-btns" style="text-align: center; margin-bottom: 30px;">
+            <button class="btn-primary" onclick="resetTest()" style="padding: 15px 40px; font-size: 1.1rem;">Start New Test</button>
+            <button class="btn-submit" onclick="downloadPDF()" style="padding: 15px 40px; font-size: 1.1rem; margin-left: 15px;">Download Solutions PDF 📥</button>
+        </div>
+
+        <h3 style="color: var(--primary-color); font-size: 1.5rem; text-align: center;">Detailed Solutions & Facts 📝</h3>
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--glass-border);">
+        <div id="solutions-container"></div>
+    </div>
+
+<script>
+    const questions = [
+        {
+            "q": "निर्देश: संबंधित अक्षर/शब्द ज्ञात कीजिए।<br><br>KMF : LLG :: SUH : ?",
+            "opt": ["TVJ", "TTI", "ITT", "TVG"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>TTI</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - K(11) + 1 = L(12)<br> - M(13) - 1 = L(12)<br> - F(6) + 1 = G(7)<br> - <b>पैटर्न:</b> +1, -1, +1<br> - इसी प्रकार, S(19) + 1 = T(20), U(21) - 1 = T(20), H(8) + 1 = I(9)।<br> - HSSC परीक्षाओं में कोडिंग-डिकोडिंग के लिए A से Z तक की प्लेस वैल्यू (Place Value) मुँह जुबानी याद होनी चाहिए।</div>"
+        },
+        {
+            "q": "निर्देश: संबंधित अक्षर/अंक ज्ञात कीजिए।<br><br>ACE : E9 :: BDF : ?",
+            "opt": ["F6", "E6", "F12", "D12"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>F12</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - A(1), C(3), E(5)। यहाँ अंतिम अक्षर E लिया गया है और सभी अक्षरों के अंकों का योग किया गया है (1+3+5 = 9), जिससे E9 बना।<br> - इसी प्रकार B(2), D(4), F(6) में अंतिम अक्षर F है और अंकों का योग 2+4+6 = 12 है। अतः उत्तर F12 होगा।<br> - ऐसे प्रश्नों में हमेशा अक्षरों की 'Positional Value' (स्थानिक मान) का ही खेल होता है।</div>"
+        },
+        {
+            "q": "पेड़ : जड़ें :: घर : ?",
+            "opt": ["नींव (Foundation)", "फर्श (Floor)", "सीढ़ियाँ (Stairs)", "प्लेटफॉर्म (Platform)"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>नींव (Foundation)</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - जिस प्रकार एक 'पेड़' अपनी 'जड़ों' के सहारे सीधा खड़ा रहता है और उन्हें आधार मानता है।<br> - ठीक उसी प्रकार एक 'घर' अपनी 'नींव' के आधार पर खड़ा होता है।<br> - यह 'Analogy' (समरूपता) का प्रश्न है। एनालॉजी के प्रश्न आपके सामान्य ज्ञान और तार्किक क्षमता दोनों की जांच करते हैं।</div>"
+        },
+        {
+            "q": "आशा (Hope) : आकांक्षा (Aspire) :: झूठ (Lie) : ?",
+            "opt": ["समय (Time)", "नकली (Fake)", "गप (Fib)", "दुःख (Sorrow)"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>गप (Fib)</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - 'आशा' और 'आकांक्षा' दोनों समानार्थी (Synonyms) शब्द हैं। दोनों का अर्थ किसी चीज़ की चाह रखना কুল।<br> - इसी तरह, 'झूठ' (Lie) का समानार्थी शब्द 'गप' (Fib) होता है, जिसका अर्थ भी असत्य या मनगढ़ंत बात कहना है।<br> - CET Group D में अक्सर हिंदी या अंग्रेजी के समानार्थी / विलोम शब्दों पर आधारित एनालॉजी पूछी जाती है।</div>"
+        },
+        {
+            "q": "गंजापन (Baldness) : बाल (Hair) :: सन्नाटा (Silence) : ?",
+            "opt": ["शोर (Noise)", "रात (Night)", "हँसना (Giggle)", "नाखून (Nail)"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>शोर (Noise)</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - 'बालों' की पूर्ण अनुपस्थिति (कमी) को ही 'गंजापन' कहा जाता है।<br> - इसी प्रकार, 'शोर' या ध्वनि की पूर्ण अनुपस्थिति को 'सन्नाटा' कहा जाता है।<br> - यह विपरीत या अनुपस्थिति पर आधारित एक तार्किक संबंध है।</div>"
+        },
+        {
+            "q": "WDS : DWH :: EVR : ?",
+            "opt": ["VES", "SVE", "VEI", "EIV"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>VEI</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - W का विपरीत (Opposite letter) D है, D का विपरीत W है, और S का विपरीत H है (WDS -> DWH)।<br> - इसी प्रकार EVR के विपरीत अक्षर होंगे: E का विपरीत V, V का विपरीत E, और R का विपरीत I। अतः उत्तर VEI है।<br> - <b>ट्रिक:</b> विपरीत अक्षर याद रखने के लिए (A-Z, B-Y, C-X, D-W, E-V, F-U, G-T, H-S, I-R, J-Q, K-P, L-O, M-N) शॉर्टकट जैसे 'LO-VE', 'BY', 'SHIRT-G' का उपयोग करें।</div>"
+        },
+        {
+            "q": "9 : 15 : 21 :: ?",
+            "opt": ["7 : 21 : 28", "4 : 10 : 16", "10 : 14 : 16", "8 : 12 : 12"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>4 : 10 : 16</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - दिए गए समूह में पैटर्न है: 9 (+6) = 15, और 15 (+6) = 21। (यानी समान अंतर वाली श्रृंखला)।<br> - विकल्पों की जाँच करने पर, विकल्प (B) में: 4 (+6) = 10, और 10 (+6) = 16 है।<br> - इसे 'Number Set Analogy' कहते हैं। इसमें आपको गणितीय संक्रियाओं (+, -, ×, ÷, वर्ग, घन) का संबंध ढूँढना होता है।</div>"
+        },
+        {
+            "q": "15 : 30 :: 23 : ?",
+            "opt": ["46", "52", "50", "55"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>46</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - बहुत ही सरल पैटर्न: पहली संख्या को 2 से गुणा किया गया है (15 &times; 2 = 30)।<br> - इसी तरह, 23 &times; 2 = 46 होगा।<br> - परीक्षा में सबसे पहले हमेशा सरल लॉजिक (जैसे गुणा, भाग, अंतर) चेक करना चाहिए, उसके बाद ही वर्ग या घन (Squares/Cubes) के लॉजिक पर जाना चाहिए।</div>"
+        },
+        {
+            "q": "निम्नलिखित में से विषम (Odd one out) चुनें:",
+            "opt": ["टाइटेनियम (Titanium)", "सोडियम (Sodium)", "ब्रोमीन (Bromine)", "पारा (Mercury)"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>ब्रोमीन (Bromine)</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - टाइटेनियम, सोडियम और पारा (Mercury) सभी धातुएँ (Metals) हैं।<br> - 'ब्रोमीन' एक हैलोजन और अधातु (Non-metal) है। यह कमरे के तापमान पर तरल अवस्था में रहने वाली एकमात्र अधातु है।<br> - जबकि पारा (Mercury) कमरे के तापमान पर तरल रहने वाली एकमात्र धातु है।<br> - यह विज्ञान पर आधारित क्लासिफिकेशन (Classification) का बेहतरीन प्रश्न है।</div>"
+        },
+        {
+            "q": "निम्नलिखित में से विषम (Odd one out) संख्या युग्म चुनें:",
+            "opt": ["42 - 14", "69 - 23", "108 - 36", "56 - 19"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>56 - 19</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - विकल्प A: 14 &times; 3 = 42<br> - विकल्प B: 23 &times; 3 = 69<br> - विकल्प C: 36 &times; 3 = 108<br> - लेकिन विकल्प D में: 19 &times; 3 = 57 होता है, जबकि वहाँ 56 दिया गया है। अतः यह अन्य से भिन्न है।<br> - संख्याओं के वर्गीकरण में अक्सर गुणज (Multiples) या विभाज्यता (Divisibility) के नियम लागू होते हैं।</div>"
+        },
+        {
+            "q": "निम्नलिखित में से विषम अक्षर-समूह चुनें:",
+            "opt": ["EGF", "IGH", "RPQ", "OMN"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>EGF</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - विकल्प B: I(9) - 2 = G(7), G(7) + 1 = H(8) [पैटर्न: -2, +1]<br> - विकल्प C: R(18) - 2 = P(16), P(16) + 1 = Q(17) [पैटर्न: -2, +1]<br> - विकल्प D: O(15) - 2 = M(13), M(13) + 1 = N(14) [पैटर्न: -2, +1]<br> - विकल्प A: E(5) + 2 = G(7), G(7) - 1 = F(6) [पैटर्न: +2, -1]<br> - अतः EGF का पैटर्न बाकी तीनों से उल्टा और भिन्न है।</div>"
+        },
+        {
+            "q": "दी गई श्रृंखला में अगला पद क्या होगा? <br><br>D11G, J23M, P35S, ?",
+            "opt": ["T42V", "U45X", "V47Y", "V49Y"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>V47Y</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - पहला अक्षर: D(4) + 6 = J(10) + 6 = P(16) + 6 = <b>V(22)</b><br> - मध्य संख्या: 11 + 12 = 23 + 12 = 35 + 12 = <b>47</b><br> - अंतिम अक्षर: G(7) + 6 = M(13) + 6 = S(19) + 6 = <b>Y(25)</b><br> - अतः सही पद V47Y होगा। श्रृंखला के प्रश्नों में अक्षरों और संख्याओं को हमेशा अलग-अलग तोड़कर हल करें।</div>"
+        },
+        {
+            "q": "दी गई श्रृंखला को पूरा करें:<br><br>AC, RT, DF, UW, GI, ?",
+            "opt": ["VX", "YX", "JL", "XZ"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>XZ</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - यहाँ दो अलग-अलग एकांतर (Alternate) श्रृंखलाएँ चल रही हैं:<br> - <b>श्रृंखला 1:</b> AC (+3) &rarr; DF (+3) &rarr; GI<br> - <b>श्रृंखला 2:</b> RT (+3) &rarr; UW (+3) &rarr; <b>XZ</b><br> - HSSC परीक्षा में जब भी अक्षर अजीब तरह से उछल रहे हों, तो हमेशा एकांतर (Alternate) श्रृंखला की जाँच करें।</div>"
+        },
+        {
+            "q": "दी गई श्रृंखला में अगला अक्षर क्या होगा?<br><br>Y, V, Q, N, I, ?",
+            "opt": ["D", "F", "E", "L"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>F</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - Y(25) - 3 = V(22)<br> - V(22) - 5 = Q(17)<br> - Q(17) - 3 = N(14)<br> - N(14) - 5 = I(9)<br> - I(9) - 3 = <b>F(6)</b><br> - <b>पैटर्न:</b> क्रमिक रूप से -3 और -5 घटाया जा रहा है। अक्षरों के आंकिक मान याद होने से ऐसे प्रश्न 10 सेकंड में हल हो जाते हैं।</div>"
+        },
+        {
+            "q": "दी गई श्रृंखला में प्रश्नवाचक चिन्ह (?) के स्थान पर कौन-सी संख्या आएगी?<br><br>25, 7, 49, 13, 81, ?",
+            "opt": ["18", "15", "10", "9"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>9</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - यह एक बहुत ही लॉजिकल और ट्रिकी श्रृंखला है।<br> - 25 &rarr; इसके अंकों का योग (2 + 5) = 7 (जो कि अगली संख्या है)।<br> - 49 &rarr; इसके अंकों का योग (4 + 9) = 13 (जो कि अगली संख्या है)।<br> - 81 &rarr; इसके अंकों का योग (8 + 1) = <b>9</b>।<br> - जब अंतर या गुणा काम न करे, तो संख्याओं के अंकों (Digits) का योग या गुणा चेक करना एक बेहतरीन ट्रिक है।</div>"
+        },
+        {
+            "q": "दी गई श्रृंखला को पूरा करें:<br><br>115, 226, 337, 448, ?",
+            "opt": ["550", "669", "559", "599"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>559</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - क्रमागत पदों के बीच का अंतर निकालें:<br> - 226 - 115 = 111<br> - 337 - 226 = 111<br> - 448 - 337 = 111<br> - <b>पैटर्न:</b> हर बार 111 जोड़ा जा रहा है। अतः 448 + 111 = <b>559</b>।<br> - आप इसे ऐसे भी देख सकते हैं: पहला अंक 1,2,3,4,5; दूसरा अंक 1,2,3,4,5; तीसरा अंक 5,6,7,8,9।</div>"
+        },
+        {
+            "q": "यदि एक कूट भाषा में AT को 20 और BAT को 40 लिखा जाता है, तो उसी भाषा में CAT को कैसे लिखा जाएगा?",
+            "opt": ["35", "60", "80", "70"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>60</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - अक्षरों के संख्यात्मक मानों (Place Values) का गुणा किया गया है:<br> - AT = A(1) &times; T(20) = 20<br> - BAT = B(2) &times; A(1) &times; T(20) = 40<br> - CAT = C(3) &times; A(1) &times; T(20) = 3 &times; 1 &times; 20 = <b>60</b><br> - कोडिंग-डिकोडिंग में यदि कोड बहुत बड़ा आ रहा है तो गुणा किया गया है, और छोटा आ रहा है तो योग या भाग किया गया है।</div>"
+        },
+        {
+            "q": "यदि 'संतरे' को 'केला' कहा जाता है, 'केले' को 'शहद', 'शहद' को 'दूध', 'दूध' को 'सेब' और 'सेब' को 'संतरा' कहा जाता है, तो मधुमक्खियाँ निम्नलिखित में से क्या बनाती हैं?",
+            "opt": ["शहद", "केला", "दूध", "संतरा"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>दूध</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - वास्तविकता में मधुमक्खियाँ (Bees) 'शहद' (Honey) बनाती हैं।<br> - लेकिन प्रश्न में दी गई कोडिंग के अनुसार, 'शहद को दूध कहा जाता है'।<br> - इसलिए इस कूट भाषा में मधुमक्खियाँ <b>'दूध'</b> बनाएंगी।<br> - <b>ट्रिक:</b> ऐसे प्रश्नों में पूरा प्रश्न पढ़ने की बजाय सीधे अंतिम लाइन (मधुमक्खियाँ क्या बनाती हैं?) पढ़ें और फिर कोड ढूँढें। इससे समय बचेगा।</div>"
+        },
+        {
+            "q": "यदि '&times;' का अर्थ '&divide;', '-' का अर्थ '&times;', '&divide;' का अर्थ '+' और '+' का अर्थ '-' है, तो निम्नलिखित व्यंजक का मान क्या होगा?<br><br>(2 - 16 &divide; 18) &times; 5 + 2 = ?",
+            "opt": ["8", "6", "2", "10"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>8</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - सबसे पहले चिह्नों को बदलें: (2 &times; 16 + 18) &divide; 5 - 2<br> - अब BODMAS नियम लागू करें (पहले ब्रैकेट, फिर भाग, फिर गुणा, फिर जोड़/घटाव):<br> - (32 + 18) &divide; 5 - 2<br> - 50 &divide; 5 - 2<br> - 10 - 2 = <b>8</b><br> - गणितीय संक्रियाओं (Mathematical Operations) में BODMAS नियम का सख्ती से पालन करना अनिवार्य है।</div>"
+        },
+        {
+            "q": "निम्नलिखित समीकरण को सही बनाने के लिए खाली स्थानों पर कौन से गणितीय चिह्नों को क्रमानुसार रखा जाना चाहिए?<br><br>8 _ 7 _ 40 _ 8 _ 51",
+            "opt": ["=, &times;, -, +", "&divide;, -, &times;, =", "&times;, -, &divide;, =", "-, &times;, &divide;, ="],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>&times;, -, &divide;, =</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - विकल्प (C) के चिह्नों को रखने पर: 8 &times; 7 - 40 &divide; 8 = 51<br> - BODMAS के अनुसार, पहले भाग करें: 40 &divide; 8 = 5<br> - फिर गुणा करें: 8 &times; 7 = 56<br> - अब घटाएं: 56 - 5 = 51। (समीकरण संतुलित हो गया)।<br> - <b>ट्रिक:</b> हमेशा भाग (&divide;) के चिह्न पर फोकस करें। वह ऐसी जगह होना चाहिए जहाँ संख्या पूरी तरह कट जाए (जैसे 40 &divide; 8)। इससे गलत विकल्प जल्दी हट जाते हैं।</div>"
+        },
+        {
+            "q": "एक घड़ी 3:15 का समय दिखा रही है। यदि इस समय घंटे की सूई (Hour hand) 'उत्तर' दिशा की ओर इशारा करती है, तो मिनट की सूई (Minute hand) किस दिशा में इशारा करेगी?",
+            "opt": ["पूर्व", "पश्चिम", "उत्तर", "दक्षिण"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>उत्तर</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - 3:15 बजे घड़ी में घंटे की सूई 3 पर और मिनट की सूई भी 3 पर ही होती है (व्यावहारिक रूप से घंटे की सूई 3 से थोड़ा सा आगे होती है, लेकिन दिशा परीक्षण में दोनों को एक ही दिशा में माना जाता है)।<br> - चूँकि दोनों सुइयां एक ही दिशा में हैं, यदि घंटे की सूई उत्तर (North) बता रही है, तो मिनट की सूई भी <b>उत्तर</b> दिशा ही बताएगी।</div>"
+        },
+        {
+            "q": "सूर्योदय (Sunrise) के बाद एक सुबह, कविता और सविता एक लॉन में एक-दूसरे की ओर पीठ करके बैठी थीं। यदि कविता की परछाई उसके ठीक बाईं (Left) ओर गिर रही थी, तो सविता का मुख किस दिशा में था?",
+            "opt": ["दक्षिण", "उत्तर", "पूर्व", "पश्चिम"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>दक्षिण</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - <b>कॉन्सेप्ट:</b> सुबह के समय सूर्य पूर्व (East) में होता है, इसलिए परछाई हमेशा पश्चिम (West) की ओर गिरती है।<br> - चूँकि परछाई कविता के बाईं ओर गिर रही है, इसका मतलब है कि कविता का बायाँ हाथ पश्चिम दिशा में है। ऐसा तभी संभव है जब कविता 'उत्तर' (North) की ओर देख रही हो।<br> - दोनों एक-दूसरे की ओर पीठ करके बैठी हैं, इसलिए सविता कविता के ठीक विपरीत दिशा यानी <b>दक्षिण (South)</b> की ओर देख रही है।</div>"
+        },
+        {
+            "q": "एक कक्षा में, राम का स्थान ऊपर से 7वाँ और नीचे से 26वाँ है। उस कक्षा में कुल कितने छात्र हैं?",
+            "opt": ["31", "32", "33", "34"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>32</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - <b>रैंकिंग का गोल्डन रूल:</b> कुल व्यक्ति = (व्यक्ति का ऊपर/बाएँ से स्थान + व्यक्ति का नीचे/दाएँ से स्थान) - 1<br> - कुल छात्र = (7 + 26) - 1<br> - 33 - 1 = <b>32</b><br> - -1 इसलिए किया जाता है क्योंकि एक ही व्यक्ति (राम) को दो बार (ऊपर से और नीचे से) गिना गया है।</div>"
+        },
+        {
+            "q": "निम्नलिखित शब्दों को अंग्रेजी शब्दकोश (Dictionary) के क्रमानुसार व्यवस्थित करें:<br>1. Plain, 2. Plant, 3. Plate, 4. Plastic",
+            "opt": ["1, 2, 4, 3", "2, 4, 1, 3", "1, 2, 3, 4", "2, 1, 3, 4"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>1, 2, 4, 3</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - सभी शब्द 'Pla' से शुरू होते हैं। इसलिए हम चौथे अक्षर की तुलना करेंगे:<br> - Plain में 'i', Plant में 'n', Plastic में 's', Plate में 't'।<br> - अंग्रेजी वर्णमाला के अनुसार इनका क्रम होगा: i &rarr; n &rarr; s &rarr; t<br> - इसलिए सही क्रम है: Plain (1) &rarr; Plant (2) &rarr; Plastic (4) &rarr; Plate (3)।</div>"
+        },
+        {
+            "q": "रक्त संबंध: A, B का भाई है। C, A की माँ है। D, C का पिता है। B का D से क्या संबंध है?",
+            "opt": ["नाती/नातिन (Grandchild)", "पुत्री", "भतीजा", "बहन"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>नाती/नातिन (Grandchild)</b>।<div class='sol-fact'><b>💡 स्मार्ट ट्रिक्स व तथ्य:</b><br> - A और B भाई-बहन (Siblings) हैं, क्योंकि A, B का भाई है।<br> - C, A की माँ है, इसका मतलब C, B की भी माँ है।<br> - D, C का पिता है। अर्थात D माँ का पिता है (यानी D, A और B के नाना हैं)।<br> - चूँकि B का लिंग (Gender) निश्चित नहीं है, इसलिए B, D का नाती (Grandson) या नातिन (Granddaughter) होगा। अतः विकल्प 'नाती/नातिन' सही है।</div>"
+        }
+    ];
+
+    let currentIdx = 0;
+    const totalQ = questions.length;
+    let answers = new Array(totalQ).fill(null);
+    let marked = new Array(totalQ).fill(false);
+    
+    // Timer is set to 35 minutes (35 * 60 seconds)
+    let totalTime = 35 * 60; 
+    let timerInterval;
+    let isPaused = false;
+
+    // Initialization
+    function init() {
+        if (!loadProgress()) {
+            answers = new Array(totalQ).fill(null);
+            marked = new Array(totalQ).fill(false);
+            totalTime = 35 * 60;
+            currentIdx = 0;
+        }
+        createPalette();
+        loadQuestion(currentIdx);
+        updateStats();
+        startTimer();
+    }
+
+    // Theme Logic
+    function toggleTheme() {
+        const doc = document.documentElement;
+        const current = doc.getAttribute('data-theme');
+        doc.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+    }
+
+    // Timer Logic
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if(totalTime <= 0) {
+                clearInterval(timerInterval);
+                submitTest(true);
+                return;
+            }
+            totalTime--;
+            updateTimerDisplay();
+            
+            // Background Auto Save every 30 seconds
+            if(totalTime % 30 === 0) saveProgress(false);
+
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(totalTime / 60).toString().padStart(2, '0');
+        const secs = (totalTime % 60).toString().padStart(2, '0');
+        const timerEl = document.getElementById('timer');
+        timerEl.innerText = `${mins}:${secs}`;
+        
+        if (totalTime < 300) { 
+            timerEl.classList.add('danger');
+        } else {
+            timerEl.classList.remove('danger');
+        }
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        const overlay = document.getElementById('pause-overlay');
+        const btn = document.getElementById('pause-btn');
+        
+        if (isPaused) {
+            clearInterval(timerInterval);
+            overlay.style.display = 'flex';
+            btn.innerText = 'Resume';
+            btn.classList.add('btn-warning');
+        } else {
+            startTimer();
+            overlay.style.display = 'none';
+            btn.innerText = 'Pause';
+            btn.classList.remove('btn-warning');
+        }
+    }
+
+    // Quiz Navigation & Rendering
+    function loadQuestion(idx) {
+        currentIdx = idx;
+        const qData = questions[idx];
+        
+        document.getElementById('question-header').innerText = `Question ${idx + 1} of ${totalQ}`;
+        document.getElementById('question-text').innerHTML = qData.q;
+        
+        const optsContainer = document.getElementById('options-container');
+        optsContainer.innerHTML = '';
+        
+        qData.opt.forEach((optText, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn' + (answers[idx] === i ? ' selected' : '');
+            
+            btn.innerHTML = `<div style="font-weight:bold; border:1px solid currentColor; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${String.fromCharCode(65+i)}</div> ${optText}`;
+            btn.onclick = () => selectOption(i);
+            optsContainer.appendChild(btn);
+        });
+
+        // Update progress bar
+        document.getElementById('progress-bar').style.width = `${((idx + 1) / totalQ) * 100}%`;
+
+        // Update buttons
+        document.getElementById('prev-btn').disabled = (idx === 0);
+        document.getElementById('prev-btn').style.opacity = (idx === 0) ? '0.5' : '1';
+        
+        const markBtn = document.getElementById('mark-btn');
+        markBtn.innerText = marked[idx] ? 'Unmark Review' : 'Mark for Review';
+        
+        const nextBtn = document.getElementById('next-btn');
+        if (idx === totalQ - 1) {
+            nextBtn.innerText = 'Submit Test';
+            nextBtn.className = 'btn-danger';
+        } else {
+            nextBtn.innerText = 'Next';
+            nextBtn.className = 'btn-primary';
+        }
+
+        updatePaletteVisuals();
+    }
+
+    // --- AUTO SAVE FUNCTIONS ---
+    function saveProgress(showToast = true) {
+        const testState = {
+            answers: answers,
+            marked: marked,
+            totalTime: totalTime,
+            currentIdx: currentIdx
+        };
+        localStorage.setItem('hsscMockTestState_Reasoning2', JSON.stringify(testState));
+        
+        if(showToast) {
+            const toast = document.getElementById('save-toast');
+            toast.style.opacity = '1';
+            setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+        }
+    }
+
+    function loadProgress() {
+        const savedState = localStorage.getItem('hsscMockTestState_Reasoning2');
+        if (savedState) {
+            const state = JSON.parse(savedState);
+            answers = state.answers;
+            marked = state.marked;
+            totalTime = state.totalTime;
+            currentIdx = state.currentIdx || 0;
+            return true;
+        }
+        return false;
+    }
+
+    function clearProgress() {
+        localStorage.removeItem('hsscMockTestState_Reasoning2');
+    }
+
+    function resetTest() {
+        if(confirm("Are you sure you want to start a new test? All current progress will be lost.")) {
+            clearProgress();
+            location.reload();
+        }
+    }
+    // ----------------------------
+
+    function selectOption(optIdx) {
+        answers[currentIdx] = optIdx;
+        loadQuestion(currentIdx);
+        updateStats();
+        saveProgress(true);
+    }
+
+    function clearSelection() {
+        answers[currentIdx] = null;
+        loadQuestion(currentIdx);
+        updateStats();
+        saveProgress(true);
+    }
+
+    function toggleMark() {
+        marked[currentIdx] = !marked[currentIdx];
+        loadQuestion(currentIdx);
+        updateStats();
+        saveProgress(true);
+    }
+
+    function changeQuestion(step) {
+        if (step === 1 && currentIdx === totalQ - 1) {
+            submitTest(false);
+            return;
+        }
+        let newIdx = currentIdx + step;
+        if (newIdx >= 0 && newIdx < totalQ) {
+            currentIdx = newIdx;
+            loadQuestion(newIdx);
+            saveProgress(false);
+        }
+    }
+
+    // Palette Logic
+    function createPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'q-grid-btn';
+            btn.id = `pal-btn-${i}`;
+            btn.innerText = i + 1;
+            btn.onclick = () => { currentIdx = i; loadQuestion(i); saveProgress(false); };
+            grid.appendChild(btn);
+        }
+    }
+
+    function updatePaletteVisuals() {
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.getElementById(`pal-btn-${i}`);
+            btn.className = 'q-grid-btn';
+            
+            if (answers[i] !== null && marked[i]) btn.classList.add('marked', 'attempted');
+            else if (marked[i]) btn.classList.add('marked');
+            else if (answers[i] !== null) btn.classList.add('attempted');
+            
+            if (i === currentIdx) btn.classList.add('current');
+        }
+    }
+
+    function updateStats() {
+        let att = 0, mark = 0;
+        for (let i = 0; i < totalQ; i++) {
+            if (answers[i] !== null) att++;
+            if (marked[i]) mark++;
+        }
+        document.getElementById('count-att').innerText = att;
+        document.getElementById('count-unatt').innerText = totalQ - att;
+        document.getElementById('count-mark').innerText = mark;
+        updatePaletteVisuals();
+    }
+
+    // Submission & Results
+    function submitTest(isAuto) {
+        const unatt = answers.filter(a => a === null).length;
+        if (!isAuto && unatt > 0) {
+            const confirmSubmit = confirm(`आपके ${unatt} प्रश्न छूट गए हैं। क्या आप निश्चित रूप से टेस्ट सबमिट करना चाहते हैं?`);
+            if (!confirmSubmit) return;
+        }
+
+        clearInterval(timerInterval);
+        document.getElementById('app-container').style.display = 'none';
+        document.querySelector('.header-controls').style.display = 'none';
+        clearProgress(); // Clear saved state on submit
+        generateResults();
+    }
+
+    function generateResults() {
+        const resScreen = document.getElementById('result-screen');
+        resScreen.style.display = 'block';
+
+        let correct = 0;
+        let incorrect = 0;
+        
+        answers.forEach((ans, i) => {
+            if (ans !== null) {
+                if (ans === questions[i].ans) correct++;
+                else incorrect++;
+            }
+        });
+
+        const score = correct;
+        const perc = ((score / totalQ) * 100).toFixed(2);
+        
+        const timeTakenSec = (35 * 60) - totalTime;
+        const timeMins = Math.floor(timeTakenSec / 60).toString().padStart(2, '0');
+        const timeSecs = (timeTakenSec % 60).toString().padStart(2, '0');
+
+        document.getElementById('res-score').innerText = score;
+        document.getElementById('res-perc').innerText = perc + '%';
+        document.getElementById('res-corr').innerText = correct;
+        document.getElementById('res-incorr').innerText = incorrect;
+        document.getElementById('res-time').innerText = `${timeMins}:${timeSecs}`;
+
+        const badge = document.getElementById('result-badge');
+        if (perc >= 50) {
+            badge.className = 'badge pass';
+            badge.innerText = 'PASS';
+        } else {
+            badge.className = 'badge fail';
+            badge.innerText = 'FAIL';
+        }
+
+        generateSolutions();
+    }
+
+    function generateSolutions() {
+        const container = document.getElementById('solutions-container');
+        let html = '';
+
+        questions.forEach((q, i) => {
+            const userAns = answers[i];
+            const corrAns = q.ans;
+            
+            html += `<div class="solution-item">
+                        <div class="sol-q">Q${i+1}. ${q.q}</div>`;
+            
+            q.opt.forEach((optText, optIdx) => {
+                let cls = 'sol-opt';
+                let icon = '';
+                
+                if (optIdx === corrAns) {
+                    cls += ' correct';
+                    icon = '✓';
+                } else if (userAns === optIdx && userAns !== corrAns) {
+                    cls += ' incorrect';
+                    icon = '✗';
+                }
+
+                if(icon) {
+                    html += `<div class="${cls}"><b>${String.fromCharCode(65+optIdx)}</b>: ${optText} <div style="float:right; font-weight:bold;">${icon}</div></div>`;
+                } else {
+                    html += `<div class="${cls}"><b>${String.fromCharCode(65+optIdx)}</b>: ${optText}</div>`;
+                }
+            });
+
+            const userStatus = userAns === null ? "<b style='color:var(--text-muted)'>Unattempted</b>" : 
+                              (userAns === corrAns ? "<b style='color:var(--correct-color)'>Correct</b>" : 
+                              "<b style='color:var(--incorrect-color)'>Incorrect</b>");
+
+            html += `<div style="margin-top: 10px;"><b>Status:</b> ${userStatus}</div>`;
+            html += `<div class="sol-exp"><div class="sol-exp-title">Explanation:</div>${q.exp}</div>`;
+            html += `</div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    // PDF जनरेट करने का फंक्शन
+    function downloadPDF() {
+        const btnContainer = document.getElementById('result-action-btns');
+        btnContainer.style.display = 'none';
+
+        const element = document.getElementById('result-screen');
+        const opt = {
+            margin:       10,
+            filename:     'Reasoning_Part2_Solutions.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            btnContainer.style.display = 'block'; 
+        });
+    }
+
+    // Start App
+    window.onload = init;
+</script>
+</body>
+</html>
