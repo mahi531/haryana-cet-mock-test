@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSSC mock test wala - Static GK Special</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: #2c3e50;
+            --text-muted: #576574;
+            --primary-color: #341f97;
+            --accent-color: #ff9f43;
+            --correct-color: #10ac84;
+            --incorrect-color: #ee5253;
+            --btn-hover: rgba(255, 255, 255, 0.6);
+            --palette-unattempted: #c8d6e5;
+            --palette-attempted: #10ac84;
+            --palette-marked: #9b59b6;
+            --palette-marked-attempted: #8e44ad;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-bg: rgba(16, 20, 24, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f1f2f6;
+            --text-muted: #a4b0be;
+            --primary-color: #54a0ff;
+            --accent-color: #ff9f43;
+            --correct-color: #1dd1a1;
+            --incorrect-color: #ff6b6b;
+            --btn-hover: rgba(255, 255, 255, 0.1);
+            --palette-unattempted: #576574;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body { background: var(--bg-gradient); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; transition: all 0.3s ease; }
+
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: var(--shadow); padding: 20px; }
+
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; margin: 15px; }
+        .header-title h1 { font-size: 1.5rem; }
+        .header-title p { font-size: 0.9rem; color: var(--text-muted); font-weight: 600;}
+        .header-controls { display: flex; gap: 15px; align-items: center; }
+        
+        .timer-container { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.1); padding: 8px 15px; border-radius: 20px; }
+        .timer { font-size: 1.2rem; font-weight: bold; }
+        .timer.danger { color: var(--incorrect-color); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        .auto-save-toast { position: fixed; top: 20px; right: 50%; transform: translateX(50%); background: var(--primary-color); color: white; padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; opacity: 0; transition: opacity 0.5s; z-index: 1000; pointer-events: none;}
+
+        button { cursor: pointer; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; transition: all 0.2s; background: var(--glass-bg); color: var(--text-color); border: 1px solid var(--glass-border); }
+        button:hover { background: var(--btn-hover); }
+        .btn-primary { background: var(--primary-color); color: #fff; border: none; }
+        .btn-primary:hover { background: #2c1a80; }
+        .btn-danger { background: var(--incorrect-color); color: white; border: none; }
+        .btn-warning { background: var(--accent-color); color: white; border: none; }
+        .btn-submit { background: var(--correct-color); color: white; border: none; }
+        .btn-submit:hover { background: #0b8c6b; }
+
+        .container { display: flex; flex: 1; gap: 20px; margin: 0 15px 15px 15px; }
+        .main-area { flex: 3; display: flex; flex-direction: column; position: relative; }
+        .sidebar { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        .progress-bar-bg { background: rgba(0,0,0,0.1); height: 8px; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar-fill { background: var(--primary-color); height: 100%; width: 0%; transition: width 0.3s; }
+        
+        .question-text { font-size: 1.25rem; font-weight: 500; margin-bottom: 20px; line-height: 1.6; }
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { text-align: left; padding: 15px; font-size: 1rem; display: flex; align-items: center; gap: 15px; }
+        .option-btn.selected { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+        
+        .action-buttons { display: flex; justify-content: space-between; margin-top: auto; padding-top: 20px; }
+        .action-buttons > div { display: flex; gap: 10px; }
+
+        .pause-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 10; display: none; flex-direction: column; align-items: center; justify-content: center; border-radius: 16px; }
+        .pause-overlay h2 { font-size: 2rem; margin-bottom: 10px; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-item { font-size: 0.85rem; display: flex; align-items: center; gap: 8px; font-weight: bold;}
+        .stat-dot { width: 14px; height: 14px; border-radius: 50%; }
+        
+        .q-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .q-grid-btn { padding: 10px 0; text-align: center; border-radius: 8px; font-weight: bold; background: var(--palette-unattempted); color: #2c3e50; border: none; font-size: 14px; }
+        .q-grid-btn.current { border: 3px solid #2c3e50; transform: scale(1.05);}
+        [data-theme="dark"] .q-grid-btn.current { border: 3px solid #fff; color: #fff; }
+        .q-grid-btn.attempted { background: var(--palette-attempted); color: #fff; }
+        .q-grid-btn.marked { background: var(--palette-marked); color: #fff; }
+        .q-grid-btn.marked.attempted { background: var(--palette-marked-attempted); color: #fff; }
+
+        .result-screen { display: none; max-width: 1000px; margin: 0 auto; width: 100%; padding-bottom: 50px;}
+        .result-header { text-align: center; margin-bottom: 30px; }
+        .badge { display: inline-block; padding: 10px 30px; border-radius: 30px; font-size: 1.5rem; font-weight: bold; color: #fff; margin-top: 10px; }
+        .badge.pass { background: var(--correct-color); }
+        .badge.fail { background: var(--incorrect-color); }
+        
+        .result-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-box { text-align: center; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .stat-box h3 { font-size: 2rem; margin-bottom: 5px; }
+
+        .solution-item { margin-bottom: 25px; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .sol-q { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; color: var(--primary-color); }
+        .sol-opt { margin-bottom: 8px; padding: 10px; border-radius: 8px; background: var(--glass-bg); }
+        .sol-opt.correct { background: var(--correct-color); color: #fff; border:none;}
+        .sol-opt.incorrect { background: var(--incorrect-color); color: #fff; border:none;}
+        .sol-exp { margin-top: 15px; font-size: 0.95rem; color: var(--text-color); border-left: 4px solid var(--primary-color); padding-left: 15px; line-height: 1.6; background: rgba(0,0,0,0.03); padding: 15px; border-radius: 8px;}
+        .sol-exp-title { color: var(--primary-color); font-weight: bold; margin-bottom: 5px; }
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            header { flex-direction: column; gap: 15px; text-align: center; }
+            .action-buttons { flex-direction: column; gap: 15px; }
+            .action-buttons > div { justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auto-save-toast" id="save-toast">Progress Auto-Saved! 💾</div>
+
+    <header class="glass-panel">
+        <div class="header-title">
+            <h1>HSSC mock test wala</h1>
+            <p>HSSC CET Group D Special (Static GK) | 25 Questions | 35 Minutes</p>
+        </div>
+        <div class="header-controls">
+            <div class="timer-container" id="timer-box">
+                <b>⏱</b>
+                <b class="timer" id="timer">35:00</b>
+                <button id="pause-btn" onclick="togglePause()">Pause</button>
+            </div>
+            <button onclick="toggleTheme()">🌗 Theme</button>
+            <button class="btn-submit" onclick="submitTest(false)">Submit Test</button>
+        </div>
+    </header>
+
+    <div class="container" id="app-container">
+        
+        <div class="glass-panel main-area">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+            
+            <div id="question-header" style="margin-bottom: 15px; font-weight: 600; color: var(--primary-color);"></div>
+            <div id="question-text" class="question-text"></div>
+            
+            <div class="options-grid" id="options-container"></div>
+
+            <div class="action-buttons">
+                <div>
+                    <button onclick="changeQuestion(-1)" id="prev-btn">Previous</button>
+                    <button onclick="clearSelection()">Clear</button>
+                </div>
+                <div>
+                    <button onclick="toggleMark()" id="mark-btn" class="btn-warning">Mark for Review</button>
+                    <button onclick="changeQuestion(1)" id="next-btn" class="btn-primary">Next</button>
+                </div>
+            </div>
+
+            <div class="pause-overlay" id="pause-overlay">
+                <h2>Test Paused ⏸️</h2>
+                <p>Questions are hidden to prevent cheating.</p>
+                <br>
+                <button class="btn-primary" onclick="togglePause()">Resume Test</button>
+            </div>
+        </div>
+
+        <div class="glass-panel sidebar">
+            <h3 style="text-align: center; margin-bottom: 15px;">Question Palette</h3>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-attempted)"></div> Attempted (<b id="count-att">0</b>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-unattempted)"></div> Unattempted (<b id="count-unatt">25</b>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-marked)"></div> Marked (<b id="count-mark">0</b>)</div>
+            </div>
+            <div class="q-grid" id="q-grid"></div>
+            <button class="btn-danger" onclick="resetTest()" style="margin-top: 10px; width: 100%; padding: 8px;">Reset Data</button>
+            <button class="btn-submit" onclick="submitTest(false)" style="margin-top: 10px; width: 100%; padding: 12px; font-size: 1.1rem;">Final Submit Test</button>
+        </div>
+    </div>
+
+    <div class="glass-panel result-screen" id="result-screen">
+        <div class="result-header">
+            <h2>Test Submitted Successfully! 🎉</h2>
+            <div class="badge" id="result-badge">Pass</div>
+        </div>
+        <div class="result-stats">
+            <div class="stat-box"><h3 id="res-score">0</h3><p>Score / 25</p></div>
+            <div class="stat-box"><h3 id="res-perc">0%</h3><p>Percentage</p></div>
+            <div class="stat-box"><h3 id="res-corr" style="color: var(--correct-color);">0</h3><p>Correct</p></div>
+            <div class="stat-box"><h3 id="res-incorr" style="color: var(--incorrect-color);">0</h3><p>Incorrect</p></div>
+            <div class="stat-box"><h3 id="res-time">00:00</h3><p>Time Taken</p></div>
+        </div>
+        
+        <div id="result-action-btns" style="text-align: center; margin-bottom: 30px;">
+            <button class="btn-primary" onclick="resetTest()" style="padding: 15px 40px; font-size: 1.1rem;">Start New Test</button>
+            <button class="btn-submit" onclick="downloadPDF()" style="padding: 15px 40px; font-size: 1.1rem; margin-left: 15px;">Download Solutions PDF 📥</button>
+        </div>
+
+        <h3 style="color: var(--primary-color); font-size: 1.5rem; text-align: center;">Detailed Solutions & Facts 📝</h3>
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--glass-border);">
+        <div id="solutions-container"></div>
+    </div>
+
+<script>
+    const questions = [
+        {
+            "q": "'सुधारान्दोलन' (Reformation) क्या है?",
+            "opt": ["विवेचनात्मक ज्ञान का पुनःप्रवर्तन", "पोप के प्रभुत्व के खिलाफ विद्रोह", "परम राजसी का उदय", "मनुष्य के आचार व्यवहार में परिवर्तन"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>पोप के प्रभुत्व के खिलाफ विद्रोह</b>[span_0](start_span)[span_0](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - सुधार आंदोलन 16वीं शताब्दी में यूरोप में हुआ था।<br> - मार्टिन लूथर इसके प्रमुख प्रणेता थे।<br> - यह कैथोलिक चर्च की कुरीतियों के खिलाफ था।<br> - इस आंदोलन से ईसाई धर्म में प्रोटेस्टेंट (Protestant) शाखा की उत्पत्ति हुई।<br> - 1517 ई. में इसकी शुरुआत मुख्य रूप से जर्मनी से मानी जाती है।</div>"
+        },
+        {
+            "q": "\"स्वराज मेरा जन्म सिद्ध अधिकार है, और मैं इसे पा कर ही रहूँगा।\" यह किसका नारा था?",
+            "opt": ["महात्मा गांधी", "लाला लाजपत राय", "सरदार पटेल", "लोकमान्य तिलक"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>लोकमान्य तिलक</b>[span_1](start_span)[span_1](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - यह प्रसिद्ध नारा बाल गंगाधर तिलक (लोकमान्य तिलक) ने दिया था।<br> - अंग्रेजों ने उन्हें भारतीय अशांति का जनक (Father of Indian Unrest) कहा था।<br> - इन्होंने 'मराठा' (अंग्रेजी भाषा में) और 'केसरी' (मराठी भाषा में) समाचार पत्र शुरू किए।<br> - इन्होंने 1916 में एनी बेसेंट के साथ मिलकर होमरूल लीग (Home Rule League) की स्थापना की।<br> - गणेश उत्सव और शिवाजी उत्सव की शुरुआत भी महाराष्ट्र में इन्हीं के द्वारा की गई थी।</div>"
+        },
+        {
+            "q": "निम्नलिखित में से किसे भूमध्य सागर का लाईट हाउस (प्रकाश स्तंभ) कहते हैं?",
+            "opt": ["सिसली का स्ट्राम्बोली", "पश्चिमी द्वीप समूह का माउंट पीली", "मैक्सिकों का पेराक्युटिन", "इटली का विसूवियस"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>सिसली का स्ट्राम्बोली</b>[span_2](start_span)[span_2](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - स्ट्राम्बोली (Stromboli) एक जाग्रत (Active) ज्वालामुखी है जिससे हमेशा गैस और प्रकाश निकलता रहता है।<br> - यह इटली के सिसली द्वीप के उत्तर में लिपारी द्वीप पर स्थित है।<br> - रात के समय इससे निकलने वाला प्रकाश दूर से दिखाई देता है, इसलिए इसे भूमध्य सागर का प्रकाश स्तंभ कहते हैं।<br> - भूमध्य सागर यूरोप और अफ्रीका महाद्वीपों को अलग करता है।<br> - कोटोपैक्सी (इक्वाडोर) विश्व का सबसे ऊँचा जाग्रत ज्वालामुखी है।</div>"
+        },
+        {
+            "q": "भारतीय राष्ट्रीय कांग्रेस का गठन किस वर्ष हुआ था?",
+            "opt": ["1901", "1835", "1875", "1885"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>1885</b>[span_3](start_span)[span_3](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - भारतीय राष्ट्रीय कांग्रेस की स्थापना 28 दिसंबर 1885 को बंबई (मुम्बई) में हुई थी।<br> - इसके संस्थापक ए.ओ. ह्यूम (A.O. Hume) थे, जो एक सेवानिवृत्त ब्रिटिश अधिकारी थे।<br> - प्रथम अधिवेशन बंबई के गोकुलदास तेजपाल संस्कृत विद्यालय में हुआ था।<br> - इसके प्रथम अध्यक्ष व्योमेश चंद्र बनर्जी (W.C. Banerjee) थे।<br> - उस समय भारत का वायसराय लॉर्ड डफरिन था।</div>"
+        },
+        {
+            "q": "बंगला देश की स्थापना किस वर्ष हुई?",
+            "opt": ["1973", "1970", "1972", "1971"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>1971</b>[span_4](start_span)[span_4](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - 1971 के ऐतिहासिक भारत-पाकिस्तान युद्ध के बाद पूर्वी पाकिस्तान स्वतंत्र होकर नया राष्ट्र 'बांग्लादेश' बना।<br> - 26 मार्च 1971 को बांग्लादेश ने अपनी स्वतंत्रता की आधिकारिक घोषणा की थी।<br> - शेख मुजीबुर रहमान को बांग्लादेश का 'राष्ट्रपिता' (बंगबंधु) कहा जाता है।<br> - बांग्लादेश की राजधानी ढाका है और इसकी मुद्रा टका (Taka) है।<br> - भारत अपनी सबसे लंबी अंतरराष्ट्रीय सीमा (लगभग 4096 किमी) बांग्लादेश के साथ ही साझा करता है।</div>"
+        },
+        {
+            "q": "इनमें से किसके संस्थापक राजा राम मोहन राय थे?",
+            "opt": ["ब्रह्मो समाज", "प्रार्थना समाज", "रामकृष्ण मिशन", "आर्य समाज"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>ब्रह्मो समाज</b>[span_5](start_span)[span_5](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - राजा राम मोहन राय ने 1828 ई. में 'ब्रह्म समाज' की स्थापना की थी।<br> - इन्हें 'भारतीय पुनर्जागरण का पिता' (Father of Indian Renaissance) कहा जाता है।<br> - इन्होंने सती प्रथा के अंत (1829 में) के लिए लार्ड विलियम बेंटिक की महत्वपूर्ण रूप से मदद की थी।<br> - मुग़ल सम्राट अकबर द्वितीय ने इन्हें 'राजा' की उपाधि प्रदान की थी।<br> - इनकी प्रसिद्ध पत्रिका का नाम 'संवाद कौमुदी' (बंगाली भाषा में) है।</div>"
+        },
+        {
+            "q": "संयुक्त राष्ट्र महा सभा की पहली महिला भारतीय अध्यक्ष कौन थी?",
+            "opt": ["मारग्रेट थैचर", "गोल्डा मेयर", "सरोजनी नायडू", "विजया लक्ष्मी पण्डित"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>विजया लक्ष्मी पण्डित</b>[span_6](start_span)[span_6](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - विजया लक्ष्मी पंडित 1953 में संयुक्त राष्ट्र महासभा (UNGA) की 8वीं अध्यक्ष चुनी गई थीं।<br> - वह इस प्रतिष्ठित पद पर पहुँचने वाली भारत ही नहीं बल्कि विश्व की पहली महिला थीं।<br> - वह भारत के प्रथम प्रधानमंत्री पंडित जवाहरलाल नेहरू की बहन थीं।<br> - संयुक्त राष्ट्र (UN) की स्थापना 24 अक्टूबर 1945 को हुई थी।<br> - संयुक्त राष्ट्र का मुख्यालय न्यूयॉर्क (USA) में स्थित है।</div>"
+        },
+        {
+            "q": "एक रुपये के नोट पर किसके हस्ताक्षर होते हैं?",
+            "opt": ["रिज़र्व बैंक ऑफ़ इंडिया के गवर्नर", "वित्त मंत्री", "वित्त मंत्रालय के सचिव", "इनमें कोई नहीं"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>वित्त मंत्रालय के सचिव</b>[span_7](start_span)[span_7](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - भारत में 1 रुपये का नोट भारत सरकार के 'वित्त मंत्रालय' द्वारा जारी किया जाता है।<br> - इसलिए इस पर रिज़र्व बैंक के गवर्नर के नहीं, बल्कि भारत सरकार के 'वित्त सचिव' (Finance Secretary) के हस्ताक्षर होते हैं।<br> - 2 रुपये से लेकर 2000 रुपये तक के सभी बैंक नोट रिज़र्व बैंक (RBI) द्वारा जारी किए जाते हैं।<br> - अन्य सभी करेंसी नोटों पर RBI गवर्नर के हस्ताक्षर होते हैं।<br> - सिक्कों की ढलाई (Minting) का अधिकार भी भारत सरकार के पास ही सुरक्षित है।</div>"
+        },
+        {
+            "q": "सऊदी अरैबिया की मुद्रा क्या है?",
+            "opt": ["रियाल", "पाउंड", "लीरा", "दीनार"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>रियाल</b>[span_8](start_span)[span_8](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - सऊदी अरब की आधिकारिक राष्ट्रीय मुद्रा 'सऊदी रियाल' (Saudi Riyal) है।<br> - सऊदी अरब की राजधानी का नाम रियाद (Riyadh) है।<br> - मक्का और मदीना जैसे इस्लाम धर्म के सबसे पवित्र स्थल इसी देश में स्थित हैं।<br> - यहाँ की अर्थव्यवस्था का मुख्य आधार पेट्रोलियम (Oil) का निर्यात है।<br> - सऊदी अरब पश्चिम एशिया (मध्य पूर्व) का क्षेत्रफल के हिसाब से सबसे बड़ा देश है।</div>"
+        },
+        {
+            "q": "रिज़र्व बैंक का राष्ट्रीयकरण किस वर्ष हुआ था?",
+            "opt": ["1951", "1947", "1935", "1949"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>1949</b>[span_9](start_span)[span_9](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - रिज़र्व बैंक ऑफ इंडिया (RBI) का राष्ट्रीयकरण (Nationalisation) 1 जनवरी 1949 को किया गया था।<br> - RBI की स्थापना 1 अप्रैल 1935 को भारतीय रिज़र्व बैंक अधिनियम, 1934 के तहत हुई थी।<br> - हिल्टन-यंग आयोग (रॉयल कमीशन) की सिफारिश पर इसका गठन किया गया था।<br> - इसके प्रथम गवर्नर सर ओसबोर्न स्मिथ थे।<br> - RBI के प्रथम भारतीय गवर्नर सी.डी. देशमुख थे। वर्तमान (2024 तक) में शक्तिकांत दास इसके 25वें गवर्नर हैं।</div>"
+        },
+        {
+            "q": "निम्नलिखित में से कौन सा भारतीय लोकनृत्य (Folk Dance) है?",
+            "opt": ["कथकली", "मोहिनियाट्टम", "मणिपुरी", "गरबा"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>गरबा</b>[span_10](start_span)[span_10](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - गरबा (Garba) गुजरात राज्य का एक बेहद प्रसिद्ध 'लोक नृत्य' (Folk Dance) है, विशेषकर यह नवरात्रि के समय किया जाता है।<br> - अन्य तीनों (कथकली, मोहिनियाट्टम, और मणिपुरी) भारत के 'शास्त्रीय नृत्य' (Classical Dances) की श्रेणी में आते हैं।<br> - कथकली और मोहिनियाट्टम दोनों ही केरल राज्य के शास्त्रीय नृत्य हैं।<br> - भारत में संगीत नाटक अकादमी द्वारा कुल 8 नृत्यों को 'शास्त्रीय नृत्य' का दर्जा प्राप्त है।</div>"
+        },
+        {
+            "q": "एन.ए.बी.ए.आर.डी (NABARD) किसका द्योतक है?",
+            "opt": ["नेशनल बिज़नेस फॉर एकाउंटिंग एण्ड रिविविंग", "नेशनल बैंक फॉर एग्रीकल्चर एण्ड रूरल डेवलपमेंट", "नेशनल बैंक फॉर ऐरिओनॉटिक्स एण्ड रेडार डेवलपमेंट", "नेशनल ब्यूरो फॉर ऐअर एण्ड रोड ट्रांसपोर्ट"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>नेशनल बैंक फॉर एग्रीकल्चर एण्ड रूरल डेवलपमेंट</b>[span_11](start_span)[span_11](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - NABARD का पूरा नाम National Bank for Agriculture and Rural Development (राष्ट्रीय कृषि और ग्रामीण विकास बैंक) है।<br> - इसकी स्थापना 12 जुलाई 1982 को हुई थी।<br> - बी. शिवरामन समिति (B. Sivaraman Committee) की सिफारिश पर इसे स्थापित किया गया था।<br> - इसका मुख्यालय मुंबई (महाराष्ट्र) में स्थित है।<br> - यह भारत में कृषि ऋण (Agriculture Credit) उपलब्ध कराने वाली सर्वोच्च संस्था है।</div>"
+        },
+        {
+            "q": "लोक सभा के प्रथम अध्यक्ष कौन थे?",
+            "opt": ["बी. आर. अम्बेडकर", "जी.वी. मावलंकर", "एन. संजीवा रेड्डी", "डा. एस.पी. मुखर्जी"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>जी.वी. मावलंकर</b>[span_12](start_span)[span_12](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - गणेश वासुदेव मावलंकर (G. V. Mavalankar) स्वतंत्र भारत की पहली लोकसभा के प्रथम अध्यक्ष (Speaker) बने थे।<br> - इन्हें 'लोकसभा के पिता' (Father of Lok Sabha) के नाम से भी जाना जाता है।<br> - भारत की प्रथम महिला लोकसभा अध्यक्ष मीरा कुमार थीं।<br> - भारतीय संविधान के अनुच्छेद 93 के तहत लोकसभा अध्यक्ष और उपाध्यक्ष का प्रावधान किया गया है।<br> - लोकसभा अध्यक्ष अपना त्यागपत्र हमेशा उपाध्यक्ष (Deputy Speaker) को सौंपता है।</div>"
+        },
+        {
+            "q": "पृथ्वी पर कहाँ दिन तथा रात एक समान (बराबर) होते हैं?",
+            "opt": ["प्रमुख याम्योत्तर", "धुव्र", "भूमध्यरेखा", "अंटार्कटिका"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>भूमध्यरेखा</b>[span_13](start_span)[span_13](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - भूमध्य रेखा (Equator / 0° अक्षांश) पर पूरे वर्ष दिन और रात की अवधि लगभग एक समान (12-12 घंटे) होती है।<br> - इसका कारण यह है कि यहाँ सूर्य की किरणें साल भर लगभग लंबवत (Straight) पड़ती हैं।<br> - 21 मार्च और 23 सितंबर को पूरी पृथ्वी पर दिन और रात बराबर होते हैं, इस खगोलीय घटना को विषुव (Equinox) कहा जाता है।<br> - ध्रुवों (Poles) पर 6 महीने का लगातार दिन और 6 महीने की लगातार रात होती है।<br> - भूमध्य रेखा पृथ्वी को उत्तरी गोलार्ध और दक्षिणी गोलार्ध में विभाजित करती है।</div>"
+        },
+        {
+            "q": "सदाबहार किस्म के वन कहाँ पाए जाते हैं?",
+            "opt": ["भूमध्यसागरीय क्षेत्र", "मानसून जलवायुवीय क्षेत्र", "मरुस्थलीय क्षेत्र", "भूमध्यरेखीय क्षेत्र"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>भूमध्यरेखीय क्षेत्र</b>[span_14](start_span)[span_14](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - भूमध्यरेखीय क्षेत्र (Equatorial region) में अत्यधिक गर्मी और रोज़ाना दोपहर बाद होने वाली भारी वर्षा के कारण 'उष्णकटिबंधीय सदाबहार वन' पाए जाते हैं।<br> - इन वनों के पेड़ अपनी पत्तियां एक साथ कभी नहीं गिराते, इसलिए ये साल भर हरे-भरे दिखते हैं।<br> - अमेज़न नदी बेसिन (ब्राज़ील) के सदाबहार वनों को उनकी विशालता के कारण 'पृथ्वी का फेफड़ा' (Lungs of the Earth) कहा जाता है।<br> - भारत में ये वन मुख्य रूप से पश्चिमी घाट, अंडमान-निकोबार द्वीप समूह और पूर्वोत्तर राज्यों में मिलते हैं।<br> - महोगनी, आबनूस (Ebony), और रोज़वुड इन वनों के प्रमुख वृक्ष हैं।</div>"
+        },
+        {
+            "q": "राख जैसी धूसर मृदा वाले उच्च अक्षांश के चीड़ के वनों को किस नाम से जाना जाता है?",
+            "opt": ["धूसर भूरी मृदा", "लाल तथा पीत मृदा", "टुन्ड्रा मृदा", "पौइसॉल्स (Podsols)"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>पौइसॉल्स (Podsols)</b>[span_15](start_span)[span_15](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - उच्च अक्षांशीय शंकुधारी (Coniferous) वनों में पाई जाने वाली राख के रंग की अम्लीय और कम उपजाऊ मिट्टी को पॉडसॉल (Podsol) कहा जाता है।<br> - यह मिट्टी मुख्य रूप से उत्तरी गोलार्ध के टैगा (Taiga) जलवायु प्रदेशों में मिलती है।<br> - इस मिट्टी में ह्यूमस (Humus) और पोषक तत्वों की भारी कमी होती है।<br> - इसका निर्माण अत्यधिक लीचिंग (निक्षालन) की भौगोलिक प्रक्रिया से होता है।<br> - ठंडे मौसम के कारण सूक्ष्मजीवों की कमी से इसमें पत्तियां जल्दी नहीं सड़ पातीं।</div>"
+        },
+        {
+            "q": "मताधिकार (Voting) एक प्रकार से क्या है?",
+            "opt": ["क्षेत्र की इकाई की संरचना करना", "वह प्रक्रिया जिससे वोटर अपने वोट देने के अधिकार का प्रयोग करता है", "प्रतिनिधियों के चयन की एक प्रक्रिया", "सर्वव्यापक प्रौढ़ विशेषाधिकार"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>वह प्रक्रिया जिससे वोटर अपने वोट देने के अधिकार का प्रयोग करता है</b>[span_16](start_span)[span_16](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - मताधिकार (Voting) एक महत्वपूर्ण राजनीतिक प्रक्रिया है जिसके द्वारा नागरिक चुनावों में अपना वोट डालकर अपनी पसंद का प्रतिनिधि चुनते हैं।<br> - भारतीय संविधान के अनुच्छेद 326 के तहत 'वयस्क मताधिकार' (Adult Suffrage) का प्रावधान किया गया है।<br> - 61वें संविधान संशोधन अधिनियम (1989) द्वारा भारत में मतदान की न्यूनतम आयु 21 वर्ष से घटाकर 18 वर्ष कर दी गई थी।<br> - भारत में वोट देना एक विधिक/संवैधानिक अधिकार (Legal Right) माना जाता है।<br> - प्रत्येक वर्ष 25 जनवरी को भारत में 'राष्ट्रीय मतदाता दिवस' (National Voters' Day) मनाया जाता है।</div>"
+        },
+        {
+            "q": "भारतीय राष्ट्रीय कांग्रेस के गठन संबंधी आन्दोलन की शुरुआत किसने की थी?",
+            "opt": ["एनी बेसेंट", "ए.ओ. ह्यूम", "डब्लू. सी. बनर्जी", "गाँधी जी"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>ए.ओ. ह्यूम</b>[span_17](start_span)[span_17](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - एलन ऑक्टेवियन ह्यूम (A.O. Hume) एक सेवानिवृत्त ब्रिटिश सिविल सेवक थे, जिन्होंने 1885 में भारतीय राष्ट्रीय कांग्रेस (INC) की स्थापना की पहल की थी।<br> - ए.ओ. ह्यूम को प्यार से 'हर्मिट ऑफ शिमला' (शिमला का संत) भी कहा जाता था।<br> - कांग्रेस की स्थापना के समय भारत के वायसराय लॉर्ड डफरिन (Lord Dufferin) थे।<br> - कांग्रेस के प्रथम अधिवेशन में देश भर से केवल 72 प्रतिनिधियों ने भाग लिया था।<br> - डब्ल्यू.सी. बनर्जी (W. C. Bonnerjee) कांग्रेस के पहले अध्यक्ष बने थे, जबकि ह्यूम इसके पहले महासचिव थे।</div>"
+        },
+        {
+            "q": "'संवैधानिक राजशाही' (Constitutional Monarchy) का अर्थ क्या है?",
+            "opt": ["जनता द्वारा राजा का चुना जाना", "राजा द्वारा संविधान को परिभाषित करना", "राजा द्वारा संविधान की रचना करना", "संविधान द्वारा प्राप्त शक्ति के अनुसार राजा के द्वारा शक्तियों का प्रयोग"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>संविधान द्वारा प्राप्त शक्ति के अनुसार राजा के द्वारा शक्तियों का प्रयोग</b>[span_18](start_span)[span_18](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - संवैधानिक राजशाही सरकार का वह रूप है जिसमें राजा (Monarch) राज्य का मुखिया तो होता है, लेकिन उसकी शक्तियां एक लिखित या अलिखित संविधान द्वारा सीमित होती हैं।<br> - यूनाइटेड किंगडम (ब्रिटेन) दुनिया में इसका सबसे उत्कृष्ट और पुराना उदाहरण है।<br> - जापान, स्पेन, स्वीडन और भूटान जैसे देशों में भी वर्तमान में यही शासन प्रणाली लागू है।<br> - इस व्यवस्था में वास्तविक कार्यकारी शक्तियां चुनी हुई संसद या प्रधानमंत्री के नेतृत्व वाली कैबिनेट के पास होती हैं।<br> - इसके विपरीत, पूर्ण राजशाही (Absolute Monarchy) में राजा के पास असीमित और निरंकुश शक्तियां होती हैं (जैसे सऊदी अरब)।</div>"
+        },
+        {
+            "q": "ग्रेनाइट और क्वार्टजाइट क्षेत्र खड़ा रूप (Upstanding look) प्रदर्शित करते हैं क्योंकि:",
+            "opt": ["आसानी से घिसती नहीं हैं", "यह चट्टाने हर प्रकार के अपरदन के प्रति प्रतिरोधी है", "इन चट्टानों का अपरदन आसानी से नहीं होता", "यांत्रिक रूप से तेजी से अपक्षीण होती हैं"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>इन चट्टानों का अपरदन आसानी से नहीं होता</b>[span_19](start_span)[span_19](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - ग्रेनाइट और क्वार्टजाइट प्रकृति में बहुत कठोर और सघन चट्टानें होती हैं, जो पानी, हवा या बर्फ द्वारा आसानी से अपरदित (Eroded) या घिसती नहीं हैं।<br> - इसी कठोरता के कारण ये पहाड़ या ऊंचे टीलों के रूप में (खड़े रूप में) बची रह जाती हैं।<br> - ग्रेनाइट एक 'आग्नेय चट्टान' (Igneous rock) का उदाहरण है जो मैग्मा के ठंडा होने से बनती है।<br> - क्वार्टजाइट एक 'कायांतरित चट्टान' (Metamorphic rock) है जो अत्यधिक ताप और दाब के कारण बलुआ पत्थर (Sandstone) से बनती है।<br> - दक्षिण भारत के कई प्राचीन मंदिर ग्रेनाइट पत्थरों को तराश कर ही बनाए गए हैं।</div>"
+        },
+        {
+            "q": "भारतीय वोकल म्यूजिक (गायन) का प्राचीन रूप क्या है?",
+            "opt": ["ठुमरी", "गज़ल", "ध्रुपद", "दिए गए विकल्पों में से कोई नहीं"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>ध्रुपद</b>[span_20](start_span)[span_20](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - ध्रुपद (Dhrupad) हिंदुस्तानी शास्त्रीय संगीत (गायन) की सबसे पुरानी और भव्य विधाओं में से एक है[span_21](start_span)[span_21](end_span)।<br> - इसकी उत्पत्ति वेदों, विशेषकर 'सामवेद' के मंत्रोच्चारण से मानी जाती है।<br> - ग्वालियर के राजा मानसिंह तोमर ने 15वीं शताब्दी में ध्रुपद गायन को संरक्षण देकर इसे बहुत लोकप्रिय बनाया था।<br> - मुगल सम्राट अकबर के दरबार के नवरत्न तानसेन और उनके गुरु स्वामी हरिदास ध्रुपद के महान और सिद्ध गायक थे।<br> - ख्याल, ठुमरी और टप्पा जैसी शैलियां ध्रुपद के बाद विकसित हुई हैं।</div>"
+        },
+        {
+            "q": "एकतंत्र (Autocracy) का क्या अर्थ है?",
+            "opt": ["राजा द्वारा शासन", "कुछ के द्वारा शासन", "मात्र एक व्यक्ति द्वारा निरंकुश शासन", "जनप्रतिनिधियों द्वारा शासन"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>मात्र एक व्यक्ति द्वारा निरंकुश शासन</b>[span_22](start_span)[span_22](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - एकतंत्र या निरंकुश शासन (Autocracy) सरकार का वह रूप है जिसमें एक ही व्यक्ति के पास सभी राजनीतिक शक्तियाँ केंद्रित होती हैं और वह किसी भी कानूनी प्रतिबंध से मुक्त होता है[span_23](start_span)[span_23](end_span)।<br> - तानाशाही (Dictatorship) ऑटोक्रेसी का ही एक व्यावहारिक रूप है।<br> - जर्मन तानाशाह एडोल्फ हिटलर और इटली का बेनिटो मुसोलिनी इसके ऐतिहासिक उदाहरण माने जाते हैं।<br> - 'कुछ लोगों के शासन' को अंग्रेजी में ओलिगार्की (Oligarchy) कहते हैं।<br> - 'जनप्रतिनिधियों के शासन' को लोकतंत्र (Democracy) कहा जाता है, जहाँ सत्ता जनता के हाथों में होती है।</div>"
+        },
+        {
+            "q": "स्टेट बैंक ऑफ इंडिया (SBI) पहले किस नाम से जाना जाता था?",
+            "opt": ["इम्पीरियल बैंक ऑफ़ इण्डिया", "कैनरा बैंक", "सिंडिकेट बैंक", "कोआपरेटिव बैंक ऑफ़ इंडिया"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>इम्पीरियल बैंक ऑफ़ इण्डिया</b>[span_24](start_span)[span_24](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - 1921 में अंग्रेजों द्वारा तीन प्रेसीडेंसी बैंकों (बैंक ऑफ बंगाल, बैंक ऑफ बॉम्बे और बैंक ऑफ मद्रास) का विलय करके 'इंपीरियल बैंक ऑफ इंडिया' बनाया गया था[span_25](start_span)[span_25](end_span)।<br> - गोरेवाला समिति की सिफारिश के आधार पर 1 जुलाई 1955 को इसका राष्ट्रीयकरण किया गया और इसका नाम बदलकर 'स्टेट बैंक ऑफ इंडिया' (SBI) रख दिया गया।<br> - SBI वर्तमान में संपत्ति और ग्राहकों के मामले में भारत का सबसे बड़ा वाणिज्यिक (Commercial) बैंक है।<br> - इसका मुख्यालय नरीमन पॉइंट, मुंबई (महाराष्ट्र) में स्थित है।<br> - भारतीय महिला बैंक का विलय भी 2017 में SBI में कर दिया गया था।</div>"
+        },
+        {
+            "q": "आंध्र प्रदेश का क्लासिकल (शास्त्रीय) नृत्य कौन सा है?",
+            "opt": ["कत्थककली", "भरतनाट्यम", "कुच्चीपुड़ी", "उडीसी"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>कुच्चीपुड़ी</b>[span_26](start_span)[span_26](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - कुचीपुड़ी (Kuchipudi) आंध्र प्रदेश का सबसे प्रसिद्ध और पारंपरिक शास्त्रीय नृत्य है[span_27](start_span)[span_27](end_span)।<br> - इसका नाम आंध्र प्रदेश के कृष्णा जिले के 'कुचेलपुरम' नामक गाँव के नाम पर पड़ा है, जहाँ इसकी उत्पत्ति हुई थी।<br> - भरतनाट्यम तमिलनाडु का सबसे प्राचीन शास्त्रीय नृत्य है।<br> - कथकली (और मोहिनियाट्टम) केरल राज्य के प्रमुख शास्त्रीय नृत्य हैं।<br> - कुचीपुड़ी नृत्य में नर्तकों द्वारा पीतल की थाली के किनारों पर पैर रखकर और सिर पर पानी से भरा मटका रखकर संतुलन बनाने वाला नृत्य (तरंगम) बहुत लोकप्रिय है।</div>"
+        },
+        {
+            "q": "दादा साहेब फाल्के ने किस वर्ष अपनी पहली फीचर फिल्म तैयार की थी?",
+            "opt": ["1913", "1911", "1910", "1912"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>1913</b>[span_28](start_span)[span_28](end_span)।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - धुंडीराज गोविंद फाल्के (जिन्हें दादा साहेब फाल्के कहा जाता है) ने 1913 में भारत की पहली फुल-लेंथ फीचर फिल्म 'राजा हरिश्चंद्र' बनाई थी[span_29](start_span)[span_29](end_span)।<br> - यह एक मूक (Silent) फिल्म थी, जिसमें कोई आवाज या संवाद नहीं था।<br> - सिनेमा जगत में उनके इस अद्वितीय योगदान के कारण दादा साहेब फाल्के को 'भारतीय सिनेमा का पितामह' (Father of Indian Cinema) कहा जाता है।<br> - भारत की पहली बोलती (Talkie) फिल्म 'आलम आरा' थी, जिसे 1931 में अर्देशिर ईरानी ने निर्देशित किया था।<br> - सिनेमा के क्षेत्र में भारत सरकार द्वारा दिया जाने वाला सर्वोच्च पुरस्कार 'दादा साहेब फाल्के पुरस्कार' है।</div>"
+        }
+    ];
+
+    // Shuffle the questions array to mix them randomly
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+    shuffleArray(questions);
+
+    let currentIdx = 0;
+    const totalQ = questions.length;
+    let answers = new Array(totalQ).fill(null);
+    let marked = new Array(totalQ).fill(false);
+    
+    // Timer is set to 35 minutes (35 * 60 seconds)
+    let totalTime = 35 * 60; 
+    let timerInterval;
+    let isPaused = false;
+
+    // Initialization
+    function init() {
+        if (!loadProgress()) {
+            answers = new Array(totalQ).fill(null);
+            marked = new Array(totalQ).fill(false);
+            totalTime = 35 * 60;
+            currentIdx = 0;
+        }
+        createPalette();
+        loadQuestion(currentIdx);
+        updateStats();
+        startTimer();
+    }
+
+    // Theme Logic
+    function toggleTheme() {
+        const doc = document.documentElement;
+        const current = doc.getAttribute('data-theme');
+        doc.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+    }
+
+    // Timer Logic
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if(totalTime <= 0) {
+                clearInterval(timerInterval);
+                submitTest(true);
+                return;
+            }
+            totalTime--;
+            updateTimerDisplay();
+            
+            // Background Auto Save every 30 seconds
+            if(totalTime % 30 === 0) saveProgress(false);
+
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(totalTime / 60).toString().padStart(2, '0');
+        const secs = (totalTime % 60).toString().padStart(2, '0');
+        const timerEl = document.getElementById('timer');
+        timerEl.innerText = `${mins}:${secs}`;
+        
+        if (totalTime < 300) { 
+            timerEl.classList.add('danger');
+        } else {
+            timerEl.classList.remove('danger');
+        }
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        const overlay = document.getElementById('pause-overlay');
+        const btn = document.getElementById('pause-btn');
+        
+        if (isPaused) {
+            clearInterval(timerInterval);
+            overlay.style.display = 'flex';
+            btn.innerText = 'Resume';
+            btn.classList.add('btn-warning');
+        } else {
+            startTimer();
+            overlay.style.display = 'none';
+            btn.innerText = 'Pause';
+            btn.classList.remove('btn-warning');
+        }
+    }
+
+    // Quiz Navigation & Rendering
+    function loadQuestion(idx) {
+        currentIdx = idx;
+        const qData = questions[idx];
+        
+        document.getElementById('question-header').innerText = `प्रश्न ${idx + 1} / ${totalQ}`;
+        document.getElementById('question-text').innerHTML = qData.q;
+        
+        const optsContainer = document.getElementById('options-container');
+        optsContainer.innerHTML = '';
+        
+        qData.opt.forEach((optText, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn' + (answers[idx] === i ? ' selected' : '');
+            
+            btn.innerHTML = `<div style="font-weight:bold; border:1px solid currentColor; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${String.fromCharCode(65+i)}</div> ${optText}`;
+            btn.onclick = () => selectOption(i);
+            optsContainer.appendChild(btn);
+        });
+
+        // Update progress bar
+        document.getElementById('progress-bar').style.width = `${((idx + 1) / totalQ) * 100}%`;
+
+        // Update buttons
+        document.getElementById('prev-btn').disabled = (idx === 0);
+        document.getElementById('prev-btn').style.opacity = (idx === 0) ? '0.5' : '1';
+        
+        const markBtn = document.getElementById('mark-btn');
+        markBtn.innerText = marked[idx] ? 'मार्क हटाएँ (Unmark)' : 'मार्क करें (Mark)';
+        
+        const nextBtn = document.getElementById('next-btn');
+        if (idx === totalQ - 1) {
+            nextBtn.innerText = 'टेस्ट सबमिट करें';
+            nextBtn.className = 'btn-danger';
+        } else {
+            nextBtn.innerText = 'अगला प्रश्न (Next)';
+            nextBtn.className = 'btn-primary';
+        }
+
+        updatePaletteVisuals();
+    }
+
+    // --- AUTO SAVE FUNCTIONS ---
+    function saveProgress(showToast = true) {
+        const testState = {
+            answers: answers,
+            marked: marked,
+            totalTime: totalTime,
+            currentIdx: currentIdx
+        };
+        // Unique storage key for Static GK test
+        localStorage.setItem('hsscMockTestState_GK_Static_35m', JSON.stringify(testState));
+        
+        if(showToast) {
+            const toast = document.getElementById('save-toast');
+            toast.style.opacity = '1';
+            setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+        }
+    }
+
+    function loadProgress() {
+        const savedState = localStorage.getItem('hsscMockTestState_GK_Static_35m');
+        if (savedState) {
+            const state = JSON.parse(savedState);
+            answers = state.answers;
+            marked = state.marked;
+            totalTime = state.totalTime;
+            currentIdx = state.currentIdx || 0;
+            return true;
+        }
+        return false;
+    }
+
+    function clearProgress() {
+        localStorage.removeItem('hsscMockTestState_GK_Static_35m');
+    }
+
+    function resetTest() {
+        if(confirm("क्या आप निश्चित रूप से एक नया टेस्ट शुरू करना चाहते हैं? आपकी वर्तमान प्रोग्रेस डिलीट हो जाएगी।")) {
+            clearProgress();
+            location.reload();
+        }
+    }
+    // ----------------------------
+
+    function selectOption(optIdx) {
+        answers[currentIdx] = optIdx;
+        loadQuestion(currentIdx);
+        updateStats();
+        saveProgress(true);
+    }
+
+    function clearSelection() {
+        answers[currentIdx] = null;
+        loadQuestion(currentIdx);
+        updateStats();
+        saveProgress(true);
+    }
+
+    function toggleMark() {
+        marked[currentIdx] = !marked[currentIdx];
+        loadQuestion(currentIdx);
+        updateStats();
+        saveProgress(true);
+    }
+
+    function changeQuestion(step) {
+        if (step === 1 && currentIdx === totalQ - 1) {
+            submitTest(false);
+            return;
+        }
+        let newIdx = currentIdx + step;
+        if (newIdx >= 0 && newIdx < totalQ) {
+            currentIdx = newIdx;
+            loadQuestion(newIdx);
+            saveProgress(false);
+        }
+    }
+
+    // Palette Logic
+    function createPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'q-grid-btn';
+            btn.id = `pal-btn-${i}`;
+            btn.innerText = i + 1;
+            btn.onclick = () => { currentIdx = i; loadQuestion(i); saveProgress(false); };
+            grid.appendChild(btn);
+        }
+    }
+
+    function updatePaletteVisuals() {
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.getElementById(`pal-btn-${i}`);
+            btn.className = 'q-grid-btn';
+            
+            if (answers[i] !== null && marked[i]) btn.classList.add('marked', 'attempted');
+            else if (marked[i]) btn.classList.add('marked');
+            else if (answers[i] !== null) btn.classList.add('attempted');
+            
+            if (i === currentIdx) btn.classList.add('current');
+        }
+    }
+
+    function updateStats() {
+        let att = 0, mark = 0;
+        for (let i = 0; i < totalQ; i++) {
+            if (answers[i] !== null) att++;
+            if (marked[i]) mark++;
+        }
+        document.getElementById('count-att').innerText = att;
+        document.getElementById('count-unatt').innerText = totalQ - att;
+        document.getElementById('count-mark').innerText = mark;
+        updatePaletteVisuals();
+    }
+
+    // Submission & Results
+    function submitTest(isAuto) {
+        const unatt = answers.filter(a => a === null).length;
+        if (!isAuto && unatt > 0) {
+            const confirmSubmit = confirm(`आपने ${unatt} प्रश्न हल नहीं किए हैं। क्या आप निश्चित रूप से टेस्ट सबमिट करना चाहते हैं?`);
+            if (!confirmSubmit) return;
+        }
+
+        clearInterval(timerInterval);
+        document.getElementById('app-container').style.display = 'none';
+        document.querySelector('.header-controls').style.display = 'none';
+        clearProgress(); // Clear saved state on submit
+        generateResults();
+    }
+
+    function generateResults() {
+        const resScreen = document.getElementById('result-screen');
+        resScreen.style.display = 'block';
+
+        let correct = 0;
+        let incorrect = 0;
+        
+        answers.forEach((ans, i) => {
+            if (ans !== null) {
+                if (ans === questions[i].ans) correct++;
+                else incorrect++;
+            }
+        });
+
+        const score = correct;
+        const perc = ((score / totalQ) * 100).toFixed(2);
+        
+        const timeTakenSec = (35 * 60) - totalTime;
+        const timeMins = Math.floor(timeTakenSec / 60).toString().padStart(2, '0');
+        const timeSecs = (timeTakenSec % 60).toString().padStart(2, '0');
+
+        document.getElementById('res-score').innerText = score;
+        document.getElementById('res-perc').innerText = perc + '%';
+        document.getElementById('res-corr').innerText = correct;
+        document.getElementById('res-incorr').innerText = incorrect;
+        document.getElementById('res-time').innerText = `${timeMins}:${timeSecs}`;
+
+        const badge = document.getElementById('result-badge');
+        if (perc >= 50) {
+            badge.className = 'badge pass';
+            badge.innerText = 'PASS';
+        } else {
+            badge.className = 'badge fail';
+            badge.innerText = 'FAIL';
+        }
+
+        generateSolutions();
+    }
+
+    function generateSolutions() {
+        const container = document.getElementById('solutions-container');
+        let html = '';
+
+        questions.forEach((q, i) => {
+            const userAns = answers[i];
+            const corrAns = q.ans;
+            
+            html += `<div class="solution-item">
+                        <div class="sol-q">प्र ${i+1}. ${q.q}</div>`;
+            
+            q.opt.forEach((optText, optIdx) => {
+                let cls = 'sol-opt';
+                let icon = '';
+                
+                if (optIdx === corrAns) {
+                    cls += ' correct';
+                    icon = '✓';
+                } else if (userAns === optIdx && userAns !== corrAns) {
+                    cls += ' incorrect';
+                    icon = '✗';
+                }
+
+                if(icon) {
+                    html += `<div class="${cls}"><b>${String.fromCharCode(65+optIdx)}</b>: ${optText} <div style="float:right; font-weight:bold;">${icon}</div></div>`;
+                } else {
+                    html += `<div class="${cls}"><b>${String.fromCharCode(65+optIdx)}</b>: ${optText}</div>`;
+                }
+            });
+
+            const userStatus = userAns === null ? "<b style='color:var(--text-muted)'>हल नहीं किया (Unattempted)</b>" : 
+                              (userAns === corrAns ? "<b style='color:var(--correct-color)'>सही (Correct)</b>" : 
+                              "<b style='color:var(--incorrect-color)'>गलत (Incorrect)</b>");
+
+            html += `<div style="margin-top: 10px;"><b>Status:</b> ${userStatus}</div>`;
+            html += `<div class="sol-exp"><div class="sol-exp-title">विस्तृत हल और तथ्य:</div>${q.exp}</div>`;
+            html += `</div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    // PDF जनरेट करने का फंक्शन
+    function downloadPDF() {
+        const btnContainer = document.getElementById('result-action-btns');
+        btnContainer.style.display = 'none';
+
+        const element = document.getElementById('result-screen');
+        const opt = {
+            margin:       10,
+            filename:     'Static_GK_Special_Test_Solutions.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            btnContainer.style.display = 'block'; 
+        });
+    }
+
+    // Start App
+    window.onload = init;
+</script>
+</body>
+</html>
