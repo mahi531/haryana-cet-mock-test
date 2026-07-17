@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSSC mock test wala - Reasoning Special</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: #2c3e50;
+            --text-muted: #576574;
+            --primary-color: #341f97;
+            --accent-color: #ff9f43;
+            --correct-color: #10ac84;
+            --incorrect-color: #ee5253;
+            --btn-hover: rgba(255, 255, 255, 0.6);
+            --palette-unattempted: #c8d6e5;
+            --palette-attempted: #10ac84;
+            --palette-marked: #9b59b6;
+            --palette-marked-attempted: #8e44ad;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-bg: rgba(16, 20, 24, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f1f2f6;
+            --text-muted: #a4b0be;
+            --primary-color: #54a0ff;
+            --accent-color: #ff9f43;
+            --correct-color: #1dd1a1;
+            --incorrect-color: #ff6b6b;
+            --btn-hover: rgba(255, 255, 255, 0.1);
+            --palette-unattempted: #576574;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body { background: var(--bg-gradient); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; transition: all 0.3s ease; }
+
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: var(--shadow); padding: 20px; }
+
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; margin: 15px; }
+        .header-title h1 { font-size: 1.5rem; }
+        .header-title p { font-size: 0.9rem; color: var(--text-muted); font-weight: 600;}
+        .header-controls { display: flex; gap: 15px; align-items: center; }
+        
+        .timer-container { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.1); padding: 8px 15px; border-radius: 20px; }
+        .timer { font-size: 1.2rem; font-weight: bold; }
+        .timer.danger { color: var(--incorrect-color); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        .auto-save-toast { position: fixed; top: 20px; right: 50%; transform: translateX(50%); background: var(--primary-color); color: white; padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; opacity: 0; transition: opacity 0.5s; z-index: 1000; pointer-events: none;}
+
+        button { cursor: pointer; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; transition: all 0.2s; background: var(--glass-bg); color: var(--text-color); border: 1px solid var(--glass-border); }
+        button:hover { background: var(--btn-hover); }
+        .btn-primary { background: var(--primary-color); color: #fff; border: none; }
+        .btn-primary:hover { background: #2c1a80; }
+        .btn-danger { background: var(--incorrect-color); color: white; border: none; }
+        .btn-warning { background: var(--accent-color); color: white; border: none; }
+        .btn-submit { background: var(--correct-color); color: white; border: none; }
+        .btn-submit:hover { background: #0b8c6b; }
+
+        .container { display: flex; flex: 1; gap: 20px; margin: 0 15px 15px 15px; }
+        .main-area { flex: 3; display: flex; flex-direction: column; position: relative; }
+        .sidebar { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        .progress-bar-bg { background: rgba(0,0,0,0.1); height: 8px; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar-fill { background: var(--primary-color); height: 100%; width: 0%; transition: width 0.3s; }
+        
+        .question-text { font-size: 1.25rem; font-weight: 500; margin-bottom: 20px; line-height: 1.6; }
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { text-align: left; padding: 15px; font-size: 1rem; display: flex; align-items: center; gap: 15px; }
+        .option-btn.selected { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+        
+        .action-buttons { display: flex; justify-content: space-between; margin-top: auto; padding-top: 20px; }
+        .action-buttons > div { display: flex; gap: 10px; }
+
+        .pause-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 10; display: none; flex-direction: column; align-items: center; justify-content: center; border-radius: 16px; }
+        .pause-overlay h2 { font-size: 2rem; margin-bottom: 10px; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-item { font-size: 0.85rem; display: flex; align-items: center; gap: 8px; font-weight: bold;}
+        .stat-dot { width: 14px; height: 14px; border-radius: 50%; }
+        
+        .q-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .q-grid-btn { padding: 10px 0; text-align: center; border-radius: 8px; font-weight: bold; background: var(--palette-unattempted); color: #2c3e50; border: none; font-size: 14px; }
+        .q-grid-btn.current { border: 3px solid #2c3e50; transform: scale(1.05);}
+        [data-theme="dark"] .q-grid-btn.current { border: 3px solid #fff; color: #fff; }
+        .q-grid-btn.attempted { background: var(--palette-attempted); color: #fff; }
+        .q-grid-btn.marked { background: var(--palette-marked); color: #fff; }
+        .q-grid-btn.marked.attempted { background: var(--palette-marked-attempted); color: #fff; }
+
+        .result-screen { display: none; max-width: 1000px; margin: 0 auto; width: 100%; padding-bottom: 50px;}
+        .result-header { text-align: center; margin-bottom: 30px; }
+        .badge { display: inline-block; padding: 10px 30px; border-radius: 30px; font-size: 1.5rem; font-weight: bold; color: #fff; margin-top: 10px; }
+        .badge.pass { background: var(--correct-color); }
+        .badge.fail { background: var(--incorrect-color); }
+        
+        .result-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-box { text-align: center; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .stat-box h3 { font-size: 2rem; margin-bottom: 5px; }
+
+        .solution-item { margin-bottom: 25px; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .sol-q { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; color: var(--primary-color); }
+        .sol-opt { margin-bottom: 8px; padding: 10px; border-radius: 8px; background: var(--glass-bg); }
+        .sol-opt.correct { background: var(--correct-color); color: #fff; border:none;}
+        .sol-opt.incorrect { background: var(--incorrect-color); color: #fff; border:none;}
+        .sol-exp { margin-top: 15px; font-size: 0.95rem; color: var(--text-color); border-left: 4px solid var(--primary-color); padding-left: 15px; line-height: 1.6; background: rgba(0,0,0,0.03); padding: 15px; border-radius: 8px;}
+        .sol-exp-title { color: var(--primary-color); font-weight: bold; margin-bottom: 5px; }
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            header { flex-direction: column; gap: 15px; text-align: center; }
+            .action-buttons { flex-direction: column; gap: 15px; }
+            .action-buttons > div { justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auto-save-toast" id="save-toast">Progress Auto-Saved! 💾</div>
+
+    <header class="glass-panel">
+        <div class="header-title">
+            <h1>HSSC mock test wala</h1>
+            <p>HSSC CET Group D Special (Reasoning) | 25 Questions | 35 Minutes</p>
+        </div>
+        <div class="header-controls">
+            <div class="timer-container" id="timer-box">
+                <b>⏱</b>
+                <b class="timer" id="timer">35:00</b>
+                <button id="pause-btn" onclick="togglePause()">Pause</button>
+            </div>
+            <button onclick="toggleTheme()">🌗 Theme</button>
+            <button class="btn-submit" onclick="submitTest(false)">Submit Test</button>
+        </div>
+    </header>
+
+    <div class="container" id="app-container">
+        
+        <div class="glass-panel main-area">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+            
+            <div id="question-header" style="margin-bottom: 15px; font-weight: 600; color: var(--primary-color);"></div>
+            <div id="question-text" class="question-text"></div>
+            
+            <div class="options-grid" id="options-container"></div>
+
+            <div class="action-buttons">
+                <div>
+                    <button onclick="changeQuestion(-1)" id="prev-btn">Previous</button>
+                    <button onclick="clearSelection()">Clear</button>
+                </div>
+                <div>
+                    <button onclick="toggleMark()" id="mark-btn" class="btn-warning">Mark for Review</button>
+                    <button onclick="changeQuestion(1)" id="next-btn" class="btn-primary">Next</button>
+                </div>
+            </div>
+
+            <div class="pause-overlay" id="pause-overlay">
+                <h2>Test Paused ⏸️</h2>
+                <p>Questions are hidden to prevent cheating.</p>
+                <br>
+                <button class="btn-primary" onclick="togglePause()">Resume Test</button>
+            </div>
+        </div>
+
+        <div class="glass-panel sidebar">
+            <h3 style="text-align: center; margin-bottom: 15px;">Question Palette</h3>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-attempted)"></div> Attempted (<b id="count-att">0</b>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-unattempted)"></div> Unattempted (<b id="count-unatt">25</b>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-marked)"></div> Marked (<b id="count-mark">0</b>)</div>
+            </div>
+            <div class="q-grid" id="q-grid"></div>
+            <button class="btn-danger" onclick="resetTest()" style="margin-top: 10px; width: 100%; padding: 8px;">Reset Data</button>
+            <button class="btn-submit" onclick="submitTest(false)" style="margin-top: 10px; width: 100%; padding: 12px; font-size: 1.1rem;">Final Submit Test</button>
+        </div>
+    </div>
+
+    <div class="glass-panel result-screen" id="result-screen">
+        <div class="result-header">
+            <h2>Test Submitted Successfully! 🎉</h2>
+            <div class="badge" id="result-badge">Pass</div>
+        </div>
+        <div class="result-stats">
+            <div class="stat-box"><h3 id="res-score">0</h3><p>Score / 25</p></div>
+            <div class="stat-box"><h3 id="res-perc">0%</h3><p>Percentage</p></div>
+            <div class="stat-box"><h3 id="res-corr" style="color: var(--correct-color);">0</h3><p>Correct</p></div>
+            <div class="stat-box"><h3 id="res-incorr" style="color: var(--incorrect-color);">0</h3><p>Incorrect</p></div>
+            <div class="stat-box"><h3 id="res-time">00:00</h3><p>Time Taken</p></div>
+        </div>
+        
+        <div id="result-action-btns" style="text-align: center; margin-bottom: 30px;">
+            <button class="btn-primary" onclick="resetTest()" style="padding: 15px 40px; font-size: 1.1rem;">Start New Test</button>
+            <button class="btn-submit" onclick="downloadPDF()" style="padding: 15px 40px; font-size: 1.1rem; margin-left: 15px;">Download Solutions PDF 📥</button>
+        </div>
+
+        <h3 style="color: var(--primary-color); font-size: 1.5rem; text-align: center;">Detailed Solutions & Facts 📝</h3>
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--glass-border);">
+        <div id="solutions-container"></div>
+    </div>
+
+<script>
+    const questions = [
+        {
+            "q": "एक पुरुष का परिचय देते हुए एक महिला ने कहा, 'इसकी माता मेरे पिता की इकलौती पुत्री है।' वह पुरुष उस महिला से किस प्रकार सम्बन्धित है?",
+            "opt": ["पुत्र (Son)", "पिता (Father)", "भाई (Brother)", "चाचा (Uncle)"],
+            "ans": 0,
+            "exp": "<b>💡 विस्तृत हल:</b><br>महिला के 'पिता की इकलौती पुत्री' वह महिला स्वयं होगी। चूंकि उस पुरुष की माता वह महिला स्वयं है, अतः वह पुरुष उस महिला का पुत्र है।"
+        },
+        {
+            "q": "संबंधित संख्या ज्ञात कीजिए: 12 : 72 :: 8 : ?",
+            "opt": ["36", "32", "38", "40"],
+            "ans": 1,
+            "exp": "<b>💡 विस्तृत हल:</b><br>पैटर्न: पहली संख्या को उसके आधे मान से गुणा किया गया है।<br>12 × (12/2) = 12 × 6 = 72<br>इसी प्रकार, 8 × (8/2) = 8 × 4 = 32"
+        },
+        {
+            "q": "संबंधित अक्षर ज्ञात कीजिए: FIG : EGHJFH :: BIN : ?",
+            "opt": ["ACJHMO", "CAHJMO", "CAJHOM", "ACHIMO"],
+            "ans": 0,
+            "exp": "<b>💡 विस्तृत हल:</b><br>यहाँ हर एक अक्षर के ठीक पहले और ठीक बाद वाला अक्षर लिया गया है।<br>F -> E, G<br>I -> H, J<br>G -> F, H<br>उसी प्रकार B -> A, C; I -> H, J; N -> M, O. अतः सही उत्तर ACJHMO होगा।"
+        },
+        {
+            "q": "संबंधित संख्या ज्ञात कीजिए: 6 : 42 :: 7 : ?",
+            "opt": ["48", "40", "56", "52"],
+            "ans": 2,
+            "exp": "<b>💡 विस्तृत हल:</b><br>पैटर्न: n × (n + 1)<br>6 × (6 + 1) = 6 × 7 = 42<br>इसी प्रकार 7 × (7 + 1) = 7 × 8 = 56"
+        },
+        {
+            "q": "कचरा : घर :: आधात्री (Gangue) : ?",
+            "opt": ["कारखाना (Factory)", "औषध (Drugs)", "कार्यालय (Office)", "अयस्क (Ore)"],
+            "ans": 3,
+            "exp": "<b>💡 विस्तृत हल:</b><br>जिस प्रकार 'घर' से निकलने वाले अवांछित या व्यर्थ पदार्थ को 'कचरा' (Garbage) कहते हैं, उसी प्रकार 'अयस्क' (Ore) से निकलने वाले अवांछित पदार्थ या अशुद्धियों को 'आधात्री' (Gangue) कहा जाता है।"
+        },
+        {
+            "q": "संबंधित अक्षर ज्ञात कीजिए: DBU : EEZ :: CJH : ?",
+            "opt": ["DMN", "DNM", "DNN", "DMM"],
+            "ans": 3,
+            "exp": "<b>💡 विस्तृत हल:</b><br>पहले समूह का पैटर्न:<br>D (+1) = E<br>B (+3) = E<br>U (+5) = Z<br>दूसरे समूह में यही पैटर्न लगाने पर:<br>C (+1) = D<br>J (+3) = M<br>H (+5) = M<br>सही उत्तर DMM होगा।"
+        },
+        {
+            "q": "दिए गए विकल्पों में से विषम (Odd one out) शब्द चुनिए:",
+            "opt": ["वकील (Lawyer)", "विधायक (Legislator)", "मेयर (Mayor)", "राज्यपाल (Governor)"],
+            "ans": 0,
+            "exp": "<b>💡 विस्तृत हल:</b><br>विधायक, मेयर और राज्यपाल - ये तीनों ही राजनीतिक या सरकारी प्रशासनिक पद हैं। जबकि 'वकील' (Lawyer) एक स्वतंत्र पेशा (Profession) है, अतः यह बाकी तीनों से अलग है।"
+        },
+        {
+            "q": "दिए गए विकल्पों में से विषम (Odd one out) चुनें:",
+            "opt": ["न्यून कोण (Acute)", "समांतर (Parallel)", "समकोण (Right)", "अधिक कोण (Obtuse)"],
+            "ans": 1,
+            "exp": "<b>💡 विस्तृत हल:</b><br>न्यून कोण, समकोण और अधिक कोण - ये सभी ज्यामिति (Geometry) में 'कोणों' (Angles) के प्रकार हैं। जबकि 'समांतर' (Parallel) रेखाओं की एक विशेषता है, कोणों का प्रकार नहीं।"
+        },
+        {
+            "q": "दिए गए विकल्पों में से विषम संख्या चुनिए:",
+            "opt": ["50", "120", "37", "145"],
+            "ans": 1,
+            "exp": "<b>💡 विस्तृत हल:</b><br>50 = (7)² + 1<br>37 = (6)² + 1<br>145 = (12)² + 1<br>लेकिन 120 = (11)² - 1. बाकी सभी पूर्ण वर्ग में 1 जोड़ने पर प्राप्त होते हैं, जबकि 120 में 1 घटाया गया है।"
+        },
+        {
+            "q": "दिए गए विकल्पों में से विषम अक्षर-समूह चुनिए:",
+            "opt": ["BS", "DX", "EV", "IZ"],
+            "ans": 1,
+            "exp": "<b>💡 विस्तृत हल:</b><br>अक्षरों के बीच का अंतर चेक करें:<br>S(19) - B(2) = 17<br>V(22) - E(5) = 17<br>Z(26) - I(9) = 17<br>X(24) - D(4) = 20<br>DX के अक्षरों के बीच का अंतर 20 है जो अन्य सभी (17) से अलग है।"
+        },
+        {
+            "q": "किसी कूट भाषा में FRACTION को 'FNAITCOR' लिखा जाता है, तो उसी कूट भाषा में QUANTITATIVE को कैसे लिखा जायेगा?",
+            "opt": ["QTNAVIAITETU", "QIATAETUTNVI", "QTEATUIAVITN", "QEAITATITNVU"],
+            "ans": 3,
+            "exp": "<b>💡 विस्तृत हल:</b><br>FRACTION में विषम स्थानों (1, 3, 5, 7) के अक्षरों (F, A, T, O) को उनके ही स्थान पर रखा गया है। सम स्थानों (2, 4, 6, 8) के अक्षरों (R, C, I, N) को उल्टे क्रम (N, I, C, R) में रखा गया है।<br>QUANTITATIVE में विषम स्थान (Q, A, T, T, T, V) समान रहेंगे। सम स्थानों (U, N, I, A, I, E) को उलटने पर (E, I, A, I, N, U) मिलेगा। मिलाकर: Q E A I T A T I T N V U बनेगा।"
+        },
+        {
+            "q": "किसी कूट व्यवस्था में APPLE का कोड ETTPI है। उसी व्यवस्था में 'DELHI' का कोड क्या होगा?",
+            "opt": ["CQMND", "HIPLM", "ZAHDE", "CQPLM"],
+            "ans": 1,
+            "exp": "<b>💡 विस्तृत हल:</b><br>APPLE के प्रत्येक अक्षर में 4 स्थान आगे बढ़ाया गया है (+4 पैटर्न)।<br>A(+4)=E, P(+4)=T, P(+4)=T, L(+4)=P, E(+4)=I<br>इसी प्रकार DELHI में:<br>D(+4)=H, E(+4)=I, L(+4)=P, H(+4)=L, I(+4)=M. अतः कोड HIPLM होगा।"
+        },
+        {
+            "q": "दिए गए विकल्पों में से लुप्त अंक ज्ञात कीजिए:<br>पंक्ति 1: 40, 32, 72, 12<br>पंक्ति 2: 30, 24, 54, 9<br>पंक्ति 3: 54, ?, 90, 15",
+            "opt": ["49", "36", "46", "48"],
+            "ans": 1,
+            "exp": "<b>💡 विस्तृत हल:</b><br>पैटर्न: पहली दो संख्याओं का योग तीसरी संख्या है, और तीसरी संख्या को 6 से भाग देने पर चौथी संख्या आती है।<br>पंक्ति 1: 40 + 32 = 72, 72 ÷ 6 = 12<br>पंक्ति 2: 30 + 24 = 54, 54 ÷ 6 = 9<br>पंक्ति 3: 54 + ? = 90, अतः ? = 36. (90 ÷ 6 = 15 भी सही बैठता है)।"
+        },
+        {
+            "q": "पूरी तरह से नए अर्थपूर्ण शब्द बनाने के लिए निम्नलिखित शब्दों में से कौन सा एक अक्षर हटाया जा सकता है?<br>HOST, POST, COST, LOST, STOP",
+            "opt": ["T", "P", "S", "O"],
+            "ans": 2,
+            "exp": "<b>💡 विस्तृत हल:</b><br>यदि हम दिए गए सभी शब्दों में से 'S' अक्षर को हटा दें, तो हमें एकदम नए अंग्रेजी शब्द प्राप्त होंगे।<br>HOST -> HOT<br>POST -> POT<br>COST -> COT<br>LOST -> LOT<br>STOP -> TOP"
+        },
+        {
+            "q": "कथन: कोई छड़ फली (pod) नहीं है। कोई फली लचीली नहीं है。<br>निष्कर्ष: I. कोई छड़ लचीली नहीं है। II. कुछ फलियाँ लचीली हैं।",
+            "opt": ["दोनों निष्कर्ष निकलते हैं", "केवल निष्कर्ष I निकलता है", "केवल निष्कर्ष II निकलता है", "दोनों में से कोई निष्कर्ष नहीं निकलता है"],
+            "ans": 3,
+            "exp": "<b>💡 विस्तृत हल:</b><br>छड़ और लचीले (flexible) के बीच कोई सीधा संबंध कथन में नहीं दिया गया है, इसलिए निष्कर्ष I निश्चित रूप से सत्य नहीं है।<br>कथन में स्पष्ट है कि 'कोई फली लचीली नहीं है', इसलिए निष्कर्ष II भी गलत है। अतः दोनों में से कोई निष्कर्ष नहीं निकलता है।"
+        },
+        {
+            "q": "कथन: एक अच्छी पुस्तक महंगी होने पर भी जल्दी बिक जाती है。<br>मान्यताएं: I. कुछ पुस्तकें अन्यों से बेहतर होती हैं। II. सभी अच्छी पुस्तकें महंगी होती हैं।",
+            "opt": ["केवल मान्यता I निकलती है", "दोनों मान्यताएँ I और II निकलती हैं", "न मान्यता I और न ही II निकलती है", "केवल मान्यता II निकलती है"],
+            "ans": 0,
+            "exp": "<b>💡 विस्तृत हल:</b><br>कथन में 'एक अच्छी पुस्तक...' का जिक्र है, जिसका तात्पर्य है कि गुणवत्ता में अंतर होता है और कुछ पुस्तकें दूसरों से अच्छी होती हैं, अतः मान्यता I सही है।<br>कथन से यह निष्कर्ष कतई नहीं निकलता कि 'सभी' अच्छी पुस्तकें हमेशा महंगी ही होती हैं। अतः मान्यता II गलत है।"
+        },
+        {
+            "q": "यदि CUSTOM को UCTSMO लिखा जाता है, तो PARENT को कैसे लिखा जाएगा?",
+            "opt": ["TNERAP", "KAPTNE", "ERAPTN", "APERTN"],
+            "ans": 3,
+            "exp": "<b>💡 विस्तृत हल:</b><br>शब्द के अक्षरों को 2-2 के जोड़ों में बाँटकर उन्हें आपस में पलट दिया गया है।<br>CU -> UC<br>ST -> TS<br>OM -> MO<br>इसी प्रकार PARENT में: PA -> AP, RE -> ER, NT -> TN. मिलाकर APERTN बनेगा।"
+        },
+        {
+            "q": "यदि 'वायु' को 'हरा', 'हरे' को 'नीला', 'नीले' को 'आकाश', 'आकाश' को 'पीला', 'पीले' को 'पानी' और 'पानी' को 'गुलाबी' कहा जाए, तो साफ़ आसमान का रंग क्या होगा?",
+            "opt": ["पीला (Yellow)", "पानी (Water)", "आकाश (Sky)", "नीला (Blue)"],
+            "ans": 2,
+            "exp": "<b>💡 विस्तृत हल:</b><br>सामान्यतः साफ़ आसमान का रंग 'नीला' होता है।<br>दी गई कूट भाषा के अनुसार, 'नीले' को 'आकाश' कहा गया है। इसलिए इस प्रश्न के अनुसार साफ़ आसमान का रंग 'आकाश' होगा।"
+        },
+        {
+            "q": "यदि दिए गए शब्दों को शब्दकोश (Dictionary) के उल्टे क्रम में व्यवस्थित किया जाए, तो तीसरे स्थान पर कौन सा शब्द आएगा?<br>1. Occulist 2. Odious 3. Odium 4. Ordeum",
+            "opt": ["Occulist", "Odium", "Odious", "Ordeum"],
+            "ans": 2,
+            "exp": "<b>💡 विस्तृत हल:</b><br>शब्दकोश के अनुसार सीधे क्रम में: 1. Occulist, 2. Odious, 3. Odium, 4. Ordeum.<br>इन्हें उल्टे (Reverse) क्रम में लगाने पर: 1. Ordeum, 2. Odium, 3. Odious, 4. Occulist. अतः तीसरे स्थान पर 'Odious' होगा।"
+        },
+        {
+            "q": "वीना और वीरू एक ही स्थान से उत्तर दिशा में चलना शुरू करते हैं। 10 किमी चलने के बाद वीना बाएं मुड़ जाती है और वीरू दायें मुड़ जाता है। वीना 5 किमी और चलती है, जबकि वीरू 3 किमी चलता है। फिर वे दोनों दक्षिण दिशा में मुड़ते हैं और 15 किमी चलते हैं। वीना, वीरू से कितनी दूर है?",
+            "opt": ["12 किमी", "10 किमी", "8 किमी", "15 किमी"],
+            "ans": 2,
+            "exp": "<b>💡 विस्तृत हल:</b><br>उत्तर में 10 किमी जाने के बाद, वीना बाएं (पश्चिम) मुड़कर 5 किमी जाती है, और वीरू दायें (पूर्व) मुड़कर 3 किमी जाता है।<br>अब उनके बीच की क्षैतिज दूरी (5 + 3) = 8 किमी है।<br>जब वे दोनों दक्षिण की ओर 15 किमी जाते हैं, तो वे एक-दूसरे के समानांतर चलते हैं, इसलिए उनके बीच की दूरी 8 किमी ही रहेगी।"
+        },
+        {
+            "q": "दी गई श्रृंखला में लुप्त संख्या ज्ञात कीजिए:<br>2, 5, 10, 17, 26, ?",
+            "opt": ["36", "49", "37", "47"],
+            "ans": 2,
+            "exp": "<b>💡 विस्तृत हल:</b><br>यह श्रृंखला वर्गों में 1 जोड़ने पर आधारित है (n² + 1)।<br>1² + 1 = 2<br>2² + 1 = 5<br>3² + 1 = 10<br>4² + 1 = 17<br>5² + 1 = 26<br>6² + 1 = 36 + 1 = 37."
+        },
+        {
+            "q": "यदि 'F' का अर्थ है 'के बराबर' (=), और दिया गया है: 4Y F 3x और 3x F 6Z, तो सही निष्कर्ष चुनें:",
+            "opt": ["2Y F 3Z", "4Y F 5Z", "2Y F 4Z", "3Y F 2Z"],
+            "ans": 0,
+            "exp": "<b>💡 विस्तृत हल:</b><br>F का अर्थ '=' है। अतः समीकरण होंगे: 4Y = 3x और 3x = 6Z.<br>इन दोनों को मिलाने पर हमें प्राप्त होता है: 4Y = 6Z.<br>इस समीकरण को 2 से भाग देने पर: 2Y = 3Z मिलेगा, जिसे कूट भाषा में 2Y F 3Z लिखा जाएगा।"
+        },
+        {
+            "q": "रवि पूर्व दिशा में चल रहा है। 1 किमी की दूरी तय करने के बाद वह 45° बाएं मुड़ता है और फिर 90° दायें मुड़ता है। इस समय वह किस दिशा में है?",
+            "opt": ["उत्तर (North)", "पश्चिम (West)", "उत्तर-पश्चिम (North-West)", "दक्षिण-पूर्व (South-East)"],
+            "ans": 3,
+            "exp": "<b>💡 विस्तृत हल:</b><br>रवि शुरू में पूर्व दिशा (East) की ओर जा रहा है।<br>45° बाएं मुड़ने पर उसका मुख उत्तर-पूर्व (North-East) दिशा में हो जाएगा।<br>फिर वहां से 90° दायें मुड़ने पर वह सीधे दक्षिण-पूर्व (South-East) दिशा में देखने लगेगा।"
+        },
+        {
+            "q": "निम्नलिखित अव्यवस्थित (Jumbled) शब्दों में से कौन सा शब्द जानवर या जीव का नाम नहीं है?",
+            "opt": ["LATHPEEN", "TICRECK", "FEFEOC", "TAR"],
+            "ans": 2,
+            "exp": "<b>💡 विस्तृत हल:</b><br>इन अव्यवस्थित अक्षरों को सही क्रम में रखने पर:<br>LATHPEEN -> ELEPHANT (हाथी)<br>TICRECK -> CRICKET (झींगुर)<br>TAR -> RAT (चूहा)<br>FEFEOC -> COFFEE (कॉफी)। कॉफी एक पेय पदार्थ है, जानवर नहीं।"
+        },
+        {
+            "q": "यदि '÷' का अर्थ '+', '-' का अर्थ '÷', 'x' का अर्थ '-' और '+' का अर्थ 'x' है, तो निम्न समीकरण का मान क्या होगा?<br>16 ÷ 64 - 8 x 4 + 2 = ?",
+            "opt": ["12", "24", "16", "18"],
+            "ans": 2,
+            "exp": "<b>💡 विस्तृत हल:</b><br>दिए गए निर्देशों के अनुसार चिह्नों को बदलने पर नया समीकरण बनेगा: 16 + 64 ÷ 8 - 4 x 2.<br>BODMAS नियम लागू करने पर:<br>भाग: 64 ÷ 8 = 8<br>गुणा: 4 x 2 = 8<br>जोड़/घटाव: 16 + 8 - 8 = 16."
+        }
+    ];
+
+    let currentIdx = 0;
+    const totalQ = questions.length;
+    let answers = new Array(totalQ).fill(null);
+    let marked = new Array(totalQ).fill(false);
+    
+    // Timer is set to 35 minutes
+    let totalTime = 35 * 60; 
+    let timerInterval;
+    let isPaused = false;
+
+    function init() {
+        if (!loadProgress()) {
+            answers = new Array(totalQ).fill(null);
+            marked = new Array(totalQ).fill(false);
+            totalTime = 35 * 60;
+            currentIdx = 0;
+        }
+        createPalette();
+        loadQuestion(currentIdx);
+        updateStats();
+        startTimer();
+    }
+
+    function toggleTheme() {
+        const doc = document.documentElement;
+        const current = doc.getAttribute('data-theme');
+        doc.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+    }
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if(totalTime <= 0) {
+                clearInterval(timerInterval);
+                submitTest(true);
+                return;
+            }
+            totalTime--;
+            updateTimerDisplay();
+            if(totalTime % 30 === 0) saveProgress(false);
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(totalTime / 60).toString().padStart(2, '0');
+        const secs = (totalTime % 60).toString().padStart(2, '0');
+        const timerEl = document.getElementById('timer');
+        timerEl.innerText = `${mins}:${secs}`;
+        
+        if (totalTime < 300) { 
+            timerEl.classList.add('danger');
+        } else {
+            timerEl.classList.remove('danger');
+        }
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        const overlay = document.getElementById('pause-overlay');
+        const btn = document.getElementById('pause-btn');
+        
+        if (isPaused) {
+            clearInterval(timerInterval);
+            overlay.style.display = 'flex';
+            btn.innerText = 'Resume';
+            btn.classList.add('btn-warning');
+        } else {
+            startTimer();
+            overlay.style.display = 'none';
+            btn.innerText = 'Pause';
+            btn.classList.remove('btn-warning');
+        }
+    }
+
+    function loadQuestion(idx) {
+        currentIdx = idx;
+        const qData = questions[idx];
+        
+        document.getElementById('question-header').innerText = `Question ${idx + 1} of ${totalQ}`;
+        document.getElementById('question-text').innerHTML = qData.q;
+        
+        const optsContainer = document.getElementById('options-container');
+        optsContainer.innerHTML = '';
+        
+        qData.opt.forEach((optText, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn' + (answers[idx] === i ? ' selected' : '');
+            btn.innerHTML = `<div style="font-weight:bold; border:1px solid currentColor; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${String.fromCharCode(65+i)}</div> ${optText}`;
+            btn.onclick = () => selectOption(i);
+            optsContainer.appendChild(btn);
+        });
+
+        document.getElementById('progress-bar').style.width = `${((idx + 1) / totalQ) * 100}%`;
+        document.getElementById('prev-btn').disabled = (idx === 0);
+        document.getElementById('prev-btn').style.opacity = (idx === 0) ? '0.5' : '1';
+        
+        const markBtn = document.getElementById('mark-btn');
+        markBtn.innerText = marked[idx] ? 'Unmark Review' : 'Mark for Review';
+        
+        const nextBtn = document.getElementById('next-btn');
+        if (idx === totalQ - 1) {
+            nextBtn.innerText = 'Submit Test';
+            nextBtn.className = 'btn-danger';
+        } else {
+            nextBtn.innerText = 'Next';
+            nextBtn.className = 'btn-primary';
+        }
+        updatePaletteVisuals();
+    }
+
+    function saveProgress(showToast = true) {
+        const testState = {
+            answers: answers,
+            marked: marked,
+            totalTime: totalTime,
+            currentIdx: currentIdx
+        };
+        localStorage.setItem('hsscMockTestState_FinalReasoning', JSON.stringify(testState));
+        
+        if(showToast) {
+            const toast = document.getElementById('save-toast');
+            toast.style.opacity = '1';
+            setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+        }
+    }
+
+    function loadProgress() {
+        const savedState = localStorage.getItem('hsscMockTestState_FinalReasoning');
+        if (savedState) {
+            const state = JSON.parse(savedState);
+            answers = state.answers;
+            marked = state.marked;
+            totalTime = state.totalTime;
+            currentIdx = state.currentIdx || 0;
+            return true;
+        }
+        return false;
+    }
+
+    function clearProgress() {
+        localStorage.removeItem('hsscMockTestState_FinalReasoning');
+    }
+
+    function resetTest() {
+        if(confirm("Are you sure you want to start a new test? All current progress will be lost.")) {
+            clearProgress();
+            location.reload();
+        }
+    }
+
+    function selectOption(optIdx) {
+        answers[currentIdx] = optIdx;
+        loadQuestion(currentIdx);
+        updateStats();
+        saveProgress(true);
+    }
+
+    function clearSelection() {
+        answers[currentIdx] = null;
+        loadQuestion(currentIdx);
+        updateStats();
+        saveProgress(true);
+    }
+
+    function toggleMark() {
+        marked[currentIdx] = !marked[currentIdx];
+        loadQuestion(currentIdx);
+        updateStats();
+        saveProgress(true);
+    }
+
+    function changeQuestion(step) {
+        if (step === 1 && currentIdx === totalQ - 1) {
+            submitTest(false);
+            return;
+        }
+        let newIdx = currentIdx + step;
+        if (newIdx >= 0 && newIdx < totalQ) {
+            currentIdx = newIdx;
+            loadQuestion(newIdx);
+            saveProgress(false);
+        }
+    }
+
+    function createPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'q-grid-btn';
+            btn.id = `pal-btn-${i}`;
+            btn.innerText = i + 1;
+            btn.onclick = () => { currentIdx = i; loadQuestion(i); saveProgress(false); };
+            grid.appendChild(btn);
+        }
+    }
+
+    function updatePaletteVisuals() {
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.getElementById(`pal-btn-${i}`);
+            btn.className = 'q-grid-btn';
+            
+            if (answers[i] !== null && marked[i]) btn.classList.add('marked', 'attempted');
+            else if (marked[i]) btn.classList.add('marked');
+            else if (answers[i] !== null) btn.classList.add('attempted');
+            
+            if (i === currentIdx) btn.classList.add('current');
+        }
+    }
+
+    function updateStats() {
+        let att = 0, mark = 0;
+        for (let i = 0; i < totalQ; i++) {
+            if (answers[i] !== null) att++;
+            if (marked[i]) mark++;
+        }
+        document.getElementById('count-att').innerText = att;
+        document.getElementById('count-unatt').innerText = totalQ - att;
+        document.getElementById('count-mark').innerText = mark;
+        updatePaletteVisuals();
+    }
+
+    function submitTest(isAuto) {
+        const unatt = answers.filter(a => a === null).length;
+        if (!isAuto && unatt > 0) {
+            const confirmSubmit = confirm(`आपके ${unatt} प्रश्न छूट गए हैं। क्या आप निश्चित रूप से टेस्ट सबमिट करना चाहते हैं?`);
+            if (!confirmSubmit) return;
+        }
+
+        clearInterval(timerInterval);
+        document.getElementById('app-container').style.display = 'none';
+        document.querySelector('.header-controls').style.display = 'none';
+        clearProgress(); 
+        generateResults();
+    }
+
+    function generateResults() {
+        const resScreen = document.getElementById('result-screen');
+        resScreen.style.display = 'block';
+
+        let correct = 0;
+        let incorrect = 0;
+        
+        answers.forEach((ans, i) => {
+            if (ans !== null) {
+                if (ans === questions[i].ans) correct++;
+                else incorrect++;
+            }
+        });
+
+        const score = correct;
+        const perc = ((score / totalQ) * 100).toFixed(2);
+        
+        const timeTakenSec = (35 * 60) - totalTime;
+        const timeMins = Math.floor(timeTakenSec / 60).toString().padStart(2, '0');
+        const timeSecs = (timeTakenSec % 60).toString().padStart(2, '0');
+
+        document.getElementById('res-score').innerText = score;
+        document.getElementById('res-perc').innerText = perc + '%';
+        document.getElementById('res-corr').innerText = correct;
+        document.getElementById('res-incorr').innerText = incorrect;
+        document.getElementById('res-time').innerText = `${timeMins}:${timeSecs}`;
+
+        const badge = document.getElementById('result-badge');
+        if (perc >= 50) {
+            badge.className = 'badge pass';
+            badge.innerText = 'PASS';
+        } else {
+            badge.className = 'badge fail';
+            badge.innerText = 'FAIL';
+        }
+
+        generateSolutions();
+    }
+
+    function generateSolutions() {
+        const container = document.getElementById('solutions-container');
+        let html = '';
+
+        questions.forEach((q, i) => {
+            const userAns = answers[i];
+            const corrAns = q.ans;
+            
+            html += `<div class="solution-item">
+                        <div class="sol-q">Q${i+1}. ${q.q}</div>`;
+            
+            q.opt.forEach((optText, optIdx) => {
+                let cls = 'sol-opt';
+                let icon = '';
+                
+                if (optIdx === corrAns) {
+                    cls += ' correct';
+                    icon = '✓';
+                } else if (userAns === optIdx && userAns !== corrAns) {
+                    cls += ' incorrect';
+                    icon = '✗';
+                }
+
+                if(icon) {
+                    html += `<div class="${cls}"><b>${String.fromCharCode(65+optIdx)}</b>: ${optText} <div style="float:right; font-weight:bold;">${icon}</div></div>`;
+                } else {
+                    html += `<div class="${cls}"><b>${String.fromCharCode(65+optIdx)}</b>: ${optText}</div>`;
+                }
+            });
+
+            const userStatus = userAns === null ? "<b style='color:var(--text-muted)'>Unattempted</b>" : 
+                              (userAns === corrAns ? "<b style='color:var(--correct-color)'>Correct</b>" : 
+                              "<b style='color:var(--incorrect-color)'>Incorrect</b>");
+
+            html += `<div style="margin-top: 10px;"><b>Status:</b> ${userStatus}</div>`;
+            html += `<div class="sol-exp"><div class="sol-exp-title">Explanation:</div>${q.exp}</div>`;
+            html += `</div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    function downloadPDF() {
+        const btnContainer = document.getElementById('result-action-btns');
+        btnContainer.style.display = 'none';
+
+        const element = document.getElementById('result-screen');
+        const opt = {
+            margin:       10,
+            filename:     'Reasoning_Special_Test_Solutions.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            btnContainer.style.display = 'block'; 
+        });
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
