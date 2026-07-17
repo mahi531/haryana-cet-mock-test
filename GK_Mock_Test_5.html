@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hssc Mock Test Wala  - GK Mock Test (Special Selected Questions)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: #2c3e50;
+            --text-muted: #576574;
+            --primary-color: #341f97;
+            --accent-color: #ff9f43;
+            --correct-color: #10ac84;
+            --incorrect-color: #ee5253;
+            --btn-hover: rgba(255, 255, 255, 0.6);
+            --palette-unattempted: #c8d6e5;
+            --palette-attempted: #10ac84;
+            --palette-marked: #9b59b6;
+            --palette-marked-attempted: #8e44ad;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-bg: rgba(16, 20, 24, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f1f2f6;
+            --text-muted: #a4b0be;
+            --primary-color: #54a0ff;
+            --accent-color: #ff9f43;
+            --correct-color: #1dd1a1;
+            --incorrect-color: #ff6b6b;
+            --btn-hover: rgba(255, 255, 255, 0.1);
+            --palette-unattempted: #576574;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body { background: var(--bg-gradient); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; transition: all 0.3s ease; }
+
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: var(--shadow); padding: 20px; }
+
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; margin: 15px; }
+        .header-title h1 { font-size: 1.5rem; }
+        .header-title p { font-size: 0.9rem; color: var(--text-muted); font-weight: 600;}
+        .header-controls { display: flex; gap: 15px; align-items: center; }
+        
+        .timer-container { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.1); padding: 8px 15px; border-radius: 20px; }
+        .timer { font-size: 1.2rem; font-weight: bold; }
+        .timer.danger { color: var(--incorrect-color); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        .auto-save-toast { position: fixed; top: 20px; right: 50%; transform: translateX(50%); background: var(--primary-color); color: white; padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; opacity: 0; transition: opacity 0.5s; z-index: 1000; pointer-events: none;}
+
+        button { cursor: pointer; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; transition: all 0.2s; background: var(--glass-bg); color: var(--text-color); border: 1px solid var(--glass-border); }
+        button:hover { background: var(--btn-hover); }
+        .btn-primary { background: var(--primary-color); color: #fff; border: none; }
+        .btn-primary:hover { background: #2c1a80; }
+        .btn-danger { background: var(--incorrect-color); color: white; border: none; }
+        .btn-warning { background: var(--accent-color); color: white; border: none; }
+        .btn-submit { background: var(--correct-color); color: white; border: none; }
+        .btn-submit:hover { background: #0b8c6b; }
+
+        .container { display: flex; flex: 1; gap: 20px; margin: 0 15px 15px 15px; }
+        .main-area { flex: 3; display: flex; flex-direction: column; position: relative; }
+        .sidebar { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        .progress-bar-bg { background: rgba(0,0,0,0.1); height: 8px; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar-fill { background: var(--primary-color); height: 100%; width: 0%; transition: width 0.3s; }
+        
+        .question-text { font-size: 1.25rem; font-weight: 500; margin-bottom: 20px; line-height: 1.6; }
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { text-align: left; padding: 15px; font-size: 1rem; display: flex; align-items: center; gap: 15px; }
+        .option-btn.selected { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+        
+        .action-buttons { display: flex; justify-content: space-between; margin-top: auto; padding-top: 20px; }
+        .action-buttons > div { display: flex; gap: 10px; }
+
+        .pause-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 10; display: none; flex-direction: column; align-items: center; justify-content: center; border-radius: 16px; }
+        .pause-overlay h2 { font-size: 2rem; margin-bottom: 10px; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-item { font-size: 0.85rem; display: flex; align-items: center; gap: 8px; font-weight: bold;}
+        .stat-dot { width: 14px; height: 14px; border-radius: 50%; }
+        
+        .q-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .q-grid-btn { padding: 10px 0; text-align: center; border-radius: 8px; font-weight: bold; background: var(--palette-unattempted); color: #2c3e50; border: none; font-size: 14px; }
+        .q-grid-btn.current { border: 3px solid #2c3e50; transform: scale(1.05);}
+        [data-theme="dark"] .q-grid-btn.current { border: 3px solid #fff; color: #fff; }
+        .q-grid-btn.attempted { background: var(--palette-attempted); color: #fff; }
+        .q-grid-btn.marked { background: var(--palette-marked); color: #fff; }
+        .q-grid-btn.marked.attempted { background: var(--palette-marked-attempted); color: #fff; }
+
+        .result-screen { display: none; max-width: 1000px; margin: 0 auto; width: 100%; padding-bottom: 50px;}
+        .result-header { text-align: center; margin-bottom: 30px; }
+        .badge { display: inline-block; padding: 10px 30px; border-radius: 30px; font-size: 1.5rem; font-weight: bold; color: #fff; margin-top: 10px; }
+        .badge.pass { background: var(--correct-color); }
+        .badge.fail { background: var(--incorrect-color); }
+        
+        .result-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-box { text-align: center; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .stat-box h3 { font-size: 2rem; margin-bottom: 5px; }
+
+        .solution-item { margin-bottom: 25px; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .sol-q { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; color: var(--primary-color); }
+        .sol-opt { margin-bottom: 8px; padding: 10px; border-radius: 8px; background: var(--glass-bg); }
+        .sol-opt.correct { background: var(--correct-color); color: #fff; border:none;}
+        .sol-opt.incorrect { background: var(--incorrect-color); color: #fff; border:none;}
+        .sol-exp { margin-top: 15px; font-size: 0.95rem; color: var(--text-color); border-left: 4px solid var(--primary-color); padding-left: 15px; line-height: 1.6; }
+        .sol-exp-title { color: var(--primary-color); font-weight: bold; margin-bottom: 5px; }
+        .sol-fact { margin-top: 10px; background: rgba(0,0,0,0.05); padding: 15px; border-radius: 6px; font-size: 0.9rem;}
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            header { flex-direction: column; gap: 15px; text-align: center; }
+            .action-buttons { flex-direction: column; gap: 15px; }
+            .action-buttons > div { justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auto-save-toast" id="save-toast">Progress Auto-Saved! 💾</div>
+
+    <header class="glass-panel">
+        <div class="header-title">
+            <h1>Hssc Mock Test Wala - GK Mock Test</h1>
+            <p>25 Selected GK Questions with Detailed Solutions & Facts | Auto-Save Enabled</p>
+        </div>
+        <div class="header-controls">
+            <div class="timer-container" id="timer-box">
+                <b>⏱</b>
+                <b class="timer" id="timer">25:00</b>
+                <button id="pause-btn" onclick="togglePause()">Pause</button>
+            </div>
+            <button onclick="toggleTheme()">🌗 Theme</button>
+            <button class="btn-submit" onclick="submitTest(false)">Submit Test</button>
+        </div>
+    </header>
+
+    <div class="container" id="app-container">
+        
+        <div class="glass-panel main-area">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+            
+            <div id="question-header" style="margin-bottom: 15px; font-weight: 600; color: var(--primary-color);"></div>
+            <div id="question-text" class="question-text"></div>
+            
+            <div class="options-grid" id="options-container"></div>
+
+            <div class="action-buttons">
+                <div>
+                    <button onclick="changeQuestion(-1)" id="prev-btn">Previous</button>
+                    <button onclick="clearSelection()">Clear</button>
+                </div>
+                <div>
+                    <button onclick="toggleMark()" id="mark-btn" class="btn-warning">Mark for Review</button>
+                    <button onclick="changeQuestion(1)" id="next-btn" class="btn-primary">Next</button>
+                </div>
+            </div>
+
+            <div class="pause-overlay" id="pause-overlay">
+                <h2>Test Paused ⏸️</h2>
+                <p>Questions are hidden to prevent cheating.</p>
+                <br>
+                <button class="btn-primary" onclick="togglePause()">Resume Test</button>
+            </div>
+        </div>
+
+        <div class="glass-panel sidebar">
+            <h3 style="text-align: center; margin-bottom: 15px;">Question Palette</h3>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-attempted)"></div> Attempted (<b id="count-att">0</b>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-unattempted)"></div> Unattempted (<b id="count-unatt">25</b>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-marked)"></div> Marked (<b id="count-mark">0</b>)</div>
+            </div>
+            <div class="q-grid" id="q-grid"></div>
+            <button class="btn-danger" onclick="resetTest()" style="margin-top: 10px; width: 100%; padding: 8px;">Reset Data</button>
+            <button class="btn-submit" onclick="submitTest(false)" style="margin-top: 10px; width: 100%; padding: 12px; font-size: 1.1rem;">Final Submit Test</button>
+        </div>
+    </div>
+
+    <div class="glass-panel result-screen" id="result-screen">
+        <div class="result-header">
+            <h2>Test Submitted Successfully! 🎉</h2>
+            <div class="badge" id="result-badge">Pass</div>
+        </div>
+        <div class="result-stats">
+            <div class="stat-box"><h3 id="res-score">0</h3><p>Score / 25</p></div>
+            <div class="stat-box"><h3 id="res-perc">0%</h3><p>Percentage</p></div>
+            <div class="stat-box"><h3 id="res-corr" style="color: var(--correct-color);">0</h3><p>Correct</p></div>
+            <div class="stat-box"><h3 id="res-incorr" style="color: var(--incorrect-color);">0</h3><p>Incorrect</p></div>
+            <div class="stat-box"><h3 id="res-time">00:00</h3><p>Time Taken</p></div>
+        </div>
+        
+        <div id="result-action-btns" style="text-align: center; margin-bottom: 30px;">
+            <button class="btn-primary" onclick="resetTest()" style="padding: 15px 40px; font-size: 1.1rem;">Start New Test</button>
+            <button class="btn-submit" onclick="downloadPDF()" style="padding: 15px 40px; font-size: 1.1rem; margin-left: 15px;">Download Solutions PDF 📥</button>
+        </div>
+
+        <h3 style="color: var(--primary-color); font-size: 1.5rem; text-align: center;">Detailed Solutions & Facts 📝</h3>
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--glass-border);">
+        <div id="solutions-container"></div>
+    </div>
+
+<script>
+    const questions = [
+        {
+            "q": "भारत का कौन-सा क्षेत्र एक समय अवन्तिका के नाम से जाना जाता था ?",
+            "opt": ["अवध", "रुहेलखण्ड", "बुंदेलखण्ड", "मालवा"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>मालवा</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - प्राचीन काल में मालवा क्षेत्र (वर्तमान मध्य प्रदेश) को अवन्तिका या अवंति के नाम से जाना जाता था।<br> - इसकी राजधानी उज्जैनी (वर्तमान उज्जैन) थी।<br> - यह 16 महाजनपदों में से एक प्रमुख और शक्तिशाली महाजनपद था।<br> - यहाँ के सबसे प्रसिद्ध राजा प्रद्योत थे, जिन्हें चंड प्रद्योत भी कहा जाता था।<br> - भगवान बुद्ध के समय में अवंति बौद्ध धर्म का एक प्रमुख केंद्र बन गया था।</div>"
+        },
+        {
+            "q": "जैनियों के पहले तीर्थंकर कौन थे ?",
+            "opt": ["अरिष्टनेमि", "पार्श्वनाथ", "अजितनाथ", "ऋषभ"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>ऋषभ</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - ऋषभदेव (या आदिनाथ) जैन धर्म के प्रथम तीर्थंकर थे।<br> - जैन परंपरा के अनुसार, उन्होंने ही कृषि, व्यापार और कला जैसी सभ्यताओं की शुरुआत की थी।<br> - उनका प्रतीक चिह्न 'बैल' (वृषभ) है।<br> - जैन धर्म में कुल 24 तीर्थंकर हुए हैं, जिनमें 24वें और अंतिम तीर्थंकर भगवान महावीर थे।<br> - 23वें तीर्थंकर पार्श्वनाथ थे, जिनका प्रतीक चिह्न 'सर्प' है।</div>"
+        },
+        {
+            "q": "राजस्थान में माउंट आबू पर दिलवाड़ा मंदिरों का निर्माण निम्नलिखित में से किस धर्म के अनुयायियों द्वारा किया गया था ?",
+            "opt": ["बौद्ध", "जैन", "हिन्दू", "सिख"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>जैन</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - दिलवाड़ा के मंदिर राजस्थान के सिरोही जिले में माउंट आबू पर स्थित प्रसिद्ध जैन मंदिर हैं।<br> - इन मंदिरों का निर्माण 11वीं और 13वीं शताब्दी के बीच चालुक्य (सोलंकी) शासकों के मंत्रियों वास्तुपाल और तेजपाल द्वारा करवाया गया था।<br> - ये मंदिर संगमरमर (Marble) पर अपनी अद्भुत और बारीक नक्काशी के लिए दुनिया भर में प्रसिद्ध हैं।<br> - इस परिसर में मुख्य रूप से पांच मंदिर हैं, जिनमें 'विमल वासाही' और 'लूना वासाही' सबसे प्रमुख हैं।<br> - ये मंदिर श्वेतांबर जैन संप्रदाय को समर्पित हैं।</div>"
+        },
+        {
+            "q": "'लाखबख्श' की उपाधि किस शासक को दी गई थी ?",
+            "opt": ["इल्तुतमिश", "बलबन", "रजिया", "कुतुबुद्दीन ऐबक"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>कुतुबुद्दीन ऐबक</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - कुतुबुद्दीन ऐबक को उसकी अत्यधिक उदारता और लाखों का दान देने के कारण 'लाखबख्श' (लाखों का दान देने वाला) कहा जाता था।<br> - वह भारत में दिल्ली सल्तनत और गुलाम वंश (मामलुक वंश) का संस्थापक था।<br> - उसने 1206 ई. में दिल्ली सल्तनत की स्थापना की और अपनी राजधानी लाहौर को बनाया।<br> - ऐबक ने दिल्ली में 'कुव्वत-उल-इस्लाम' मस्जिद और अजमेर में 'ढाई दिन का झोंपड़ा' बनवाया था।<br> - 1210 ई. में चौगान (पोलो) खेलते समय घोड़े से गिरकर उसकी मृत्यु हो गई थी।</div>"
+        },
+        {
+            "q": "कुतुब मीनार किस प्रसिद्ध शासक ने पूरा किया था ?",
+            "opt": ["कुतुबुद्दीन ऐबक", "इल्तुतमिश", "फिरोजशाह तुगलक", "अलाउद्दीन खिलजी"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>इल्तुतमिश</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - कुतुब मीनार का निर्माण कार्य कुतुबुद्दीन ऐबक ने शुरू करवाया था, लेकिन वह केवल इसकी पहली मंजिल ही बनवा सका था।<br> - इसके बाद उसके उत्तराधिकारी इल्तुतमिश ने इसमें तीन और मंजिलें जोड़कर इसे पूरा करवाया।<br> - बाद में बिजली गिरने से इसकी ऊपरी मंजिल क्षतिग्रस्त हो गई, जिसकी मरम्मत फिरोजशाह तुगलक ने करवाई और इसमें दो छोटी मंजिलें और जोड़ दीं।<br> - यह मीनार सूफी संत ख्वाजा कुतुबुद्दीन बख्तियार काकी की याद में बनवाई गई थी।<br> - कुतुब मीनार दिल्ली के महरौली क्षेत्र में स्थित है और यूनेस्को विश्व धरोहर स्थल है।</div>"
+        },
+        {
+            "q": "उत्तरी भारत की प्रथम मुस्लिम महिला शासक थी-",
+            "opt": ["रजिया सुल्तान", "मुमताज", "नूरजहाँ", "इनमें से कोई नहीं"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>रजिया सुल्तान</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - रजिया सुल्तान (1236-1240 ई.) भारत (दिल्ली सल्तनत) की पहली और एकमात्र मुस्लिम महिला शासिका थी।<br> - वह गुलाम वंश के शासक इल्तुतमिश की बेटी थी।<br> - इल्तुतमिश ने अपने अयोग्य पुत्रों के बजाय रजिया को अपना उत्तराधिकारी चुना था, जो उस समय के लिए एक बहुत ही क्रांतिकारी कदम था।<br> - रजिया ने पर्दा प्रथा का त्याग कर पुरुषों की तरह कुबा (कोट) और कुलाह (टोपी) पहनकर दरबार में जाना शुरू किया था।<br> - 1240 ई. में कैथल (हरियाणा) के पास डाकुओं द्वारा उसकी हत्या कर दी गई थी।</div>"
+        },
+        {
+            "q": "निम्नलिखित में से कौन सी संधि ने पेशवा बाजीराव द्वितीय के स्वतंत्र अस्तित्व को समाप्त कर दिया ?",
+            "opt": ["पुरंदर की संधि", "वाडगाँव की कन्वेन्शन", "बेसिन की संधि", "साल्बाई की संधि"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>बेसिन की संधि</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - बेसिन की संधि (Treaty of Bassein) 31 दिसंबर 1802 को मराठा पेशवा बाजीराव द्वितीय और अंग्रेजों (ईस्ट इंडिया कंपनी) के बीच हुई थी।<br> - इस संधि के तहत पेशवा ने अंग्रेजों की 'सहायक संधि' (Subsidiary Alliance) को स्वीकार कर लिया था।<br> - इस संधि ने मराठा साम्राज्य की स्वतंत्रता को वस्तुतः समाप्त कर दिया और अंग्रेजों को भारत में सर्वोच्च शक्ति बना दिया।<br> - इसके परिणामस्वरूप ही द्वितीय आंग्ल-मराठा युद्ध (1803-1805) शुरू हुआ था।<br> - बाजीराव द्वितीय मराठा साम्राज्य के अंतिम पेशवा थे।</div>"
+        },
+        {
+            "q": "लाल किले में मुगल अस्तित्व किसके पतन के साथ समाप्त हुआ ?",
+            "opt": ["औरंगजेब", "मुहम्मदशाह", "शाह आलम", "बहादुरशाह 'जफर'"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>बहादुरशाह 'जफर'</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - बहादुर शाह द्वितीय (जिन्हें जफर के नाम से भी जाना जाता है) भारत के अंतिम मुगल सम्राट थे।<br> - 1857 के प्रथम स्वतंत्रता संग्राम में विद्रोहियों का नेतृत्व करने के कारण अंग्रेजों ने उन्हें गिरफ्तार कर लिया।<br> - अंग्रेजों ने उन पर मुकदमा चलाया और रंगून (अब म्यांमार में) निर्वासित कर दिया।<br> - इसके साथ ही लाल किले से मुगल राजवंश का अस्तित्व हमेशा के लिए समाप्त हो गया।<br> - 1862 में रंगून में ही उनका निधन हो गया। वे एक प्रसिद्ध उर्दू कवि भी थे।</div>"
+        },
+        {
+            "q": "रणजीत सिंह की राजनीतिक राजधानी लाहौर थी। किस नगर को उसकी धार्मिक राजधानी कहा जाता था ?",
+            "opt": ["अमृतसर", "आनन्दपुर साहिब", "गुंजराँवाला", "पेशावर"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>अमृतसर</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - महाराजा रणजीत सिंह ने 1799 में लाहौर पर अधिकार कर उसे अपनी राजनीतिक राजधानी बनाया था।<br> - वहीं दूसरी ओर, 1802 में उन्होंने भंगी मिस्ल से अमृतसर को जीत लिया, जो सिखों की सबसे पवित्र नगरी और धार्मिक राजधानी थी।<br> - रणजीत सिंह ने ही अमृतसर के हरिमंदिर साहिब (स्वर्ण मंदिर) की ऊपरी मंजिलों पर सोना मढ़वाया था, जिसके बाद इसे 'गोल्डन टेम्पल' कहा जाने लगा।<br> - रणजीत सिंह सुकरचकिया मिस्ल से संबंधित थे और उन्हें 'शेर-ए-पंजाब' कहा जाता था।<br> - उनके शासनकाल में पंजाब एक शक्तिशाली और स्वतंत्र राज्य बना।</div>"
+        },
+        {
+            "q": "एक ही स्थान पर लगने वाले दो 'महा कुम्भ' मेलों के बीच कितना अंतराल होता है ?",
+            "opt": ["6 वर्ष", "10 वर्ष", "12 वर्ष", "15 वर्ष"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>12 वर्ष</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - भारत में एक ही स्थान पर महा कुंभ मेला हर 12 वर्ष के अंतराल पर आयोजित किया जाता है।<br> - यह मेला भारत के चार पवित्र स्थानों पर लगता है: प्रयागराज (गंगा, यमुना और सरस्वती के संगम पर), हरिद्वार (गंगा), उज्जैन (क्षिप्रा), और नासिक (गोदावरी)।<br> - कुंभ मेले के स्थान का निर्धारण बृहस्पति, सूर्य और चंद्रमा की ज्योतिषीय स्थितियों के आधार पर किया जाता है।<br> - हर 6 वर्ष में अर्ध कुंभ (Ardh Kumbh) मेला लगता है, जो केवल प्रयागराज और हरिद्वार में आयोजित होता है।<br> - 144 वर्षों के बाद प्रयागराज में 'महा कुंभ' (Maha Kumbh) का आयोजन होता है।</div>"
+        },
+        {
+            "q": "\"पुष्कर मेले\" का आयोजन कहाँ होता है ?",
+            "opt": ["जोधपुर", "अजमेर", "जयपुर", "उदयपुर"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>अजमेर</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - पुष्कर मेला (Pushkar Camel Fair) राजस्थान के अजमेर जिले के पुष्कर शहर में आयोजित होने वाला एक वार्षिक मेला है।<br> - यह मेला हर साल कार्तिक पूर्णिमा (अक्टूबर-नवंबर) के समय लगता है और यह दुनिया के सबसे बड़े ऊंट मेलों में से एक है।<br> - पुष्कर में भारत का एकमात्र और सबसे प्रसिद्ध भगवान ब्रह्मा का मंदिर स्थित है।<br> - इस मेले के दौरान पवित्र पुष्कर झील में स्नान करने का बहुत बड़ा धार्मिक महत्व माना जाता है।<br> - यहाँ ऊंटों की दौड़, मूंछ प्रतियोगिता और विभिन्न राजस्थानी सांस्कृतिक कार्यक्रम प्रमुख आकर्षण होते हैं।</div>"
+        },
+        {
+            "q": "सालारजंग संग्रहालय कहाँ स्थित है ?",
+            "opt": ["हैदराबाद", "जयपुर", "लखनऊ", "मुम्बई"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>हैदराबाद</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - सालारजंग संग्रहालय (Salar Jung Museum) तेलंगाना राज्य के हैदराबाद शहर में मूसी नदी के तट पर स्थित है।<br> - यह भारत के तीन राष्ट्रीय संग्रहालयों में से एक है और दुनिया के सबसे बड़े 'वन-मैन कलेक्शन' (एक व्यक्ति द्वारा एकत्र की गई कलाकृतियाँ) के लिए प्रसिद्ध है।<br> - इसकी अधिकांश कलाकृतियों का संग्रह नवाब मीर यूसुफ अली खान (सालारजंग तृतीय) ने किया था।<br> - इस संग्रहालय का सबसे प्रसिद्ध आकर्षण 'म्यूजिकल क्लॉक' (Musical Clock) और 'वील्ड रेबेका' (Veiled Rebecca) की संगमरमर की मूर्ति है।<br> - इसे 1951 में आम जनता के लिए खोला गया था।</div>"
+        },
+        {
+            "q": "भारतीय संविधान ने भारत को किस प्रकार वर्णित किया है?",
+            "opt": ["राज्यों एवं संघ-क्षेत्रों का महासंघ", "एक राज्यों का संघ", "भारतवर्ष", "एक महासंघीय राष्ट्र"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>एक राज्यों का संघ</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - भारतीय संविधान के अनुच्छेद 1 में स्पष्ट रूप से कहा गया है कि \"इंडिया, जो कि भारत है, राज्यों का एक संघ (Union of States) होगा।\"<br> - डॉ. बी.आर. अंबेडकर के अनुसार, 'यूनियन' (Union) शब्द का प्रयोग जानबूझकर किया गया था ताकि यह स्पष्ट हो सके कि भारतीय संघ राज्यों के बीच किसी समझौते का परिणाम नहीं है।<br> - इसका यह भी अर्थ है कि किसी भी राज्य को भारतीय संघ से अलग (Secede) होने का अधिकार नहीं है।<br> - भारत वर्तमान में 28 राज्यों और 8 केंद्र शासित प्रदेशों का एक अखंड संघ है।<br> - भले ही भारत में संघीय व्यवस्था (Federal system) है, लेकिन संविधान में कहीं भी 'फेडरेशन' (Federation) शब्द का उपयोग नहीं किया गया है।</div>"
+        },
+        {
+            "q": "दुनिया के निम्नलिखित में से किस देश से भारतीय संविधान में 'राज्य नीति के निर्देशक सिद्धांत' की संकल्पना को अंगीकार किया गया है?",
+            "opt": ["आयरलैंड", "यू.एस.ए.", "कनाडा", "ऑस्ट्रेलिया"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>आयरलैंड</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - भारतीय संविधान के भाग IV (अनुच्छेद 36 से 51) में राज्य के नीति निर्देशक तत्व (DPSP - Directive Principles of State Policy) शामिल हैं।<br> - इन्हें आयरलैंड के संविधान (1937) से लिया गया था। दिलचस्प बात यह है कि आयरलैंड ने इन्हें स्पेन के संविधान से लिया था।<br> - इनका मुख्य उद्देश्य भारत में एक 'कल्याणकारी राज्य' (Welfare State) की स्थापना करना है, न कि पुलिस राज्य की।<br> - मौलिक अधिकारों के विपरीत, ये सिद्धांत प्रकृति में 'गैर-न्यायोचित' (Non-justiciable) हैं, यानी इन्हें अदालत द्वारा लागू नहीं कराया जा सकता है।<br> - समान नागरिक संहिता (UCC) और ग्राम पंचायतों का संगठन इसी के अंतर्गत आते हैं।</div>"
+        },
+        {
+            "q": "भारतीय संविधान की प्रस्तावना में निम्नलिखित में से किसका उल्लेख नहीं किया गया है?",
+            "opt": ["न्याय", "भ्रातृत्व", "वयस्क मताधिकार", "स्थिति की समानता"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>वयस्क मताधिकार</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - भारतीय संविधान की प्रस्तावना (Preamble) में 'वयस्क मताधिकार' (Adult Franchise) का कोई सीधा उल्लेख नहीं है। इसका उल्लेख संविधान के अनुच्छेद 326 में किया गया है।<br> - प्रस्तावना में तीन प्रकार के न्याय (सामाजिक, आर्थिक और राजनीतिक), पांच प्रकार की स्वतंत्रता (विचार, अभिव्यक्ति, विश्वास, धर्म और उपासना), और दो प्रकार की समानता (प्रतिष्ठा और अवसर) की बात की गई है।<br> - भ्रातृत्व (Brotherhood/Fraternity) का उल्लेख राष्ट्र की एकता और अखंडता सुनिश्चित करने के लिए किया गया है।<br> - 42वें संविधान संशोधन (1976) द्वारा प्रस्तावना में तीन नए शब्द जोड़े गए थे: समाजवादी, धर्मनिरपेक्ष और अखंडता।<br> - प्रस्तावना को संविधान की आत्मा और कुंजी भी कहा जाता है।</div>"
+        },
+        {
+            "q": "'दोहरी नागरिकता' (Dual Citizenship) निम्न में से किसकी विशेषता है?",
+            "opt": ["एकात्मक सरकार", "संघीय सरकार", "संसदीय सरकार", "राष्ट्रपति-शासित सरकार"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>संघीय सरकार</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - दोहरी नागरिकता मुख्य रूप से एक 'संघीय सरकार' (Federal Government) प्रणाली की विशेषता होती है, जैसे कि संयुक्त राज्य अमेरिका (USA) में।<br> - अमेरिका में एक नागरिक को देश (राष्ट्रीय) की नागरिकता और उस विशिष्ट राज्य की नागरिकता दोनों प्राप्त होती हैं जहाँ वह रहता है।<br> - हालाँकि, भारत भी एक संघीय ढांचे वाला देश है, लेकिन यहाँ ब्रिटिश मॉडल की तरह 'एकल नागरिकता' (Single Citizenship) का प्रावधान है (केवल भारत की नागरिकता)।<br> - एकल नागरिकता का उद्देश्य पूरे देश में एकता, अखंडता और भाईचारे की भावना को बढ़ावा देना है।<br> - एकात्मक सरकार (Unitary Government) में हमेशा एकल नागरिकता ही होती है।</div>"
+        },
+        {
+            "q": "मौलिक अधिकारों को लागू करने के लिए निम्नोक्त में से किसी न्यायालय द्वारा क्या जारी किया जा सकता है?",
+            "opt": ["डिक्री", "अध्यादेश", "समादेश (रिट)", "अधिसूचना"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>समादेश (रिट)</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - मौलिक अधिकारों के उल्लंघन की स्थिति में, नागरिकों के अधिकारों की रक्षा के लिए न्यायालय 'समादेश' या 'रिट' (Writ) जारी करते हैं।<br> - भारतीय संविधान के अनुच्छेद 32 के तहत सर्वोच्च न्यायालय (Supreme Court) और अनुच्छेद 226 के तहत उच्च न्यायालय (High Court) को रिट जारी करने का अधिकार है।<br> - संविधान में 5 प्रकार की रिट का उल्लेख है: 1. बंदी प्रत्यक्षीकरण (Habeas Corpus), 2. परमादेश (Mandamus), 3. प्रतिषेध (Prohibition), 4. उत्प्रेषण (Certiorari), 5. अधिकार पृच्छा (Quo-Warranto)।<br> - अनुच्छेद 32 को डॉ. बी.आर. अंबेडकर ने 'संविधान का हृदय और आत्मा' कहा था।<br> - अध्यादेश (Ordinance) कार्यपालिका (राष्ट्रपति/राज्यपाल) द्वारा जारी किया जाता है, न्यायपालिका द्वारा नहीं।</div>"
+        },
+        {
+            "q": "भारतीय संविधान का अनुच्छेद-32 निम्नलिखित में से किससे सम्बन्धित है?",
+            "opt": ["शोषण के विरुद्ध अधिकार", "धर्म का अधिकार", "संवैधानिक उपचारों का अधिकार", "समता का अधिकार"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>संवैधानिक उपचारों का अधिकार</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - अनुच्छेद 32 'संवैधानिक उपचारों का अधिकार' (Right to Constitutional Remedies) प्रदान करता है।<br> - यह एक ऐसा मौलिक अधिकार है जो अन्य सभी मौलिक अधिकारों को प्रभावी और लागू करने योग्य बनाता है।<br> - इसके तहत, यदि किसी नागरिक के मौलिक अधिकारों का हनन होता है, तो वह सीधे सर्वोच्च न्यायालय (Supreme Court) जा सकता है।<br> - डॉ. बी.आर. अंबेडकर ने इसे संविधान का सबसे महत्वपूर्ण अनुच्छेद माना था, जिसके बिना संविधान अर्थहीन हो जाएगा।<br> - 'शोषण के विरुद्ध अधिकार' (अनुच्छेद 23-24), 'धर्म का अधिकार' (अनुच्छेद 25-28), और 'समता का अधिकार' (अनुच्छेद 14-18) में आते हैं।</div>"
+        },
+        {
+            "q": "आकाशगंगा मंदाकिनी सबसे पहले देखी थी:",
+            "opt": ["गैलीलियो ने", "मार्टिन श्मिट ने", "मारकोनी ने", "न्यूटन ने"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>गैलीलियो ने</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - हमारी आकाशगंगा (Milky Way Galaxy / मंदाकिनी) को दूरबीन (Telescope) की मदद से सबसे पहले महान वैज्ञानिक गैलीलियो गैलिली ने 1610 में देखा था।<br> - गैलीलियो ने ही सबसे पहले यह खोज की थी कि मिल्की वे प्रकाश का कोई बादल नहीं है, बल्कि यह अनगिनत तारों का एक विशाल समूह है।<br> - हमारी आकाशगंगा का आकार 'सर्पिलाकार' (Spiral) है।<br> - हमारा सौर मंडल इसी आकाशगंगा के एक बाहरी किनारे पर (ओरियन सिग्नस आर्म में) स्थित है।<br> - हमारी आकाशगंगा के सबसे नजदीक स्थित दूसरी सबसे बड़ी आकाशगंगा 'एन्ड्रोमेडा' (Andromeda) है।</div>"
+        },
+        {
+            "q": "हमारे सौर मंडल में सबसे बड़ा ग्रह है:",
+            "opt": ["मंगल", "बृहस्पति", "शनि", "बुध"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>बृहस्पति</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - बृहस्पति (Jupiter) हमारे सौर मंडल का सबसे बड़ा ग्रह है। इसका द्रव्यमान सौर मंडल के अन्य सभी ग्रहों के कुल द्रव्यमान का ढाई गुना है।<br> - यह मुख्य रूप से हाइड्रोजन और हीलियम गैसों से बना एक 'गैस दानव' (Gas Giant) है, इसलिए इसकी कोई ठोस सतह नहीं है।<br> - बृहस्पति का सबसे प्रसिद्ध लक्षण 'ग्रेट रेड स्पॉट' (Great Red Spot) है, जो सैकड़ों सालों से चल रहा एक विशाल तूफान है।<br> - बृहस्पति का एक उपग्रह 'गैनिमीड' (Ganymede) सौर मंडल का सबसे बड़ा उपग्रह है, जो बुध ग्रह से भी बड़ा है।<br> - सौर मंडल का सबसे छोटा ग्रह बुध (Mercury) है।</div>"
+        },
+        {
+            "q": "सूर्य की बाह्यतम परत को कहते हैं -",
+            "opt": ["वर्ण-मंडल", "प्रकाशमंडल", "किरीट (कोरोना)", "स्थलमंडल"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>किरीट (कोरोना)</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - सूर्य के वायुमंडल की सबसे बाहरी और सबसे गर्म परत को 'किरीट' या 'कोरोना' (Corona) कहा जाता है।<br> - कोरोना का तापमान लाखों डिग्री सेल्सियस तक होता है, जो सूर्य की सतह (प्रकाशमंडल) से भी बहुत अधिक है।<br> - कोरोना को सामान्य नंगी आंखों से नहीं देखा जा सकता क्योंकि सूर्य का मुख्य भाग बहुत चमकीला होता है।<br> - इसे केवल 'पूर्ण सूर्य ग्रहण' (Total Solar Eclipse) के दौरान ही एक सफेद चमकते हुए आभामंडल के रूप में देखा जा सकता है।<br> - 'प्रकाशमंडल' (Photosphere) सूर्य की वह दृश्य सतह है जिससे हमें प्रकाश मिलता है।</div>"
+        },
+        {
+            "q": "'पंजशीर घाटी' कहाँ स्थित है ?",
+            "opt": ["लेबनान", "अफगानिस्तान", "जम्मू तथा कश्मीर, भारत", "सीरिया"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>अफगानिस्तान</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - पंजशीर घाटी (Panjshir Valley) अफगानिस्तान के उत्तर-मध्य भाग में हिंदूकुश पर्वत श्रृंखला के पास स्थित एक बहुत ही रणनीतिक घाटी है।<br> - पंजशीर का शाब्दिक अर्थ 'पांच शेर' (Five Lions) होता है।<br> - यह घाटी पंजशीर नदी द्वारा निर्मित है और ऐतिहासिक रूप से अपनी अजेयता के लिए जानी जाती है।<br> - 1980 के दशक में सोवियत संघ (रूस) और बाद में 1990 के दशक में तालिबान भी इस घाटी पर पूरी तरह से कब्जा करने में विफल रहे थे।<br> - यहाँ के प्रसिद्ध विद्रोही नेता अहमद शाह मसूद थे, जिन्हें 'शेर-ए-पंजशीर' कहा जाता था।</div>"
+        },
+        {
+            "q": "'रेडक्लिफ लाइन' निम्नलिखित में से किन देशों के बीच सीमा रेखा है ?",
+            "opt": ["भारत और बांग्लादेश", "भारत और भूटान", "भारत और चीन", "भारत और पाकिस्तान"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>भारत और पाकिस्तान</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - रेडक्लिफ रेखा (Radcliffe Line) 17 अगस्त 1947 को भारत और पाकिस्तान के बीच आधिकारिक अंतर्राष्ट्रीय सीमा के रूप में खींची गई थी।<br> - इस सीमा रेखा का नाम 'सर सिरिल रेडक्लिफ' (Sir Cyril Radcliffe) के नाम पर रखा गया है, जो सीमा आयोग के अध्यक्ष थे।<br> - इसी रेखा ने भारत को दो हिस्सों में विभाजित किया था, जिसके परिणामस्वरूप पश्चिम पाकिस्तान और पूर्वी पाकिस्तान (वर्तमान बांग्लादेश) का निर्माण हुआ।<br> - <b>अन्य महत्वपूर्ण रेखाएँ:</b><br> - मैकमोहन रेखा (McMahon Line) भारत और चीन के बीच है।<br> - डूरंड रेखा (Durand Line) पाकिस्तान और अफगानिस्तान के बीच है।</div>"
+        },
+        {
+            "q": "अर्थशास्त्र में कौन-सा सिद्धांत यह प्रतिपादित करता है कि कोई देश वही निर्यात करता है जिसका वह कुशलतापूर्वक और बहुतायत में उत्पादन करता है?",
+            "opt": ["सोलोव-स्वान मॉडल", "कारनॉट कंपीटीशन", "हैक्सचर-ओहलीन मॉडल", "इनपुट-आउटपुट मॉडल"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>हैक्सचर-ओहलीन मॉडल</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - इसे 'कारक-अनुपात सिद्धांत' (Factor-Proportion Theory) भी कहा जाता है।<br> - इस मॉडल को स्वीडिश अर्थशास्त्री एली हेक्सचर और बर्टिल ओहलीन ने विकसित किया था।<br> - यह 2x2x2 मॉडल पर आधारित है (दो देश, दो वस्तुएं और उत्पादन के दो कारक - श्रम और पूंजी)।<br> - यह सिद्धांत डेविड रिकार्डो के 'तुलनात्मक लाभ सिद्धांत' (Comparative Advantage) का ही विस्तार है।</div>"
+        },
+        {
+            "q": "पवन चक्की (टर्बाइन) कौन-सी ऊर्जा को यांत्रिक शक्ति में परिवर्तित करती है?",
+            "opt": ["रासायनिक", "गतिज", "गुरुत्वीय", "नाभिकीय"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>गतिज</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - पवन चक्की (Windmill) बहती हुई हवा की गतिज ऊर्जा (Kinetic Energy) को टरबाइन ब्लेड के माध्यम से यांत्रिक ऊर्जा में बदलती है।<br> - इसके बाद इससे जुड़ा जनरेटर इस यांत्रिक ऊर्जा को विद्युत ऊर्जा (Electrical Energy) में परिवर्तित कर देता है।<br> - भारत में तमिलनाडु राज्य पवन ऊर्जा के उत्पादन में पहले स्थान पर है।<br> - हवा की गति और शक्ति को मापने के लिए 'एनीमोमीटर' (Anemometer) यंत्र का उपयोग किया जाता है।</div>"
+        }
+    ];
+
+    // Shuffle the questions array to mix them randomly
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+    shuffleArray(questions);
+
+    let currentIdx = 0;
+    const totalQ = questions.length;
+    let answers = new Array(totalQ).fill(null);
+    let marked = new Array(totalQ).fill(false);
+    
+    let totalTime = 25 * 60; 
+    let timerInterval;
+    let isPaused = false;
+
+    function init() {
+        if (!loadProgress()) {
+            answers = new Array(totalQ).fill(null);
+            marked = new Array(totalQ).fill(false);
+            totalTime = 25 * 60;
+            currentIdx = 0;
+        }
+        createPalette();
+        loadQuestion(currentIdx);
+        updateStats();
+        startTimer();
+    }
+
+    function toggleTheme() {
+        const doc = document.documentElement;
+        const current = doc.getAttribute('data-theme');
+        doc.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+    }
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if(totalTime <= 0) {
+                clearInterval(timerInterval);
+                submitTest(true);
+                return;
+            }
+            totalTime--;
+            updateTimerDisplay();
+            
+            // Background Auto Save every 30 seconds
+            if(totalTime % 30 === 0) saveProgress(false);
+
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(totalTime / 60).toString().padStart(2, '0');
+        const secs = (totalTime % 60).toString().padStart(2, '0');
+        const timerEl = document.getElementById('timer');
+        timerEl.innerText = `${mins}:${secs}`;
+        
+        if (totalTime < 300) { 
+            timerEl.classList.add('danger');
+        } else {
+            timerEl.classList.remove('danger');
+        }
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        const overlay = document.getElementById('pause-overlay');
+        const btn = document.getElementById('pause-btn');
+        
+        if (isPaused) {
+            clearInterval(timerInterval);
+            overlay.style.display = 'flex';
+            btn.innerText = 'Resume';
+            btn.classList.add('btn-warning');
+        } else {
+            startTimer();
+            overlay.style.display = 'none';
+            btn.innerText = 'Pause';
+            btn.classList.remove('btn-warning');
+        }
+    }
+
+    function loadQuestion(idx) {
+        currentIdx = idx;
+        const qData = questions[idx];
+        
+        document.getElementById('question-header').innerText = `Question ${idx + 1} of ${totalQ}`;
+        document.getElementById('question-text').innerHTML = qData.q;
+        
+        const optsContainer = document.getElementById('options-container');
+        optsContainer.innerHTML = '';
+        
+        qData.opt.forEach((optText, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn' + (answers[idx] === i ? ' selected' : '');
+            btn.innerHTML = `<div style="font-weight:bold; border:1px solid currentColor; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${String.fromCharCode(65+i)}</div> ${optText}`;
+            btn.onclick = () => selectOption(i);
+            optsContainer.appendChild(btn);
+        });
+
+        document.getElementById('progress-bar').style.width = `${((idx + 1) / totalQ) * 100}%`;
+
+        document.getElementById('prev-btn').disabled = (idx === 0);
+        document.getElementById('prev-btn').style.opacity = (idx === 0) ? '0.5' : '1';
+        
+        const markBtn = document.getElementById('mark-btn');
+        markBtn.innerText = marked[idx] ? 'Unmark Review' : 'Mark for Review';
+        
+        const nextBtn = document.getElementById('next-btn');
+        if (idx === totalQ - 1) {
+            nextBtn.innerText = 'Submit Test';
+            nextBtn.className = 'btn-danger';
+        } else {
+            nextBtn.innerText = 'Next';
+            nextBtn.className = 'btn-primary';
+        }
+
+        updatePaletteVisuals();
+    }
+
+    // --- AUTO SAVE FUNCTIONS ---
+    // Changed key to gkMockTestState_PDF5 to avoid overriding previous tests
+    function saveProgress(showToast = true) {
+        const testState = {
+            answers: answers,
+            marked: marked,
+            totalTime: totalTime,
+            currentIdx: currentIdx
+        };
+        localStorage.setItem('gkMockTestState_PDF5', JSON.stringify(testState));
+        
+        if(showToast) {
+            const toast = document.getElementById('save-toast');
+            toast.style.opacity = '1';
+            setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+        }
+    }
+
+    function loadProgress() {
+        const savedState = localStorage.getItem('gkMockTestState_PDF5');
+        if (savedState) {
+            const state = JSON.parse(savedState);
+            answers = state.answers;
+            marked = state.marked;
+            totalTime = state.totalTime;
+            currentIdx = state.currentIdx || 0;
+            return true;
+        }
+        return false;
+    }
+
+    function clearProgress() {
+        localStorage.removeItem('gkMockTestState_PDF5');
+    }
+
+    function resetTest() {
+        if(confirm("Are you sure you want to start a new test? All current progress will be lost.")) {
+            clearProgress();
+            location.reload();
+        }
+    }
+    // ----------------------------
+
+    function selectOption(optIdx) {
+        answers[currentIdx] = optIdx;
+        loadQuestion(currentIdx);
+        updateStats();
+        saveProgress(true); // Save on interaction
+    }
+
+    function clearSelection() {
+        answers[currentIdx] = null;
+        loadQuestion(currentIdx);
+        updateStats();
+        saveProgress(true);
+    }
+
+    function toggleMark() {
+        marked[currentIdx] = !marked[currentIdx];
+        loadQuestion(currentIdx);
+        updateStats();
+        saveProgress(true);
+    }
+
+    function changeQuestion(step) {
+        if (step === 1 && currentIdx === totalQ - 1) {
+            submitTest(false);
+            return;
+        }
+        let newIdx = currentIdx + step;
+        if (newIdx >= 0 && newIdx < totalQ) {
+            currentIdx = newIdx;
+            loadQuestion(newIdx);
+            saveProgress(false);
+        }
+    }
+
+    function createPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'q-grid-btn';
+            btn.id = `pal-btn-${i}`;
+            btn.innerText = i + 1;
+            btn.onclick = () => { currentIdx = i; loadQuestion(i); saveProgress(false); };
+            grid.appendChild(btn);
+        }
+    }
+
+    function updatePaletteVisuals() {
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.getElementById(`pal-btn-${i}`);
+            btn.className = 'q-grid-btn';
+            
+            if (answers[i] !== null && marked[i]) btn.classList.add('marked', 'attempted');
+            else if (marked[i]) btn.classList.add('marked');
+            else if (answers[i] !== null) btn.classList.add('attempted');
+            
+            if (i === currentIdx) btn.classList.add('current');
+        }
+    }
+
+    function updateStats() {
+        let att = 0, mark = 0;
+        for (let i = 0; i < totalQ; i++) {
+            if (answers[i] !== null) att++;
+            if (marked[i]) mark++;
+        }
+        document.getElementById('count-att').innerText = att;
+        document.getElementById('count-unatt').innerText = totalQ - att;
+        document.getElementById('count-mark').innerText = mark;
+        updatePaletteVisuals();
+    }
+
+    function submitTest(isAuto) {
+        const unatt = answers.filter(a => a === null).length;
+        if (!isAuto && unatt > 0) {
+            const confirmSubmit = confirm(`आपके ${unatt} प्रश्न छूट गए हैं। क्या आप निश्चित रूप से टेस्ट सबमिट करना चाहते हैं?`);
+            if (!confirmSubmit) return;
+        }
+
+        clearInterval(timerInterval);
+        document.getElementById('app-container').style.display = 'none';
+        document.querySelector('.header-controls').style.display = 'none';
+        clearProgress(); // Clear saved state on submit
+        generateResults();
+    }
+
+    function generateResults() {
+        const resScreen = document.getElementById('result-screen');
+        resScreen.style.display = 'block';
+
+        let correct = 0;
+        let incorrect = 0;
+        
+        answers.forEach((ans, i) => {
+            if (ans !== null) {
+                if (ans === questions[i].ans) correct++;
+                else incorrect++;
+            }
+        });
+
+        const score = correct;
+        const perc = ((score / totalQ) * 100).toFixed(2);
+        
+        const timeTakenSec = (25 * 60) - totalTime;
+        const timeMins = Math.floor(timeTakenSec / 60).toString().padStart(2, '0');
+        const timeSecs = (timeTakenSec % 60).toString().padStart(2, '0');
+
+        document.getElementById('res-score').innerText = score;
+        document.getElementById('res-perc').innerText = perc + '%';
+        document.getElementById('res-corr').innerText = correct;
+        document.getElementById('res-incorr').innerText = incorrect;
+        document.getElementById('res-time').innerText = `${timeMins}:${timeSecs}`;
+
+        const badge = document.getElementById('result-badge');
+        if (perc >= 50) {
+            badge.className = 'badge pass';
+            badge.innerText = 'PASS';
+        } else {
+            badge.className = 'badge fail';
+            badge.innerText = 'FAIL';
+        }
+
+        generateSolutions();
+    }
+
+    function generateSolutions() {
+        const container = document.getElementById('solutions-container');
+        let html = '';
+
+        questions.forEach((q, i) => {
+            const userAns = answers[i];
+            const corrAns = q.ans;
+            
+            html += `<div class="solution-item">
+                        <div class="sol-q">Q${i+1}. ${q.q}</div>`;
+            
+            q.opt.forEach((optText, optIdx) => {
+                let cls = 'sol-opt';
+                let icon = '';
+                
+                if (optIdx === corrAns) {
+                    cls += ' correct';
+                    icon = '✓';
+                } else if (userAns === optIdx && userAns !== corrAns) {
+                    cls += ' incorrect';
+                    icon = '✗';
+                }
+
+                if(icon) {
+                    html += `<div class="${cls}"><b>${String.fromCharCode(65+optIdx)}</b>: ${optText} <div style="float:right; font-weight:bold;">${icon}</div></div>`;
+                } else {
+                    html += `<div class="${cls}"><b>${String.fromCharCode(65+optIdx)}</b>: ${optText}</div>`;
+                }
+            });
+
+            const userStatus = userAns === null ? "<b style='color:var(--text-muted)'>Unattempted</b>" : 
+                              (userAns === corrAns ? "<b style='color:var(--correct-color)'>Correct</b>" : 
+                              "<b style='color:var(--incorrect-color)'>Incorrect</b>");
+
+            html += `<div style="margin-top: 10px;"><b>Status:</b> ${userStatus}</div>`;
+            html += `<div class="sol-exp"><div class="sol-exp-title">Explanation:</div>${q.exp}</div>`;
+            html += `</div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    // PDF जनरेट करने का फंक्शन
+    function downloadPDF() {
+        // PDF जनरेट करते समय इन बटनों को छिपाना
+        const btnContainer = document.getElementById('result-action-btns');
+        btnContainer.style.display = 'none';
+
+        const element = document.getElementById('result-screen');
+        const opt = {
+            margin:       10,
+            filename:     'GK_Special_Mock_Test_Solutions.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        // html2pdf लाइब्रेरी का इस्तेमाल करके PDF डाउनलोड करना
+        html2pdf().set(opt).from(element).save().then(() => {
+            // PDF डाउनलोड होने के बाद बटन वापस दिखाएं
+            btnContainer.style.display = 'block'; 
+        });
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
