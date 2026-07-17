@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSSC mock test wala - Reasoning Special</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: #2c3e50;
+            --text-muted: #576574;
+            --primary-color: #341f97;
+            --accent-color: #ff9f43;
+            --correct-color: #10ac84;
+            --incorrect-color: #ee5253;
+            --btn-hover: rgba(255, 255, 255, 0.6);
+            --palette-unattempted: #c8d6e5;
+            --palette-attempted: #10ac84;
+            --palette-marked: #9b59b6;
+            --palette-marked-attempted: #8e44ad;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-bg: rgba(16, 20, 24, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f1f2f6;
+            --text-muted: #a4b0be;
+            --primary-color: #54a0ff;
+            --accent-color: #ff9f43;
+            --correct-color: #1dd1a1;
+            --incorrect-color: #ff6b6b;
+            --btn-hover: rgba(255, 255, 255, 0.1);
+            --palette-unattempted: #576574;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body { background: var(--bg-gradient); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; transition: all 0.3s ease; }
+
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: var(--shadow); padding: 20px; }
+
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; margin: 15px; }
+        .header-title h1 { font-size: 1.5rem; }
+        .header-title p { font-size: 0.9rem; color: var(--text-muted); font-weight: 600;}
+        .header-controls { display: flex; gap: 15px; align-items: center; }
+        
+        .timer-container { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.1); padding: 8px 15px; border-radius: 20px; }
+        .timer { font-size: 1.2rem; font-weight: bold; }
+        .timer.danger { color: var(--incorrect-color); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        .auto-save-toast { position: fixed; top: 20px; right: 50%; transform: translateX(50%); background: var(--primary-color); color: white; padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; opacity: 0; transition: opacity 0.5s; z-index: 1000; pointer-events: none;}
+
+        button { cursor: pointer; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; transition: all 0.2s; background: var(--glass-bg); color: var(--text-color); border: 1px solid var(--glass-border); }
+        button:hover { background: var(--btn-hover); }
+        .btn-primary { background: var(--primary-color); color: #fff; border: none; }
+        .btn-primary:hover { background: #2c1a80; }
+        .btn-danger { background: var(--incorrect-color); color: white; border: none; }
+        .btn-warning { background: var(--accent-color); color: white; border: none; }
+        .btn-submit { background: var(--correct-color); color: white; border: none; }
+        .btn-submit:hover { background: #0b8c6b; }
+
+        .container { display: flex; flex: 1; gap: 20px; margin: 0 15px 15px 15px; }
+        .main-area { flex: 3; display: flex; flex-direction: column; position: relative; }
+        .sidebar { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        .progress-bar-bg { background: rgba(0,0,0,0.1); height: 8px; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar-fill { background: var(--primary-color); height: 100%; width: 0%; transition: width 0.3s; }
+        
+        .question-text { font-size: 1.25rem; font-weight: 500; margin-bottom: 20px; line-height: 1.6; }
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { text-align: left; padding: 15px; font-size: 1rem; display: flex; align-items: center; gap: 15px; }
+        .option-btn.selected { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+        
+        .action-buttons { display: flex; justify-content: space-between; margin-top: auto; padding-top: 20px; }
+        .action-buttons > div { display: flex; gap: 10px; }
+
+        .pause-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 10; display: none; flex-direction: column; align-items: center; justify-content: center; border-radius: 16px; }
+        .pause-overlay h2 { font-size: 2rem; margin-bottom: 10px; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-item { font-size: 0.85rem; display: flex; align-items: center; gap: 8px; font-weight: bold;}
+        .stat-dot { width: 14px; height: 14px; border-radius: 50%; }
+        
+        .q-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .q-grid-btn { padding: 10px 0; text-align: center; border-radius: 8px; font-weight: bold; background: var(--palette-unattempted); color: #2c3e50; border: none; font-size: 14px; }
+        .q-grid-btn.current { border: 3px solid #2c3e50; transform: scale(1.05);}
+        [data-theme="dark"] .q-grid-btn.current { border: 3px solid #fff; color: #fff; }
+        .q-grid-btn.attempted { background: var(--palette-attempted); color: #fff; }
+        .q-grid-btn.marked { background: var(--palette-marked); color: #fff; }
+        .q-grid-btn.marked.attempted { background: var(--palette-marked-attempted); color: #fff; }
+
+        .result-screen { display: none; max-width: 1000px; margin: 0 auto; width: 100%; padding-bottom: 50px;}
+        .result-header { text-align: center; margin-bottom: 30px; }
+        .badge { display: inline-block; padding: 10px 30px; border-radius: 30px; font-size: 1.5rem; font-weight: bold; color: #fff; margin-top: 10px; }
+        .badge.pass { background: var(--correct-color); }
+        .badge.fail { background: var(--incorrect-color); }
+        
+        .result-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-box { text-align: center; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .stat-box h3 { font-size: 2rem; margin-bottom: 5px; }
+
+        .solution-item { margin-bottom: 25px; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .sol-q { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; color: var(--primary-color); }
+        .sol-opt { margin-bottom: 8px; padding: 10px; border-radius: 8px; background: var(--glass-bg); }
+        .sol-opt.correct { background: var(--correct-color); color: #fff; border:none;}
+        .sol-opt.incorrect { background: var(--incorrect-color); color: #fff; border:none;}
+        .sol-exp { margin-top: 15px; font-size: 0.95rem; color: var(--text-color); border-left: 4px solid var(--primary-color); padding-left: 15px; line-height: 1.6; background: rgba(0,0,0,0.03); padding: 15px; border-radius: 8px;}
+        .sol-exp-title { color: var(--primary-color); font-weight: bold; margin-bottom: 5px; }
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            header { flex-direction: column; gap: 15px; text-align: center; }
+            .action-buttons { flex-direction: column; gap: 15px; }
+            .action-buttons > div { justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auto-save-toast" id="save-toast">Progress Auto-Saved! 💾</div>
+
+    <header class="glass-panel">
+        <div class="header-title">
+            <h1>HSSC mock test wala</h1>
+            <p>HSSC CET Group D Special (Reasoning) | 25 Questions | 35 Minutes</p>
+        </div>
+        <div class="header-controls">
+            <div class="timer-container" id="timer-box">
+                <b>⏱</b>
+                <b class="timer" id="timer">35:00</b>
+                <button id="pause-btn" onclick="togglePause()">Pause</button>
+            </div>
+            <button onclick="toggleTheme()">🌗 Theme</button>
+            <button class="btn-submit" onclick="submitTest(false)">Submit Test</button>
+        </div>
+    </header>
+
+    <div class="container" id="app-container">
+        
+        <div class="glass-panel main-area">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+            
+            <div id="question-header" style="margin-bottom: 15px; font-weight: 600; color: var(--primary-color);"></div>
+            <div id="question-text" class="question-text"></div>
+            
+            <div class="options-grid" id="options-container"></div>
+
+            <div class="action-buttons">
+                <div>
+                    <button onclick="changeQuestion(-1)" id="prev-btn">Previous</button>
+                    <button onclick="clearSelection()">Clear</button>
+                </div>
+                <div>
+                    <button onclick="toggleMark()" id="mark-btn" class="btn-warning">Mark for Review</button>
+                    <button onclick="changeQuestion(1)" id="next-btn" class="btn-primary">Next</button>
+                </div>
+            </div>
+
+            <div class="pause-overlay" id="pause-overlay">
+                <h2>Test Paused ⏸️</h2>
+                <p>Questions are hidden to prevent cheating.</p>
+                <br>
+                <button class="btn-primary" onclick="togglePause()">Resume Test</button>
+            </div>
+        </div>
+
+        <div class="glass-panel sidebar">
+            <h3 style="text-align: center; margin-bottom: 15px;">Question Palette</h3>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-attempted)"></div> Attempted (<b id="count-att">0</b>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-unattempted)"></div> Unattempted (<b id="count-unatt">25</b>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-marked)"></div> Marked (<b id="count-mark">0</b>)</div>
+            </div>
+            <div class="q-grid" id="q-grid"></div>
+            <button class="btn-danger" onclick="resetTest()" style="margin-top: 10px; width: 100%; padding: 8px;">Reset Data</button>
+            <button class="btn-submit" onclick="submitTest(false)" style="margin-top: 10px; width: 100%; padding: 12px; font-size: 1.1rem;">Final Submit Test</button>
+        </div>
+    </div>
+
+    <div class="glass-panel result-screen" id="result-screen">
+        <div class="result-header">
+            <h2>Test Submitted Successfully! 🎉</h2>
+            <div class="badge" id="result-badge">Pass</div>
+        </div>
+        <div class="result-stats">
+            <div class="stat-box"><h3 id="res-score">0</h3><p>Score / 25</p></div>
+            <div class="stat-box"><h3 id="res-perc">0%</h3><p>Percentage</p></div>
+            <div class="stat-box"><h3 id="res-corr" style="color: var(--correct-color);">0</h3><p>Correct</p></div>
+            <div class="stat-box"><h3 id="res-incorr" style="color: var(--incorrect-color);">0</h3><p>Incorrect</p></div>
+            <div class="stat-box"><h3 id="res-time">00:00</h3><p>Time Taken</p></div>
+        </div>
+        
+        <div id="result-action-btns" style="text-align: center; margin-bottom: 30px;">
+            <button class="btn-primary" onclick="resetTest()" style="padding: 15px 40px; font-size: 1.1rem;">Start New Test</button>
+            <button class="btn-submit" onclick="downloadPDF()" style="padding: 15px 40px; font-size: 1.1rem; margin-left: 15px;">Download Solutions PDF 📥</button>
+        </div>
+
+        <h3 style="color: var(--primary-color); font-size: 1.5rem; text-align: center;">Detailed Solutions & Facts 📝</h3>
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--glass-border);">
+        <div id="solutions-container"></div>
+    </div>
+
+<script>
+    const questions = [
+        {
+            "q": "एक पुरुष का परिचय कराते हुए एक महिला ने कहा, 'इसकी माता मेरे पिता की इकलौती पुत्री है।' पुरुष महिला से किस प्रकार सम्बन्धित है?",
+            "opt": ["पुत्र (Son)", "पिता (Father)", "भाई (Brother)", "चाचा (Uncle)"],
+            "ans": 0,
+            "exp": "<b>💡 विस्तृत हल:</b><br>महिला के 'पिता की इकलौती पुत्री' वह महिला स्वयं होगी। पुरुष की माता वह महिला स्वयं है, इसलिए वह पुरुष उस महिला का पुत्र है।"
+        },
+        {
+            "q": "संबंधित शब्द ज्ञात कीजिए: जीवाश्म विज्ञान (Palaeontology) : जीवाश्म (Fossil) :: कपाल विज्ञान (Phrenology) : ?",
+            "opt": ["थाइरॉयड (Thyroid)", "अग्न्याशय (Pancreas)", "फेफड़े (Lungs)", "खोपड़ी (Skull)"],
+            "ans": 3,
+            "exp": "<b>💡 विस्तृत हल:</b><br>जिस प्रकार 'जीवाश्म विज्ञान' में 'जीवाश्मों' का वैज्ञानिक अध्ययन किया जाता है, उसी प्रकार 'कपाल विज्ञान' (Phrenology) में मनुष्य की 'खोपड़ी' (Skull) की बनावट का अध्ययन किया जाता है।"
+        },
+        {
+            "q": "निम्नलिखित विकल्पों में से वह शब्द चुनिए जो 'ENVIRONMENT' शब्द के अक्षरों का प्रयोग करके नहीं बनाया जा सकता है?",
+            "opt": ["EMINENT", "ENTER", "ENTRANCE", "MOVEMENT"],
+            "ans": 2,
+            "exp": "<b>💡 विस्तृत हल:</b><br>'ENTRANCE' शब्द में 'A' और 'C' अक्षर आते हैं, जो मूल शब्द 'ENVIRONMENT' में कहीं भी मौजूद नहीं हैं। इसलिए इसे नहीं बनाया जा सकता।"
+        },
+        {
+            "q": "दिए गए शब्दों को सार्थक क्रम में व्यवस्थित करें:<br>1. फसल 2. जड़ 3. तना 4. बीज 5. फूल",
+            "opt": ["4, 2, 3, 5, 1", "2, 3, 4, 5, 1", "2, 4, 3, 5, 1", "4, 3, 2, 5, 1"],
+            "ans": 0,
+            "exp": "<b>💡 विस्तृत हल:</b><br>एक पौधे के विकास का सही तार्किक क्रम: सबसे पहले बीज (4) बोया जाता है, जिससे जड़ (2) निकलती है, फिर तना (3) बनता है, उस पर फूल (5) आते हैं और अंततः फसल (1) तैयार होती है।"
+        },
+        {
+            "q": "दिए गए जीवों को एक सार्थक खाद्य श्रृंखला (Food Chain) के क्रम में व्यवस्थित करें:<br>1. मेंढक 2. गरुड़ 3. टिड्डा 4. साँप 5. घास",
+            "opt": ["5, 3, 4, 2, 1", "5, 3, 1, 4, 2", "3, 4, 2, 5, 1", "1, 3, 5, 2, 4"],
+            "ans": 1,
+            "exp": "<b>💡 विस्तृत हल:</b><br>यह एक प्राकृतिक खाद्य श्रृंखला है। घास (5) को टिड्डा (3) खाता है, टिड्डे को मेंढक (1) खाता है, मेंढक को साँप (4) खाता है और साँप को गरुड़ (2) खाता है। अतः सही क्रम 5, 3, 1, 4, 2 होगा।"
+        },
+        {
+            "q": "श्रृंखला को पूरा करें: 0, 7, 26, 63, ?",
+            "opt": ["96", "124", "123", "87"],
+            "ans": 1,
+            "exp": "<b>💡 विस्तृत हल:</b><br>यह श्रृंखला घन (Cube) में से 1 घटाने (n³ - 1) पर आधारित है।<br>1³ - 1 = 0<br>2³ - 1 = 7<br>3³ - 1 = 26<br>4³ - 1 = 63<br>इसलिए 5³ - 1 = 125 - 1 = 124 होगा।"
+        },
+        {
+            "q": "एक निश्चित कूट भाषा में '481' का अर्थ 'sky is blue', '246' का अर्थ 'sea is deep' और '698' का अर्थ 'sea looks blue' है। 'blue' के लिए कौन-सी संख्या कोड है?",
+            "opt": ["8", "6", "1", "9"],
+            "ans": 0,
+            "exp": "<b>💡 विस्तृत हल:</b><br>पहले और तीसरे वाक्य में 'blue' शब्द समान (Common) है (sky is blue = 481, sea looks blue = 698)। इन दोनों के कोड में केवल '8' अंक समान है। अतः 'blue' का कोड निश्चित रूप से 8 होगा।"
+        },
+        {
+            "q": "उस युग्म को पहचानें जो अन्य से भिन्न (Odd one out) है: ETYMOLOGY : WORDS (व्युत्पत्ति विज्ञान : शब्द)",
+            "opt": ["ANATOMY : BODY (शरीर रचना विज्ञान : शरीर)", "ARCHEOLOGY : ANTIQUES (पुरातत्व विज्ञान : पुरावशेष)", "PHILOSOPHY : LANGUAGE (दर्शन : भाषा)", "PSYCHOLOGY : MIND (मनोविज्ञान : मन)"],
+            "ans": 2,
+            "exp": "<b>💡 विस्तृत हल:</b><br>'एटीमोलॉजी' में 'शब्दों' का अध्ययन होता है। 'एनाटॉमी' में शरीर का, 'आर्कियोलॉजी' में पुरावशेषों का और 'साइकोलॉजी' में मन का वैज्ञानिक अध्ययन होता है। लेकिन 'फिलॉसफी' (दर्शनशास्त्र) में 'भाषा' का नहीं बल्कि जीवन, ज्ञान और विचारों का अध्ययन होता है।"
+        },
+        {
+            "q": "यदि LUTE को MUTE और GATE को HATE लिखा जाता है, तो उसी कूट भाषा में BLUE को कैसे लिखा जाएगा?",
+            "opt": ["FLUD", "FLUE", "GLUE", "CLUE"],
+            "ans": 3,
+            "exp": "<b>💡 विस्तृत हल:</b><br>पहले अक्षर में वर्णमाला के अनुसार +1 किया गया है और बाकी सभी अक्षर समान रखे गए हैं।<br>L(+1) = M (MUTE), G(+1) = H (HATE)।<br>इसी प्रकार, B(+1) = C, अतः BLUE का कोड CLUE हो जाएगा।"
+        },
+        {
+            "q": "कथन: I. सभी कवि दिवास्वप्न दृष्टा (day dreamers) हैं। II. सभी चित्रकार दिवास्वप्न दृष्टा हैं。<br>निष्कर्ष: I. सभी चित्रकार कवि हैं। II. कुछ दिवास्वप्न दृष्टा चित्रकार नहीं हैं।",
+            "opt": ["केवल निष्कर्ष I निकलता है", "केवल निष्कर्ष II निकलता है", "निष्कर्ष I और II दोनों निकलते हैं", "न निष्कर्ष I और न ही II निकलता है"],
+            "ans": 3,
+            "exp": "<b>💡 विस्तृत हल:</b><br>चूँकि 'कवि' और 'चित्रकार' दोनों 'दिवास्वप्न दृष्टा' के बड़े घेरे के अंदर आते हैं, लेकिन उनके बीच आपस में कोई सीधा संबंध नहीं दिया गया है, इसलिए निष्कर्ष I गलत है। दोनों कथन सकारात्मक हैं, इसलिए निश्चित नकारात्मक निष्कर्ष II भी नहीं निकाला जा सकता।"
+        },
+        {
+            "q": "यदि आप उत्तर दिशा में दौड़ना शुरू करते हैं और 4 किमी दौड़ने के बाद बाएं मुड़ जाते हैं और 5 किमी दौड़ते हैं, फिर से बाएं मुड़कर 5 किमी दौड़ते हैं, फिर बाएं मुड़कर 6 किमी दौड़ते हैं, और दौड़ पूरी करने से पहले फिर से बाएं मुड़कर 1 किमी दौड़ते हैं। दौड़ पूरा करने के स्थान से, यदि आपको अपने प्रारंभिक स्थान पर पहुंचना है, तो आपको किस दिशा में दौड़ना होगा?",
+            "opt": ["पश्चिम (West)", "उत्तर (North)", "दक्षिण (South)", "पूर्व (East)"],
+            "ans": 0,
+            "exp": "<b>💡 विस्तृत हल:</b><br>1. उत्तर में 4 किमी<br>2. बाएं मुड़े (पश्चिम) 5 किमी<br>3. बाएं मुड़े (दक्षिण) 5 किमी<br>4. बाएं मुड़े (पूर्व) 6 किमी<br>5. बाएं मुड़े (उत्तर) 1 किमी<br>अब व्यक्ति ठीक अपने प्रारंभिक बिंदु से 1 किमी पूर्व में है। प्रारंभिक बिंदु पर वापस जाने के लिए उसे ठीक 'पश्चिम' (West) दिशा में दौड़ना होगा।"
+        },
+        {
+            "q": "एक व्यक्ति आयताकार क्षेत्र के चारों ओर जाने में 6 किमी चलता है। यदि उस आयत का क्षेत्रफल 2 वर्ग किमी है, तो उसकी लम्बाई और चौड़ाई के बीच का अंतर ज्ञात कीजिए।",
+            "opt": ["2 किमी", "0.75 किमी", "0.5 किमी", "1 किमी"],
+            "ans": 3,
+            "exp": "<b>💡 विस्तृत हल:</b><br>परिमाप = 2(L + B) = 6 किमी => L + B = 3<br>क्षेत्रफल = L × B = 2<br>समीकरण हल करने पर: L = 2 और B = 1 (क्योंकि 2+1=3 और 2×1=2)।<br>अतः लम्बाई और चौड़ाई का अंतर = 2 - 1 = 1 किमी होगा।"
+        },
+        {
+            "q": "कुछ समीकरण एक निश्चित व्यवस्था के आधार पर हल किये गए हैं: 4-5-1 = 514, 3-5-6 = 563, तो 0-6-8 = ?",
+            "opt": ["068", "680", "806", "860"],
+            "ans": 1,
+            "exp": "<b>💡 विस्तृत हल:</b><br>पैटर्न में संख्याओं का स्थान बदला गया है। A-B-C को B-C-A लिखा गया है।<br>जैसे 4(A)-5(B)-1(C) को 5(B)-1(C)-4(A) = 514 लिखा गया।<br>उसी प्रकार 0-6-8 को 6-8-0 (680) लिखा जाएगा।"
+        },
+        {
+            "q": "दिए गए शब्दों के पहले कौन सा एक अक्षर लगाया जा सकता है ताकि पूरी तरह से नए अर्थपूर्ण शब्द बन जाएँ?<br>EAT, OUR, IS, AS, AT",
+            "opt": ["S", "H", "C", "F"],
+            "ans": 1,
+            "exp": "<b>💡 विस्तृत हल:</b><br>यदि हम सभी शब्दों के ठीक पहले 'H' लगा दें, तो नए सार्थक अंग्रेजी शब्द बनेंगे: HEAT (गर्मी), HOUR (घंटा), HIS (उसका), HAS (पास है), HAT (टोपी)।"
+        },
+        {
+            "q": "संबंधित शब्द ज्ञात कीजिए: BLOCKED : YOLXPVW :: ? : OZFMMXS",
+            "opt": ["LABOURS", "LAUNCH", "DEBATES", "RESULTS"],
+            "ans": 1,
+            "exp": "<b>💡 विस्तृत हल:</b><br>यहाँ विपरीत अक्षरों (Opposite Letters) का पैटर्न है। B का विपरीत Y, L का O, O का L इत्यादि।<br>इसी प्रकार, OZFMMXS के विपरीत अक्षर L-A-U-N-C-H (LAUNCH) होंगे।"
+        },
+        {
+            "q": "संबंधित संख्या ज्ञात कीजिए: 16 : 22 :: 36 : ?",
+            "opt": ["44", "24", "46", "26"],
+            "ans": 0,
+            "exp": "<b>💡 विस्तृत हल:</b><br>पैटर्न: x² : x² + x + 2<br>16 = 4² और अगली संख्या 4² + 4 + 2 = 16 + 6 = 22 है।<br>इसी प्रकार 36 = 6² और अगली संख्या 6² + 6 + 2 = 36 + 8 = 44 होगी।"
+        },
+        {
+            "q": "संबंधित अक्षर ज्ञात कीजिए: MIKE : OGMC :: CIAD : ?",
+            "opt": ["EICB", "AJCF", "ENCF", "EGCB"],
+            "ans": 3,
+            "exp": "<b>💡 विस्तृत हल:</b><br>शब्दों के अक्षरों में क्रमशः +2, -2, +2, -2 का पैटर्न लागू किया गया है।<br>M(+2)=O, I(-2)=G, K(+2)=M, E(-2)=C.<br>इसी प्रकार CIAD में: C(+2)=E, I(-2)=G, A(+2)=C, D(-2)=B. उत्तर EGCB प्राप्त होगा।"
+        },
+        {
+            "q": "संबंधित संख्या ज्ञात कीजिए: 9 : 50 :: ? : ?",
+            "opt": ["15 : 225", "18 : 190", "22 : 110", "20 : 105"],
+            "ans": 3,
+            "exp": "<b>💡 विस्तृत हल:</b><br>पैटर्न: x : (x × 5 + 5)<br>पहली संख्या 9 × 5 + 5 = 50.<br>दिए गए विकल्पों में केवल विकल्प (D) इस नियम का पालन करता है: 20 × 5 + 5 = 100 + 5 = 105."
+        },
+        {
+            "q": "यदि √AFI = M और √ADD = L है, तो √ABA = ?",
+            "opt": ["O", "K", "I", "N"],
+            "ans": 1,
+            "exp": "<b>💡 विस्तृत हल:</b><br>अक्षरों के अंग्रेजी वर्णमाला में स्थानिक मान (Place values) को एक संख्या मानकर उसका वर्गमूल (Square root) निकाला गया है।<br>√AFI = √169 = 13 (M का मान)<br>√ADD = √144 = 12 (L का मान)<br>इसी प्रकार √ABA = √121 = 11 (K का मान) होगा।"
+        },
+        {
+            "q": "दिए गए विकल्पों में से विषम संख्या युग्म (Odd one out) चुनें:",
+            "opt": ["108 - 36", "69 - 23", "42 - 14", "56 - 19"],
+            "ans": 3,
+            "exp": "<b>💡 विस्तृत हल:</b><br>दूसरी संख्या को 3 से गुणा करने पर पहली संख्या प्राप्त होती है।<br>36 × 3 = 108; 23 × 3 = 69; 14 × 3 = 42.<br>लेकिन 19 × 3 = 57 होता है, जबकि युग्म में 56 दिया गया है। इसलिए यह विषम है।"
+        },
+        {
+            "q": "दिए गए विकल्पों में से विषम शब्द (Odd word) चुनें:",
+            "opt": ["EARS (कान)", "VESTIBULAR (प्रकोष्ठ)", "NOSE (नाक)", "EYES (आँख)"],
+            "ans": 1,
+            "exp": "<b>💡 विस्तृत हल:</b><br>कान, नाक और आँख हमारे शरीर के बाहरी मुख्य संवेदी अंग (Sense Organs) हैं। जबकि 'Vestibular' (प्रकोष्ठ) आंतरिक कान की एक प्रणाली है जो शरीर का संतुलन बनाए रखने का काम करती है।"
+        },
+        {
+            "q": "दिए गए विकल्पों में से कौन सा एक उसी श्रेणी के समूह का दूसरा सदस्य होगा?<br>लखनऊ, पटना, भोपाल, जयपुर, ?",
+            "opt": ["शिमला", "मैसूर", "इंदौर", "पुणे"],
+            "ans": 0,
+            "exp": "<b>💡 विस्तृत हल:</b><br>दिए गए सभी शहर (लखनऊ, पटना, भोपाल, जयपुर) भारत के विभिन्न राज्यों की 'राजधानियाँ' (Capitals) हैं। विकल्पों में से केवल 'शिमला' (हिमाचल प्रदेश की राजधानी) ही इस राजधानी समूह का सही सदस्य है।"
+        },
+        {
+            "q": "कथन: I. कुछ व्यक्ति अच्छे हैं। II. कुछ व्यक्ति बुद्धिमान हैं。<br>निष्कर्ष: I. कुछ बुद्धिमान व्यक्ति अच्छे हैं। II. कुछ अच्छे व्यक्ति बुद्धिमान हैं।",
+            "opt": ["केवल निष्कर्ष I निकलता है", "केवल निष्कर्ष II निकलता है", "निष्कर्ष I और II दोनों निकलते हैं", "न निष्कर्ष I और न ही II निकलता है"],
+            "ans": 3,
+            "exp": "<b>💡 विस्तृत हल:</b><br>चूँकि 'व्यक्ति' (men) सामान्य पद है और दोनों कथन 'कुछ' (Some) वाले हैं, इसलिए अच्छे और बुद्धिमान के बीच कोई भी निश्चित संबंध या निष्कर्ष स्थापित नहीं किया जा सकता है।"
+        },
+        {
+            "q": "P, Q, R, S, T, U एक परिवार के 6 सदस्य हैं, जिनमें दो विवाहित जोड़े हैं। शिक्षक T का विवाह एक डॉक्टर से हुआ है, जो R और U की माँ है। वकील Q का विवाह P से हुआ है। P का एक पुत्र और एक पौत्र है। दो विवाहित महिलाओं में एक गृहिणी है। परिवार में एक छात्र और एक पुरुष इंजीनियर है। परिवार की पौत्री के बारे में क्या सही है?",
+            "opt": ["वह एक वकील है", "वह एक छात्र है", "वह एक इंजीनियर है", "वह एक डॉक्टर है"],
+            "ans": 1,
+            "exp": "<b>💡 विस्तृत हल:</b><br>T (शिक्षक) का विवाह डॉक्टर से हुआ है। Q (वकील) का विवाह P (गृहिणी) से हुआ है। P का एक पुत्र (T) और पौत्र है, इसलिए Q और P दादा-दादी हैं। R और U पोता-पोती हैं। परिवार में एक छात्र और एक पुरुष इंजीनियर है। अतः पौत्र इंजीनियर होगा और पौत्री 'छात्र' (Student) होगी।"
+        },
+        {
+            "q": "एक निश्चित व्यवस्था के आधार पर लुप्त संख्या ज्ञात करें:<br>1&nbsp;&nbsp;&nbsp;&nbsp;25&nbsp;&nbsp;&nbsp;&nbsp;15&nbsp;&nbsp;&nbsp;&nbsp;40&nbsp;&nbsp;&nbsp;&nbsp;8<br>2&nbsp;&nbsp;&nbsp;&nbsp;65&nbsp;&nbsp;&nbsp;&nbsp;25&nbsp;&nbsp;&nbsp;&nbsp;90&nbsp;&nbsp;&nbsp;&nbsp;?<br>3&nbsp;&nbsp;&nbsp;&nbsp;45&nbsp;&nbsp;&nbsp;&nbsp;15&nbsp;&nbsp;&nbsp;&nbsp;60&nbsp;&nbsp;&nbsp;&nbsp;12",
+            "opt": ["18", "24", "6", "12"],
+            "ans": 0,
+            "exp": "<b>💡 विस्तृत हल:</b><br>पैटर्न बहुत आसान है (पहली संख्या केवल पंक्ति संख्या दर्शाती है)। बीच की दो संख्याओं का योग चौथी संख्या है और उसे 5 से भाग देने पर अंतिम संख्या प्राप्त होती है।<br>जैसे: 25 + 15 = 40 और 40 ÷ 5 = 8.<br>इसी प्रकार दूसरी पंक्ति में 65 + 25 = 90 और 90 ÷ 5 = 18 होगा।"
+        }
+    ];
+
+    let currentIdx = 0;
+    const totalQ = questions.length;
+    let answers = new Array(totalQ).fill(null);
+    let marked = new Array(totalQ).fill(false);
+    
+    // Timer is set to 35 minutes
+    let totalTime = 35 * 60; 
+    let timerInterval;
+    let isPaused = false;
+
+    function init() {
+        if (!loadProgress()) {
+            answers = new Array(totalQ).fill(null);
+            marked = new Array(totalQ).fill(false);
+            totalTime = 35 * 60;
+            currentIdx = 0;
+        }
+        createPalette();
+        loadQuestion(currentIdx);
+        updateStats();
+        startTimer();
+    }
+
+    function toggleTheme() {
+        const doc = document.documentElement;
+        const current = doc.getAttribute('data-theme');
+        doc.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+    }
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if(totalTime <= 0) {
+                clearInterval(timerInterval);
+                submitTest(true);
+                return;
+            }
+            totalTime--;
+            updateTimerDisplay();
+            if(totalTime % 30 === 0) saveProgress(false);
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(totalTime / 60).toString().padStart(2, '0');
+        const secs = (totalTime % 60).toString().padStart(2, '0');
+        const timerEl = document.getElementById('timer');
+        timerEl.innerText = `${mins}:${secs}`;
+        
+        if (totalTime < 300) { 
+            timerEl.classList.add('danger');
+        } else {
+            timerEl.classList.remove('danger');
+        }
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        const overlay = document.getElementById('pause-overlay');
+        const btn = document.getElementById('pause-btn');
+        
+        if (isPaused) {
+            clearInterval(timerInterval);
+            overlay.style.display = 'flex';
+            btn.innerText = 'Resume';
+            btn.classList.add('btn-warning');
+        } else {
+            startTimer();
+            overlay.style.display = 'none';
+            btn.innerText = 'Pause';
+            btn.classList.remove('btn-warning');
+        }
+    }
+
+    function loadQuestion(idx) {
+        currentIdx = idx;
+        const qData = questions[idx];
+        
+        document.getElementById('question-header').innerText = `Question ${idx + 1} of ${totalQ}`;
+        document.getElementById('question-text').innerHTML = qData.q;
+        
+        const optsContainer = document.getElementById('options-container');
+        optsContainer.innerHTML = '';
+        
+        qData.opt.forEach((optText, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn' + (answers[idx] === i ? ' selected' : '');
+            btn.innerHTML = `<div style="font-weight:bold; border:1px solid currentColor; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${String.fromCharCode(65+i)}</div> ${optText}`;
+            btn.onclick = () => selectOption(i);
+            optsContainer.appendChild(btn);
+        });
+
+        document.getElementById('progress-bar').style.width = `${((idx + 1) / totalQ) * 100}%`;
+        document.getElementById('prev-btn').disabled = (idx === 0);
+        document.getElementById('prev-btn').style.opacity = (idx === 0) ? '0.5' : '1';
+        
+        const markBtn = document.getElementById('mark-btn');
+        markBtn.innerText = marked[idx] ? 'Unmark Review' : 'Mark for Review';
+        
+        const nextBtn = document.getElementById('next-btn');
+        if (idx === totalQ - 1) {
+            nextBtn.innerText = 'Submit Test';
+            nextBtn.className = 'btn-danger';
+        } else {
+            nextBtn.innerText = 'Next';
+            nextBtn.className = 'btn-primary';
+        }
+        updatePaletteVisuals();
+    }
+
+    function saveProgress(showToast = true) {
+        const testState = {
+            answers: answers,
+            marked: marked,
+            totalTime: totalTime,
+            currentIdx: currentIdx
+        };
+        localStorage.setItem('hsscMockTestState_FinalReasoning_PDF', JSON.stringify(testState));
+        
+        if(showToast) {
+            const toast = document.getElementById('save-toast');
+            toast.style.opacity = '1';
+            setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+        }
+    }
+
+    function loadProgress() {
+        const savedState = localStorage.getItem('hsscMockTestState_FinalReasoning_PDF');
+        if (savedState) {
+            const state = JSON.parse(savedState);
+            answers = state.answers;
+            marked = state.marked;
+            totalTime = state.totalTime;
+            currentIdx = state.currentIdx || 0;
+            return true;
+        }
+        return false;
+    }
+
+    function clearProgress() {
+        localStorage.removeItem('hsscMockTestState_FinalReasoning_PDF');
+    }
+
+    function resetTest() {
+        if(confirm("Are you sure you want to start a new test? All current progress will be lost.")) {
+            clearProgress();
+            location.reload();
+        }
+    }
+
+    function selectOption(optIdx) {
+        answers[currentIdx] = optIdx;
+        loadQuestion(currentIdx);
+        updateStats();
+        saveProgress(true);
+    }
+
+    function clearSelection() {
+        answers[currentIdx] = null;
+        loadQuestion(currentIdx);
+        updateStats();
+        saveProgress(true);
+    }
+
+    function toggleMark() {
+        marked[currentIdx] = !marked[currentIdx];
+        loadQuestion(currentIdx);
+        updateStats();
+        saveProgress(true);
+    }
+
+    function changeQuestion(step) {
+        if (step === 1 && currentIdx === totalQ - 1) {
+            submitTest(false);
+            return;
+        }
+        let newIdx = currentIdx + step;
+        if (newIdx >= 0 && newIdx < totalQ) {
+            currentIdx = newIdx;
+            loadQuestion(newIdx);
+            saveProgress(false);
+        }
+    }
+
+    function createPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'q-grid-btn';
+            btn.id = `pal-btn-${i}`;
+            btn.innerText = i + 1;
+            btn.onclick = () => { currentIdx = i; loadQuestion(i); saveProgress(false); };
+            grid.appendChild(btn);
+        }
+    }
+
+    function updatePaletteVisuals() {
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.getElementById(`pal-btn-${i}`);
+            btn.className = 'q-grid-btn';
+            
+            if (answers[i] !== null && marked[i]) btn.classList.add('marked', 'attempted');
+            else if (marked[i]) btn.classList.add('marked');
+            else if (answers[i] !== null) btn.classList.add('attempted');
+            
+            if (i === currentIdx) btn.classList.add('current');
+        }
+    }
+
+    function updateStats() {
+        let att = 0, mark = 0;
+        for (let i = 0; i < totalQ; i++) {
+            if (answers[i] !== null) att++;
+            if (marked[i]) mark++;
+        }
+        document.getElementById('count-att').innerText = att;
+        document.getElementById('count-unatt').innerText = totalQ - att;
+        document.getElementById('count-mark').innerText = mark;
+        updatePaletteVisuals();
+    }
+
+    function submitTest(isAuto) {
+        const unatt = answers.filter(a => a === null).length;
+        if (!isAuto && unatt > 0) {
+            const confirmSubmit = confirm(`आपके ${unatt} प्रश्न छूट गए हैं। क्या आप निश्चित रूप से टेस्ट सबमिट करना चाहते हैं?`);
+            if (!confirmSubmit) return;
+        }
+
+        clearInterval(timerInterval);
+        document.getElementById('app-container').style.display = 'none';
+        document.querySelector('.header-controls').style.display = 'none';
+        clearProgress(); 
+        generateResults();
+    }
+
+    function generateResults() {
+        const resScreen = document.getElementById('result-screen');
+        resScreen.style.display = 'block';
+
+        let correct = 0;
+        let incorrect = 0;
+        
+        answers.forEach((ans, i) => {
+            if (ans !== null) {
+                if (ans === questions[i].ans) correct++;
+                else incorrect++;
+            }
+        });
+
+        const score = correct;
+        const perc = ((score / totalQ) * 100).toFixed(2);
+        
+        const timeTakenSec = (35 * 60) - totalTime;
+        const timeMins = Math.floor(timeTakenSec / 60).toString().padStart(2, '0');
+        const timeSecs = (timeTakenSec % 60).toString().padStart(2, '0');
+
+        document.getElementById('res-score').innerText = score;
+        document.getElementById('res-perc').innerText = perc + '%';
+        document.getElementById('res-corr').innerText = correct;
+        document.getElementById('res-incorr').innerText = incorrect;
+        document.getElementById('res-time').innerText = `${timeMins}:${timeSecs}`;
+
+        const badge = document.getElementById('result-badge');
+        if (perc >= 50) {
+            badge.className = 'badge pass';
+            badge.innerText = 'PASS';
+        } else {
+            badge.className = 'badge fail';
+            badge.innerText = 'FAIL';
+        }
+
+        generateSolutions();
+    }
+
+    function generateSolutions() {
+        const container = document.getElementById('solutions-container');
+        let html = '';
+
+        questions.forEach((q, i) => {
+            const userAns = answers[i];
+            const corrAns = q.ans;
+            
+            html += `<div class="solution-item">
+                        <div class="sol-q">Q${i+1}. ${q.q}</div>`;
+            
+            q.opt.forEach((optText, optIdx) => {
+                let cls = 'sol-opt';
+                let icon = '';
+                
+                if (optIdx === corrAns) {
+                    cls += ' correct';
+                    icon = '✓';
+                } else if (userAns === optIdx && userAns !== corrAns) {
+                    cls += ' incorrect';
+                    icon = '✗';
+                }
+
+                if(icon) {
+                    html += `<div class="${cls}"><b>${String.fromCharCode(65+optIdx)}</b>: ${optText} <div style="float:right; font-weight:bold;">${icon}</div></div>`;
+                } else {
+                    html += `<div class="${cls}"><b>${String.fromCharCode(65+optIdx)}</b>: ${optText}</div>`;
+                }
+            });
+
+            const userStatus = userAns === null ? "<b style='color:var(--text-muted)'>Unattempted</b>" : 
+                              (userAns === corrAns ? "<b style='color:var(--correct-color)'>Correct</b>" : 
+                              "<b style='color:var(--incorrect-color)'>Incorrect</b>");
+
+            html += `<div style="margin-top: 10px;"><b>Status:</b> ${userStatus}</div>`;
+            html += `<div class="sol-exp"><div class="sol-exp-title">Explanation:</div>${q.exp}</div>`;
+            html += `</div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    function downloadPDF() {
+        const btnContainer = document.getElementById('result-action-btns');
+        btnContainer.style.display = 'none';
+
+        const element = document.getElementById('result-screen');
+        const opt = {
+            margin:       10,
+            filename:     'Reasoning_Special_Test_Solutions.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            btnContainer.style.display = 'block'; 
+        });
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
