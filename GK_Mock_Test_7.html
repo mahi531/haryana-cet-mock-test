@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSSC mock test wala - Static GK Special Test</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: #2c3e50;
+            --text-muted: #576574;
+            --primary-color: #341f97;
+            --accent-color: #ff9f43;
+            --correct-color: #10ac84;
+            --incorrect-color: #ee5253;
+            --btn-hover: rgba(255, 255, 255, 0.6);
+            --palette-unattempted: #c8d6e5;
+            --palette-attempted: #10ac84;
+            --palette-marked: #9b59b6;
+            --palette-marked-attempted: #8e44ad;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-bg: rgba(16, 20, 24, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f1f2f6;
+            --text-muted: #a4b0be;
+            --primary-color: #54a0ff;
+            --accent-color: #ff9f43;
+            --correct-color: #1dd1a1;
+            --incorrect-color: #ff6b6b;
+            --btn-hover: rgba(255, 255, 255, 0.1);
+            --palette-unattempted: #576574;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body { background: var(--bg-gradient); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; transition: all 0.3s ease; }
+
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: var(--shadow); padding: 20px; }
+
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; margin: 15px; }
+        .header-title h1 { font-size: 1.5rem; }
+        .header-title p { font-size: 0.9rem; color: var(--text-muted); font-weight: 600;}
+        .header-controls { display: flex; gap: 15px; align-items: center; }
+        
+        .timer-container { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.1); padding: 8px 15px; border-radius: 20px; }
+        .timer { font-size: 1.2rem; font-weight: bold; }
+        .timer.danger { color: var(--incorrect-color); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        .auto-save-toast { position: fixed; top: 20px; right: 50%; transform: translateX(50%); background: var(--primary-color); color: white; padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; opacity: 0; transition: opacity 0.5s; z-index: 1000; pointer-events: none;}
+
+        button { cursor: pointer; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; transition: all 0.2s; background: var(--glass-bg); color: var(--text-color); border: 1px solid var(--glass-border); }
+        button:hover { background: var(--btn-hover); }
+        .btn-primary { background: var(--primary-color); color: #fff; border: none; }
+        .btn-primary:hover { background: #2c1a80; }
+        .btn-danger { background: var(--incorrect-color); color: white; border: none; }
+        .btn-warning { background: var(--accent-color); color: white; border: none; }
+        .btn-submit { background: var(--correct-color); color: white; border: none; }
+        .btn-submit:hover { background: #0b8c6b; }
+
+        .container { display: flex; flex: 1; gap: 20px; margin: 0 15px 15px 15px; }
+        .main-area { flex: 3; display: flex; flex-direction: column; position: relative; }
+        .sidebar { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        .progress-bar-bg { background: rgba(0,0,0,0.1); height: 8px; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar-fill { background: var(--primary-color); height: 100%; width: 0%; transition: width 0.3s; }
+        
+        .question-text { font-size: 1.25rem; font-weight: 500; margin-bottom: 20px; line-height: 1.6; }
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { text-align: left; padding: 15px; font-size: 1rem; display: flex; align-items: center; gap: 15px; }
+        .option-btn.selected { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+        
+        .action-buttons { display: flex; justify-content: space-between; margin-top: auto; padding-top: 20px; }
+        .action-buttons > div { display: flex; gap: 10px; }
+
+        .pause-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 10; display: none; flex-direction: column; align-items: center; justify-content: center; border-radius: 16px; }
+        .pause-overlay h2 { font-size: 2rem; margin-bottom: 10px; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-item { font-size: 0.85rem; display: flex; align-items: center; gap: 8px; font-weight: bold;}
+        .stat-dot { width: 14px; height: 14px; border-radius: 50%; }
+        
+        .q-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .q-grid-btn { padding: 10px 0; text-align: center; border-radius: 8px; font-weight: bold; background: var(--palette-unattempted); color: #2c3e50; border: none; font-size: 14px; }
+        .q-grid-btn.current { border: 3px solid #2c3e50; transform: scale(1.05);}
+        [data-theme="dark"] .q-grid-btn.current { border: 3px solid #fff; color: #fff; }
+        .q-grid-btn.attempted { background: var(--palette-attempted); color: #fff; }
+        .q-grid-btn.marked { background: var(--palette-marked); color: #fff; }
+        .q-grid-btn.marked.attempted { background: var(--palette-marked-attempted); color: #fff; }
+
+        .result-screen { display: none; max-width: 1000px; margin: 0 auto; width: 100%; padding-bottom: 50px;}
+        .result-header { text-align: center; margin-bottom: 30px; }
+        .badge { display: inline-block; padding: 10px 30px; border-radius: 30px; font-size: 1.5rem; font-weight: bold; color: #fff; margin-top: 10px; }
+        .badge.pass { background: var(--correct-color); }
+        .badge.fail { background: var(--incorrect-color); }
+        
+        .result-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-box { text-align: center; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .stat-box h3 { font-size: 2rem; margin-bottom: 5px; }
+
+        .solution-item { margin-bottom: 25px; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .sol-q { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; color: var(--primary-color); }
+        .sol-opt { margin-bottom: 8px; padding: 10px; border-radius: 8px; background: var(--glass-bg); }
+        .sol-opt.correct { background: var(--correct-color); color: #fff; border:none;}
+        .sol-opt.incorrect { background: var(--incorrect-color); color: #fff; border:none;}
+        .sol-exp { margin-top: 15px; font-size: 0.95rem; color: var(--text-color); border-left: 4px solid var(--primary-color); padding-left: 15px; line-height: 1.6; background: rgba(0,0,0,0.03); padding: 15px; border-radius: 8px;}
+        .sol-exp-title { color: var(--primary-color); font-weight: bold; margin-bottom: 5px; }
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            header { flex-direction: column; gap: 15px; text-align: center; }
+            .action-buttons { flex-direction: column; gap: 15px; }
+            .action-buttons > div { justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auto-save-toast" id="save-toast">Progress Auto-Saved! 💾</div>
+
+    <header class="glass-panel">
+        <div class="header-title">
+            <h1>HSSC mock test wala</h1>
+            <p>HSSC CET Group D Special (Static GK) | 25 Questions | 25 Minutes</p>
+        </div>
+        <div class="header-controls">
+            <div class="timer-container" id="timer-box">
+                <b>⏱</b>
+                <b class="timer" id="timer">25:00</b>
+                <button id="pause-btn" onclick="togglePause()">Pause</button>
+            </div>
+            <button onclick="toggleTheme()">🌗 Theme</button>
+            <button class="btn-submit" onclick="submitTest(false)">Submit Test</button>
+        </div>
+    </header>
+
+    <div class="container" id="app-container">
+        
+        <div class="glass-panel main-area">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+            
+            <div id="question-header" style="margin-bottom: 15px; font-weight: 600; color: var(--primary-color);"></div>
+            <div id="question-text" class="question-text"></div>
+            
+            <div class="options-grid" id="options-container"></div>
+
+            <div class="action-buttons">
+                <div>
+                    <button onclick="changeQuestion(-1)" id="prev-btn">Previous</button>
+                    <button onclick="clearSelection()">Clear</button>
+                </div>
+                <div>
+                    <button onclick="toggleMark()" id="mark-btn" class="btn-warning">Mark for Review</button>
+                    <button onclick="changeQuestion(1)" id="next-btn" class="btn-primary">Next</button>
+                </div>
+            </div>
+
+            <div class="pause-overlay" id="pause-overlay">
+                <h2>Test Paused ⏸️</h2>
+                <p>Questions are hidden to prevent cheating.</p>
+                <br>
+                <button class="btn-primary" onclick="togglePause()">Resume Test</button>
+            </div>
+        </div>
+
+        <div class="glass-panel sidebar">
+            <h3 style="text-align: center; margin-bottom: 15px;">Question Palette</h3>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-attempted)"></div> Attempted (<b id="count-att">0</b>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-unattempted)"></div> Unattempted (<b id="count-unatt">25</b>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-marked)"></div> Marked (<b id="count-mark">0</b>)</div>
+            </div>
+            <div class="q-grid" id="q-grid"></div>
+            <button class="btn-danger" onclick="resetTest()" style="margin-top: 10px; width: 100%; padding: 8px;">Reset Data</button>
+            <button class="btn-submit" onclick="submitTest(false)" style="margin-top: 10px; width: 100%; padding: 12px; font-size: 1.1rem;">Final Submit Test</button>
+        </div>
+    </div>
+
+    <div class="glass-panel result-screen" id="result-screen">
+        <div class="result-header">
+            <h2>Test Submitted Successfully! 🎉</h2>
+            <div class="badge" id="result-badge">Pass</div>
+        </div>
+        <div class="result-stats">
+            <div class="stat-box"><h3 id="res-score">0</h3><p>Score / 25</p></div>
+            <div class="stat-box"><h3 id="res-perc">0%</h3><p>Percentage</p></div>
+            <div class="stat-box"><h3 id="res-corr" style="color: var(--correct-color);">0</h3><p>Correct</p></div>
+            <div class="stat-box"><h3 id="res-incorr" style="color: var(--incorrect-color);">0</h3><p>Incorrect</p></div>
+            <div class="stat-box"><h3 id="res-time">00:00</h3><p>Time Taken</p></div>
+        </div>
+        
+        <div id="result-action-btns" style="text-align: center; margin-bottom: 30px;">
+            <button class="btn-primary" onclick="resetTest()" style="padding: 15px 40px; font-size: 1.1rem;">Start New Test</button>
+            <button class="btn-submit" onclick="downloadPDF()" style="padding: 15px 40px; font-size: 1.1rem; margin-left: 15px;">Download Solutions PDF 📥</button>
+        </div>
+
+        <h3 style="color: var(--primary-color); font-size: 1.5rem; text-align: center;">Detailed Solutions & Facts 📝</h3>
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--glass-border);">
+        <div id="solutions-container"></div>
+    </div>
+
+<script>
+    const questions = [
+        {
+            "q": "स्वेज नहर किस-किसको जोड़ती है?",
+            "opt": ["भूमध्य सागर और लाल सागर", "बाल्टिक और कैस्पियन सागर", "भूमध्य और उत्तरी सागर", "लाल सागर और कैस्पियन सागर"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>भूमध्य सागर और लाल सागर</b>।<br><br><b>💡 विस्तृत हल और तथ्य:</b><ul><li>स्वेज नहर (Suez Canal) मिस्र में स्थित एक कृत्रिम समुद्री जलमार्ग है।</li><li>यह भूमध्य सागर (Mediterranean Sea) को लाल सागर (Red Sea) से जोड़ती है।</li><li>इसका निर्माण 1869 में फ्रांसीसी इंजीनियर फर्डिनेंड डी लेसेप्स के मार्गदर्शन में पूरा हुआ था।</li><li>मिस्र के राष्ट्रपति गमाल अब्देल नासिर ने 1956 में इसका राष्ट्रीयकरण किया था।</li><li>इस नहर के बनने से यूरोप और एशिया के बीच की समुद्री दूरी बहुत कम हो गई, जिससे व्यापार में क्रांति आ गई।</li></ul>"
+        },
+        {
+            "q": "संसार में ताज़े पानी की सबसे बड़ी झील 'लेक सुपीरियर' कहाँ पर स्थित है?",
+            "opt": ["संयुक्त राज्य अमेरिका", "ब्राजील", "कनाडा", "रूस"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>संयुक्त राज्य अमेरिका</b>।<br><br><b>💡 विस्तृत हल और तथ्य:</b><ul><li>लेक सुपीरियर (Lake Superior) उत्तरी अमेरिका की पांच 'महान झीलों' (Great Lakes) में सबसे बड़ी है।</li><li>यह मुख्य रूप से संयुक्त राज्य अमेरिका और कनाडा की सीमा पर स्थित है।</li><li>क्षेत्रफल के हिसाब से यह दुनिया की सबसे बड़ी ताजे पानी की झील है।</li><li>आयतन (वॉल्यूम) के हिसाब से दुनिया की सबसे बड़ी ताजे पानी की झील रूस की 'बैकाल झील' है।</li><li>कैस्पियन सागर क्षेत्रफल के हिसाब से दुनिया की सबसे बड़ी झील है, लेकिन इसका पानी खारा है।</li></ul>"
+        },
+        {
+            "q": "सवाना चारागाह कहाँ पाये जाते हैं?",
+            "opt": ["ऑस्ट्रेलिया", "पूर्वी एशिया", "अफ्रीका", "दक्षिणी अमेरिका"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>अफ्रीका</b>।<br><br><b>💡 विस्तृत हल और तथ्य:</b><ul><li>सवाना (Savanna) उष्णकटिबंधीय घास के मैदान हैं जो मुख्य रूप से अफ्रीका महाद्वीप में पाए जाते हैं।</li><li>इन घास के मैदानों में लंबी घास और कुछ बिखरे हुए पेड़ होते हैं।</li><li>सवाना क्षेत्र वन्यजीवों के लिए बहुत प्रसिद्ध है, जैसे कि तंजानिया का सेरेन्गेटी नेशनल पार्क।</li><li>उत्तरी अमेरिका के शीतोष्ण घास के मैदानों को 'प्रेयरी' (Prairies) कहा जाता है।</li><li>दक्षिण अमेरिका (अर्जेंटीना) के घास के मैदानों को 'पम्पास' (Pampas) कहा जाता है।</li></ul>"
+        },
+        {
+            "q": "निम्नलिखित में से कौन-सी पर्वत श्रेणी भारत में स्थित है?",
+            "opt": ["अराकान योमा", "पीर पंजाल", "सुलेमान", "साल्ट रेंज"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>पीर पंजाल</b>।<br><br><b>💡 विस्तृत हल और तथ्य:</b><ul><li>पीर पंजाल पर्वत श्रेणी लघु हिमालय (Lesser Himalayas) का हिस्सा है और यह भारत के जम्मू-कश्मीर और हिमाचल प्रदेश में स्थित है।</li><li>अराकान योमा पर्वत श्रेणी म्यांमार (बर्मा) में स्थित है, जो भारत और म्यांमार की सीमा बनाती है।</li><li>सुलेमान और साल्ट रेंज पर्वत श्रेणियां पाकिस्तान में स्थित हैं।</li><li>प्रसिद्ध रोहतांग दर्रा और बनिहाल दर्रा पीर पंजाल श्रेणी में ही स्थित हैं।</li><li>जवाहर सुरंग भी पीर पंजाल श्रेणी से होकर गुजरती है।</li></ul>"
+        },
+        {
+            "q": "क्षेत्रफल की दृष्टि से भारत संसार का ————— सबसे बड़ा देश है।",
+            "opt": ["दूसरा", "छठा", "चौथा", "सातवाँ"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>सातवाँ</b>।<br><br><b>💡 विस्तृत हल और तथ्य:</b><ul><li>क्षेत्रफल के आधार पर भारत दुनिया का 7वां सबसे बड़ा देश है।</li><li>भारत से बड़े 6 देश हैं: 1. रूस, 2. कनाडा, 3. चीन, 4. संयुक्त राज्य अमेरिका (USA), 5. ब्राज़ील, 6. ऑस्ट्रेलिया।</li><li>भारत का कुल क्षेत्रफल 32,87,263 वर्ग किलोमीटर है।</li><li>भारत का क्षेत्रफल विश्व के कुल भौगोलिक क्षेत्रफल का लगभग 2.4% है।</li><li>जनसंख्या की दृष्टि से भारत विश्व का सबसे बड़ा देश बन गया है (2023 के संयुक्त राष्ट्र के आंकड़ों के अनुसार)।</li></ul>"
+        },
+        {
+            "q": "केरल की 'मौन घाटी' (Silent Valley) के बारे में क्या सत्य है?",
+            "opt": ["भारत में एकमात्र सदाबहार वन है", "में महँगी इमारती लकड़ी के पेड़ हैं", "पिकनिक के लिए अच्छा स्थान है", "में पादपों तथा प्राणियों की दुर्लभ जातियाँ हैं"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>में पादपों तथा प्राणियों की दुर्लभ जातियाँ हैं</b>।<br><br><b>💡 विस्तृत हल और तथ्य:</b><ul><li>साइलेंट वैली नेशनल पार्क केरल के पलक्कड़ जिले में नीलगिरि पहाड़ियों में स्थित है।</li><li>यह अपने उष्णकटिबंधीय सदाबहार वनों के लिए प्रसिद्ध है, लेकिन यह भारत का 'एकमात्र' सदाबहार वन नहीं है।</li><li>यह पार्क मुख्य रूप से 'लायन-टेल्ड मकाक' (शेर-पूंछ वाला मकाक) नामक एक दुर्लभ बंदर प्रजाति के संरक्षण के लिए प्रसिद्ध है।</li><li>यहाँ पादपों और प्राणियों की कई ऐसी स्थानिक (Endemic) प्रजातियाँ पाई जाती हैं जो दुनिया में कहीं और नहीं मिलतीं।</li><li>1980 के दशक में 'सेव साइलेंट वैली' नाम का एक बड़ा पर्यावरण आंदोलन यहाँ एक पनबिजली परियोजना को रोकने के लिए चलाया गया था।</li></ul>"
+        },
+        {
+            "q": "किसी नक्शे पर एक निश्चित समय पर समान ताप वाले बिन्दुओं को जोड़ने वाली रेखा क्या कहलाती है?",
+            "opt": ["आइसोहाइट (Isohyet)", "आइसोबार (Isobar)", "इस्थमस (Isthumus)", "आइसोथर्म (Isotherm)"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>आइसोथर्म (Isotherm)</b>।<br><br><b>💡 विस्तृत हल और तथ्य:</b><ul><li>आइसोथर्म (समताप रेखा) मानचित्र पर खींची गई वह काल्पनिक रेखा है जो उन स्थानों को मिलाती है जिनका तापमान (Temperature) एक समान होता है।</li><li>आइसोबार (समदाब रेखा) समान वायुमंडलीय दबाव वाले स्थानों को जोड़ने वाली रेखा है।</li><li>आइसोहाइट (समवर्षा रेखा) समान वर्षा (Rainfall) वाले स्थानों को जोड़ने वाली रेखा है।</li><li>आइसोहलाइन (समलवण रेखा) महासागरों में समान लवणता (Salinity) वाले स्थानों को जोड़ती है।</li><li>इस्थमस (Isthmus) भूमि की एक संकरी पट्टी है जो दो बड़े भूमि द्रव्यमानों को जोड़ती है (जैसे पनामा का इस्थमस)।</li></ul>"
+        },
+        {
+            "q": "उस व्यक्ति को क्या कहते हैं जो वैज्ञानिक आधार पर मानचित्रों को बनाने का कार्य करता है?",
+            "opt": ["भूगोलविद् (जियोग्राफर)", "मानचित्रकार (कार्टोग्राफर)", "मौसम विज्ञानी", "भूविज्ञानी"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>मानचित्रकार (कार्टोग्राफर)</b>।<br><br><b>💡 महत्वपूर्ण तथ्य:</b><ul><li>वैज्ञानिक और कलात्मक तरीके से मानचित्र (Maps) बनाने की प्रक्रिया को 'कार्टोग्राफी' (Cartography) कहा जाता है।</li><li>जो व्यक्ति मानचित्र बनाने का कार्य करता है, उसे 'कार्टोग्राफर' (मानचित्रकार) कहते हैं।</li><li>भूगोलविद् (Geographer) पृथ्वी और उसकी विशेषताओं का अध्ययन करता है।</li><li>मौसम विज्ञानी (Meteorologist) मौसम और जलवायु का अध्ययन और पूर्वानुमान करता है।</li><li>टॉलेमी (Ptolemy) को प्राचीन कार्टोग्राफी के संस्थापकों में से एक माना जाता है।</li></ul>"
+        },
+        {
+            "q": "अन्तर्राष्ट्रीय डेट लाइन के बारे में निम्नलिखित में से कौन-सी बात सही है?",
+            "opt": ["यह देशांतर रेखा 180° के अनुरूप होती है", "यह एक सीधी रेखा है", "यह एक बड़ा वृत्त चाप होती है", "यह भूमि परिमाण से परे एक टेढ़ी-मेढ़ी रेखा है"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>यह भूमि परिमाण से परे एक टेढ़ी-मेढ़ी रेखा है</b>।<br><br><b>💡 विस्तृत हल और तथ्य:</b><ul><li>अंतर्राष्ट्रीय तिथि रेखा (International Date Line - IDL) प्रशांत महासागर से गुजरने वाली एक काल्पनिक रेखा है।</li><li>यह लगभग 180° देशांतर का अनुसरण करती है, लेकिन यह एक सीधी रेखा नहीं है।</li><li>इसे कई स्थानों पर टेढ़ा-मेढ़ा (Zig-zag) बनाया गया है ताकि एक ही देश या द्वीप समूह में दो अलग-अलग तिथियाँ न हों।</li><li>जब आप पूर्व से पश्चिम की ओर IDL को पार करते हैं, तो आप एक दिन आगे (Gain a day) बढ़ जाते हैं।</li><li>पश्चिम से पूर्व की ओर पार करने पर एक दिन घट (Lose a day) जाता है।</li></ul>"
+        },
+        {
+            "q": "भारतीय संविधान में मौलिक कर्तव्य कब समाविष्ट किए गए?",
+            "opt": ["1971", "1975", "1972", "1976"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>1976</b>।<br><br><b>💡 विस्तृत हल और तथ्य:</b><ul><li>भारतीय संविधान में 'मौलिक कर्तव्य' (Fundamental Duties) मूल रूप से शामिल नहीं थे।</li><li>इन्हें 1976 में 42वें संविधान संशोधन अधिनियम द्वारा संविधान में जोड़ा गया था।</li><li>इन्हें जोड़ने की सिफारिश 'सरदार स्वर्ण सिंह समिति' ने की थी।</li><li>इन्हें संविधान के भाग IV-A और अनुच्छेद 51A के तहत रखा गया है।</li><li>शुरुआत में 10 मौलिक कर्तव्य थे, लेकिन 2002 में 86वें संशोधन द्वारा एक और जोड़ दिया गया, जिससे अब इनकी कुल संख्या 11 हो गई है।</li></ul>"
+        },
+        {
+            "q": "भारत के संविधान में मौलिक अधिकार-",
+            "opt": ["मूल संविधान का हिस्सा थे", "चौथे संशोधन द्वारा जोड़े गए थे", "संसद द्वारा 1952 में जोड़े गए थे", "बयालीसवें संशोधन द्वारा जोड़े गए थे"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>मूल संविधान का हिस्सा थे</b>।<br><br><b>💡 विस्तृत हल और तथ्य:</b><ul><li>मौलिक अधिकार (Fundamental Rights) भारतीय संविधान के लागू होने के समय (26 जनवरी 1950) से ही इसका एक महत्वपूर्ण हिस्सा थे।</li><li>इन्हें संविधान के भाग III (अनुच्छेद 12 से 35) में रखा गया है।</li><li>मौलिक अधिकारों की अवधारणा मुख्य रूप से 'संयुक्त राज्य अमेरिका' के संविधान (Bill of Rights) से प्रेरित है।</li><li>संविधान के भाग III को भारत का 'मैग्ना कार्टा' भी कहा जाता है।</li><li>मूल संविधान में 7 मौलिक अधिकार थे, लेकिन संपत्ति के अधिकार को हटा दिए जाने के बाद अब इनकी संख्या 6 है।</li></ul>"
+        },
+        {
+            "q": "भारत में सम्पत्ति के अधिकार को अब माना जाता है-",
+            "opt": ["एक मौलिक अधिकार", "एक कानूनी अधिकार", "एक नैसर्गिक अधिकार", "एक राजनीतिक अधिकार"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>एक कानूनी अधिकार</b>।<br><br><b>💡 विस्तृत हल और तथ्य:</b><ul><li>मूल संविधान में 'संपत्ति का अधिकार' (Right to Property) अनुच्छेद 31 के तहत एक मौलिक अधिकार था।</li><li>मोरारजी देसाई की सरकार के दौरान 1978 में 44वें संविधान संशोधन द्वारा इसे मौलिक अधिकारों की सूची से हटा दिया गया।</li><li>अब यह संविधान के भाग XII में अनुच्छेद 300A के तहत मात्र एक 'कानूनी अधिकार' (Legal Right) है।</li><li>इसका अर्थ है कि सरकार सार्वजनिक हित के लिए कानूनी प्रक्रिया के तहत आपकी संपत्ति का अधिग्रहण कर सकती है, लेकिन इसके लिए आपको अदालत में मौलिक अधिकारों के उल्लंघन का दावा करने की अनुमति नहीं होगी।</li></ul>"
+        },
+        {
+            "q": "निम्नलिखित में से प्राचीनतम राजवंश कौन-सा है?",
+            "opt": ["मौर्य", "कुषाण", "गुप्त", "कण्व"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>मौर्य</b>।<br><br><b>💡 विस्तृत हल और तथ्य:</b><ul><li>दिए गए विकल्पों में 'मौर्य राजवंश' सबसे प्राचीन है। इसकी स्थापना चंद्रगुप्त मौर्य ने लगभग 322 ईसा पूर्व में की थी।</li><li>मौर्यों के बाद कण्व राजवंश (लगभग 73 ईसा पूर्व) का शासन आया।</li><li>कुषाण राजवंश मुख्य रूप से प्रथम शताब्दी ईस्वी (लगभग 30 ईस्वी) में भारत में शक्तिशाली हुआ (कनिष्क इसके सबसे प्रसिद्ध शासक थे)।</li><li>गुप्त राजवंश की स्थापना बहुत बाद में, तीसरी शताब्दी ईस्वी (लगभग 240 ईस्वी) में श्रीगुप्त द्वारा की गई थी।</li><li>मौर्य साम्राज्य प्राचीन भारत का सबसे बड़ा और शक्तिशाली साम्राज्य था, जिसकी राजधानी पाटलिपुत्र (पटना) थी।</li></ul>"
+        },
+        {
+            "q": "निम्नलिखित में से वह व्यक्ति कौन है जिसका नाम 'देवनाम प्रियदर्शी' भी था?",
+            "opt": ["मौर्य राजा अशोक", "मौर्य राजा चन्द्रगुप्त मौर्य", "गौतम बुद्ध", "भगवान महावीर"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>मौर्य राजा अशोक</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - मौर्य सम्राट अशोक को उनके कई शिलालेखों और अभिलेखों में 'देवनामपिय' (देवताओं का प्रिय) और 'पियदस्सी' (सुंदर दिखने वाला) कहा गया है।<br> - 1915 में खोजे गए 'मास्की अभिलेख' (कर्नाटक) और 'गुर्जरा अभिलेख' (मध्य प्रदेश) में स्पष्ट रूप से 'देवानांपिय अशोक' नाम लिखा मिला है।<br> - अशोक कलिंग युद्ध (261 ईसा पूर्व) के लिए प्रसिद्ध है, जिसके बाद उसने युद्ध त्याग कर बौद्ध धर्म अपना लिया था।<br> - अशोक ने ही सांची के स्तूप का निर्माण करवाया था।<br> - भारत का राष्ट्रीय प्रतीक 'सारनाथ का अशोक स्तंभ' है।</div>"
+        },
+        {
+            "q": "अशोक ने तृतीय बौद्ध परिषद् (Third Buddhist Council) कहाँ बुलाई थी?",
+            "opt": ["पाटलिपुत्र", "कलिंग", "मगध", "सारनाथ"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>पाटलिपुत्र</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - सम्राट अशोक के शासनकाल के दौरान 250 ईसा पूर्व के आसपास पाटलिपुत्र (वर्तमान पटना) में 'तृतीय बौद्ध संगीति' (Third Buddhist Council) का आयोजन किया गया था।<br> - इस संगीति की अध्यक्षता 'मोग्गलिपुत्त तिस्स' ने की थी।<br> - इसी संगीति में बौद्ध धर्म के तीसरे पिटक 'अभिधम्म पिटक' को जोड़ा गया था।<br> - प्रथम बौद्ध संगीति अजातशत्रु के समय राजगृह में हुई थी।<br> - द्वितीय संगीति कालाशोक के समय वैशाली में और चतुर्थ संगीति कनिष्क के समय कुंडलवन (कश्मीर) में हुई थी।</div>"
+        },
+        {
+            "q": "निम्नलिखित में से किसने भारत के संबंध में अलबरूनी का वृतांत है?",
+            "opt": ["चचनामा", "फुतुह-उस-सलातिन", "तारीख-इ-यामिनी", "किताब-उल-हिन्द"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>किताब-उल-हिन्द</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - अलबरूनी (Al-Biruni) एक प्रसिद्ध फारसी विद्वान था जो 11वीं शताब्दी में महमूद गजनवी के साथ भारत आया था।<br> - उसने भारत के धर्म, दर्शन, त्योहारों, खगोल विज्ञान, रीति-रिवाजों और सामाजिक जीवन पर एक बहुत ही प्रामाणिक पुस्तक लिखी, जिसका नाम 'किताब-उल-हिन्द' (या तहकीक-ए-हिंद) है।<br> - यह पुस्तक अरबी भाषा में लिखी गई थी।<br> - अलबरूनी को इंडोलॉजी (Indology) का जनक भी कहा जाता है।<br> - 'चचनामा' सिंध के इतिहास पर लिखी गई एक प्राचीन पुस्तक है।</div>"
+        },
+        {
+            "q": "भारत में मुगल सत्ता की स्थापना किस लड़ाई के बाद हुई?",
+            "opt": ["तराईन की पहली लड़ाई", "तराईन की दूसरी लड़ाई", "पानीपत की पहली लड़ाई", "पानीपत की दूसरी लड़ाई"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>पानीपत की पहली लड़ाई</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - पानीपत की पहली लड़ाई 21 अप्रैल 1526 को लड़ी गई थी।<br> - यह युद्ध काबुल के शासक ज़हीर-उद-दीन मुहम्मद बाबर और दिल्ली के सुल्तान इब्राहिम लोदी के बीच हुआ था।<br> - इस युद्ध में बाबर की जीत हुई और उसने इब्राहिम लोदी को मारकर भारत में 'मुगल साम्राज्य' की नींव रखी।<br> - बाबर ने इस युद्ध में पहली बार भारत में तोपखाने (Artillery) और तुलगमा युद्ध नीति का प्रयोग किया था।<br> - तराइन की दूसरी लड़ाई (1192) में मोहम्मद गौरी ने पृथ्वीराज चौहान को हराया था, जिससे भारत में मुस्लिम शासन की शुरुआत हुई।</div>"
+        },
+        {
+            "q": "'रुपया' नामक नया सिक्का पहली बार किसने जारी किया?",
+            "opt": ["अलाउद्दीन खिलजी", "मोहम्मद शाह तुगलक", "शेरशाह सूरी", "अकबर"],
+            "ans": 2,
+            "exp": "सही उत्तर: <b>शेरशाह सूरी</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - सूर वंश के संस्थापक शेरशाह सूरी ने अपने शासनकाल (1540-1545) के दौरान पहली बार चांदी का सिक्का जारी किया था, जिसका वजन 178 ग्रेन था और इसे 'रुपया' (Rupiya) नाम दिया गया।<br> - यही रुपया आगे चलकर मुगल काल, मराठा काल और ब्रिटिश भारत की मानक मुद्रा बन गया।<br> - वर्तमान में भी भारत और कई अन्य देशों की मुद्रा का नाम रुपया है।<br> - शेरशाह सूरी ने तांबे के सिक्के भी चलाए जिन्हें 'दाम' कहा जाता था।<br> - प्रसिद्ध ग्रांड ट्रंक रोड (GT Road) का पुनर्निर्माण भी शेरशाह सूरी ने ही करवाया था।</div>"
+        },
+        {
+            "q": "ताजमहल किसके द्वारा बनवाया गया था?",
+            "opt": ["जहाँगीर", "शाहजहाँ", "शेरशाह", "नादिरशाह"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>शाहजहाँ</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - ताजमहल भारत के उत्तर प्रदेश राज्य के आगरा शहर में यमुना नदी के तट पर स्थित एक विश्व प्रसिद्ध सफेद संगमरमर का मकबरा है।<br> - इसका निर्माण मुगल सम्राट शाहजहाँ ने अपनी प्रिय पत्नी मुमताज महल की याद में करवाया था।<br> - इसका निर्माण 1632 में शुरू हुआ और 1653 के आसपास पूरा हुआ था।<br> - इसके मुख्य वास्तुकार (Architect) उस्ताद अहमद लाहौरी थे।<br> - ताजमहल को 1983 में यूनेस्को (UNESCO) विश्व धरोहर स्थल घोषित किया गया था और यह दुनिया के सात अजूबों में से एक है।</div>"
+        },
+        {
+            "q": "निम्नलिखित में से किसने बंगाल का 'स्थायी मालगुजारी बंदोबस्त' (Permanent Settlement) शुरू किया था?",
+            "opt": ["क्लाइव", "हेस्टिंग्स", "वेलेजली", "कॉर्नवालिस"],
+            "ans": 3,
+            "exp": "सही उत्तर: <b>कॉर्नवालिस</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - 'स्थायी बंदोबस्त' (Permanent Settlement) या इस्तमरारी बंदोबस्त को 1793 में बंगाल के गवर्नर-जनरल लॉर्ड कॉर्नवालिस द्वारा लागू किया गया था।<br> - यह ब्रिटिश ईस्ट इंडिया कंपनी और बंगाल के जमींदारों के बीच भू-राजस्व (Land Revenue) तय करने का एक समझौता था।<br> - इसके तहत जमींदारों को भूमि का स्थायी मालिक मान लिया गया और उन्हें एक निश्चित राजस्व कंपनी को देना होता था।<br> - इसे मुख्य रूप से बंगाल, बिहार और ओडिशा में लागू किया गया था।<br> - लॉर्ड कॉर्नवालिस को भारत में 'सिविल सेवा का जनक' (Father of Civil Services) भी कहा जाता है।</div>"
+        },
+        {
+            "q": "भारत में सबसे पहली रेलगाड़ी कब चलाई गई?",
+            "opt": ["1848", "1853", "1875", "1880"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>1853</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - भारत में पहली यात्री रेलगाड़ी 16 अप्रैल 1853 को चली थी।<br> - यह ट्रेन बॉम्बे (अब मुंबई के बोरीबंदर स्टेशन) से ठाणे के बीच 34 किलोमीटर की दूरी पर चलाई गई थी।<br> - इस ट्रेन में 14 डिब्बे थे और इसे तीन भाप इंजनों - साहिब, सिंध और सुल्तान द्वारा खींचा गया था।<br> - उस समय भारत का गवर्नर-जनरल लॉर्ड डलहौजी था, जिसे 'भारतीय रेलवे का जनक' कहा जाता है।<br> - भारत की पहली इलेक्ट्रिक ट्रेन 1925 में बॉम्बे वीटी और कुर्ला के बीच चली थी।</div>"
+        },
+        {
+            "q": "भारत में प्रथम तार (टेलीग्राफ) सेवा कब प्रारम्भ हुई?",
+            "opt": ["1853", "1875", "1884", "1900"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>1853</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - भारत में पहली प्रायोगिक टेलीग्राफ लाइन 1850 में कलकत्ता (अब कोलकाता) और डायमंड हार्बर के बीच स्थापित की गई थी।<br> - लेकिन इसे आधिकारिक तौर पर जनता के लिए 1853 में खोला गया, और इसका विस्तार आगरा तक किया गया।<br> - टेलीग्राफ सेवा की शुरुआत भी गवर्नर-जनरल लॉर्ड डलहौजी के कार्यकाल में ही हुई थी।<br> - 1857 के विद्रोह के दौरान अंग्रेजों के लिए टेलीग्राफ सेवा ने बहुत महत्वपूर्ण रणनीतिक भूमिका निभाई थी।<br> - भारत सरकार ने 160 वर्षों के बाद, 15 जुलाई 2013 को टेलीग्राफ (तार) सेवा को हमेशा के लिए बंद कर दिया।</div>"
+        },
+        {
+            "q": "प्लासी की लड़ाई किसके बीच लड़ी गई थी?",
+            "opt": ["सिराजुद्दौला और रॉबर्ट क्लाइव", "मीर कासिम और रॉबर्ट क्लाइव", "मीर जाफर और रॉबर्ट क्लाइव", "दिए गए विकल्पों में से कोई नहीं"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>सिराजुद्दौला और रॉबर्ट क्लाइव</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - प्लासी का ऐतिहासिक युद्ध 23 जून 1757 को लड़ा गया था।<br> - यह लड़ाई बंगाल के युवा नवाब सिराजुद्दौला और ब्रिटिश ईस्ट इंडिया कंपनी (जिसका नेतृत्व रॉबर्ट क्लाइव कर रहा था) के बीच हुई थी।<br> - नवाब के सेनापति मीर जाफर की गद्दारी के कारण सिराजुद्दौला यह युद्ध हार गया।<br> - इस युद्ध की जीत ने भारत में ब्रिटिश साम्राज्य की वास्तविक राजनीतिक नींव रखी।<br> - इसके बाद अंग्रेजों ने मीर जाफर को बंगाल का 'कठपुतली नवाब' बना दिया था।</div>"
+        },
+        {
+            "q": "निम्नलिखित संगीतज्ञों एवं वाद्य यंत्रों के जोड़ों में से कौन-सा सही है?",
+            "opt": ["पन्नालाल घोष — सन्तूर", "निखिल बनर्जी — सितार", "अमजद अली खां — सारंगी", "विलायत खां — तबला"],
+            "ans": 1,
+            "exp": "सही उत्तर: <b>निखिल बनर्जी — सितार</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - निखिल बनर्जी भारत के एक बहुत ही प्रसिद्ध सितार वादक (Sitar player) थे।<br> - पंडित पन्नालाल घोष एक महान बांसुरी वादक (Flute player) थे, न कि संतूर वादक।<br> - उस्ताद अमजद अली खान विश्व प्रसिद्ध सरोद वादक (Sarod player) हैं, न कि सारंगी वादक।<br> - उस्ताद विलायत खान भी एक महान सितार वादक थे, न कि तबला वादक।<br> - जाकिर हुसैन भारत के सबसे प्रसिद्ध तबला वादकों में से एक हैं।</div>"
+        },
+        {
+            "q": "\"गिद्धा\" भारत के किस राज्य का लोक नृत्य है?",
+            "opt": ["पंजाब", "हरियाणा", "उत्तर प्रदेश", "उत्तरांचल (उत्तराखंड)"],
+            "ans": 0,
+            "exp": "सही उत्तर: <b>पंजाब</b>।<div class='sol-fact'><b>💡 महत्वपूर्ण तथ्य:</b><br> - गिद्धा (Giddha) भारत के पंजाब राज्य का एक बहुत ही लोकप्रिय और ऊर्जावान लोक नृत्य है।<br> - यह नृत्य विशेष रूप से पंजाबी महिलाओं द्वारा किया जाता है।<br> - इसे अक्सर त्योहारों और शादी-विवाह के खुशी के अवसरों पर घेरा बनाकर (Circle) किया जाता है।<br> - भांगड़ा (Bhangra) पंजाब का एक और विश्व प्रसिद्ध लोक नृत्य है, जो मुख्य रूप से पुरुषों द्वारा किया जाता है।<br> - गिद्धा में अक्सर ढोलक के बजाय तालियों (Claps) की लय का उपयोग किया जाता है।</div>"
+        }
+    ];
+
+    let currentIdx = 0;
+    const totalQ = questions.length;
+    let answers = new Array(totalQ).fill(null);
+    let marked = new Array(totalQ).fill(false);
+    
+    // Timer is set to 25 minutes
+    let totalTime = 25 * 60; 
+    let timerInterval;
+    let isPaused = false;
+
+    function init() {
+        if (!loadProgress()) {
+            answers = new Array(totalQ).fill(null);
+            marked = new Array(totalQ).fill(false);
+            totalTime = 25 * 60;
+            currentIdx = 0;
+        }
+        createPalette();
+        loadQuestion(currentIdx);
+        updateStats();
+        startTimer();
+    }
+
+    function toggleTheme() {
+        const doc = document.documentElement;
+        const current = doc.getAttribute('data-theme');
+        doc.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+    }
+
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if(totalTime <= 0) {
+                clearInterval(timerInterval);
+                submitTest(true);
+                return;
+            }
+            totalTime--;
+            updateTimerDisplay();
+            if(totalTime % 30 === 0) saveProgress(false);
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(totalTime / 60).toString().padStart(2, '0');
+        const secs = (totalTime % 60).toString().padStart(2, '0');
+        const timerEl = document.getElementById('timer');
+        timerEl.innerText = `${mins}:${secs}`;
+        
+        if (totalTime < 300) { 
+            timerEl.classList.add('danger');
+        } else {
+            timerEl.classList.remove('danger');
+        }
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        const overlay = document.getElementById('pause-overlay');
+        const btn = document.getElementById('pause-btn');
+        
+        if (isPaused) {
+            clearInterval(timerInterval);
+            overlay.style.display = 'flex';
+            btn.innerText = 'Resume';
+            btn.classList.add('btn-warning');
+        } else {
+            startTimer();
+            overlay.style.display = 'none';
+            btn.innerText = 'Pause';
+            btn.classList.remove('btn-warning');
+        }
+    }
+
+    function loadQuestion(idx) {
+        currentIdx = idx;
+        const qData = questions[idx];
+        
+        document.getElementById('question-header').innerText = `Question ${idx + 1} of ${totalQ}`;
+        document.getElementById('question-text').innerHTML = qData.q;
+        
+        const optsContainer = document.getElementById('options-container');
+        optsContainer.innerHTML = '';
+        
+        qData.opt.forEach((optText, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn' + (answers[idx] === i ? ' selected' : '');
+            btn.innerHTML = `<div style="font-weight:bold; border:1px solid currentColor; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${String.fromCharCode(65+i)}</div> ${optText}`;
+            btn.onclick = () => selectOption(i);
+            optsContainer.appendChild(btn);
+        });
+
+        document.getElementById('progress-bar').style.width = `${((idx + 1) / totalQ) * 100}%`;
+        document.getElementById('prev-btn').disabled = (idx === 0);
+        document.getElementById('prev-btn').style.opacity = (idx === 0) ? '0.5' : '1';
+        
+        const markBtn = document.getElementById('mark-btn');
+        markBtn.innerText = marked[idx] ? 'Unmark Review' : 'Mark for Review';
+        
+        const nextBtn = document.getElementById('next-btn');
+        if (idx === totalQ - 1) {
+            nextBtn.innerText = 'Submit Test';
+            nextBtn.className = 'btn-danger';
+        } else {
+            nextBtn.innerText = 'Next';
+            nextBtn.className = 'btn-primary';
+        }
+        updatePaletteVisuals();
+    }
+
+    function saveProgress(showToast = true) {
+        const testState = {
+            answers: answers,
+            marked: marked,
+            totalTime: totalTime,
+            currentIdx: currentIdx
+        };
+        localStorage.setItem('hsscMockTestState_GK_Static_Images_Clean', JSON.stringify(testState));
+        
+        if(showToast) {
+            const toast = document.getElementById('save-toast');
+            toast.style.opacity = '1';
+            setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+        }
+    }
+
+    function loadProgress() {
+        const savedState = localStorage.getItem('hsscMockTestState_GK_Static_Images_Clean');
+        if (savedState) {
+            const state = JSON.parse(savedState);
+            answers = state.answers;
+            marked = state.marked;
+            totalTime = state.totalTime;
+            currentIdx = state.currentIdx || 0;
+            return true;
+        }
+        return false;
+    }
+
+    function clearProgress() {
+        localStorage.removeItem('hsscMockTestState_GK_Static_Images_Clean');
+    }
+
+    function resetTest() {
+        if(confirm("क्या आप निश्चित रूप से एक नया टेस्ट शुरू करना चाहते हैं? आपकी वर्तमान प्रोग्रेस डिलीट हो जाएगी।")) {
+            clearProgress();
+            location.reload();
+        }
+    }
+
+    function selectOption(optIdx) {
+        answers[currentIdx] = optIdx;
+        loadQuestion(currentIdx);
+        updateStats();
+        saveProgress(true);
+    }
+
+    function clearSelection() {
+        answers[currentIdx] = null;
+        loadQuestion(currentIdx);
+        updateStats();
+        saveProgress(true);
+    }
+
+    function toggleMark() {
+        marked[currentIdx] = !marked[currentIdx];
+        loadQuestion(currentIdx);
+        updateStats();
+        saveProgress(true);
+    }
+
+    function changeQuestion(step) {
+        if (step === 1 && currentIdx === totalQ - 1) {
+            submitTest(false);
+            return;
+        }
+        let newIdx = currentIdx + step;
+        if (newIdx >= 0 && newIdx < totalQ) {
+            currentIdx = newIdx;
+            loadQuestion(newIdx);
+            saveProgress(false);
+        }
+    }
+
+    function createPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'q-grid-btn';
+            btn.id = `pal-btn-${i}`;
+            btn.innerText = i + 1;
+            btn.onclick = () => { currentIdx = i; loadQuestion(i); saveProgress(false); };
+            grid.appendChild(btn);
+        }
+    }
+
+    function updatePaletteVisuals() {
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.getElementById(`pal-btn-${i}`);
+            btn.className = 'q-grid-btn';
+            
+            if (answers[i] !== null && marked[i]) btn.classList.add('marked', 'attempted');
+            else if (marked[i]) btn.classList.add('marked');
+            else if (answers[i] !== null) btn.classList.add('attempted');
+            
+            if (i === currentIdx) btn.classList.add('current');
+        }
+    }
+
+    function updateStats() {
+        let att = 0, mark = 0;
+        for (let i = 0; i < totalQ; i++) {
+            if (answers[i] !== null) att++;
+            if (marked[i]) mark++;
+        }
+        document.getElementById('count-att').innerText = att;
+        document.getElementById('count-unatt').innerText = totalQ - att;
+        document.getElementById('count-mark').innerText = mark;
+        updatePaletteVisuals();
+    }
+
+    function submitTest(isAuto) {
+        const unatt = answers.filter(a => a === null).length;
+        if (!isAuto && unatt > 0) {
+            const confirmSubmit = confirm(`आपने ${unatt} प्रश्न हल नहीं किए हैं। क्या आप निश्चित रूप से टेस्ट सबमिट करना चाहते हैं?`);
+            if (!confirmSubmit) return;
+        }
+
+        clearInterval(timerInterval);
+        document.getElementById('app-container').style.display = 'none';
+        document.querySelector('.header-controls').style.display = 'none';
+        clearProgress(); 
+        generateResults();
+    }
+
+    function generateResults() {
+        const resScreen = document.getElementById('result-screen');
+        resScreen.style.display = 'block';
+
+        let correct = 0;
+        let incorrect = 0;
+        
+        answers.forEach((ans, i) => {
+            if (ans !== null) {
+                if (ans === questions[i].ans) correct++;
+                else incorrect++;
+            }
+        });
+
+        const score = correct;
+        const perc = ((score / totalQ) * 100).toFixed(2);
+        
+        const timeTakenSec = (25 * 60) - totalTime;
+        const timeMins = Math.floor(timeTakenSec / 60).toString().padStart(2, '0');
+        const timeSecs = (timeTakenSec % 60).toString().padStart(2, '0');
+
+        document.getElementById('res-score').innerText = score;
+        document.getElementById('res-perc').innerText = perc + '%';
+        document.getElementById('res-corr').innerText = correct;
+        document.getElementById('res-incorr').innerText = incorrect;
+        document.getElementById('res-time').innerText = `${timeMins}:${timeSecs}`;
+
+        const badge = document.getElementById('result-badge');
+        if (perc >= 50) {
+            badge.className = 'badge pass';
+            badge.innerText = 'PASS';
+        } else {
+            badge.className = 'badge fail';
+            badge.innerText = 'FAIL';
+        }
+
+        generateSolutions();
+    }
+
+    function generateSolutions() {
+        const container = document.getElementById('solutions-container');
+        let html = '';
+
+        questions.forEach((q, i) => {
+            const userAns = answers[i];
+            const corrAns = q.ans;
+            
+            html += `<div class="solution-item">
+                        <div class="sol-q">प्र ${i+1}. ${q.q}</div>`;
+            
+            q.opt.forEach((optText, optIdx) => {
+                let cls = 'sol-opt';
+                let icon = '';
+                
+                if (optIdx === corrAns) {
+                    cls += ' correct';
+                    icon = '✓';
+                } else if (userAns === optIdx && userAns !== corrAns) {
+                    cls += ' incorrect';
+                    icon = '✗';
+                }
+
+                if(icon) {
+                    html += `<div class="${cls}"><b>${String.fromCharCode(65+optIdx)}</b>: ${optText} <div style="float:right; font-weight:bold;">${icon}</div></div>`;
+                } else {
+                    html += `<div class="${cls}"><b>${String.fromCharCode(65+optIdx)}</b>: ${optText}</div>`;
+                }
+            });
+
+            const userStatus = userAns === null ? "<b style='color:var(--text-muted)'>हल नहीं किया (Unattempted)</b>" : 
+                              (userAns === corrAns ? "<b style='color:var(--correct-color)'>सही (Correct)</b>" : 
+                              "<b style='color:var(--incorrect-color)'>गलत (Incorrect)</b>");
+
+            html += `<div style="margin-top: 10px;"><b>Status:</b> ${userStatus}</div>`;
+            html += `<div class="sol-exp"><div class="sol-exp-title">विस्तृत हल और तथ्य:</div>${q.exp}</div>`;
+            html += `</div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    function downloadPDF() {
+        const btnContainer = document.getElementById('result-action-btns');
+        btnContainer.style.display = 'none';
+
+        const element = document.getElementById('result-screen');
+        const opt = {
+            margin:       10,
+            filename:     'Static_GK_Special_Test_Solutions.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            btnContainer.style.display = 'block'; 
+        });
+    }
+
+    window.onload = init;
+</script>
+</body>
+</html>
