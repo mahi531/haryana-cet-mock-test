@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSSC mock test wala - English Grammar & Vocab Special</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.45);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --text-color: #2c3e50;
+            --text-muted: #576574;
+            --primary-color: #341f97;
+            --accent-color: #ff9f43;
+            --correct-color: #10ac84;
+            --incorrect-color: #ee5253;
+            --btn-hover: rgba(255, 255, 255, 0.6);
+            --palette-unattempted: #c8d6e5;
+            --palette-attempted: #10ac84;
+            --palette-marked: #9b59b6;
+            --palette-marked-attempted: #8e44ad;
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-bg: rgba(16, 20, 24, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-color: #f1f2f6;
+            --text-muted: #a4b0be;
+            --primary-color: #54a0ff;
+            --accent-color: #ff9f43;
+            --correct-color: #1dd1a1;
+            --incorrect-color: #ff6b6b;
+            --btn-hover: rgba(255, 255, 255, 0.1);
+            --palette-unattempted: #576574;
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body { background: var(--bg-gradient); color: var(--text-color); min-height: 100vh; display: flex; flex-direction: column; transition: all 0.3s ease; }
+
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: var(--shadow); padding: 20px; }
+
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; margin: 15px; }
+        .header-title h1 { font-size: 1.5rem; }
+        .header-title p { font-size: 0.9rem; color: var(--text-muted); font-weight: 600;}
+        .header-controls { display: flex; gap: 15px; align-items: center; }
+        
+        .timer-container { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.1); padding: 8px 15px; border-radius: 20px; }
+        .timer { font-size: 1.2rem; font-weight: bold; }
+        .timer.danger { color: var(--incorrect-color); animation: pulse 1s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        .auto-save-toast { position: fixed; top: 20px; right: 50%; transform: translateX(50%); background: var(--primary-color); color: white; padding: 8px 20px; border-radius: 20px; font-size: 0.9rem; opacity: 0; transition: opacity 0.5s; z-index: 1000; pointer-events: none;}
+
+        button { cursor: pointer; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; transition: all 0.2s; background: var(--glass-bg); color: var(--text-color); border: 1px solid var(--glass-border); }
+        button:hover { background: var(--btn-hover); }
+        .btn-primary { background: var(--primary-color); color: #fff; border: none; }
+        .btn-primary:hover { background: #2c1a80; }
+        .btn-danger { background: var(--incorrect-color); color: white; border: none; }
+        .btn-warning { background: var(--accent-color); color: white; border: none; }
+        .btn-submit { background: var(--correct-color); color: white; border: none; }
+        .btn-submit:hover { background: #0b8c6b; }
+
+        .container { display: flex; flex: 1; gap: 20px; margin: 0 15px 15px 15px; }
+        .main-area { flex: 3; display: flex; flex-direction: column; position: relative; }
+        .sidebar { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+
+        .progress-bar-bg { background: rgba(0,0,0,0.1); height: 8px; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar-fill { background: var(--primary-color); height: 100%; width: 0%; transition: width 0.3s; }
+        
+        .question-text { font-size: 1.25rem; font-weight: 500; margin-bottom: 20px; line-height: 1.6; }
+        .options-grid { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn { text-align: left; padding: 15px; font-size: 1rem; display: flex; align-items: center; gap: 15px; }
+        .option-btn.selected { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+        
+        .action-buttons { display: flex; justify-content: space-between; margin-top: auto; padding-top: 20px; }
+        .action-buttons > div { display: flex; gap: 10px; }
+
+        .pause-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 10; display: none; flex-direction: column; align-items: center; justify-content: center; border-radius: 16px; }
+        .pause-overlay h2 { font-size: 2rem; margin-bottom: 10px; }
+
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .stat-item { font-size: 0.85rem; display: flex; align-items: center; gap: 8px; font-weight: bold;}
+        .stat-dot { width: 14px; height: 14px; border-radius: 50%; }
+        
+        .q-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+        .q-grid-btn { padding: 10px 0; text-align: center; border-radius: 8px; font-weight: bold; background: var(--palette-unattempted); color: #2c3e50; border: none; font-size: 14px; }
+        .q-grid-btn.current { border: 3px solid #2c3e50; transform: scale(1.05);}
+        [data-theme="dark"] .q-grid-btn.current { border: 3px solid #fff; color: #fff; }
+        .q-grid-btn.attempted { background: var(--palette-attempted); color: #fff; }
+        .q-grid-btn.marked { background: var(--palette-marked); color: #fff; }
+        .q-grid-btn.marked.attempted { background: var(--palette-marked-attempted); color: #fff; }
+
+        .result-screen { display: none; max-width: 1000px; margin: 0 auto; width: 100%; padding-bottom: 50px;}
+        .result-header { text-align: center; margin-bottom: 30px; }
+        .badge { display: inline-block; padding: 10px 30px; border-radius: 30px; font-size: 1.5rem; font-weight: bold; color: #fff; margin-top: 10px; }
+        .badge.pass { background: var(--correct-color); }
+        .badge.fail { background: var(--incorrect-color); }
+        
+        .result-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-box { text-align: center; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .stat-box h3 { font-size: 2rem; margin-bottom: 5px; }
+
+        .solution-item { margin-bottom: 25px; padding: 20px; border-radius: 12px; background: rgba(0,0,0,0.05); }
+        .sol-q { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; color: var(--primary-color); }
+        .sol-opt { margin-bottom: 8px; padding: 10px; border-radius: 8px; background: var(--glass-bg); }
+        .sol-opt.correct { background: var(--correct-color); color: #fff; border:none;}
+        .sol-opt.incorrect { background: var(--incorrect-color); color: #fff; border:none;}
+        .sol-exp { margin-top: 15px; font-size: 0.95rem; color: var(--text-color); border-left: 4px solid var(--primary-color); padding-left: 15px; line-height: 1.6; background: rgba(0,0,0,0.03); padding: 15px; border-radius: 8px;}
+        .sol-exp-title { color: var(--primary-color); font-weight: bold; margin-bottom: 5px; }
+
+        @media (max-width: 768px) {
+            .container { flex-direction: column; }
+            header { flex-direction: column; gap: 15px; text-align: center; }
+            .action-buttons { flex-direction: column; gap: 15px; }
+            .action-buttons > div { justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auto-save-toast" id="save-toast">Progress Auto-Saved! 💾</div>
+
+    <header class="glass-panel">
+        <div class="header-title">
+            <h1>HSSC mock test wala</h1>
+            <p>HSSC CET Group D Special (English) | 25 Questions | 25 Minutes</p>
+        </div>
+        <div class="header-controls">
+            <div class="timer-container" id="timer-box">
+                <b>⏱</b>
+                <b class="timer" id="timer">25:00</b>
+                <button id="pause-btn" onclick="togglePause()">Pause</button>
+            </div>
+            <button onclick="toggleTheme()">🌗 Theme</button>
+            <button class="btn-submit" onclick="submitTest(false)">Submit Test</button>
+        </div>
+    </header>
+
+    <div class="container" id="app-container">
+        
+        <div class="glass-panel main-area">
+            <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-bar"></div></div>
+            
+            <div id="question-header" style="margin-bottom: 15px; font-weight: 600; color: var(--primary-color);"></div>
+            <div id="question-text" class="question-text"></div>
+            
+            <div class="options-grid" id="options-container"></div>
+
+            <div class="action-buttons">
+                <div>
+                    <button onclick="changeQuestion(-1)" id="prev-btn">Previous</button>
+                    <button onclick="clearSelection()">Clear</button>
+                </div>
+                <div>
+                    <button onclick="toggleMark()" id="mark-btn" class="btn-warning">Mark for Review</button>
+                    <button onclick="changeQuestion(1)" id="next-btn" class="btn-primary">Next</button>
+                </div>
+            </div>
+
+            <div class="pause-overlay" id="pause-overlay">
+                <h2>Test Paused ⏸️</h2>
+                <p>Questions are hidden to prevent cheating.</p>
+                <br>
+                <button class="btn-primary" onclick="togglePause()">Resume Test</button>
+            </div>
+        </div>
+
+        <div class="glass-panel sidebar">
+            <h3 style="text-align: center; margin-bottom: 15px;">Question Palette</h3>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-attempted)"></div> Attempted (<b id="count-att">0</b>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-unattempted)"></div> Unattempted (<b id="count-unatt">25</b>)</div>
+                <div class="stat-item"><div class="stat-dot" style="background: var(--palette-marked)"></div> Marked (<b id="count-mark">0</b>)</div>
+            </div>
+            <div class="q-grid" id="q-grid"></div>
+            <button class="btn-danger" onclick="resetTest()" style="margin-top: 10px; width: 100%; padding: 8px;">Reset Data</button>
+            <button class="btn-submit" onclick="submitTest(false)" style="margin-top: 10px; width: 100%; padding: 12px; font-size: 1.1rem;">Final Submit Test</button>
+        </div>
+    </div>
+
+    <div class="glass-panel result-screen" id="result-screen">
+        <div class="result-header">
+            <h2>Test Submitted Successfully! 🎉</h2>
+            <div class="badge" id="result-badge">Pass</div>
+        </div>
+        <div class="result-stats">
+            <div class="stat-box"><h3 id="res-score">0</h3><p>Score / 25</p></div>
+            <div class="stat-box"><h3 id="res-perc">0%</h3><p>Percentage</p></div>
+            <div class="stat-box"><h3 id="res-corr" style="color: var(--correct-color);">0</h3><p>Correct</p></div>
+            <div class="stat-box"><h3 id="res-incorr" style="color: var(--incorrect-color);">0</h3><p>Incorrect</p></div>
+            <div class="stat-box"><h3 id="res-time">00:00</h3><p>Time Taken</p></div>
+        </div>
+        
+        <div id="result-action-btns" style="text-align: center; margin-bottom: 30px;">
+            <button class="btn-primary" onclick="resetTest()" style="padding: 15px 40px; font-size: 1.1rem;">Start New Test</button>
+            <button class="btn-submit" onclick="downloadPDF()" style="padding: 15px 40px; font-size: 1.1rem; margin-left: 15px;">Download Solutions PDF 📥</button>
+        </div>
+
+        <h3 style="color: var(--primary-color); font-size: 1.5rem; text-align: center;">Detailed Solutions & Facts 📝</h3>
+        <hr style="margin: 15px 0; border: 0; border-top: 1px solid var(--glass-border);">
+        <div id="solutions-container"></div>
+    </div>
+
+<script>
+    const questions = [
+        {
+            "q": "Find out which part of a sentence has an error: Most countries in the world (a)/ is for (b)/ peace. (c)/ No error (d)",
+            "opt": ["Most countries in the world", "is for", "peace.", "No error"],
+            "ans": 1,
+            "exp": "<b>💡 विस्तृत हल और नियम:</b><br>यहाँ वाक्य का subject 'Most countries' (बहुवचन/plural) है। इसलिए verb भी plural आनी चाहिए। 'is' के स्थान पर 'are' का प्रयोग होगा। सही वाक्य: 'Most countries in the world are for peace.'<br><b>✨ Vocabulary:</b> Peace (शांति, अमन)।"
+        },
+        {
+            "q": "Find out which part of a sentence has an error: Our office buys (a)/ five kilograms of paper (b)/ every month. (c)/ No error (d)",
+            "opt": ["Our office buys", "five kilograms of paper", "every month.", "No error"],
+            "ans": 3,
+            "exp": "<b>💡 विस्तृत हल और नियम:</b><br>यह वाक्य पूरी तरह से सही है (No error)। 'Our office' (singular subject) के साथ 'buys' (singular verb) का प्रयोग बिल्कुल सही है। 'five kilograms of paper' भी व्याकरण की दृष्टि से सही है।<br><b>✨ Vocabulary:</b> Buy (खरीदना)।"
+        },
+        {
+            "q": "Find out which part of a sentence has an error: Many a man (a)/ have realized (b)/ that real happiness lies in making sacrifices. (c)/ No error (d)",
+            "opt": ["Many a man", "have realized", "that real happiness lies in making sacrifices.", "No error"],
+            "ans": 1,
+            "exp": "<b>💡 विस्तृत हल और नियम:</b><br>अंग्रेजी व्याकरण का नियम है कि 'Many a' के बाद हमेशा Singular Noun और Singular Verb का प्रयोग होता है। इसलिए 'Many a man' के बाद 'have' की जगह 'has' का प्रयोग होगा। सही वाक्य: 'Many a man has realized...'<br><b>✨ Vocabulary:</b> Sacrifice (बलिदान, त्याग), Realize (महसूस करना)।"
+        },
+        {
+            "q": "Find out which part of a sentence has an error: One of the most important factor (a)/ that contribute to the success of a person (b)/ is his sincerity. (c)/ No error (d)",
+            "opt": ["One of the most important factor", "that contribute to the success of a person", "is his sincerity.", "No error"],
+            "ans": 0,
+            "exp": "<b>💡 विस्तृत हल और नियम:</b><br>नियम: 'One of the' के बाद हमेशा Plural Noun (बहुवचन संज्ञा) का प्रयोग होता है। इसलिए 'factor' की जगह 'factors' आएगा। सही: 'One of the most important factors...'<br><b>✨ Vocabulary:</b> Sincerity (ईमानदारी, सच्चाई), Contribute (योगदान देना)।"
+        },
+        {
+            "q": "Fill in the blank: The degree will be awarded during the annual.............",
+            "opt": ["conference", "convention", "convolution", "convocation"],
+            "ans": 3,
+            "exp": "<b>💡 विस्तृत हल और नियम:</b><br>विश्वविद्यालयों या कॉलेजों में जहाँ डिग्री (Degree) प्रदान की जाती है, उस वार्षिक समारोह को 'Convocation' (दीक्षांत समारोह) कहा जाता है।<br><b>✨ Vocabulary:</b> Conference (सम्मेलन), Convention (सम्मेलन/प्रथा), Convolution (ऐंठन/मोड़), Convocation (दीक्षांत समारोह)।"
+        },
+        {
+            "q": "Fill in the blank: She slipped and...................her ankle.",
+            "opt": ["broken", "sprained", "massaged", "hurted"],
+            "ans": 1,
+            "exp": "<b>💡 विस्तृत हल और नियम:</b><br>जब कोई फिसलकर गिरता है और टखने (ankle) में मोच आ जाती है, तो उसे अंग्रेजी में 'sprain' (मोच आना) कहते हैं। 'hurted' कोई शब्द नहीं है (hurt का past भी hurt ही होता है)।<br><b>✨ Vocabulary:</b> Slip (फिसलना), Sprain (मोच आना), Massage (मालिश करना)।"
+        },
+        {
+            "q": "Choose the correct alternative to improve the sentence: The difficulty level of this problem is extremely great.",
+            "opt": ["perplexity", "hindrance", "intricacy", "No improvement"],
+            "ans": 3,
+            "exp": "<b>💡 विस्तृत हल और नियम:</b><br>इस वाक्य में किसी सुधार की आवश्यकता नहीं है (No improvement)। 'difficulty level' (कठिनाई का स्तर) एक सामान्य और सही वाक्यांश है।<br><b>✨ Vocabulary:</b> Perplexity (व्याकुलता/उलझन), Hindrance (बाधा), Intricacy (जटिलता)।"
+        },
+        {
+            "q": "Choose the correct alternative to improve the sentence: The cooking soup on the stove got burnt.",
+            "opt": ["The soup cooking on the stove got burnt.", "The soup which has been cooking on the stove gets burnt.", "The soup which have been cooking on the stove get burnt", "No improvement"],
+            "ans": 0,
+            "exp": "<b>💡 विस्तृत हल और नियम:</b><br>'The cooking soup' व्याकरणिक रूप से सही नहीं लग रहा है। सही संरचना 'The soup cooking on the stove got burnt' होगी, जहाँ 'cooking on the stove' एक participle phrase है जो 'soup' की विशेषता बता रहा है।<br><b>✨ Vocabulary:</b> Burnt (जला हुआ), Stove (चूल्हा)।"
+        },
+        {
+            "q": "Choose the word opposite in meaning: DEMISE",
+            "opt": ["Death", "Misfortune", "Accident", "Dismissal"],
+            "ans": 0,
+            "exp": "<b>💡 विस्तृत हल और नियम:</b><br>यह प्रश्न विपरीतार्थक (Antonym) नहीं बल्कि समानार्थी (Synonym) पूछ रहा है (संभवतः निर्देश में टाइपो है)। 'Demise' का अर्थ 'मृत्यु' (Death) होता है। यदि वास्तव में Antonym पूछा है, तो 'Birth' होना चाहिए, जो विकल्पों में नहीं है। SSC की उत्तर कुंजी के अनुसार (a) Death सही माना गया है, जो कि Synonym है।<br><b>✨ Vocabulary:</b> Demise (मृत्यु), Misfortune (दुर्भाग्य), Dismissal (बर्खास्तगी)।"
+        },
+        {
+            "q": "Choose the word opposite in meaning: ADVERSITY",
+            "opt": ["Opponent", "Misfortune", "Adversary", "Hostility"],
+            "ans": 1,
+            "exp": "<b>💡 विस्तृत हल और नियम:</b><br>यहाँ भी 'Adversity' का समानार्थी (Synonym) पूछा गया है। Adversity का अर्थ 'विपत्ति' या 'दुर्भाग्य' होता है, जिसका सही विकल्प 'Misfortune' है।<br><b>✨ Vocabulary:</b> Adversity (विपत्ति), Opponent/Adversary (विरोधी/दुश्मन), Hostility (शत्रुता)।"
+        },
+        {
+            "q": "Choose the word opposite in meaning: MUNDANE",
+            "opt": ["Musical", "Ordinary", "Mortal", "Mandatory"],
+            "ans": 1,
+            "exp": "<b>💡 विस्तृत हल और नियम:</b><br>यहाँ भी समानार्थी (Synonym) पूछा गया है। Mundane का अर्थ 'सांसारिक', 'नीरस' या 'साधारण' (Ordinary) होता है।<br><b>✨ Vocabulary:</b> Mundane (साधारण/नीरस), Mortal (नश्वर), Mandatory (अनिवार्य)।"
+        },
+        {
+            "q": "Choose the word opposite in meaning (Antonym): LIBERATION",
+            "opt": ["Movement", "Bondage", "Service", "Unrest"],
+            "ans": 1,
+            "exp": "<b>💡 विस्तृत हल और नियम:</b><br>Liberation का अर्थ 'मुक्ति' या 'आजादी' होता है। इसका विपरीत (Antonym) 'Bondage' (गुलामी या बंधन) होगा।<br><b>✨ Vocabulary:</b> Liberation (मुक्ति), Bondage (गुलामी/बंधन), Unrest (अशांति)।"
+        },
+        {
+            "q": "Choose the word opposite in meaning (Antonym): CRUEL",
+            "opt": ["Rich", "Wicked", "Poor", "Kind"],
+            "ans": 3,
+            "exp": "<b>💡 विस्तृत हल और नियम:</b><br>Cruel का अर्थ 'क्रूर' या 'निर्दयी' होता है। इसका सही विपरीतार्थक शब्द 'Kind' (दयालु) होगा।<br><b>✨ Vocabulary:</b> Cruel (क्रूर), Wicked (दुष्ट), Kind (दयालु)।"
+        },
+        {
+            "q": "Choose the word opposite in meaning (Antonym): PESSIMIST",
+            "opt": ["Theist", "Optimist", "Vocalist", "Believer"],
+            "ans": 1,
+            "exp": "<b>💡 विस्तृत हल और नियम:</b><br>Pessimist का अर्थ 'निराशावादी' (जो हमेशा बुरा सोचता हो) होता है। इसका विपरीतार्थक 'Optimist' (आशावादी) होगा।<br><b>✨ Vocabulary:</b> Pessimist (निराशावादी), Optimist (आशावादी), Theist (आस्तिक), Believer (विश्वासी)।"
+        },
+        {
+            "q": "What is the meaning of the Idiom/Phrase: In the last few years, India has advanced 'by leaps and bounds' in industrial sector.",
+            "opt": ["very pathetically", "very slowly", "very rapidly", "very competently"],
+            "ans": 2,
+            "exp": "<b>💡 विस्तृत हल और नियम:</b><br>'By leaps and bounds' एक प्रसिद्ध Idiom है, जिसका अर्थ होता है 'दिन दूनी रात चौगुनी' या 'बहुत तेजी से' (Very rapidly)।<br><b>✨ Vocabulary:</b> Leaps and bounds (बहुत तेजी से), Pathetically (दयनीय रूप से)।"
+        },
+        {
+            "q": "What is the meaning of the Idiom/Phrase: The whole problem has been 'swept under the carpet', but that is not the solution.",
+            "opt": ["kept hidden", "ignored", "solved", "detected"],
+            "ans": 0,
+            "exp": "<b>💡 विस्तृत हल और नियम:</b><br>'Swept under the carpet' का अर्थ होता है किसी समस्या या गलती को छिपाना (kept hidden) ताकि दूसरों को पता न चले।<br><b>✨ Vocabulary:</b> Swept under the carpet (छिपाना), Ignored (अनदेखा करना), Detected (पता लगाना)।"
+        },
+        {
+            "q": "Choose the correct spelling:",
+            "opt": ["Earring", "Gourrmet", "Torrent", "Carrying"],
+            "ans": 0,
+            "exp": "<b>💡 विस्तृत हल और नियम:</b><br>विकल्पों में 'Earring' (कान की बाली) की स्पेलिंग बिल्कुल सही है। (अन्य विकल्पों में Gourmet की स्पेलिंग गलत दी गई है)।<br><b>✨ Vocabulary:</b> Earring (कान की बाली), Torrent (तेज़ धारा)।"
+        },
+        {
+            "q": "Choose the correct spelling:",
+            "opt": ["Rationaly", "Rationing", "Rational", "Rationale"],
+            "ans": 2,
+            "exp": "<b>💡 विस्तृत हल और नियम:</b><br>दिए गए विकल्पों में 'Rational' (तर्कसंगत) की स्पेलिंग सही है। (Rationaly गलत है, सही 'Rationally' होता है)।<br><b>✨ Vocabulary:</b> Rational (तर्कसंगत/विवेकपूर्ण), Rationale (तर्काधार)।"
+        },
+        {
+            "q": "Choose the correct spelling:",
+            "opt": ["Asessment", "Harassment", "Nourishment", "Punishment"],
+            "ans": 1,
+            "exp": "<b>💡 विस्तृत हल और नियम:</b><br>दिए गए विकल्पों में 'Harassment' (उत्पीड़न) की स्पेलिंग सही है। 'Asessment' गलत है, सही 'Assessment' (मूल्यांकन) होता है। 'Nourishment' और 'Punishment' भी सही स्पेलिंग हैं, लेकिन SSC की कुंजी के अनुसार यहाँ (b) Harassment को सही माना गया है।<br><b>✨ Vocabulary:</b> Harassment (उत्पीड़न), Assessment (मूल्यांकन), Nourishment (पोषण)।"
+        },
+        {
+            "q": "Choose the word which can be substituted for the given sentence: Inability to sleep",
+            "opt": ["Insomnia", "Slumber", "Lassitude", "Sleeping sickness"],
+            "ans": 0,
+            "exp": "<b>💡 विस्तृत हल और नियम:</b><br>नींद न आने की बीमारी (Inability to sleep) को 'Insomnia' (अनिद्रा) कहा जाता है।<br><b>✨ Vocabulary:</b> Insomnia (अनिद्रा), Slumber (नींद), Lassitude (थकान/आलस्य)।"
+        },
+        {
+            "q": "Choose the word which can be substituted for the given sentence: One who knows everything",
+            "opt": ["Omnipresent", "Omnipotent", "Omniscient", "Almighty"],
+            "ans": 2,
+            "exp": "<b>💡 विस्तृत हल और नियम:</b><br>जो सब कुछ जानता हो (One who knows everything) उसे 'Omniscient' (सर्वज्ञ) कहते हैं। 'Omnipresent' मतलब सर्वव्यापी (जो हर जगह हो) और 'Omnipotent' मतलब सर्वशक्तिमान।<br><b>✨ Vocabulary:</b> Omniscient (सर्वज्ञ), Omnipresent (सर्वव्यापी), Omnipotent (सर्वशक्तिमान)।"
+        },
+        {
+            "q": "Choose the word which can be substituted for the given sentence: Animals that eat flesh",
+            "opt": ["Herbivorous", "Omnivorous", "Carnivorous", "Aquatic"],
+            "ans": 2,
+            "exp": "<b>💡 विस्तृत हल और नियम:</b><br>जो जानवर केवल मांस खाते हैं (eat flesh) उन्हें 'Carnivorous' (मांसाहारी) कहा जाता है। पेड़-पौधे खाने वाले 'Herbivorous' और दोनों खाने वाले 'Omnivorous' कहलाते हैं।<br><b>✨ Vocabulary:</b> Carnivorous (मांसाहारी), Herbivorous (शाकाहारी), Omnivorous (सर्वाहारी)।"
+        },
+        {
+            "q": "Choose the word which can be substituted for the given sentence: A handwriting which is difficult or impossible to read",
+            "opt": ["Illegitimate", "Illicit", "Illegible", "Illusive"],
+            "ans": 2,
+            "exp": "<b>💡 विस्तृत हल और नियम:</b><br>ऐसी लिखावट जिसे पढ़ना मुश्किल या असंभव हो, उसे 'Illegible' (अपठनीय) कहते हैं।<br><b>✨ Vocabulary:</b> Illegible (अपठनीय), Illegitimate (अवैध), Illicit (अवैध/अनुचित), Illusive (भ्रामक)।"
+        },
+        {
+            "q": "Change the Voice: The cat drank all the milk.",
+            "opt": ["All the milk has been drunk by the cat.", "All the milk was drunk by the cat.", "All the milk had been drunk by the cat.", "All the milk is drank by the cat."],
+            "ans": 1,
+            "exp": "<b>💡 विस्तृत हल और नियम (Active to Passive Voice):</b><br>नियम: Simple Past Tense ('drank' - V2) का Passive बनाते समय 'was/were + V3' का प्रयोग होता है।<br>Object ('all the milk') subject बन जाएगा। चूँकि milk uncountable noun है, इसलिए singular verb 'was' आएगा। 'drank' की third form 'drunk' होगी। अतः सही वाक्य: 'All the milk was drunk by the cat.'<br><b>✨ Vocabulary:</b> Drink-Drank-Drunk (पीना)।"
+        },
+        {
+            "q": "Change the Narration: Ram said to me, \"I am going to Delhi today.\"",
+            "opt": ["Ram told me that he was going to Delhi that day.", "Ram told me that he is going to Delhi today.", "Ram asked me that he was going to Delhi that day.", "Ram told me that I was going to Delhi today."],
+            "ans": 0,
+            "exp": "<b>💡 विस्तृत हल और नियम (Direct to Indirect Speech):</b><br>नियम 1: Reporting verb 'said to' को 'told' में बदलेंगे।<br>नियम 2: Inverted commas हटाकर conjunction 'that' लगाएंगे।<br>नियम 3: Pronoun 'I' (First Person) Reporting verb के subject 'Ram' के अनुसार 'he' में बदलेगा।<br>नियम 4: Present Continuous ('am going') को Past Continuous ('was going') में बदलेंगे।<br>नियम 5: 'today' को 'that day' में बदलेंगे।<br>अतः सही वाक्य: 'Ram told me that he was going to Delhi that day.'<br><b>✨ Vocabulary:</b> Narration (कथन), Today (आज) -> That day (उस दिन)।"
+        }
+    ];
+
+    // Shuffle the questions array to mix them randomly
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+    // Questions are NOT shuffled as per user instruction: "questions ko mix nahin karna hai matlab hamesha question ki series vahi rahani chahie"
+
+    let currentIdx = 0;
+    const totalQ = questions.length;
+    let answers = new Array(totalQ).fill(null);
+    let marked = new Array(totalQ).fill(false);
+    
+    // Timer is set to 25 minutes (25 * 60 seconds)
+    let totalTime = 25 * 60; 
+    let timerInterval;
+    let isPaused = false;
+
+    // Initialization
+    function init() {
+        if (!loadProgress()) {
+            answers = new Array(totalQ).fill(null);
+            marked = new Array(totalQ).fill(false);
+            totalTime = 25 * 60;
+            currentIdx = 0;
+        }
+        createPalette();
+        loadQuestion(currentIdx);
+        updateStats();
+        startTimer();
+    }
+
+    // Theme Logic
+    function toggleTheme() {
+        const doc = document.documentElement;
+        const current = doc.getAttribute('data-theme');
+        doc.setAttribute('data-theme', current === 'light' ? 'dark' : 'light');
+    }
+
+    // Timer Logic
+    function startTimer() {
+        timerInterval = setInterval(() => {
+            if(totalTime <= 0) {
+                clearInterval(timerInterval);
+                submitTest(true);
+                return;
+            }
+            totalTime--;
+            updateTimerDisplay();
+            
+            // Background Auto Save every 30 seconds
+            if(totalTime % 30 === 0) saveProgress(false);
+
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const mins = Math.floor(totalTime / 60).toString().padStart(2, '0');
+        const secs = (totalTime % 60).toString().padStart(2, '0');
+        const timerEl = document.getElementById('timer');
+        timerEl.innerText = `${mins}:${secs}`;
+        
+        if (totalTime < 300) { 
+            timerEl.classList.add('danger');
+        } else {
+            timerEl.classList.remove('danger');
+        }
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        const overlay = document.getElementById('pause-overlay');
+        const btn = document.getElementById('pause-btn');
+        
+        if (isPaused) {
+            clearInterval(timerInterval);
+            overlay.style.display = 'flex';
+            btn.innerText = 'Resume';
+            btn.classList.add('btn-warning');
+        } else {
+            startTimer();
+            overlay.style.display = 'none';
+            btn.innerText = 'Pause';
+            btn.classList.remove('btn-warning');
+        }
+    }
+
+    // Quiz Navigation & Rendering
+    function loadQuestion(idx) {
+        currentIdx = idx;
+        const qData = questions[idx];
+        
+        document.getElementById('question-header').innerText = `Question ${idx + 1} of ${totalQ}`;
+        document.getElementById('question-text').innerHTML = qData.q;
+        
+        const optsContainer = document.getElementById('options-container');
+        optsContainer.innerHTML = '';
+        
+        qData.opt.forEach((optText, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn' + (answers[idx] === i ? ' selected' : '');
+            
+            btn.innerHTML = `<div style="font-weight:bold; border:1px solid currentColor; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;">${String.fromCharCode(65+i)}</div> ${optText}`;
+            btn.onclick = () => selectOption(i);
+            optsContainer.appendChild(btn);
+        });
+
+        // Update progress bar
+        document.getElementById('progress-bar').style.width = `${((idx + 1) / totalQ) * 100}%`;
+
+        // Update buttons
+        document.getElementById('prev-btn').disabled = (idx === 0);
+        document.getElementById('prev-btn').style.opacity = (idx === 0) ? '0.5' : '1';
+        
+        const markBtn = document.getElementById('mark-btn');
+        markBtn.innerText = marked[idx] ? 'Unmark Review' : 'Mark for Review';
+        
+        const nextBtn = document.getElementById('next-btn');
+        if (idx === totalQ - 1) {
+            nextBtn.innerText = 'Submit Test';
+            nextBtn.className = 'btn-danger';
+        } else {
+            nextBtn.innerText = 'Next';
+            nextBtn.className = 'btn-primary';
+        }
+
+        updatePaletteVisuals();
+    }
+
+    // --- AUTO SAVE FUNCTIONS ---
+    function saveProgress(showToast = true) {
+        const testState = {
+            answers: answers,
+            marked: marked,
+            totalTime: totalTime,
+            currentIdx: currentIdx
+        };
+        // Unique storage key for English test
+        localStorage.setItem('hsscMockTestState_English_Special', JSON.stringify(testState));
+        
+        if(showToast) {
+            const toast = document.getElementById('save-toast');
+            toast.style.opacity = '1';
+            setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+        }
+    }
+
+    function loadProgress() {
+        const savedState = localStorage.getItem('hsscMockTestState_English_Special');
+        if (savedState) {
+            const state = JSON.parse(savedState);
+            answers = state.answers;
+            marked = state.marked;
+            totalTime = state.totalTime;
+            currentIdx = state.currentIdx || 0;
+            return true;
+        }
+        return false;
+    }
+
+    function clearProgress() {
+        localStorage.removeItem('hsscMockTestState_English_Special');
+    }
+
+    function resetTest() {
+        if(confirm("क्या आप निश्चित रूप से एक नया टेस्ट शुरू करना चाहते हैं? आपकी वर्तमान प्रोग्रेस डिलीट हो जाएगी।")) {
+            clearProgress();
+            location.reload();
+        }
+    }
+    // ----------------------------
+
+    function selectOption(optIdx) {
+        answers[currentIdx] = optIdx;
+        loadQuestion(currentIdx);
+        updateStats();
+        saveProgress(true);
+    }
+
+    function clearSelection() {
+        answers[currentIdx] = null;
+        loadQuestion(currentIdx);
+        updateStats();
+        saveProgress(true);
+    }
+
+    function toggleMark() {
+        marked[currentIdx] = !marked[currentIdx];
+        loadQuestion(currentIdx);
+        updateStats();
+        saveProgress(true);
+    }
+
+    function changeQuestion(step) {
+        if (step === 1 && currentIdx === totalQ - 1) {
+            submitTest(false);
+            return;
+        }
+        let newIdx = currentIdx + step;
+        if (newIdx >= 0 && newIdx < totalQ) {
+            currentIdx = newIdx;
+            loadQuestion(newIdx);
+            saveProgress(false);
+        }
+    }
+
+    // Palette Logic
+    function createPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'q-grid-btn';
+            btn.id = `pal-btn-${i}`;
+            btn.innerText = i + 1;
+            btn.onclick = () => { currentIdx = i; loadQuestion(i); saveProgress(false); };
+            grid.appendChild(btn);
+        }
+    }
+
+    function updatePaletteVisuals() {
+        for (let i = 0; i < totalQ; i++) {
+            const btn = document.getElementById(`pal-btn-${i}`);
+            btn.className = 'q-grid-btn';
+            
+            if (answers[i] !== null && marked[i]) btn.classList.add('marked', 'attempted');
+            else if (marked[i]) btn.classList.add('marked');
+            else if (answers[i] !== null) btn.classList.add('attempted');
+            
+            if (i === currentIdx) btn.classList.add('current');
+        }
+    }
+
+    function updateStats() {
+        let att = 0, mark = 0;
+        for (let i = 0; i < totalQ; i++) {
+            if (answers[i] !== null) att++;
+            if (marked[i]) mark++;
+        }
+        document.getElementById('count-att').innerText = att;
+        document.getElementById('count-unatt').innerText = totalQ - att;
+        document.getElementById('count-mark').innerText = mark;
+        updatePaletteVisuals();
+    }
+
+    // Submission & Results
+    function submitTest(isAuto) {
+        const unatt = answers.filter(a => a === null).length;
+        if (!isAuto && unatt > 0) {
+            const confirmSubmit = confirm(`आपने ${unatt} प्रश्न हल नहीं किए हैं। क्या आप निश्चित रूप से टेस्ट सबमिट करना चाहते हैं?`);
+            if (!confirmSubmit) return;
+        }
+
+        clearInterval(timerInterval);
+        document.getElementById('app-container').style.display = 'none';
+        document.querySelector('.header-controls').style.display = 'none';
+        clearProgress(); // Clear saved state on submit
+        generateResults();
+    }
+
+    function generateResults() {
+        const resScreen = document.getElementById('result-screen');
+        resScreen.style.display = 'block';
+
+        let correct = 0;
+        let incorrect = 0;
+        
+        answers.forEach((ans, i) => {
+            if (ans !== null) {
+                if (ans === questions[i].ans) correct++;
+                else incorrect++;
+            }
+        });
+
+        const score = correct;
+        const perc = ((score / totalQ) * 100).toFixed(2);
+        
+        const timeTakenSec = (25 * 60) - totalTime;
+        const timeMins = Math.floor(timeTakenSec / 60).toString().padStart(2, '0');
+        const timeSecs = (timeTakenSec % 60).toString().padStart(2, '0');
+
+        document.getElementById('res-score').innerText = score;
+        document.getElementById('res-perc').innerText = perc + '%';
+        document.getElementById('res-corr').innerText = correct;
+        document.getElementById('res-incorr').innerText = incorrect;
+        document.getElementById('res-time').innerText = `${timeMins}:${timeSecs}`;
+
+        const badge = document.getElementById('result-badge');
+        if (perc >= 50) {
+            badge.className = 'badge pass';
+            badge.innerText = 'PASS';
+        } else {
+            badge.className = 'badge fail';
+            badge.innerText = 'FAIL';
+        }
+
+        generateSolutions();
+    }
+
+    function generateSolutions() {
+        const container = document.getElementById('solutions-container');
+        let html = '';
+
+        questions.forEach((q, i) => {
+            const userAns = answers[i];
+            const corrAns = q.ans;
+            
+            html += `<div class="solution-item">
+                        <div class="sol-q">प्र ${i+1}. ${q.q}</div>`;
+            
+            q.opt.forEach((optText, optIdx) => {
+                let cls = 'sol-opt';
+                let icon = '';
+                
+                if (optIdx === corrAns) {
+                    cls += ' correct';
+                    icon = '✓';
+                } else if (userAns === optIdx && userAns !== corrAns) {
+                    cls += ' incorrect';
+                    icon = '✗';
+                }
+
+                if(icon) {
+                    html += `<div class="${cls}"><b>${String.fromCharCode(65+optIdx)}</b>: ${optText} <div style="float:right; font-weight:bold;">${icon}</div></div>`;
+                } else {
+                    html += `<div class="${cls}"><b>${String.fromCharCode(65+optIdx)}</b>: ${optText}</div>`;
+                }
+            });
+
+            const userStatus = userAns === null ? "<b style='color:var(--text-muted)'>हल नहीं किया (Unattempted)</b>" : 
+                              (userAns === corrAns ? "<b style='color:var(--correct-color)'>सही (Correct)</b>" : 
+                              "<b style='color:var(--incorrect-color)'>गलत (Incorrect)</b>");
+
+            html += `<div style="margin-top: 10px;"><b>Status:</b> ${userStatus}</div>`;
+            html += `<div class="sol-exp"><div class="sol-exp-title">विस्तृत हल और नियम:</div>${q.exp}</div>`;
+            html += `</div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    // PDF जनरेट करने का फंक्शन
+    function downloadPDF() {
+        const btnContainer = document.getElementById('result-action-btns');
+        btnContainer.style.display = 'none';
+
+        const element = document.getElementById('result-screen');
+        const opt = {
+            margin:       10,
+            filename:     'English_Grammar_Special_Test_Solutions.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            btnContainer.style.display = 'block'; 
+        });
+    }
+
+    // Start App
+    window.onload = init;
+</script>
+</body>
+</html>
