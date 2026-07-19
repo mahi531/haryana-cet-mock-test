@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Haryana GK Special Mock Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Beautiful Moving Gradient & Glassmorphism Theme */
+        :root {
+            --bg-grad-1: #4facfe; --bg-grad-2: #00f2fe; --bg-grad-3: #a18cd1; --bg-grad-4: #fbc2eb;
+            --glass-bg: rgba(255, 255, 255, 0.9); --glass-border: rgba(255, 255, 255, 0.6); --glass-shadow: rgba(31, 38, 135, 0.15);
+            --text-main: #1f2937; --text-muted: #64748b;
+            --primary: #2563eb; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --purple: #8b5cf6;
+            --option-bg: rgba(243, 244, 246, 0.8); --option-selected: rgba(219, 234, 254, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+        [data-theme="dark"] {
+            --bg-grad-1: #0f2027; --bg-grad-2: #203a43; --bg-grad-3: #2c5364; --bg-grad-4: #141e30;
+            --glass-bg: rgba(17, 25, 40, 0.85); --glass-border: rgba(255, 255, 255, 0.15); --glass-shadow: rgba(0, 0, 0, 0.5);
+            --text-main: #f9fafb; --text-muted: #94a3b8;
+            --primary: #3b82f6; 
+            --option-bg: rgba(55, 65, 81, 0.7); --option-selected: rgba(30, 58, 138, 0.8);
+            --card-bg: rgba(31, 41, 55, 0.95);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; touch-action: manipulation;}
+        
+        body { 
+            height: 100vh; height: 100dvh; 
+            background: linear-gradient(45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3), var(--bg-grad-4)); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+            color: var(--text-main); 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 var(--glass-shadow); border-radius: 12px; }
+        
+        .btn { font-family: 'Poppins', sans-serif; background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;}
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-warning { background: var(--warning); color: #fff;}
+        .btn-clear { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-mark { background: var(--purple); color: white; }
+        .btn-prev { background: var(--text-muted); color: white; }
+
+        /* Screens */
+        .screen { display: none; flex-direction: column; height: 100%; width: 100vw; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; }
+
+        /* --- DASHBOARD UI --- */
+        #dashboard-screen { overflow-y: auto; background: var(--card-bg); align-items: center; padding-bottom: 30px;}
+        
+        .dash-header-top { background: #1e293b; color: white; width: 100%; padding: 15px 20px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 15px; position: sticky; top:0; z-index: 100;}
+        
+        .dash-content { width: 100%; max-width: 800px; padding: 20px; }
+        .section-title { font-weight: 600; color: var(--primary); margin: 15px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 15px; }
+        
+        .dash-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--glass-border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .test-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text-main);}
+        .test-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        
+        .progress-container { width: 100%; height: 5px; background: var(--glass-border); border-radius: 3px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #f59e0b; width: 0%; transition: width 0.5s ease;}
+        
+        .dash-actions { display: flex; gap: 12px; margin-top: 15px; }
+        .dash-actions .btn { flex: 1; padding: 10px; font-size: 13px; border-radius: 6px;}
+        
+        .syllabus-footer { display: flex; justify-content: space-between; font-size: 12px; color: var(--primary); border-top: 1px solid var(--glass-border); padding-top: 12px; margin-top: 15px; }
+
+        /* --- TEST SCREEN UI --- */
+        header.test-head { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-bottom: 10px; margin-inline: 10px; }
+        .header-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: 700; background: var(--card-bg); border: 1px solid var(--glass-border); color: var(--danger); padding: 5px 12px; border-radius: 20px; }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 0 10px 10px 10px; }
+        .question-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        .q-header { padding: 10px 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
+        .q-body { flex: 1; padding: 15px; overflow-y: auto; font-size: 16px; line-height: 1.6; }
+        
+        .options-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;}
+        .option { padding: 12px; border: 2px solid var(--glass-border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--option-bg); font-weight: 500; font-size: 15px;}
+        .option.selected { border-color: var(--primary); background: var(--option-selected); color: var(--primary); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--glass-border); display: flex; justify-content: center; align-items: center; font-weight: bold; }
+        .option.selected .opt-label { background: var(--primary); color: white; border-color: var(--primary);}
+        
+        .q-footer { padding: 10px; border-top: 1px solid var(--glass-border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-radius: 0 0 12px 12px; }
+
+        /* --- PALETTE UI --- */
+        .palette-section { width: 320px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .palette-header { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; font-weight: bold; font-size: 15px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; font-size: 12px; border-bottom: 1px solid var(--glass-border); font-weight: 500;}
+        .stat-item { display: flex; align-items: center; gap: 6px;}
+        .badge { width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 10px; font-weight: bold;}
+        .s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);} 
+        .s-1 { background: var(--success); } .s-2 { background: var(--danger); } .s-3 { background: var(--purple); } 
+        .s-4 { background: var(--primary); position: relative; }
+        .s-4::after { content: '✔'; position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; background: white; color: var(--primary); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 8px; }
+        
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .p-btn.s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);}
+        .p-btn.active { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.1);}
+        .submit-area { padding: 10px; border-top: 1px solid var(--glass-border); border-radius: 0 0 12px 12px;}
+
+        /* --- RESULTS & SOLUTIONS UI --- */
+        #result-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        #solution-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        .sol-card { padding: 20px; margin-bottom: 15px; width: 100%; max-width: 800px; }
+        .sol-opt { padding: 10px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; gap: 10px; align-items: center; font-size: 15px; background: var(--card-bg);}
+        .sol-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); text-decoration: line-through;}
+        .sol-exp { margin-top: 15px; padding: 15px; background: rgba(37, 99, 235, 0.05); border: 1px solid var(--glass-border); border-left: 4px solid var(--primary); border-radius: 8px; font-size: 14.5px; line-height: 1.6; }
+        .sol-exp ul { padding-left: 20px; margin-top: 8px; }
+        .sol-exp li { margin-bottom: 6px; }
+
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+
+        @media (max-width: 992px) {
+            .main-area { flex-direction: column; overflow-y: auto;}
+            .question-section { flex: none; min-height: 450px;}
+            .palette-section { width: 100%; flex: none; min-height: 350px;}
+            .q-footer .btn { padding: 10px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="dashboard-screen" class="screen active">
+        <div class="dash-header-top">
+            <span style="cursor: pointer;" onclick="alert('Going Back')">&#8592;</span>
+            Haryana CET Group D - GK Special Mock Test
+        </div>
+
+        <div class="dash-content">
+            <!-- Unattempted State -->
+            <div id="dash-unattempted" style="display: none;">
+                <div class="section-title">Suggested Next Test</div>
+                <div class="dash-card">
+                    <div class="test-title">Haryana GK Special (25 Questions)</div>
+                    <div class="test-meta">
+                        <span>25 Qs • 25 mins • 25.0 Marks</span>
+                    </div>
+                    <div class="test-meta" style="justify-content: flex-end;">
+                        <button class="btn btn-outline" style="padding: 6px 20px; border-radius: 20px;" onclick="startTest()">Start Test 🚀</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span>Syllabus: Haryana History, Geography, Polity & Culture</span>
+                        <span style="color:var(--success);">🔗 Share</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attempted State -->
+            <div id="dash-attempted" style="display: none;">
+                <div class="section-title">Previously Attempted</div>
+                <div class="dash-card">
+                    <div class="test-title">Haryana GK Special (25 Questions)</div>
+                    <div class="test-meta" style="margin-bottom: 5px;">
+                        <span id="dash-score-text" style="font-weight: 600; color: var(--text-main);">0/25.0 Marks</span>
+                    </div>
+                    
+                    <div class="progress-container"><div class="progress-fill" id="dash-progress-bar"></div></div>
+
+                    <div class="dash-actions">
+                        <button class="btn btn-outline" onclick="viewSavedResults()">View Results 📊</button>
+                        <button class="btn btn-outline" onclick="reattemptTest()">Reattempt &#8594;</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span style="color: var(--primary);">Detailed Syllabus</span>
+                        <span style="color:var(--text-muted);" id="dash-date-text">Attempted on...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAUSE OVERLAY -->
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px; font-size: 2rem;">Test Paused ⏸️</h2>
+        <button class="btn btn-primary" style="font-size: 1.2rem; padding: 10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+    </div>
+
+    <!-- TEST SCREEN -->
+    <div id="test-screen" class="screen">
+        <header class="glass-panel test-head">
+            <div class="header-title">GK Special Test</div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="toggleTheme()">🌓 Theme</button>
+                <button class="btn btn-warning" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="togglePause()">⏸ Pause</button>
+                <div class="timer-box">⏱ <span id="timer-display">25:00</span></div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="glass-panel question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--success); font-weight:bold;">+1 <span style="color: var(--text-muted); font-weight:normal;">|</span> <span style="color: var(--danger);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <button class="btn btn-mark" onclick="markReview()">Mark & Next</button>
+                    <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                    <button class="btn btn-prev" onclick="changeQ(-1)">Previous</button>
+                    <button class="btn btn-primary" onclick="saveNext()">Save & Next</button>
+                </div>
+            </div>
+
+            <div class="glass-panel palette-section">
+                <div class="palette-header">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">25</div> Not Visit</div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn btn-primary" style="width: 100%; background: var(--success); font-size: 15px; padding: 10px;" onclick="submitTest()">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen" class="screen">
+        <div style="width: 100%; max-width: 800px; margin-bottom: 15px;"><button class="btn btn-clear" onclick="showDashboard()">&#8592; Back to Dashboard</button></div>
+        <div class="glass-panel" style="max-width: 800px; width: 100%; padding: 25px;">
+            <h1 style="color: var(--primary); text-align: center;">Test Submitted Successfully! 🎉</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 25px 0;">
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-score" style="color: var(--primary); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Score</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-attempt" style="color: var(--success); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Attempted</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-wrong" style="color: var(--danger); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Wrong</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-acc" style="color: var(--purple); font-size: 1.8rem;">0%</h2><p style="color: var(--text-muted); font-size:12px;">Accuracy</p></div>
+            </div>
+            <button class="btn btn-primary" style="width:100%; font-size: 15px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+        </div>
+    </div>
+
+    <!-- SOLUTION SCREEN -->
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%; margin:0 auto;">
+            <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 12px 15px; position: sticky; top: 5px; z-index: 10;">
+                <h3 style="color: var(--primary);">Detailed Solutions</h3>
+                <button class="btn btn-clear" style="padding: 5px 10px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+            </div>
+            <div id="sol-container"></div>
+        </div>
+    </div>
+
+<script>
+    // Storage Keys
+    const MEMORY_STORE = {};
+    function safeGetItem(key) { try { return localStorage.getItem(key) || MEMORY_STORE[key] || null; } catch(e) { return MEMORY_STORE[key] || null; } }
+    function safeSetItem(key, value) { try { localStorage.setItem(key, value); } catch(e) {} MEMORY_STORE[key] = value; }
+    function safeRemoveItem(key) { try { localStorage.removeItem(key); } catch(e) {} delete MEMORY_STORE[key]; }
+
+    const STORAGE_KEY = 'hssc_mock_8_gk_active'; 
+    const COMPLETED_KEY = 'hssc_mock_8_gk_comp';
+
+    // Exactly 25 Selected Questions from the Images (Cross-marked excluded) + 5 Facts Added to each
+    const finalQuestions = [
+        { q: "हरियाणा ........... पूर्ण करने वाला पहला राज्य है।", o: ["जलीय स्तर पर मानचित्रण", "पुलिस स्टेशन", "भारत रत्न", "पद्मश्री पुरस्कार"], a: 0, e: "<b>हल:</b> हरियाणा जलीय स्तर पर मानचित्रण (Aquifer Mapping) पूर्ण करने वाला देश का पहला राज्य है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>हरियाणा देश का पहला राज्य है जहाँ 1970 में सभी गाँवों में पूर्णतः बिजली पहुँची।</li><li>हरियाणा वैट (VAT) लागू करने वाला पहला राज्य (2003) है।</li><li>पढ़ी-लिखी पंचायत लागू करने में हरियाणा का राजस्थान के बाद दूसरा स्थान है।</li><li>हरियाणा ने फसल बीमा योजना और वृद्धावस्था पेंशन (1987) सबसे पहले शुरू की।</li><li>कृषि ऋण माफ करने वाला भी यह अग्रणी राज्य रहा है।</li></ul>" },
+        { q: "महाभारत के ......... अध्याय में भगवद्गीता है।", o: ["16वें", "17वें", "18वें", "19वें"], a: 0, e: "<b>हल:</b> पुस्तक की उत्तर-कुंजी के अनुसार 16वें अध्याय माना गया है, परंतु वास्तव में भगवद्गीता महाभारत के छठे पर्व (भीष्म पर्व) का हिस्सा है जिसमें 18 अध्याय हैं।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>महाभारत का युद्ध कुरुक्षेत्र में कौरवों और पांडवों के बीच 18 दिन तक चला था।</li><li>भगवान कृष्ण ने अर्जुन को 'ज्योतिसर' में बरगद के पेड़ के नीचे गीता का उपदेश दिया था।</li><li>महाभारत के रचयिता महर्षि वेदव्यास माने जाते हैं।</li><li>गीता में मुख्य रूप से कर्मयोग (निस्वार्थ कर्म) पर बल दिया गया है।</li><li>कुरुक्षेत्र को हरियाणा की 'धर्मनगरी' (Land of Righteousness) कहा जाता है।</li></ul>" },
+        { q: "रेवाड़ी, महेन्द्रगढ़ और गुड़गाँव ........... में समृद्ध है।", o: ["टिन", "डोलोमाइट", "स्लेट", "फेल्डस्पार"], a: 2, e: "<b>हल:</b> रेवाड़ी और महेंद्रगढ़ का कुण्ड ग्राम स्लेट पत्थर के भण्डार के लिए पूरे भारत में प्रसिद्ध है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>महेंद्रगढ़ को हरियाणा का 'खनिजों का शहर' (City of Minerals) कहा जाता है।</li><li>हिलना पत्थर (Flexible stone) चरखी दादरी के कल्याणा गांव में मिलता है।</li><li>रोहतक में रवेदार चूना पाया जाता है।</li><li>गुरुग्राम में चीनी मिट्टी और कांच बालू प्रचुर मात्रा में मिलती है।</li><li>भिवानी के तोशाम में सीसा और जस्ता पाया जाता है।</li></ul>" },
+        { q: "मैंगनीज हरियाणा के ........ जिले में पाया जाता है।", o: ["हिसार", "महेन्द्रगढ़", "करनाल", "गुड़गाँव"], a: 1, e: "<b>हल:</b> मैंगनीज महेंद्रगढ़ जिले में पाया जाता है, जो खनिजों का सबसे बड़ा भंडार है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>महेंद्रगढ़ का प्राचीन नाम कानौड़ था।</li><li>यह एकमात्र ऐसा जिला है जिसका मुख्यालय नारनौल में स्थित है।</li><li>नारनौल को 'बावड़ियों और तालाबों का शहर' कहा जाता है।</li><li>हरियाणा में सर्वाधिक संगमरमर (Marble) महेंद्रगढ़ में ही मिलता है।</li><li>यहाँ प्रसिद्ध माधवगढ़ का किला (Fort of Madhogarh) स्थित है।</li></ul>" },
+        { q: "उर्दू काव्य का पहला घोषणा पत्र ................ द्वारा लिखा गया।", o: ["अल्ताफ हाली हुसैन", "अमीर खुसरो", "उमराव जान", "अल्लाबख्श"], a: 0, e: "<b>हल:</b> उर्दू काव्य का पहला घोषणा पत्र 'मुकद्दमा-ए-शेर-ओ-शायरी' ख्वाजा अल्ताफ हुसैन 'हाली' द्वारा लिखा गया।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>अल्ताफ हुसैन हाली का जन्म 1837 में पानीपत में हुआ था।</li><li>उर्दू साहित्य में हरियाणा सरकार का सर्वोच्च पुरस्कार 'हाली पुरस्कार' है।</li><li>हाली की सबसे प्रसिद्ध रचना 'मुसद्दस-ए-हाली' है।</li><li>मिर्ज़ा ग़ालिब हाली के गुरु थे।</li><li>हाली ने 'यादगार-ए-ग़ालिब' नामक प्रसिद्ध जीवनी भी लिखी।</li></ul>" },
+        { q: "बाणभट्ट ने ........ लिखा।", o: ["सूर सागर", "भगवद्गीता", "गीत रामायण", "हर्षचरित"], a: 3, e: "<b>हल:</b> बाणभट्ट ने 'हर्षचरित' नामक प्रसिद्ध पुस्तक संस्कृत में लिखी, जिसमें पुष्यभूति वंश की प्रशंसा है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>बाणभट्ट सम्राट हर्षवर्धन के दरबारी कवि थे।</li><li>बाणभट्ट ने 'कादंबरी' नामक प्रसिद्ध संस्कृत उपन्यास भी लिखा था।</li><li>हर्षवर्धन की राजधानी थानेसर (कुरुक्षेत्र) थी।</li><li>हर्षवर्धन ने स्वयं रत्नावली, नागानंद और प्रियदर्शिका नाटक लिखे।</li><li>सूर सागर की रचना संत सूरदास (सीही गांव, फरीदाबाद) ने की थी।</li></ul>" },
+        { q: "हरियाणा के लोगों द्वारा पहनी जाने वाली पगड़ी.......कहलाती है।", o: ["पेटा", "खंडवा", "क्राउन", "पगड़ी"], a: 1, e: "<b>हल:</b> हरियाणा में पुरुषों द्वारा सम्मान (शान) के प्रतीक के रूप में पहनी जाने वाली पगड़ी को 'खंडवा' कहते हैं।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>राजपूती ढंग की पगड़ी को हरियाणा में 'पाग' कहा जाता है।</li><li>महिलाओं द्वारा ओढ़ी जाने वाली लाल किनारे की ओढ़नी को 'दामन' या 'चुंदड़ी' कहते हैं।</li><li>'पीलिया' नवजात शिशु के जन्म पर महिलाओं द्वारा ओढ़ा जाता है।</li><li>विवाह के अवसर पर मामा द्वारा दी जाने वाली चुनरी को 'भात' कहा जाता है।</li><li>'सफा' भी हरियाणा में सिर पर बांधे जाने वाले कपड़े का एक प्रकार है।</li></ul>" },
+        { q: "हरियाणा राज्य की सीमा ...... राज्यों से लगती है।", o: ["5", "6", "4", "3"], a: 0, e: "<b>हल:</b> हरियाणा राज्य की सीमा 5 राज्यों (उत्तर प्रदेश, राजस्थान, पंजाब, हिमाचल प्रदेश, और उत्तराखंड) से लगती है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>सबसे लंबी सीमा राजस्थान (1262 किमी) के साथ लगती है।</li><li>सबसे छोटी सीमा उत्तराखंड (केवल 11 किमी) के साथ लगती है।</li><li>हरियाणा की सीमा 2 केंद्र शासित प्रदेशों (दिल्ली और चंडीगढ़) को छूती है।</li><li>दिल्ली को हरियाणा ने तीन तरफ से घेरा हुआ है (पूर्व को छोड़कर)।</li><li>यमुना नदी हरियाणा और यूपी के बीच 320 किमी लंबी प्राकृतिक पूर्वी सीमा बनाती है।</li></ul>" },
+        { q: "ह्वेन सांग एक ........... यात्री है।", o: ["अंग्रेजी", "रोमन", "चीनी", "पुर्तगाली"], a: 2, e: "<b>हल:</b> ह्वेन सांग (Hiuen Tsang) एक चीनी बौद्ध यात्री था जो हर्षवर्धन के शासनकाल में भारत आया था।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>ह्वेन सांग ने अपनी पुस्तक 'सी-यू-की' में हरियाणा के थानेसर नगर का वर्णन किया है।</li><li>उसने लगभग 634 ई. से 644 ई. तक भारत में भ्रमण किया।</li><li>उसे 'यात्रियों का राजकुमार' (Prince of Pilgrims) कहा जाता है।</li><li>एक अन्य चीनी यात्री फाह्यान, चंद्रगुप्त विक्रमादित्य के काल में आया था।</li><li>इब्न बतूता मोरक्को का यात्री था जो मुहम्मद बिन तुगलक के समय भारत आया था।</li></ul>" },
+        { q: "साहिबी नदी को ........... भी कहते हैं।", o: ["दृशद्वती", "कुमुद्वती", "कावेरी", "जगदाद्री"], a: 0, e: "<b>हल:</b> वैदिक काल में साहिबी नदी को 'दृशद्वती' (Drishadvati) के नाम से जाना जाता था।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>साहिबी नदी दक्षिण हरियाणा की प्रमुख नदी है जो अरावली की पहाड़ियों से निकलती है।</li><li>यह रेवाड़ी और गुरुग्राम में बहती हुई दिल्ली में नजफगढ़ नाले में गिरती है।</li><li>रेवाड़ी में साहिबी नदी पर मसानी बैराज (Masani Barrage) बना हुआ है।</li><li>सरस्वती नदी को ऋग्वेद में सबसे पवित्र नदी माना गया है।</li><li>घग्गर हरियाणा की प्रमुख मौसमी (Seasonal) नदी है।</li></ul>" },
+        { q: "........... ग्राम पंचायत के प्रमुख हैं।", o: ["मुख्यमंत्री", "कमिश्नर", "सरपंच", "श्रम अधिकारी"], a: 2, e: "<b>हल:</b> ग्राम पंचायत का प्रमुख 'सरपंच' होता है, जिसका चुनाव ग्राम सभा के सदस्यों द्वारा प्रत्यक्ष रूप से होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>हरियाणा में पंचायती राज अधिनियम 22 अप्रैल 1994 को लागू हुआ।</li><li>पंचायत चुनाव लड़ने के लिए न्यूनतम आयु 21 वर्ष है।</li><li>हरियाणा सरकार ने पंचायत चुनावों में 10वीं पास की शैक्षणिक योग्यता अनिवार्य कर दी है।</li><li>पंचायती राज में महिलाओं को 50% आरक्षण दिया गया है।</li><li>पंचायती राज प्रणाली की 3 परतें हैं: ग्राम पंचायत, पंचायत समिति, और जिला परिषद।</li></ul>" },
+        { q: "हरियाणा ........... सदस्यों को संसद के उच्च सदन, राज्यसभा भेजता है।", o: ["2", "3", "4", "5"], a: 3, e: "<b>हल:</b> हरियाणा से राज्यसभा (संसद के उच्च सदन) के लिए 5 सदस्य चुने जाते हैं।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>हरियाणा में लोकसभा (निम्न सदन) की कुल 10 सीटें हैं।</li><li>इन 10 लोकसभा सीटों में से 2 सीटें (अंबाला और सिरसा) अनुसूचित जाति (SC) के लिए आरक्षित हैं।</li><li>हरियाणा विधानसभा में कुल 90 सीटें हैं।</li><li>90 में से 17 विधानसभा सीटें SC के लिए आरक्षित हैं।</li><li>राज्यसभा एक स्थायी सदन है, जिसे कभी भंग नहीं किया जा सकता।</li></ul>" },
+        { q: "73 वें संविधान संशोधन अधिनियम के आधार पर हरियाणा पंचायती राज अधिनियम पहली बार ........ में पारित किया गया।", o: ["1947", "1957", "1992", "1994"], a: 3, e: "<b>हल:</b> 73वें संशोधन के अनुरूप हरियाणा पंचायती राज अधिनियम 22 अप्रैल 1994 को पारित और प्रभावी किया गया।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>73वां संविधान संशोधन 1992 में संसद द्वारा पास हुआ था।</li><li>भारत में पहली बार पंचायती राज 2 अक्टूबर 1959 को राजस्थान के नागौर में लागू हुआ।</li><li>74वां संशोधन नगर पालिकाओं (शहरी स्थानीय निकाय) से संबंधित है।</li><li>पंचायती राज संविधान की 11वीं अनुसूची में शामिल है जिसमें 29 विषय हैं।</li><li>बलवंत राय मेहता समिति ने त्रि-स्तरीय पंचायती राज की सिफारिश की थी।</li></ul>" },
+        { q: "बू अली शाह कलंदर एक ..... थे।", o: ["संत सूफी", "राजा", "योद्धा", "सिपाही"], a: 0, e: "<b>हल:</b> शेख शरफुद्दीन बू अली शाह कलंदर पानीपत के एक प्रसिद्ध सूफी संत थे।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>बू अली शाह कलंदर की दरगाह पानीपत में स्थित है।</li><li>इनका जन्म चिश्ती संप्रदाय में हुआ था।</li><li>पानीपत को 'सूफी संतों का शहर' भी कहा जाता है।</li><li>हाफिज मुराद की मजार भी पानीपत में है।</li><li>पानीपत में प्रसिद्ध 'काला अंब' स्मारक है जो पानीपत के तीसरे युद्ध से जुड़ा है।</li></ul>" },
+        { q: "बाघ और फुलकारी का संयोजन ...... कहलाता है।", o: ["टोपी", "फाग", "लूर", "चोप"], a: 3, e: "<b>हल:</b> बाघ और फुलकारी (कढ़ाई की गई शॉल या दुपट्टा) का एक विशेष संयोजन 'चोप' कहलाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>फुलकारी का शाब्दिक अर्थ 'फूलों का काम' (Flower work) है, जो पारंपरिक कढ़ाई है।</li><li>'फाग' होली के अवसर पर महिलाओं द्वारा किया जाने वाला एक लोक नृत्य है।</li><li>'बाघ' एक विशेष प्रकार की फुलकारी है जिसमें पूरा कपड़ा कढ़ाई से ढका होता है।</li><li>'लूर' भी महिलाओं द्वारा किया जाने वाला एक प्रसिद्ध नृत्य है।</li><li>हरियाणा का पहनावा बहुत सादा है, जिसमें सूती कपड़े प्रमुख हैं।</li></ul>" },
+        { q: "यमुना नदी हरियाणा में .......... वन के पास से प्रवेश करती है।", o: ["कलेसर", "बांदीपुर", "गिर", "सतपुड़ा"], a: 0, e: "<b>हल:</b> यमुना नदी हरियाणा में यमुनानगर जिले के 'कलेसर वन' (ताजेवाला) के पास से प्रवेश करती है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>कलेसर राष्ट्रीय उद्यान हरियाणा का सबसे बड़ा राष्ट्रीय उद्यान है (यमुनानगर)।</li><li>यह लाल जंगली मुर्गों (Red Junglefowl) और साल (Sal) के पेड़ों के लिए प्रसिद्ध है।</li><li>हरियाणा में केवल 2 राष्ट्रीय उद्यान हैं (दूसरा सुल्तानपुर, गुरुग्राम है)।</li><li>सुल्तानपुर पक्षी विहार साइबेरियन क्रेन के लिए जाना जाता है।</li><li>भिंडावास वन्यजीव अभयारण्य झज्जर में अपनी सुंदर झील के लिए प्रसिद्ध है।</li></ul>" },
+        { q: "निम्नलिखित में से कौन-सा राज्य हरियाणा में पूर्व में है?", o: ["राजस्थान", "उत्तर प्रदेश", "हिमाचल प्रदेश", "पंजाब"], a: 1, e: "<b>हल:</b> हरियाणा की पूर्वी सीमा उत्तर प्रदेश से लगती है, जिसे यमुना नदी अलग करती है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>उत्तर-पश्चिम में पंजाब राज्य स्थित है।</li><li>उत्तर में हिमाचल प्रदेश की सीमा लगती है।</li><li>दक्षिण और पश्चिम में राजस्थान स्थित है, जिसकी सीमा सबसे लंबी है।</li><li>शिवालिक की पहाड़ियाँ राज्य के उत्तर-पूर्व (पंचकूला) में हैं।</li><li>अरावली की पहाड़ियाँ राज्य के दक्षिण-पश्चिम (मेवात, गुरुग्राम) में स्थित हैं।</li></ul>" },
+        { q: "प्रसिद्ध अभिनेत्री जूही चावला हरियाणा के ..... जिले से हैं।", o: ["पिंजौर", "रोहतक", "सोनेट", "अंबाला"], a: 3, e: "<b>हल:</b> बॉलीवुड की मशहूर अभिनेत्री और पूर्व मिस इंडिया जूही चावला का जन्म हरियाणा के अंबाला जिले में हुआ था।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>परिणीति चोपड़ा और ओम पुरी का संबंध भी अंबाला से है।</li><li>मशहूर गायक सोनू निगम और अभिनेता रणदीप हुड्डा फरीदाबाद से हैं।</li><li>सुनील दत्त और सतीश कौशिक का संबंध रोहतक से है।</li><li>मिस वर्ल्ड मानुषी छिल्लर झज्जर (बामडोली) से हैं।</li><li>अंबाला को हरियाणा की 'साइंस सिटी' (मिक्सी सिटी) कहा जाता है।</li></ul>" },
+        { q: "चंडीगढ़ उच्च न्यायालय की इमारत का डिजाइन ...... ने बनाया।", o: ["एडविन लुटियन्स", "ली कॉरबुशियर", "लोरी बेकर", "कॉर्नवालिस"], a: 1, e: "<b>हल:</b> पंजाब और हरियाणा उच्च न्यायालय (चंडीगढ़) की शानदार इमारत का डिजाइन फ्रांसीसी वास्तुकार 'ली कॉरबुशियर' ने तैयार किया था।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>ली कॉरबुशियर ने पूरे चंडीगढ़ शहर का मास्टर प्लान बनाया था।</li><li>चंडीगढ़ भारत का पहला नियोजित (Planned) शहर है।</li><li>एडविन लुटियंस ने नई दिल्ली (राष्ट्रपति भवन आदि) का डिजाइन तैयार किया था।</li><li>चंडीगढ़ का रॉक गार्डन (Rock Garden) नेकचंद सैनी ने बेकार सामग्री से बनाया था।</li><li>चंडीगढ़ हरियाणा और पंजाब की संयुक्त राजधानी होने के साथ-साथ एक UT भी है।</li></ul>" },
+        { q: "........... में पुरातात्विक खोज दर्शाती है कि हरियाणा मौर्य साम्राज्य का भाग था।", o: ["सारनाथ", "सीलोन", "सुग", "कुरुक्षेत्र"], a: 2, e: "<b>हल:</b> यमुनानगर जिले के 'सुग' (Sugh / Srughna) नामक स्थान पर हुई पुरातात्विक खुदाई में मौर्यकालीन अवशेष मिले हैं।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>टोपरा कलां (यमुनानगर) से अशोक (मौर्य सम्राट) का एक प्रमुख स्तंभ लेख मिला था।</li><li>इस टोपरा स्तंभ को बाद में फिरोजशाह तुगलक दिल्ली ले गया।</li><li>राखीगढ़ी (हिसार) सिंधु घाटी सभ्यता का भारत में सबसे बड़ा स्थल है।</li><li>बनावली (फतेहाबाद) से मिट्टी का हल और जौ के साक्ष्य मिले हैं।</li><li>कुणाल (फतेहाबाद) से राजा का मुकुट मिला है।</li></ul>" },
+        { q: "हरियाणा की विधानसभा संविधान की ....... अनुसूची में शामिल विषयों पर कानून पारित करती है।", o: ["7वीं", "8वीं", "9वीं", "10वीं"], a: 0, e: "<b>हल:</b> 7वीं अनुसूची में केंद्र और राज्यों के बीच शक्तियों का बंटवारा है। राज्य विधानसभा राज्य सूची और समवर्ती सूची के विषयों पर कानून बनाती है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>8वीं अनुसूची में भारत की 22 मान्यता प्राप्त भाषाओं का उल्लेख है।</li><li>10वीं अनुसूची 'दल-बदल' (Anti-Defection Law) से संबंधित है।</li><li>11वीं अनुसूची पंचायती राज और 12वीं नगर पालिकाओं से संबंधित है।</li><li>हरियाणा एक सदनीय विधायिका वाला राज्य है (यहाँ विधान परिषद नहीं है)।</li><li>विधानसभा में कानून बनाने की प्रक्रिया में राज्यपाल के हस्ताक्षर के बाद विधेयक अधिनियम बनता है।</li></ul>" },
+        { q: "हरियाणा की स्थापना ....... की संसदीय समिति की संस्तुति पर हुई?", o: ["सरदार हुकुम सिंह", "तारा सिंह", "छोटू राम", "चौधरी देवी लाल"], a: 0, e: "<b>हल:</b> हरियाणा राज्य का गठन तत्कालीन लोकसभा अध्यक्ष सरदार हुकुम सिंह की संसदीय समिति की सिफारिश पर 1 नवंबर 1966 को हुआ था।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>हरियाणा और पंजाब के विभाजन के लिए 'शाह आयोग' का गठन 23 अप्रैल 1966 को हुआ।</li><li>शाह आयोग में 3 सदस्य थे: जे.सी. शाह, एस. दत्त, और एम.एम. फिलिप।</li><li>18वें संविधान संशोधन के तहत हरियाणा भारत का 17वां राज्य बना।</li><li>गठन के समय हरियाणा में केवल 7 जिले थे।</li><li>मास्टर तारा सिंह ने सबसे पहले 'पंजाबी सूबे' की मांग उठाई थी।</li></ul>" },
+        { q: "सुल्तानपुर पक्षी विहार ....... में स्थित है।", o: ["गुरुग्राम", "सुल्तानपुर", "सोनीपत", "अंबाला"], a: 0, e: "<b>हल:</b> सुल्तानपुर राष्ट्रीय उद्यान (पक्षी विहार) हरियाणा के गुरुग्राम (Gurugram) जिले में स्थित है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>इसे 1989 में राष्ट्रीय उद्यान (National Park) का दर्जा दिया गया था।</li><li>यह सर्दियों में रूस से आने वाले 'साइबेरियन क्रेन' (Siberian Crane) के लिए विश्व प्रसिद्ध है।</li><li>इसके विकास में प्रसिद्ध पक्षी विज्ञानी डॉ. सालिम अली का महत्वपूर्ण योगदान था।</li><li>हरियाणा का दूसरा राष्ट्रीय उद्यान 'कलेसर' (यमुनानगर) है।</li><li>नाहर वन्यजीव अभयारण्य रेवाड़ी में स्थित है।</li></ul>" },
+        { q: "हर्षवर्धन राजा द्वारा शासित थानेसर के आसपास ...... थी?", o: ["कुरुक्षेत्र", "अंबाला", "भिवानी", "पंचकुला"], a: 0, e: "<b>हल:</b> राजा हर्षवर्धन की पहली राजधानी थानेसर (Thanesar) थी, जो वर्तमान में कुरुक्षेत्र (Kurukshetra) जिले में स्थित है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>हर्षवर्धन पुष्यभूति (वर्धन) वंश का सबसे प्रतापी राजा था (शासन 606-647 ई.)।</li><li>उसने बाद में अपनी राजधानी थानेसर से बदलकर 'कन्नौज' कर ली थी।</li><li>चीनी यात्री ह्वेनसांग उसके दरबार में आया था।</li><li>कुरुक्षेत्र को धर्मनगरी कहा जाता है और यह महाभारत युद्ध के लिए प्रसिद्ध है।</li><li>थानेसर में शेख चिल्ली का मकबरा स्थित है जिसे हरियाणा का ताज महल कहा जाता है।</li></ul>" },
+        { q: "कढ़ाई किया गया शॉल ..... कहलाता है।", o: ["कश्मीरी शॉल", "बाघ", "पशमीना", "दोशाला"], a: 1, e: "<b>हल:</b> हरियाणा में महिलाओं द्वारा ओढ़ी जाने वाली विशेष कढ़ाईदार शॉल को 'बाघ' (Bagh) कहा जाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>बाघ में पूरे कपड़े पर इतनी घनी कढ़ाई होती है कि मूल कपड़ा दिखाई ही नहीं देता।</li><li>फुलकारी मुख्य रूप से दुपट्टे या शॉल के किनारों पर की जाती है।</li><li>'चोप' भी लाल रंग की कढ़ाईदार ओढ़नी होती है जो नानी द्वारा भांजी को दी जाती है।</li><li>पशमीना शॉल मुख्य रूप से जम्मू-कश्मीर और लद्दाख की पहचान है।</li><li>हरियाणवी महिलाओं की पारंपरिक वेशभूषा 'दामन, कुर्ती और चुंदर' होती है।</li></ul>" }
+    ];
+
+    let state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+    let timerInterval = null;
+    let isPaused = false;
+
+    window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+    function initDashboard() {
+        showScreen('dashboard-screen');
+        let completedData = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) completedData = JSON.parse(dataStr);
+        } catch(e) {}
+
+        // Dashboard Memory Feature: Purana Score tab tak dikhega jab tak Reattempt na ho
+        if (completedData) {
+            document.getElementById('dash-unattempted').style.display = 'none';
+            document.getElementById('dash-attempted').style.display = 'block';
+            document.getElementById('dash-score-text').innerText = `${completedData.score}/25.0 Marks`;
+            document.getElementById('dash-progress-bar').style.width = `${(completedData.score / 25) * 100}%`;
+            document.getElementById('dash-date-text').innerText = `Attempted on ${completedData.date}`;
+        } else {
+            document.getElementById('dash-attempted').style.display = 'none';
+            document.getElementById('dash-unattempted').style.display = 'block';
+        }
+    }
+
+    function startTest() {
+        let saved = null;
+        try {
+            const savedStr = safeGetItem(STORAGE_KEY);
+            if(savedStr) saved = JSON.parse(savedStr);
+        } catch(e){}
+
+        if (saved && !saved.submitted) {
+            state = saved;
+        } else {
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+        }
+        initTestEnv();
+    }
+
+    function reattemptTest() {
+        if(confirm("Are you sure you want to start a fresh test? Your active progress will be lost.")) {
+            safeRemoveItem(STORAGE_KEY);
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+            initTestEnv();
+        }
+    }
+
+    function initTestEnv() {
+        showScreen('test-screen');
+        renderQuestion();
+        renderPalette();
+        updateStats();
+        
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+        setInterval(() => { if(!state.submitted) safeSetItem(STORAGE_KEY, JSON.stringify(state)); }, 2000);
+    }
+
+    function viewSavedResults() {
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(data) renderResultUI(data);
+    }
+
+    function showDashboard() { initDashboard(); }
+
+    function showScreen(id) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+    }
+
+    function updateTimer() {
+        if(isPaused || state.submitted) return;
+        if(state.time <= 0) { submitTest(); return; }
+        state.time--;
+        const m = Math.floor(state.time / 60), s = state.time % 60;
+        document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+    }
+
+    function toggleTheme() {
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    function renderQuestion() {
+        state.visited[state.currentQ] = true;
+        const q = finalQuestions[state.currentQ];
+        document.getElementById('q-no').innerText = `Question ${state.currentQ + 1}`;
+        document.getElementById('q-text').innerHTML = q.q;
+        let opts = '';
+        q.o.forEach((opt, i) => {
+            const isSel = state.answers[state.currentQ] === i;
+            const selClass = isSel ? 'selected' : '';
+            const charLabel = String.fromCharCode(65 + i);
+            opts += `<div class="glass-panel option ${selClass}" onclick="selectOption(${i})"><div class="opt-label">${charLabel}</div><div style="flex:1;">${opt}</div></div>`;
+        });
+        document.getElementById('options-box').innerHTML = opts;
+        renderPalette();
+        updateStats();
+    }
+
+    function selectOption(index) { state.answers[state.currentQ] = index; renderQuestion(); }
+    function clearResponse() { delete state.answers[state.currentQ]; delete state.marked[state.currentQ]; renderQuestion(); }
+    function markReview() { state.marked[state.currentQ] = true; changeQ(1); }
+    function saveNext() { delete state.marked[state.currentQ]; changeQ(1); }
+
+    function changeQ(step) {
+        const next = state.currentQ + step;
+        if(next >= 0 && next < finalQuestions.length) { state.currentQ = next; renderQuestion(); }
+    }
+
+    function renderPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        finalQuestions.forEach((_, i) => {
+            let cls = 's-0';
+            if(state.visited[i]) {
+                if(state.answers[i] !== undefined && state.marked[i]) cls = 's-4';
+                else if(state.marked[i]) cls = 's-3';
+                else if(state.answers[i] !== undefined) cls = 's-1';
+                else cls = 's-2';
+            }
+            const active = i === state.currentQ ? 'active' : '';
+            grid.innerHTML += `<button class="p-btn ${cls} ${active}" onclick="state.currentQ = ${i}; renderQuestion();">${i + 1}</button>`;
+        });
+    }
+
+    function updateStats() {
+        let ans=0, notans=0, notvis=0, mark=0;
+        finalQuestions.forEach((_, i) => {
+            if(!state.visited[i]) notvis++;
+            else if(state.marked[i]) mark++;
+            else if(state.answers[i] !== undefined) ans++;
+            else notans++;
+        });
+        document.getElementById('c-ans').innerText = ans; document.getElementById('c-notans').innerText = notans;
+        document.getElementById('c-notvis').innerText = notvis; document.getElementById('c-mark').innerText = mark;
+    }
+
+    function submitTest() {
+        if(!confirm("Are you sure you want to submit the test?")) return;
+        state.submitted = true; clearInterval(timerInterval);
+        let score=0, attempt=0, wrong=0;
+        finalQuestions.forEach((q, i) => {
+            if(state.answers[i] !== undefined) {
+                attempt++;
+                if(state.answers[i] === q.a) score++; else wrong++;
+            }
+        });
+        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const completedData = { score: score, attempted: attempt, wrong: wrong, time: state.time, date: today, userAnswers: state.answers };
+        
+        safeSetItem(COMPLETED_KEY, JSON.stringify(completedData));
+        safeRemoveItem(STORAGE_KEY);
+        
+        renderResultUI(completedData);
+    }
+
+    function renderResultUI(data) {
+        showScreen('result-screen');
+        const acc = data.attempted > 0 ? ((data.score / data.attempted) * 100).toFixed(1) : 0;
+        document.getElementById('r-score').innerText = `${data.score}`;
+        document.getElementById('r-attempt').innerText = data.attempted;
+        document.getElementById('r-wrong').innerText = data.wrong;
+        document.getElementById('r-acc').innerText = `${acc}%`;
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(!data) return;
+
+        let html = '';
+        finalQuestions.forEach((q, i) => {
+            const uAns = data.userAnswers[i];
+            let optHtml = '';
+            q.o.forEach((opt, oIdx) => {
+                let cls = '', checkMark = '';
+                if(oIdx === q.a) { cls = 'correct'; checkMark = ' ✔'; }
+                else if(oIdx === uAns && uAns !== q.a) { cls = 'wrong'; checkMark = ' ❌ (Your Answer)'; }
+                optHtml += `<div class="glass-panel sol-opt ${cls}"><strong>${String.fromCharCode(65 + oIdx)}.</strong> <div style="flex:1;">${opt} ${checkMark}</div></div>`;
+            });
+            let statusText = uAns !== undefined ? (uAns === q.a ? "हल किया (Correct)" : "हल किया (Incorrect)") : "हल नहीं किया (Unattempted)";
+            html += `<div class="glass-panel sol-card"><div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--primary);">प्र ${i+1}. ${q.q}</div>${optHtml}<div style="font-weight:bold; margin:15px 0; color:var(--text-muted);">Status: ${statusText}</div><div class="glass-panel sol-exp">${q.e}</div></div>`;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+</script>
+</body>
+</html>
