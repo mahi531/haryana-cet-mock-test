@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Haryana CET Group D Full Mock Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Beautiful Moving Gradient & Glassmorphism Theme */
+        :root {
+            --bg-grad-1: #4facfe; --bg-grad-2: #00f2fe; --bg-grad-3: #a18cd1; --bg-grad-4: #fbc2eb;
+            --glass-bg: rgba(255, 255, 255, 0.9); --glass-border: rgba(255, 255, 255, 0.6); --glass-shadow: rgba(31, 38, 135, 0.15);
+            --text-main: #1f2937; --text-muted: #64748b;
+            --primary: #2563eb; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --purple: #8b5cf6;
+            --option-bg: rgba(243, 244, 246, 0.8); --option-selected: rgba(219, 234, 254, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+        [data-theme="dark"] {
+            --bg-grad-1: #0f2027; --bg-grad-2: #203a43; --bg-grad-3: #2c5364; --bg-grad-4: #141e30;
+            --glass-bg: rgba(17, 25, 40, 0.85); --glass-border: rgba(255, 255, 255, 0.15); --glass-shadow: rgba(0, 0, 0, 0.5);
+            --text-main: #f9fafb; --text-muted: #94a3b8;
+            --primary: #3b82f6; 
+            --option-bg: rgba(55, 65, 81, 0.7); --option-selected: rgba(30, 58, 138, 0.8);
+            --card-bg: rgba(31, 41, 55, 0.95);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; touch-action: manipulation;}
+        
+        body { 
+            height: 100vh; height: 100dvh; 
+            background: linear-gradient(45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3), var(--bg-grad-4)); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+            color: var(--text-main); 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 var(--glass-shadow); border-radius: 12px; }
+        
+        .btn { font-family: 'Poppins', sans-serif; background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;}
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-warning { background: var(--warning); color: #fff;}
+        .btn-clear { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-mark { background: var(--purple); color: white; }
+        .btn-prev { background: var(--text-muted); color: white; }
+
+        /* Screens */
+        .screen { display: none; flex-direction: column; height: 100%; width: 100vw; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; }
+
+        /* --- DASHBOARD UI --- */
+        #dashboard-screen { overflow-y: auto; background: var(--card-bg); align-items: center; padding-bottom: 30px;}
+        
+        .dash-header-top { background: #1e293b; color: white; width: 100%; padding: 15px 20px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 15px; position: sticky; top:0; z-index: 100;}
+        
+        .dash-content { width: 100%; max-width: 800px; padding: 20px; }
+        .section-title { font-weight: 600; color: var(--primary); margin: 15px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 15px; }
+        
+        .dash-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--glass-border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .test-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text-main);}
+        .test-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        
+        .progress-container { width: 100%; height: 5px; background: var(--glass-border); border-radius: 3px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #f59e0b; width: 0%; transition: width 0.5s ease;}
+        
+        .dash-actions { display: flex; gap: 12px; margin-top: 15px; }
+        .dash-actions .btn { flex: 1; padding: 10px; font-size: 13px; border-radius: 6px;}
+        
+        .syllabus-footer { display: flex; justify-content: space-between; font-size: 12px; color: var(--primary); border-top: 1px solid var(--glass-border); padding-top: 12px; margin-top: 15px; }
+
+        /* --- TEST SCREEN UI --- */
+        header.test-head { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-bottom: 10px; margin-inline: 10px; }
+        .header-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: 700; background: var(--card-bg); border: 1px solid var(--glass-border); color: var(--danger); padding: 5px 12px; border-radius: 20px; }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 0 10px 10px 10px; }
+        .question-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        .q-header { padding: 10px 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
+        .q-body { flex: 1; padding: 15px; overflow-y: auto; font-size: 16px; line-height: 1.6; }
+        
+        .options-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;}
+        .option { padding: 12px; border: 2px solid var(--glass-border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--option-bg); font-weight: 500; font-size: 15px;}
+        .option.selected { border-color: var(--primary); background: var(--option-selected); color: var(--primary); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--glass-border); display: flex; justify-content: center; align-items: center; font-weight: bold; }
+        .option.selected .opt-label { background: var(--primary); color: white; border-color: var(--primary);}
+        
+        .q-footer { padding: 10px; border-top: 1px solid var(--glass-border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-radius: 0 0 12px 12px; }
+
+        /* --- PALETTE UI --- */
+        .palette-section { width: 320px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .palette-header { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; font-weight: bold; font-size: 15px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; font-size: 12px; border-bottom: 1px solid var(--glass-border); font-weight: 500;}
+        .stat-item { display: flex; align-items: center; gap: 6px;}
+        .badge { width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 10px; font-weight: bold;}
+        .s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);} 
+        .s-1 { background: var(--success); } .s-2 { background: var(--danger); } .s-3 { background: var(--purple); } 
+        .s-4 { background: var(--primary); position: relative; }
+        .s-4::after { content: '✔'; position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; background: white; color: var(--primary); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 8px; }
+        
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .p-btn.s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);}
+        .p-btn.active { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.1);}
+        .submit-area { padding: 10px; border-top: 1px solid var(--glass-border); border-radius: 0 0 12px 12px;}
+
+        /* --- RESULTS & SOLUTIONS UI --- */
+        #result-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        #solution-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        .sol-card { padding: 20px; margin-bottom: 15px; width: 100%; max-width: 800px; }
+        .sol-opt { padding: 10px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; gap: 10px; align-items: center; font-size: 15px; background: var(--card-bg);}
+        .sol-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); text-decoration: line-through;}
+        .sol-exp { margin-top: 15px; padding: 15px; background: rgba(37, 99, 235, 0.05); border: 1px solid var(--glass-border); border-left: 4px solid var(--primary); border-radius: 8px; font-size: 14.5px; line-height: 1.6; }
+        .sol-exp ul { padding-left: 20px; margin-top: 8px; }
+        .sol-exp li { margin-bottom: 6px; }
+
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+
+        @media (max-width: 992px) {
+            .main-area { flex-direction: column; overflow-y: auto;}
+            .question-section { flex: none; min-height: 450px;}
+            .palette-section { width: 100%; flex: none; min-height: 350px;}
+            .q-footer .btn { padding: 10px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="dashboard-screen" class="screen active">
+        <div class="dash-header-top">
+            <span style="cursor: pointer;" onclick="alert('Going Back')">&#8592;</span>
+            Haryana CET Group D - Mock Test 6
+        </div>
+
+        <div class="dash-content">
+            <!-- Unattempted State -->
+            <div id="dash-unattempted" style="display: none;">
+                <div class="section-title">Suggested Next Test</div>
+                <div class="dash-card">
+                    <div class="test-title">Haryana CET Group D Full Mock 6</div>
+                    <div class="test-meta">
+                        <span>100 Qs • 105 mins • 100.0 Marks</span>
+                    </div>
+                    <div class="test-meta" style="justify-content: flex-end;">
+                        <button class="btn btn-outline" style="padding: 6px 20px; border-radius: 20px;" onclick="startTest()">Start Test 🚀</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span>Syllabus: English, Hindi, Math, Reasoning, GK & Science</span>
+                        <span style="color:var(--success);">🔗 Share</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attempted State -->
+            <div id="dash-attempted" style="display: none;">
+                <div class="section-title">Previously Attempted</div>
+                <div class="dash-card">
+                    <div class="test-title">Haryana CET Group D Full Mock 6</div>
+                    <div class="test-meta" style="margin-bottom: 5px;">
+                        <span id="dash-score-text" style="font-weight: 600; color: var(--text-main);">0/100.0 Marks</span>
+                    </div>
+                    
+                    <div class="progress-container"><div class="progress-fill" id="dash-progress-bar"></div></div>
+
+                    <div class="dash-actions">
+                        <button class="btn btn-outline" onclick="viewSavedResults()">View Results 📊</button>
+                        <button class="btn btn-outline" onclick="reattemptTest()">Reattempt &#8594;</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span style="color: var(--primary);">Detailed Syllabus</span>
+                        <span style="color:var(--text-muted);" id="dash-date-text">Attempted on...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAUSE OVERLAY -->
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px; font-size: 2rem;">Test Paused ⏸️</h2>
+        <button class="btn btn-primary" style="font-size: 1.2rem; padding: 10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+    </div>
+
+    <!-- TEST SCREEN -->
+    <div id="test-screen" class="screen">
+        <header class="glass-panel test-head">
+            <div class="header-title">Mock Test 6</div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="toggleTheme()">🌓 Theme</button>
+                <button class="btn btn-warning" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="togglePause()">⏸ Pause</button>
+                <div class="timer-box">⏱ <span id="timer-display">105:00</span></div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="glass-panel question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--success); font-weight:bold;">+1 <span style="color: var(--text-muted); font-weight:normal;">|</span> <span style="color: var(--danger);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <button class="btn btn-mark" onclick="markReview()">Mark & Next</button>
+                    <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                    <button class="btn btn-prev" onclick="changeQ(-1)">Previous</button>
+                    <button class="btn btn-primary" onclick="saveNext()">Save & Next</button>
+                </div>
+            </div>
+
+            <div class="glass-panel palette-section">
+                <div class="palette-header">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">100</div> Not Visit</div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn btn-primary" style="width: 100%; background: var(--success); font-size: 15px; padding: 10px;" onclick="submitTest()">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen" class="screen">
+        <div style="width: 100%; max-width: 800px; margin-bottom: 15px;"><button class="btn btn-clear" onclick="showDashboard()">&#8592; Back to Dashboard</button></div>
+        <div class="glass-panel" style="max-width: 800px; width: 100%; padding: 25px;">
+            <h1 style="color: var(--primary); text-align: center;">Test Submitted Successfully! 🎉</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 25px 0;">
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-score" style="color: var(--primary); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Score</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-attempt" style="color: var(--success); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Attempted</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-wrong" style="color: var(--danger); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Wrong</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-acc" style="color: var(--purple); font-size: 1.8rem;">0%</h2><p style="color: var(--text-muted); font-size:12px;">Accuracy</p></div>
+            </div>
+            <button class="btn btn-primary" style="width:100%; font-size: 15px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+        </div>
+    </div>
+
+    <!-- SOLUTION SCREEN -->
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%; margin:0 auto;">
+            <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 12px 15px; position: sticky; top: 5px; z-index: 10;">
+                <h3 style="color: var(--primary);">Detailed Solutions</h3>
+                <button class="btn btn-clear" style="padding: 5px 10px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+            </div>
+            <div id="sol-container"></div>
+        </div>
+    </div>
+
+<script>
+    // Storage Keys
+    const MEMORY_STORE = {};
+    function safeGetItem(key) { try { return localStorage.getItem(key) || MEMORY_STORE[key] || null; } catch(e) { return MEMORY_STORE[key] || null; } }
+    function safeSetItem(key, value) { try { localStorage.setItem(key, value); } catch(e) {} MEMORY_STORE[key] = value; }
+    function safeRemoveItem(key) { try { localStorage.removeItem(key); } catch(e) {} delete MEMORY_STORE[key]; }
+
+    const STORAGE_KEY = 'mock6_active_data_v1'; 
+    const COMPLETED_KEY = 'mock6_completed_data_v1';
+
+    // All 100 Enhanced Questions
+    const finalQuestions = [
+        // GK (1-15)
+        { q: "गुरु नानक देव का जन्म कहाँ हुआ था?", o: ["गुरदासपुर", "जलालाबाद", "तलवंडी", "फिल्लौर"], a: 2, e: "<b>हल:</b> सिख धर्म के संस्थापक गुरु नानक देव जी का जन्म 1469 में तलवंडी (अब पाकिस्तान में ननकाना साहिब) में हुआ था।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>सिख धर्म में कुल 10 गुरु हुए हैं।</li><li>गुरु नानक देव जी ने लंगर (मुफ्त रसोई) प्रथा की शुरुआत की थी।</li><li>तलवंडी का नाम बाद में ननकाना साहिब पड़ा।</li><li>सिखों के अंतिम गुरु, गुरु गोविंद सिंह जी थे।</li><li>गुरु ग्रंथ साहिब सिख धर्म का प्रमुख पवित्र ग्रंथ है।</li></ul>" },
+        { q: "निम्नलिखित में से कौन सी एक भारतीय बहुराष्ट्रीय कंपनी (MNC) नहीं है?", o: ["महिंद्रा ग्रुप", "यूनिलीवर (Unilever)", "इन्फोसिस", "आदित्य बिड़ला ग्रुप"], a: 1, e: "<b>हल:</b> यूनिलीवर एक ब्रिटिश बहुराष्ट्रीय उपभोक्ता वस्तु कंपनी है, जिसका मुख्यालय लंदन में है। बाकी सभी भारतीय कंपनियाँ हैं।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>यूनिलीवर की भारतीय शाखा का नाम हिंदुस्तान यूनिलीवर लिमिटेड (HUL) है।</li><li>इन्फोसिस भारत की प्रमुख आईटी कंपनी है जिसकी स्थापना नारायण मूर्ति ने की थी।</li><li>महिंद्रा ग्रुप की स्थापना 1945 में हुई थी।</li><li>आदित्य बिड़ला ग्रुप एक प्रमुख भारतीय बहुराष्ट्रीय समूह है।</li><li>भारत में MNCs के प्रवेश को 1991 के आर्थिक सुधारों के बाद बढ़ावा मिला।</li></ul>" },
+        { q: "भारत में 'राष्ट्रीय खाद्य सुरक्षा अधिनियम' किस वर्ष पारित किया गया था?", o: ["2011", "2013", "2012", "2014"], a: 1, e: "<b>हल:</b> राष्ट्रीय खाद्य सुरक्षा अधिनियम (NFSA) 2013 में पारित किया गया था, जिसका उद्देश्य लोगों को रियायती दर पर पर्याप्त खाद्यान्न उपलब्ध कराना है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>यह अधिनियम 5 जुलाई 2013 को लागू हुआ था।</li><li>इसके तहत ग्रामीण आबादी का 75% और शहरी आबादी का 50% हिस्सा कवर होता है।</li><li>इसमें 3 रुपये किलो चावल, 2 रुपये किलो गेहूं मिलता है।</li><li>गर्भवती महिलाओं और माताओं के लिए मातृत्व लाभ भी शामिल है।</li><li>इसे 'भोजन का अधिकार' (Right to Food) अधिनियम भी कहा जाता है।</li></ul>" },
+        { q: "'हम्पी नृत्य महोत्सव' निम्नलिखित में से किस राज्य में मनाया जाता है?", o: ["केरल", "कर्नाटक", "तमिलनाडु", "तेलंगाना"], a: 1, e: "<b>हल:</b> हम्पी महोत्सव कर्नाटक के ऐतिहासिक शहर हम्पी (विजयनगर साम्राज्य की राजधानी) में मनाया जाने वाला एक प्रसिद्ध सांस्कृतिक उत्सव है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>हम्पी तुंगभद्रा नदी के तट पर स्थित है।</li><li>यह यूनेस्को (UNESCO) विश्व धरोहर स्थल में शामिल है।</li><li>विजयनगर साम्राज्य की स्थापना हरिहर और बुक्का ने 1336 ई. में की थी।</li><li>भारतीय 50 रुपये के नए नोट के पीछे हम्पी के रथ का चित्र है।</li><li>इस महोत्सव को 'विजया उत्सव' के नाम से भी जाना जाता है।</li></ul>" },
+        { q: "भारत के किस राज्य ने राज्य के सभी घरों में छत पर वर्षा जल संचयन (Rainwater harvesting) संरचना को अनिवार्य कर दिया है?", o: ["महाराष्ट्र", "केरल", "तमिलनाडु", "ओडिशा"], a: 2, e: "<b>हल:</b> तमिलनाडु भारत का पहला राज्य है जिसने भूजल स्तर को सुधारने के लिए सभी इमारतों में वर्षा जल संचयन को अनिवार्य किया है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>यह योजना 2001 में तमिलनाडु सरकार द्वारा शुरू की गई थी।</li><li>वर्षा जल संचयन से भूजल स्तर (Groundwater table) में वृद्धि होती है।</li><li>तमिलनाडु की राजधानी चेन्नई है, जो पानी की कमी वाले शहरों में से एक है।</li><li>जल संरक्षण के लिए भारत सरकार ने 'जल शक्ति अभियान' चलाया है।</li><li>भारत में 22 मार्च को 'विश्व जल दिवस' मनाया जाता है।</li></ul>" },
+        { q: "निम्नलिखित में से कौन उपन्यास 'द रूम ऑन द रूफ' (The room on the roof) के लेखक हैं?", o: ["रस्किन बॉन्ड", "खुशवंत सिंह", "मनोहर मालगांवकर", "आर. के. नारायण"], a: 0, e: "<b>हल:</b> 'द रूम ऑन द रूफ' रस्किन बॉन्ड का पहला उपन्यास है, जिसे उन्होंने 17 साल की उम्र में लिखा था।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>रस्किन बॉन्ड एक एंग्लो-इंडियन लेखक हैं जो मुख्य रूप से मसूरी में रहते हैं।</li><li>उन्हें 1999 में पद्म श्री और 2014 में पद्म भूषण से सम्मानित किया गया था।</li><li>उनकी प्रसिद्ध पुस्तकों में 'द ब्लू अम्ब्रेला' भी शामिल है।</li><li>खुशवंत सिंह की प्रसिद्ध पुस्तक 'ट्रेन टू पाकिस्तान' है।</li><li>आर. के. नारायण ने प्रसिद्ध 'मालगुडी डेज़' लिखी थी।</li></ul>" },
+        { q: "अरुंधति रॉय को निम्नलिखित में से कौन सा अंतर्राष्ट्रीय पुरस्कार मिला है?", o: ["रेमन मैग्सेसे", "नोबेल पुरस्कार", "पुलित्जर पुरस्कार", "मान बुकर पुरस्कार"], a: 3, e: "<b>हल:</b> अरुंधति रॉय को उनके उपन्यास 'द गॉड ऑफ स्मॉल थिंग्स' (The God of Small Things) के लिए 1997 में मान बुकर पुरस्कार से सम्मानित किया गया था।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>वह बुकर पुरस्कार जीतने वाली पहली भारतीय महिला नागरिक हैं।</li><li>'द गॉड ऑफ स्मॉल थिंग्स' केरल के आयमानम गाँव की पृष्ठभूमि पर आधारित है।</li><li>अरुंधति रॉय एक प्रसिद्ध सामाजिक कार्यकर्ता भी हैं।</li><li>बुकर पुरस्कार अंग्रेजी में लिखे गए सर्वश्रेष्ठ उपन्यास को दिया जाता है।</li><li>सलमान रुश्दी और अरविंद अडिगा अन्य प्रमुख भारतीय मूल के बुकर विजेता हैं।</li></ul>" },
+        { q: "किसे 'हरियाणा हरिकेन' (Haryana Hurricane) के नाम से जाना जाता है?", o: ["कपिल देव", "जोगिंदर राव", "वीरेंद्र सहवाग", "युजवेंद्र चहल"], a: 0, e: "<b>हल:</b> महान भारतीय क्रिकेटर और 1983 विश्व कप विजेता कप्तान कपिल देव को उनकी शानदार तेज गेंदबाजी के कारण 'हरियाणा हरिकेन' कहा जाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>कपिल देव का पूरा नाम कपिल देव रामलाल निखंज है।</li><li>इन्होंने 1983 क्रिकेट विश्व कप में भारत को पहली बार विजेता बनाया था।</li><li>जिम्बाब्वे के खिलाफ इनकी 175 रनों की पारी इतिहास में प्रसिद्ध है।</li><li>इन्होंने टेस्ट क्रिकेट में 434 विकेट लिए थे, जो उस समय एक विश्व रिकॉर्ड था।</li><li>वीरेंद्र सहवाग को 'नजफगढ़ का नवाब' कहा जाता है।</li></ul>" },
+        { q: "बेबीलोन के झूलते बाग (Hanging Gardens of Babylon) का संबंध निम्नलिखित में से किस प्राचीन संस्कृति से है?", o: ["मिस्र (Egyptian)", "मेसोपोटामिया (Mesopotamia)", "चीनी (Chinese)", "हड़प्पा (Harappan)"], a: 1, e: "<b>हल:</b> बेबीलोन के झूलते बाग प्राचीन मेसोपोटामिया (वर्तमान इराक) की सभ्यता से संबंधित हैं और प्राचीन विश्व के सात अजूबों में से एक थे।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>माना जाता है कि इसका निर्माण राजा नबूकदनेस्सर द्वितीय ने करवाया था।</li><li>मेसोपोटामिया की सभ्यता दजला और फरात नदियों के बीच विकसित हुई थी।</li><li>हड़प्पा सभ्यता सिंधु नदी के तट पर विकसित हुई थी।</li><li>मिस्र की सभ्यता नील नदी के किनारे विकसित हुई थी।</li><li>मेसोपोटामिया का अर्थ होता है 'दो नदियों के बीच की भूमि'।</li></ul>" },
+        { q: "प्राचीन भारत में किस राजवंश ने गांधार कला शैली का विकास किया था?", o: ["कुषाण राजवंश", "गुप्त राजवंश", "मौर्य राजवंश", "चोल राजवंश"], a: 0, e: "<b>हल:</b> गांधार कला शैली (भारतीय और यूनानी कला का मिश्रण) का सर्वाधिक विकास कुषाण राजवंश, विशेषकर सम्राट कनिष्क के शासनकाल में हुआ था।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>गांधार कला को 'ग्रीको-बुद्धिस्ट' कला भी कहा जाता है।</li><li>इसमें मुख्य रूप से भगवान बुद्ध की मूर्तियां बनाई गईं।</li><li>कनिष्क ने 78 ई. में शक संवत की शुरुआत की थी।</li><li>मथुरा कला शैली भी कुषाण काल में विकसित हुई थी।</li><li>गुप्त काल को प्राचीन भारत का 'स्वर्ण युग' कहा जाता है।</li></ul>" },
+        { q: "भारतीय मुद्रा के 2000 रुपये के नोट पर निम्नलिखित में से कौन सा चित्र मौजूद है?", o: ["मंगलयान", "सांची स्तूप", "सूर्य मंदिर", "हम्पी का रथ"], a: 0, e: "<b>हल:</b> 2000 रुपये के नोट के पिछले हिस्से पर भारत के पहले अंतरग्रहीय अंतरिक्ष अभियान 'मंगलयान' का चित्र छपा है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>मंगलयान (MOM) को 2013 में ISRO द्वारा लॉन्च किया गया था।</li><li>500 रुपये के नोट पर दिल्ली का 'लाल किला' छपा है।</li><li>200 रुपये के नोट पर 'सांची का स्तूप' (मध्य प्रदेश) छपा है।</li><li>50 रुपये के नोट पर 'हम्पी का रथ' (कर्नाटक) छपा है।</li><li>10 रुपये के नोट पर 'कोणार्क का सूर्य मंदिर' (ओडिशा) छपा है।</li></ul>" },
+        { q: "1946 में भारतीय संविधान के निर्माण के दौरान संविधान सभा के संवैधानिक सलाहकार के रूप में किसे नियुक्त किया गया था?", o: ["बी. एन. राव", "बी. आर. अंबेडकर", "गोपालस्वामी अयंगर", "के. एम. मुंशी"], a: 0, e: "<b>हल:</b> सर बेनेगल नरसिंह राव (B.N. Rau) को संविधान सभा का संवैधानिक सलाहकार नियुक्त किया गया था।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>डॉ. बी.आर. अंबेडकर संविधान की 'प्रारूप समिति' के अध्यक्ष थे।</li><li>संविधान सभा के स्थायी अध्यक्ष डॉ. राजेंद्र प्रसाद थे।</li><li>संविधान सभा की पहली बैठक 9 दिसंबर 1946 को हुई थी।</li><li>डॉ. सच्चिदानंद सिन्हा पहले अस्थायी अध्यक्ष थे।</li><li>बी. एन. राव ने ही संविधान का मूल मसौदा (Draft) तैयार किया था।</li></ul>" },
+        { q: "भारत में GI टैग के संदर्भ में, निम्नलिखित में से कौन सा जोड़ा सही है?", o: ["चंदेरी साड़ी - महाराष्ट्र", "अरनमुला कन्नाडी - कर्नाटक", "ईस्ट इंडिया लेदर - तमिलनाडु", "कानी शॉल - गुजरात"], a: 2, e: "<b>हल:</b> ईस्ट इंडिया लेदर मुख्य रूप से तमिलनाडु से संबंधित है। (चंदेरी मध्य प्रदेश से और कानी शॉल कश्मीर से है)।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>GI टैग किसी विशेष भौगोलिक क्षेत्र के उत्पाद को दिया जाता है।</li><li>भारत में पहला GI टैग 2004 में 'दार्जिलिंग चाय' को मिला था।</li><li>GI टैग 10 वर्षों के लिए वैध होता है।</li><li>चंदेरी साड़ी मध्य प्रदेश के अशोकनगर जिले से संबंधित है।</li><li>कानी शॉल जम्मू और कश्मीर का प्रसिद्ध हस्तशिल्प है।</li></ul>" },
+        { q: "भारतीय संविधान का कौन सा अनुच्छेद मौलिक कर्तव्यों (Fundamental Duties) के बारे में बताता है?", o: ["अनुच्छेद 31C", "अनुच्छेद 21A", "अनुच्छेद 15", "अनुच्छेद 51A"], a: 3, e: "<b>हल:</b> 42वें संशोधन (1976) द्वारा भाग IVA में अनुच्छेद 51A जोड़ा गया, जिसमें नागरिकों के मौलिक कर्तव्यों का वर्णन है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>मूल संविधान में मौलिक कर्तव्यों का कोई उल्लेख नहीं था।</li><li>इन्हें स्वर्ण सिंह समिति की सिफारिश पर जोड़ा गया था।</li><li>वर्तमान में कुल 11 मौलिक कर्तव्य हैं।</li><li>11वां मौलिक कर्तव्य (शिक्षा का अवसर) 86वें संशोधन 2002 द्वारा जोड़ा गया।</li><li>ये सोवियत संघ (रूस) के संविधान से प्रेरित हैं।</li></ul>" },
+        { q: "इलाहाबाद बैंक का मुख्यालय कहाँ स्थित है?", o: ["इलाहाबाद", "हैदराबाद", "मुंबई", "कोलकाता"], a: 3, e: "<b>हल:</b> इलाहाबाद बैंक (जो अब इंडियन बैंक में विलय हो चुका है) का मुख्यालय कोलकाता, पश्चिम बंगाल में स्थित था।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>इलाहाबाद बैंक सबसे पुराने संयुक्त स्टॉक बैंकों में से एक था (स्थापना 1865)।</li><li>1 अप्रैल 2020 को इसका विलय 'इंडियन बैंक' में कर दिया गया।</li><li>भारतीय स्टेट बैंक (SBI) का मुख्यालय मुंबई में है।</li><li>पंजाब नेशनल बैंक (PNB) की स्थापना 1894 में हुई थी।</li><li>भारत के केंद्रीय बैंक (RBI) का मुख्यालय भी मुंबई में स्थित है।</li></ul>" },
+
+        // Math (16-30) - Detailed & Step-by-Step
+        { q: "एक आदमी किसी काम को 15 दिनों में कर सकता है। एक औरत उसी काम को 10 दिनों में कर सकती है। दोनों मिलकर 5 दिन काम करते हैं, फिर आदमी काम छोड़ देता है। शेष काम को पूरा करने में औरत को कितने दिन लगेंगे?", o: ["2 ½", "1 ⅓", "2 ⅔", "1 ⅔"], a: 3, e: "<b>हल (LCM Method):</b><br>कुल काम (Total Work) = 15 और 10 का LCM = 30 यूनिट।<br>आदमी की क्षमता = 30/15 = 2 यूनिट/दिन<br>औरत की क्षमता = 30/10 = 3 यूनिट/दिन<br>दोनों की कुल क्षमता = 5 यूनिट/दिन<br>5 दिन में किया गया काम = 5 × 5 = 25 यूनिट<br>शेष काम = 30 - 25 = 5 यूनिट<br>अब यह 5 यूनिट काम अकेली औरत करेगी।<br>लिया गया समय = 5/3 = 1 ⅔ दिन।" },
+        { q: "दो वस्तुओं का क्रय मूल्य (CP) समान है। एक वस्तु को 15% लाभ पर और दूसरी को 12% लाभ पर बेचा जाता है। यदि उनके विक्रय मूल्यों का अंतर 18 रुपये है, तो प्रत्येक वस्तु का क्रय मूल्य क्या है?", o: ["₹570", "₹690", "₹400", "₹600"], a: 3, e: "<b>हल (Percentage Concept):</b><br>चूंकि CP समान (100%) है, तो विक्रय मूल्यों (SP) का अंतर सीधे लाभ प्रतिशत के अंतर के बराबर होगा।<br>लाभ का अंतर = 15% - 12% = 3%<br>3% = 18 रुपये<br>1% = 6 रुपये<br>क्रय मूल्य (100%) = 6 × 100 = 600 रुपये।" },
+        { q: "मोहित और प्रकाश की आय का अनुपात 2:3 है और उनके खर्च का अनुपात 3:5 है। यदि प्रत्येक 5000 रुपये बचाता है, तो दोनों की आय का योग क्या है?", o: ["₹40000", "₹50000", "₹60000", "₹42000"], a: 1, e: "<b>हल (Gap Equalization/Ratio Method):</b><br>आय = 2 : 3 (अंतर 1)<br>खर्च = 3 : 5 (अंतर 2)<br>अनुपात के अंतर को बराबर करने के लिए आय वाले अनुपात को 2 से गुणा करें:<br>नई आय = 4 : 6<br>खर्च = 3 : 5<br>बचत (आय - खर्च) = 4 - 3 = 1 यूनिट। (प्रकाश की भी 6 - 5 = 1 यूनिट)<br>1 यूनिट की वैल्यू = 5000 रुपये।<br>कुल आय = (4 + 6) = 10 यूनिट।<br>10 यूनिट = 10 × 5000 = 50,000 रुपये।" },
+        { q: "एक त्रिभुज का क्षेत्रफल क्या है जिसकी भुजाएँ 7 सेमी, 24 सेमी और 25 सेमी हैं?", o: ["72 cm²", "108 cm²", "84 cm²", "42 cm²"], a: 2, e: "<b>हल (Triplet Shortcut):</b><br>भुजाएं 7, 24, 25 ट्रिपलेट हैं (ये समकोण त्रिभुज बनाती हैं)।<br>क्षेत्रफल = ½ × आधार × लंब<br>= ½ × 7 × 24 = 7 × 12 = 84 सेमी²।" },
+        { q: "14 सेमी त्रिज्या वाले वृत्त के अंदर बनाए जा सकने वाले सबसे बड़े वर्ग का क्षेत्रफल क्या होगा?", o: ["392 cm²", "484 cm²", "196 cm²", "784 cm²"], a: 0, e: "<b>हल (Concept):</b><br>वृत्त के अंदर बने सबसे बड़े वर्ग का विकर्ण (Diagonal) वृत्त के व्यास के बराबर होता है।<br>त्रिज्या = 14, तो व्यास (विकर्ण) = 28 सेमी।<br>वर्ग का क्षेत्रफल = (विकर्ण²)/2 = (28 × 28)/2 = 14 × 28 = 392 सेमी²。" },
+        { q: "एक बस अपनी यात्रा के पहले 200 किमी 4 घंटे में और अगले 600 किमी 6 घंटे में तय करती है। पूरी यात्रा की औसत गति क्या है?", o: ["100 km/h", "30 km/h", "60 km/h", "80 km/h"], a: 3, e: "<b>हल (Basic Formula):</b><br>औसत गति = कुल दूरी / कुल समय<br>कुल दूरी = 200 + 600 = 800 किमी<br>कुल समय = 4 + 6 = 10 घंटे<br>औसत गति = 800 / 10 = 80 किमी/घंटा।" },
+        { q: "दो पूर्ण संख्याओं का अनुपात 5:7 है। निम्नलिखित में से कौन सा उनका योग हो सकता है?", o: ["54", "60", "46", "68"], a: 1, e: "<b>हल (Divisibility Rule):</b><br>अनुपातों का योग = 5 + 7 = 12 यूनिट।<br>संख्याओं का वास्तविक योग हमेशा 12 का गुणज (Multiple) होगा। विकल्पों में केवल 60 ही 12 से कटता है।" },
+        { q: "चक्रवर्ती ब्याज (वार्षिक रूप से संयोजित) पर निवेश की गई एक राशि तीन वर्षों में ₹5040 हो जाती है। यदि ब्याज दर पहले वर्ष 20%, दूसरे वर्ष 40% और तीसरे वर्ष 50% है, तो मूलधन क्या है?", o: ["₹1210", "₹2566", "₹1800", "₹2000"], a: 3, e: "<b>हल (Successive Method):</b><br>दरें: 20% = 1/5, 40% = 2/5, 50% = 1/2<br>मूलधन (P) : मिश्रधन (A)<br>5 : 6<br>5 : 7<br>2 : 3<br>--------------------------<br>गुणा करने पर: (5×5×2) = 50 यूनिट (P), (6×7×3) = 126 यूनिट (A)<br>अनुपात को सरल करें: 25 : 63<br>मिश्रधन 63 यूनिट = ₹5040 ➔ 1 यूनिट = 80 रुपये<br>मूलधन = 25 यूनिट = 25 × 80 = ₹2000।" },
+        { q: "सम्राट अकेले किसी काम को 10 दिन में और विराट अकेले 40 दिन में कर सकता है। यदि वे एकांतर दिनों (Alternate days) में काम करते हैं और सम्राट शुरुआत करता है, तो काम कितने दिन में पूरा होगा?", o: ["14 दिन", "16 दिन", "8 दिन", "12 दिन"], a: 1, e: "<b>हल (LCM Method):</b><br>काम का LCM (10, 40) = 40 यूनिट<br>सम्राट की क्षमता = 4, विराट की क्षमता = 1<br>पहले दिन (सम्राट) = 4 यूनिट, दूसरे दिन (विराट) = 1 यूनिट<br>2 दिन (1 चक्र) में काम = 5 यूनिट।<br>हमें 40 यूनिट काम करना है। 40 / 5 = 8 चक्र लगेंगे।<br>कुल दिन = 8 चक्र × 2 दिन = 16 दिन।" },
+        { q: "5 और 13 के बीच की सभी सम संख्याओं का लघुत्तम समापवर्त्य (LCM) क्या है?", o: ["120", "90", "180", "60"], a: 0, e: "<b>हल:</b><br>5 और 13 के बीच की सम संख्याएँ: 6, 8, 10, और 12।<br>LCM निकालने के लिए सबसे बड़ी संख्या 12 लें।<br>12 × 2 (8 का बचा हुआ 2) × 5 (10 का बचा हुआ 5) = 12 × 10 = 120।" },
+        { q: "12 संख्याओं का औसत 48 है। यदि प्रत्येक संख्या में 11 जोड़ दिया जाए, तो नया औसत क्या होगा?", o: ["13", "58", "64", "59"], a: 3, e: "<b>हल (Direct Shortcut):</b><br>यदि प्रत्येक संख्या में कोई निश्चित मान जोड़ा/घटाया/गुणा/भाग किया जाता है, तो औसत में भी वही परिवर्तन होता है।<br>नया औसत = पुराना औसत + 11 = 48 + 11 = 59।" },
+        { q: "एक आदमी ने एक घड़ी 60% की छूट पर ₹1560 में बेची। घड़ी का अंकित मूल्य (Marked Price) क्या है?", o: ["₹3900", "₹3600", "₹3300", "₹3700"], a: 0, e: "<b>हल (Fraction Method):</b><br>छूट 60% है, यानी वस्तु 40% पर बेची गई।<br>40% = ₹1560<br>1% = 1560 / 40 = 39 रुपये<br>अंकित मूल्य (100%) = 39 × 100 = 3900 रुपये।" },
+        { q: "एक बल्ले के क्रय मूल्य और विक्रय मूल्य का अंतर ₹180 है। यदि लाभ 20% है, तो बल्ले का विक्रय मूल्य क्या है?", o: ["₹1080", "₹1240", "₹1040", "₹1120"], a: 0, e: "<b>हल (Ratio Method):</b><br>क्रय मूल्य और विक्रय मूल्य का अंतर ही लाभ (या हानि) होता है।<br>लाभ = 20% = 1/5 (1 यूनिट लाभ, 5 यूनिट CP)<br>यहाँ लाभ (1 यूनिट) = 180 रुपये।<br>विक्रय मूल्य (SP) = 5 + 1 = 6 यूनिट।<br>6 यूनिट = 6 × 180 = ₹1080।" },
+        { q: "एक वस्तु की कीमत में 40% की वृद्धि होने पर, एक व्यक्ति ₹2800 में 20 मेजें कम खरीद पाता है। प्रत्येक मेज की प्रारंभिक कीमत क्या है?", o: ["₹40", "₹36", "₹56", "₹48"], a: 0, e: "<b>हल (Price-Consumption Rule):</b><br>कीमत 40% (2/5) बढ़ गई।<br>कीमत का अनुपात = 5 : 7<br>खर्च समान होने पर मात्रा का अनुपात = 7 : 5 (कीमत का उल्टा)<br>मात्रा में कमी = 2 यूनिट। प्रश्न के अनुसार कमी = 20 मेज।<br>1 यूनिट = 10 मेज।<br>प्रारंभिक मात्रा (7 यूनिट) = 70 मेज।<br>प्रारंभिक कीमत = कुल खर्च / कुल मात्रा = 2800 / 70 = ₹40।" },
+        { q: "एक नाव धारा के प्रतिकूल 64 किमी 8 घंटे में और धारा के अनुकूल 120 किमी 12 घंटे में जाती है। शांत जल में नाव की गति (m/s में) क्या है?", o: ["2.5", "2", "3.5", "3"], a: 0, e: "<b>हल:</b><br>प्रतिकूल गति (Upstream, u) = 64/8 = 8 किमी/घंटा<br>अनुकूल गति (Downstream, d) = 120/12 = 10 किमी/घंटा<br>शांत जल में नाव की गति = (d + u) / 2 = (10 + 8) / 2 = 9 किमी/घंटा।<br>मीटर/सेकंड (m/s) में बदलें = 9 × 5/18 = 2.5 m/s।" },
+
+        // Reasoning (31-40) - Step by Step
+        { q: "श्रृंखला में लुप्त संख्या ज्ञात करें: 16, 17, 21, 30, 46, ?", o: ["81", "77", "71", "63"], a: 2, e: "<b>हल (Step-by-Step):</b><br>चरण 1: लगातार पदों के बीच का अंतर निकालें:<br>17 - 16 = 1 (यह 1 का वर्ग 1² है)<br>21 - 17 = 4 (यह 2 का वर्ग 2² है)<br>30 - 21 = 9 (यह 3 का वर्ग 3² है)<br>46 - 30 = 16 (यह 4 का वर्ग 4² है)<br>चरण 2: पैटर्न स्पष्ट है, अगला अंतर 5 का वर्ग (5² = 25) होना चाहिए।<br>चरण 3: अतः अगली संख्या = 46 + 25 = 71।" },
+        { q: "दिए गए दो अंकों (3 और 6) को आपस में बदलने के बाद समीकरण का मान क्या होगा? 6 + 7 x 3 - 8 ÷ 4 = ?", o: ["43", "41", "42", "38"], a: 0, e: "<b>हल (Step-by-Step):</b><br>चरण 1: समीकरण में 3 को 6, और 6 को 3 से बदलें।<br>नया समीकरण: 3 + 7 × 6 - 8 ÷ 4<br>चरण 2: BODMAS नियम लगाएँ। सबसे पहले भाग (Divide) करें: 8 ÷ 4 = 2<br>समीकरण बचा: 3 + 7 × 6 - 2<br>चरण 3: गुणा (Multiply) करें: 7 × 6 = 42<br>समीकरण बचा: 3 + 42 - 2<br>चरण 4: जोड़ (Add) और घटाव (Subtract) करें: 45 - 2 = 43।" },
+        { q: "श्रृंखला में लुप्त संख्या ज्ञात करें: 1138, 1150, 1163, 1177, ?", o: ["1196", "1202", "1192", "1204"], a: 2, e: "<b>हल (Step-by-Step):</b><br>चरण 1: संख्याओं के बीच का अंतर देखें।<br>1150 - 1138 = 12<br>1163 - 1150 = 13<br>1177 - 1163 = 14<br>चरण 2: अंतर लगातार +1 बढ़ रहा है (12, 13, 14)। इसलिए अगला अंतर 15 होगा।<br>चरण 3: 1177 + 15 = 1192। अतः सही उत्तर 1192 है।" },
+        { q: "एक कूट भाषा में 'STORED' को 'URQPGB' लिखा जाता है। उसी भाषा में 'POINTA' को कैसे लिखा जाएगा?", o: ["SNMLWZ", "SNLMWZ", "RMLKVY", "RMKLVY"], a: 3, e: "<b>हल (Step-by-Step):</b><br>चरण 1: STORED और URQPGB के बीच का पैटर्न पहचानें।<br>S(+2)=U, T(-2)=R, O(+2)=Q, R(-2)=P, E(+2)=G, D(-2)=B<br>चरण 2: पैटर्न है एकांतर क्रम में +2 और -2।<br>चरण 3: यही नियम POINTA पर लगाएँ:<br>P(+2)=R, O(-2)=M, I(+2)=K, N(-2)=L, T(+2)=V, A(-2)=Y<br>चरण 4: परिणामी कूट <b>RMKLVY</b> है।" },
+        { q: "श्रृंखला को पूरा करें: RAM, VET, ZIA, ?, HQO", o: ["DNI", "DNH", "DMI", "DMH"], a: 3, e: "<b>हल (Step-by-Step):</b><br>चरण 1: पहले अक्षर का पैटर्न देखें: R(+4)=V, V(+4)=Z, Z(+4)=D, D(+4)=H<br>चरण 2: दूसरे अक्षर का पैटर्न देखें: A(+4)=E, E(+4)=I, I(+4)=M, M(+4)=Q<br>चरण 3: तीसरे अक्षर का पैटर्न देखें: M(+7)=T, T(+7)=A, A(+7)=H, H(+7)=O<br>चरण 4: इन अक्षरों को जोड़ने पर लुप्त पद <b>DMH</b> प्राप्त होता है।" },
+        { q: "उस विकल्प का चयन करें जो तीसरी संख्या से उसी प्रकार संबंधित है जैसे दूसरी संख्या पहली संख्या से। 39 : 117 :: 45 : ?", o: ["145", "155", "135", "125"], a: 2, e: "<b>हल (Step-by-Step):</b><br>चरण 1: 39 और 117 के बीच का गणितीय संबंध खोजें।<br>चरण 2: 39 को 3 से गुणा करने पर 117 आता है (39 × 3 = 117)।<br>चरण 3: सादृश्यता के नियम के अनुसार, यही प्रक्रिया 45 के साथ करें।<br>चरण 4: 45 × 3 = 135। अतः सही उत्तर 135 है।" },
+        { q: "एक कूट भाषा में 'TABLE' को '2012125' लिखा जाता है। उसी भाषा में 'NATOM' का कूट क्या होगा?", o: ["142101153", "142011513", "141201315", "141201513"], a: 3, e: "<b>हल (Step-by-Step):</b><br>चरण 1: TABLE शब्द के अक्षरों की अंग्रेजी वर्णमाला में स्थिति (Position value) देखें।<br>T=20, A=1, B=2, L=12, E=5 (इसे एक साथ लिखने पर 2012125 बनता है)।<br>चरण 2: NATOM के अक्षरों की स्थिति निकालें।<br>N=14, A=1, T=20, O=15, M=13<br>चरण 3: इन्हें एक साथ जोड़कर लिखें ➔ 141201513।" },
+        { q: "कथन: I. कुछ D, A हैं। II. सभी A, B हैं। निष्कर्ष: I. कुछ B, D हैं। II. सभी D, A हैं।", o: ["दोनों I और II", "केवल II", "केवल I", "कोई नहीं"], a: 2, e: "<b>हल (Step-by-Step):</b><br>चरण 1: वेन आरेख (Venn Diagram) बनाएँ। 'कुछ D, A हैं' ➔ D और A के बीच ओवरलैप है।<br>चरण 2: 'सभी A, B हैं' ➔ पूरा A, B के घेरे के अंदर है।<br>चरण 3: चूँकि A का हिस्सा B के अंदर है और D का कुछ हिस्सा A में है, इसलिए स्वाभाविक रूप से B का कुछ हिस्सा D में होगा। (निष्कर्ष I सत्य है)।<br>चरण 4: 'सभी D, A हैं' यह आरेख से स्पष्ट नहीं होता, यह केवल संभावना है। (निष्कर्ष II गलत है)।<br>अतः केवल निष्कर्ष I सही है।" },
+        { q: "एक कूट भाषा में 'PANKIL' को 'SDQNLO' लिखा जाता है। 'ROHANS' का कूट क्या होगा?", o: ["VRKDQU", "VRKDQV", "URKDQU", "URKDQV"], a: 3, e: "<b>हल (Step-by-Step):</b><br>चरण 1: PANKIL और SDQNLO के बीच पैटर्न खोजें। प्रत्येक अक्षर में +3 किया गया है:<br>P(+3)=S, A(+3)=D, N(+3)=Q, K(+3)=N, I(+3)=L, L(+3)=O<br>चरण 2: यही नियम ROHANS पर लागू करें:<br>R(+3)=U, O(+3)=R, H(+3)=K, A(+3)=D, N(+3)=Q, S(+3)=V<br>चरण 3: परिणामी कोड <b>URKDQV</b> है।" },
+        { q: "यदि 'GUD' = 31 है, तो 'FAR' का कूट क्या होगा?", o: ["25", "23", "24", "26"], a: 2, e: "<b>हल (Step-by-Step):</b><br>चरण 1: GUD शब्द के अक्षरों की प्लेस वैल्यू जोड़ें: G(7) + U(21) + D(4) = 32<br>चरण 2: प्राप्त योग 32 है, लेकिन कूट 31 दिया है। यानी पैटर्न है: (योग - 1)।<br>चरण 3: FAR के अक्षरों की प्लेस वैल्यू जोड़ें: F(6) + A(1) + R(18) = 25<br>चरण 4: नियम के अनुसार 1 घटाएँ: 25 - 1 = 24। अतः सही उत्तर 24 है।" },
+
+        // English (41-50) - Grammar Rules Added
+        { q: "Select the most appropriate antonym of the given word. Captivity", o: ["Liberty", "Imprisonment", "Cheer", "Offense"], a: 0, e: "<b>हल:</b> 'Captivity' का अर्थ 'कैद' या 'गुलामी' होता है। इसका सही विलोम 'Liberty' (स्वतंत्रता) है।<br><br>💡 <b>Vocabulary & Grammar:</b><ul><li><b>Captivity (Noun):</b> The condition of being imprisoned. (Synonyms: Imprisonment)</li><li><b>Liberty (Noun):</b> The state of being free. (Synonyms: Freedom)</li><li><b>Grammar Rule:</b> Antonyms are words with opposite meanings. Always match the parts of speech (Noun to Noun).</li></ul>" },
+        { q: "Select the most appropriate option. When are you ______ to write to your friend?", o: ["gone", "going", "goes", "go"], a: 1, e: "<b>हल:</b> वाक्य Present Continuous Tense में है। 'are' के साथ क्रिया (Verb) की '-ing' फॉर्म का इस्तेमाल होगा, इसलिए 'going' सही है।<br><br>💡 <b>Vocabulary & Grammar:</b><ul><li><b>Grammar Rule:</b> Structure for Present Continuous is: Subject + is/am/are + Verb(ing).</li><li>'Gone' is V3 (Past Participle) used with has/have/had.</li><li>'Goes' is V1+s/es used with singular subjects.</li></ul>" },
+        { q: "Select the most appropriate antonym of the given word. Approve", o: ["Agree", "Reject", "Appeal", "Confirm"], a: 1, e: "<b>हल:</b> 'Approve' का अर्थ 'स्वीकार करना' होता है। इसका सही विलोम 'Reject' (अस्वीकार करना) है।<br><br>💡 <b>Vocabulary & Grammar:</b><ul><li><b>Approve (Verb):</b> Officially agree to or accept as satisfactory.</li><li><b>Reject (Verb):</b> Dismiss as inadequate or unacceptable.</li><li><b>Agree (Verb):</b> सहमत होना (Synonym of Approve).</li></ul>" },
+        { q: "Select the most appropriate meaning of the given idiom. Cut one short", o: ["To chop something", "To interrupt someone", "To act quickly", "To be rude"], a: 1, e: "<b>हल:</b> 'Cut one short' एक मुहावरा है जिसका अर्थ है किसी को बीच में ही टोक देना (To interrupt someone)।<br><br>💡 <b>Vocabulary & Grammar:</b><ul><li><b>Idiom Meaning:</b> 'To cut someone short' means to interrupt them while they are speaking, preventing them from finishing.</li><li><b>Interrupt (Verb):</b> बीच में रोकना या बाधा डालना।</li></ul>" },
+        { q: "Find the part of the given sentence that has an error. Do not let the opportunity slip away and you will repent.", o: ["No error", "and you will repent", "Do not let the", "opportunity slip away"], a: 1, e: "<b>हल:</b> वाक्य में 'and' का प्रयोग गलत है। यहाँ चेतावनी दी जा रही है, इसलिए 'or' या 'otherwise' का प्रयोग होना चाहिए। इसलिए 'and you will repent' में गलती है।<br><br>💡 <b>Vocabulary & Grammar:</b><ul><li><b>Grammar Rule:</b> In conditional warnings, use conjunctions like 'or', 'otherwise' instead of 'and'.</li><li><b>Repent (Verb):</b> पछताना (To feel sincere regret).</li></ul>" },
+        { q: "Select the most appropriate option to substitute. You must apologise with him for this.", o: ["No Improvement", "from", "of", "to"], a: 3, e: "<b>हल:</b> 'apologise' के बाद हमेशा Preposition 'to' का प्रयोग होता है जब आप किसी व्यक्ति से माफ़ी मांगते हैं।<br><br>💡 <b>Vocabulary & Grammar:</b><ul><li><b>Grammar Rule (Fixed Prepositions):</b> Apologize <b>to</b> (a person). Example: \"Apologize to the teacher.\"</li><li>Apologize <b>for</b> (an action). Example: \"Apologize for your bad behavior.\"</li></ul>" },
+        { q: "Choose the most appropriate word. One who is unable to read or write.", o: ["Illiterate", "Incomprehensible", "Frugal", "Illegible"], a: 0, e: "<b>हल:</b> जो पढ़ या लिख नहीं सकता उसे 'Illiterate' (अनपढ़ / निरक्षर) कहते हैं।<br><br>💡 <b>Vocabulary & Grammar:</b><ul><li><b>Illiterate (Adj):</b> Unable to read or write.</li><li><b>Illegible (Adj):</b> Not clear enough to be read (अपठनीय लिखावट).</li><li><b>Incomprehensible (Adj):</b> Not able to be understood.</li><li><b>Frugal (Adj):</b> Economical/मितव्ययी।</li></ul>" },
+        { q: "Select the most appropriate option. Man ______ a strong desire to accumulate wealth.", o: ["have", "had", "is having", "has"], a: 3, e: "<b>हल:</b> यहाँ 'Man' एकवचन (Singular noun) के रूप में पूरी मानव जाति को दर्शाता है। इसलिए Singular Verb 'has' का प्रयोग होगा।<br><br>💡 <b>Vocabulary & Grammar:</b><ul><li><b>Grammar Rule:</b> A singular subject takes a singular verb. 'Man' represents humanity as a singular concept.</li><li><b>Accumulate (Verb):</b> इकट्ठा करना या जमा करना।</li></ul>" },
+        { q: "Select the most appropriate meaning. To take one's hat off", o: ["To fool someone", "To feel hot", "To please someone", "To admire someone"], a: 3, e: "<b>हल:</b> 'To take one's hat off' का अर्थ है किसी के प्रति सम्मान या प्रशंसा व्यक्त करना (To admire someone)।<br><br>💡 <b>Vocabulary & Grammar:</b><ul><li><b>Idiom Meaning:</b> Taking off one's hat is a gesture of respect. \"I take my hat off to him\" = \"I respect him.\"</li><li><b>Admire (Verb):</b> प्रशंसा करना या आदर करना।</li></ul>" },
+        { q: "Select the most appropriate synonym. Forgive", o: ["Forget", "Accuse", "Pardon", "Compel"], a: 2, e: "<b>हल:</b> 'Forgive' का अर्थ 'माफ़ करना' होता है। इसका सही समानार्थी 'Pardon' है।<br><br>💡 <b>Vocabulary & Grammar:</b><ul><li><b>Forgive (Verb):</b> Stop feeling angry towards someone for an offense.</li><li><b>Pardon (Verb/Noun):</b> क्षमा / माफ़ी.</li><li><b>Accuse (Verb):</b> दोष लगाना (Antonym).</li><li><b>Compel (Verb):</b> मजबूर करना।</li></ul>" },
+
+        // Haryana GK (51-75) - 5 Facts Added
+        { q: "गोरखपुर परमाणु ऊर्जा संयंत्र (GHAVP) ........ जिले में शुरू होने वाला है।", o: ["सिरसा", "जींद", "फतेहाबाद", "हिसार"], a: 2, e: "<b>हल:</b> यह हरियाणा का पहला परमाणु संयंत्र है। प्रदेश के फतेहाबाद जिले में 2800 MW के नाभिकीय विद्युत केन्द्र की स्थापना की रही है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>यह उत्तर भारत का पहला परमाणु ऊर्जा संयंत्र है।</li><li>इसकी कुल क्षमता 2800 मेगावाट है।</li><li>फतेहाबाद को हरियाणा की 'पिंक सिटी' कहा जाता है।</li><li>फतेहाबाद की स्थापना फिरोजशाह तुगलक ने की थी।</li><li>भारत का पहला परमाणु स्टेशन तारापुर (महाराष्ट्र) है।</li></ul>" },
+        { q: "हरियाणा में पंचायत का चुनाव लड़ने के लिए सामान्य उम्मीदवारों के लिए न्यूनतम शैक्षणिक योग्यता क्या है?", o: ["10वीं कक्षा पास", "12वीं कक्षा पास", "बैचलर्स डिग्री", "8वीं कक्षा पास"], a: 0, e: "<b>हल:</b> पंचायत राज संशोधन के तहत सामान्य श्रेणी के दसवीं पढ़े उम्मीदवार चुनाव लड़ सकेंगे।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>हरियाणा पंचायती राज अधिनियम 1994 में लागू हुआ।</li><li>महिलाओं और SC के लिए न्यूनतम योग्यता 8वीं पास है।</li><li>यहाँ HSSC CET मेन्स में 10 गुना उम्मीदवारों को बुलाया जाता है।</li><li>हरियाणा में सरकारी कर्मचारियों का वर्तमान DA 58% है।</li><li>एक ग्रुप D कर्मचारी (Peon) की वर्तमान बेसिक पे 20600 रुपये होती है।</li></ul>" },
+        { q: "राजीव गाँधी स्टेट इंस्टिट्यूट ऑफ पंचायती राज एण्ड कम्यूनिटडेवलपमेंट हरियाणा के किस जिले में स्थित है?", o: ["करनाल", "भिवानी", "पंचकुला", "रोहतक"], a: 0, e: "<b>हल:</b> राजीव गांधी राज्य पंचायती राज और सामुदायिक विकास संस्थान करनाल जिले में स्थित है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>करनाल को 'हरियाणा का पेरिस' भी कहा जाता है।</li><li>यह संस्थान सरपंचों और पंचों को प्रशिक्षित करता है।</li><li>करनाल को राजा कर्ण की नगरी माना जाता है।</li><li>यहाँ राष्ट्रीय डेयरी अनुसंधान संस्थान (NDRI) स्थित है।</li><li>कल्पना चावला का जन्म भी करनाल में हुआ था।</li></ul>" },
+        { q: "हरियाणा का ......... शहर, दुनिया में 'शोडी यार्न' का सबसे बड़ा केंद्र है।", o: ["अम्बाला", "पानीपत", "पंचकुला", "सिरसा"], a: 1, e: "<b>हल:</b> हरियाणा का पानीपत शहर दुनिया में शोडी यार्न (नकली सूत) का सबसे बड़ा केन्द्र है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>पानीपत को 'बुनकरों का शहर' और 'पेट्रोकेमिकल हब' कहा जाता है।</li><li>शोडी यार्न पुराने ऊनी कपड़ों को रीसायकल करके बनता है।</li><li>पानीपत में IOCL की रिफाइनरी स्थित है।</li><li>पानीपत में इतिहास के तीन महान युद्ध लड़े गए।</li><li>यह एकमात्र जिला है जिसका गठन दो बार हुआ।</li></ul>" },
+        { q: "हरियाणा का रेवाड़ी जिला किस पारंपरिक धातु कार्य के लिए विशेष रूप से प्रसिद्ध है?", o: ["तांबे के बर्तन", "चाँदी के बर्तन", "पीतल के बर्तन", "एल्यूमिनियम के बर्तन"], a: 2, e: "<b>हल:</b> रेवाड़ी पारंपरिक रूप से पीतल (ब्रास) के बर्तनों के लिए प्रसिद्ध है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>रेवाड़ी को हरियाणा की 'पीतल नगरी' (Brass City) कहा जाता है।</li><li>यहाँ के पीतल कारीगरों को 'ठठेरा' कहा जाता है।</li><li>रेवाड़ी जंक्शन हरियाणा का सबसे पुराना रेलवे स्टेशन है।</li><li>भारत की पहली सीएनजी (CNG) ट्रेन रेवाड़ी से रोहतक चली।</li><li>रेवाड़ी में स्लेट पत्थर का प्रसिद्ध कुंड भी स्थित है।</li></ul>" },
+        { q: "हरियाणा के किस खिलाड़ी को हरियाणा हरिकेन के उपनाम से भी जाना जाता है?", o: ["श्री कपिल देव", "श्री विजेंद्र सिंह", "श्री जोगेंद्र शर्मा", "श्री योगेश्वर दत्त"], a: 0, e: "<b>हल:</b> 1983 विश्व कप विजेता कप्तान कपिल देव को हरियाणा हरिकेन कहा जाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>कपिल देव का जन्म चंडीगढ़ में हुआ था।</li><li>योगेश्वर दत्त (कुश्ती) ने लंदन ओलंपिक में कांस्य जीता।</li><li>विजेंदर सिंह भिवानी (मुक्केबाजी) से हैं।</li><li>भिवानी को भारत का 'मिनी क्यूबा' कहा जाता है।</li><li>जोगिंदर शर्मा 2007 T20 विश्व कप के प्रमुख गेंदबाज थे।</li></ul>" },
+        { q: "हरियाणा के किस त्योहार में पवित्र सरोवरों में स्नान करने का अनुष्ठान है?", o: ["सूरजकुंड महोत्सव", "गीता जयंती समारोह", "विरासत त्योहार", "कार्तिक महोत्सव"], a: 1, e: "<b>हल:</b> हरियाणा में गीता जयंती समारोह में सन्निहित और ब्रह्मसरोवर में स्नान करने का रिवाज है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>गीता महोत्सव कुरुक्षेत्र में मार्गशीर्ष माह में मनाया जाता है।</li><li>ब्रह्मसरोवर एशिया का सबसे बड़ा पक्का सरोवर है।</li><li>सन्निहित सरोवर भगवान विष्णु का स्थायी निवास माना जाता है।</li><li>कुरुक्षेत्र को हरियाणा की 'धर्मनगरी' कहा जाता है।</li><li>सूरजकुंड हस्तशिल्प मेला फरीदाबाद में लगता है।</li></ul>" },
+        { q: "यमुनानगर से फरीदाबाद तक यमुना नदी के बाढ़ प्रवण क्षेत्र के निचले हिस्से को क्या कहा जाता है?", o: ["शिवालिक", "खादर", "नेल्ली", "दलदली"], a: 1, e: "<b>हल:</b> निचले हिस्से को खादर कहते हैं, जहाँ प्रतिवर्ष नवीन खादर मिट्टी बिछ जाती है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>नवीन जलोढ़ मिट्टी को 'खादर' कहा जाता है।</li><li>पुरानी जलोढ़ मिट्टी को 'बांगर' कहा जाता है।</li><li>यमुना नदी हरियाणा की पूर्वी सीमा पर बहती है।</li><li>शिवालिक पहाड़ियाँ हरियाणा के उत्तर-पूर्व में हैं।</li><li>घग्गर नदी के बाढ़ के मैदानों को 'नेल्ली' कहा जाता है।</li></ul>" },
+        { q: "अरावली पहाड़ी का सबसे ऊँचा क्षेत्र जिसकी ऊँचाई 652 मीटर है, उसे.... कहा जाता है।", o: ["हिसार पहाड़ियाँ", "करनाल पहाड़ियाँ", "सिरसा पहाड़ियाँ", "ढोसी पहाड़ियाँ"], a: 3, e: "<b>हल:</b> दक्षिण हरियाणा की सबसे ऊँची चोटी नारनौल में 652 मी० ऊँची है। इसे ढोसी की पहाड़ियाँ कहते हैं।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>ढोसी की पहाड़ियां महेंद्रगढ़ जिले के नारनौल में हैं।</li><li>इनका संबंध प्रसिद्ध च्यवन ऋषि से माना जाता है।</li><li>अरावली भारत की सबसे प्राचीन पर्वत श्रृंखला है।</li><li>शिवालिक की सबसे ऊँची चोटी 'करोह' (1467 मीटर) है।</li><li>हरियाणा का 3.09% क्षेत्र अरावली के अंतर्गत आता है।</li></ul>" },
+        { q: "गले में परिधान किए जाने वाले ऊन से बने मफलर को .... भी कहा जाता है।", o: ["गुलीबंद", "सफा", "पाग", "दोहर"], a: 0, e: "<b>हल:</b> गले में परिधान किए जाने वाले ऊन से बने मफलर को गुलीबंद कहा जाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>'खंडवा' हरियाणा में पुरुषों की सम्मानसूचक पगड़ी है।</li><li>'सफा' भी एक प्रकार की पगड़ी है।</li><li>'दामन, कुर्ती, चुंदर' महिलाओं का पारंपरिक पहनावा है।</li><li>'दोहर' सर्दियों में ओढ़ने वाली पतली रजाई होती है।</li><li>'पीलिया' बच्चे के जन्म पर ओढ़ी जाने वाली ओढ़नी है।</li></ul>" },
+        { q: "हरियाणा का कौन-सा जिला गेहूँ का सबसे बड़ा उत्पादक है।", o: ["अंबाला", "भिवानी", "सिरसा", "करनाल"], a: 2, e: "<b>हल:</b> हरियाणा का सिरसा जिला प्रदेश में गेहूँ तथा कपास का सबसे बड़ा उत्पादक है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>सिरसा हरियाणा का क्षेत्रफल में सबसे बड़ा जिला है।</li><li>कपास उत्पादन के कारण इसे कॉटन सिटी भी कहते हैं।</li><li>करनाल को 'धान का कटोरा' (Rice Bowl) कहा जाता है।</li><li>राष्ट्रीय गेहूं और जौ अनुसंधान संस्थान करनाल में है।</li><li>सिरसा में सबसे बड़ा वन्यजीव अभयारण्य 'अबूबशहर' है।</li></ul>" },
+        { q: "शिवालिक की पहाड़ियाँ बहुत सी नदियों का स्रोत हैं। ऐसी एक नदी है।", o: ["गंगा", "कपिला", "टांगरी", "कावेरी"], a: 2, e: "<b>हल:</b> टांगरी नदी मोरनी हिल्स, पंचकुला से निकलती है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>शिवालिक से घग्गर, मारकंडा, सरस्वती और टांगरी निकलती हैं।</li><li>टांगरी का उद्गम पूर्ण रूप से हरियाणा में है।</li><li>मारकंडा नदी का प्राचीन नाम 'अरुणा' था।</li><li>ये बरसाती नदियां हैं जो मानसून में बहती हैं।</li><li>दक्षिण हरियाणा की नदियां अरावली से निकलती हैं।</li></ul>" },
+        { q: "हरियाणा में किस वर्ष बीज योजना शुरू की गई थी।", o: ["2009", "2007", "2005", "2011"], a: 3, e: "<b>हल:</b> हरियाणा में बीज योजना वर्ष 2011 में शुरू की गई थी।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>उद्देश्य: उच्च गुणवत्ता वाले बीज रियायती दरों पर देना।</li><li>यह कार्य हरियाणा बीज विकास निगम (HSDC) करता है।</li><li>कृषि के लिए 'भावांतर भरपाई योजना' भी शुरू की गई।</li><li>कृषि विश्वविद्यालय (HAU) हिसार में स्थित है।</li><li>हरियाणा बासमती चावल का प्रमुख निर्यातक है।</li></ul>" },
+        { q: "हरियाणा पूर्व में..... से घिरा है।", o: ["इंदौरी", "घग्गर", "उत्तर प्रदेश", "मध्य प्रदेश"], a: 2, e: "<b>हल:</b> हरियाणा पूर्व में उत्तर प्रदेश से घिरा है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>यमुना नदी UP और हरियाणा के बीच 320 किमी लंबी सीमा बनाती है।</li><li>उत्तर-पश्चिम में पंजाब, और उत्तर में हिमाचल प्रदेश है।</li><li>दक्षिण-पश्चिम सीमा राजस्थान से लगती है (सबसे लंबी)।</li><li>हरियाणा एक भू-आवेष्ठित (Landlocked) राज्य है।</li><li>हरियाणा 3 तरफ से दिल्ली को घेरता है।</li></ul>" },
+        { q: "राष्ट्रीय डेयरी संस्थान कहाँ स्थित है।", o: ["सिरसा", "भिवानी", "करनाल", "पानीपत"], a: 2, e: "<b>हल:</b> नेशनल डेयरी रिसर्च इंस्टीट्यूट (NDRI) करनाल में स्थित है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>NDRI को 1989 में डीम्ड यूनिवर्सिटी का दर्जा मिला।</li><li>करनाल में केंद्रीय मृदा लवणता अनुसंधान (CSSRI) भी है।</li><li>यहाँ राष्ट्रीय पशु आनुवंशिक संसाधन ब्यूरो भी है।</li><li>मुर्रा भैंस को हरियाणा में 'काला सोना' कहा जाता है।</li><li>ऑपरेशन फ्लड के जनक वर्गीज कुरियन थे।</li></ul>" },
+        { q: "हरियाणा में महेंद्रगढ़ किसके लिए प्रख्यात है।", o: ["लुंगी", "धातु-कार्य", "लाख की चूड़ियाँ", "चर्म-कार्य"], a: 2, e: "<b>हल:</b> महेंद्रगढ़ लाख की चूड़ियों तथा खनिज संसाधन के लिए प्रसिद्ध है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>महेंद्रगढ़ को 'खनिजों का शहर' कहा जाता है।</li><li>यहाँ मार्बल, क्वार्ट्ज और लौह अयस्क प्रचुर मात्रा में हैं।</li><li>महेंद्रगढ़ का पुराना नाम 'कानौड़' था।</li><li>इसका मुख्यालय 'नारनौल' में स्थित है।</li><li>महेंद्रगढ़ में माधवगढ़ का किला स्थित है।</li></ul>" },
+        { q: "हरियाणा में बल्लारपुर पेपर मिल कहाँ स्थित है।", o: ["यमुनानगर", "हिसार", "पानीपत", "सिरसा"], a: 0, e: "<b>हल:</b> यमुनानगर में बल्लारपुर पेपर मिल (BILT) स्थापित है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>BILT की स्थापना 1929 में हुई थी।</li><li>यमुनानगर को लकड़ी का प्रमुख बाज़ार माना जाता है।</li><li>यहाँ सरस्वती शुगर मिल (1933) स्थित है।</li><li>यमुनानगर का प्राचीन नाम 'अब्दुल्लापुर' था।</li><li>जगाधरी में प्रसिद्ध रेलवे वैगन वर्कशॉप है।</li></ul>" },
+        { q: "'टूटते बंधन' उपन्यास के लेखक कौन हैं?", o: ["सम्प्रदी", "हेमराज निर्गम", "बाणभट्ट", "जैमिनि सरसार"], a: 1, e: "<b>हल:</b> 'टूटते बंधन' उपन्यास के लेखक हेमराज निर्गम हैं।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>हेमराज निर्गम हरियाणा के प्रमुख हिंदी साहित्यकार थे।</li><li>'झाड़ूफीरी' हरियाणा का पहला उपन्यास माना जाता है (राजाराम शास्त्री)।</li><li>बाणभट्ट ने 'हर्षचरित' की रचना की थी।</li><li>हरियाणा के पहले राज्य कवि श्री उदयभानु हंस थे।</li><li>'देशां में देश हरियाणा' कविता उदयभानु हंस ने लिखी।</li></ul>" },
+        { q: "यमुनानगर के जगाधरी में रेलवे कैरिज एंड वैगन वर्कशॉप किस वर्ष स्थापित किया गया था।", o: ["1972", "1942", "1952", "1962"], a: 2, e: "<b>हल:</b> यमुनानगर के जगाधरी में रेलवे कैरिज एंड वैगन वर्कशॉप 1952 में स्थापित की गई।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>यह उत्तर रेलवे का एक प्रमुख मरम्मत कारखाना है।</li><li>यहाँ शताब्दी ट्रेनों के डिब्बों की मरम्मत होती है।</li><li>जगाधरी पीतल और तांबे के बर्तनों के लिए भी जाना जाता है।</li><li>जगाधरी और यमुनानगर को 'जुड़वां शहर' कहा जाता है।</li><li>हरियाणा का पहला रेलवे स्टेशन रेवाड़ी (1873) है।</li></ul>" },
+        { q: "गुजरी महल ... में स्थित है।", o: ["भिवानी", "सोनीपत", "पानीपत", "हिसार"], a: 3, e: "<b>हल:</b> गुजरी महल हिसार में स्थित है। फिरोजशाह तुगलक ने इसका निर्माण करवाया था।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>फिरोजशाह तुगलक ने 1354 में इसे अपनी प्रेमिका के लिए बनवाया था।</li><li>हिसार शहर की स्थापना भी 1354 में हुई थी।</li><li>हिसार में लाट की मस्जिद स्थित है।</li><li>हिसार को भारत की 'स्टील सिटी' कहा जाता है।</li><li>यहाँ एशिया का सबसे बड़ा पशु फार्म स्थित है।</li></ul>" },
+        { q: "हरियाणा का कौन-सा जिला लोहे के पाइपों का सबसे बड़ा उत्पादक है?", o: ["पंचकूला", "हिसार", "कुरुक्षेत्र", "अंबाला"], a: 1, e: "<b>हल:</b> हिसार जिला लोहे के पाइपों का सबसे बड़ा उत्पादक है। इसे स्टील सिटी भी कहा जाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>हिसार की जिंदल इंडस्ट्रीज गैल्वनाइज्ड पाइपों की बड़ी निर्माता है।</li><li>नवीन जिंदल का संबंध इसी उद्योग से है।</li><li>पंचकूला HMT घड़ियों के लिए प्रसिद्ध था।</li><li>अंबाला को 'साइंस सिटी' कहा जाता है।</li><li>कुरुक्षेत्र धार्मिक पर्यटन के लिए जाना जाता है।</li></ul>" },
+        { q: "हरियाणा में पीतल नगरी कौन-सी है।", o: ["हिसार", "रेवाड़ी", "सोनीपत", "पानीपत"], a: 1, e: "<b>हल:</b> हरियाणा में रेवाड़ी को पीतल नगरी (ब्रास सिटी) कहा जाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>रेवाड़ी में पीतल के बर्तन बनाने का उद्योग पुराना है।</li><li>सोनीपत 'एजुकेशन सिटी' और एटलस साइकिल के लिए जाना जाता था।</li><li>पानीपत को 'हथकरघा (Handloom) का शहर' कहा जाता है।</li><li>रेवाड़ी में सम्राट 'हेमू' का जन्म हुआ था।</li><li>रेवाड़ी का मीठा व्यंजन 'रेवड़ी' बहुत प्रसिद्ध है।</li></ul>" },
+        { q: "चंडीगढ़ उच्च न्यायालय के भवन का डिजाइन किसने किया।", o: ["एडविन ल्युटिन्स", "ली कार्बुसियर", "लोरी बेकर", "इनमें से कोई नहीं"], a: 1, e: "<b>हल:</b> पंजाब एवं हरियाणा उच्च न्यायालय भवन के आर्किटेक्ट फ्रांसीसी शिल्पी ली कार्बुसियर थे।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>ली कार्बुसियर ने चंडीगढ़ शहर का मास्टर प्लान डिजाइन किया था।</li><li>चंडीगढ़ भारत का पहला नियोजित शहर है।</li><li>एडविन लुटियंस ने नई दिल्ली का डिजाइन तैयार किया था।</li><li>चंडीगढ़ का 'रॉक गार्डन' नेकचंद सैनी ने बनाया था।</li><li>'ओपन हैंड स्मारक' भी ली कार्बुसियर ने डिजाइन किया।</li></ul>" },
+        { q: "हरियाणा में 50 किलोमीटर तक बहने वाली गैर-बारहमासी नदी कौन-सी है।", o: ["चौटांग", "इंदौरी", "दोहान", "राक्षी"], a: 2, e: "<b>हल:</b> दोहान नदी जयपुर की पहाड़ियों से निकलती है और लगभग 50 किमी० तक बहती है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>दोहान दक्षिण हरियाणा (अरावली क्षेत्र) की मौसमी नदी है।</li><li>माना जाता है कि दोहान नदी भृगु ऋषि की पत्नी के नेत्रों से निकली।</li><li>इंदौरी नदी मेवात की पहाड़ियों से निकलती है।</li><li>हरियाणा में यमुना एकमात्र बारहमासी नदी है।</li><li>घग्गर हरियाणा की सबसे प्रमुख मौसमी नदी है।</li></ul>" },
+        { q: "क्षेत्रफल के संदर्भ में भारत में हरियाणा का स्थान कौन-सा है।", o: ["28वाँ", "15वाँ", "13वाँ", "21वाँ"], a: 3, e: "<b>हल:</b> क्षेत्रफल की दृष्टि से हरियाणा देश का 21वाँ राज्य है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>हरियाणा का कुल क्षेत्रफल 44,212 वर्ग किलोमीटर है।</li><li>यह भारत के कुल भौगोलिक क्षेत्र का 1.34% है।</li><li>क्षेत्रफल में भारत का सबसे बड़ा राज्य राजस्थान है।</li><li>जनसंख्या की दृष्टि से हरियाणा 18वें स्थान पर है।</li><li>जनसंख्या घनत्व में हरियाणा 11वें स्थान पर है।</li></ul>" },
+
+        // Science (76-90) - 5 Facts added
+        { q: "डायनामाइट का प्रमुख अवयव क्या होता है?", o: ["सोडियम क्लोराइड", "पोटेशियम नाइट्रेट", "नाइट्रोग्लिसरीन", "सल्फ्यूरिक अम्ल"], a: 2, e: "<b>हल:</b> डायनामाइट का मुख्य अवयव नाइट्रोग्लिसरीन (Nitroglycerin) होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>आविष्कार स्वीडिश वैज्ञानिक अल्फ्रेड नोबेल ने 1867 में किया।</li><li>अल्फ्रेड नोबेल की वसीयत से ही 'नोबेल पुरस्कार' स्थापित हुए।</li><li>नाइट्रोग्लिसरीन एक अत्यधिक विस्फोटक तरल पदार्थ है।</li><li>विस्फोटक के रूप में TNT और RDX का भी उपयोग होता है।</li><li>RDX को साइक्लोनाइट भी कहा जाता है।</li></ul>" },
+        { q: "पर्णहरित (Chlorophyll) में उपस्थित मुख्य धातु कौन-सी है?", o: ["आयरन", "मैग्नीशियम", "कैल्शियम", "जिंक"], a: 1, e: "<b>हल:</b> क्लोरोफिल के केंद्र में मैग्नीशियम (Mg) धातु पाई जाती है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>क्लोरोफिल सूर्य के प्रकाश को अवशोषित करता है।</li><li>प्रकाश संश्लेषण से पौधे अपना भोजन बनाते हैं।</li><li>मानव रक्त के हीमोग्लोबिन में 'आयरन (Fe)' धातु पाई जाती है।</li><li>विटामिन B12 में 'कोबाल्ट (Co)' धातु पाई जाती है।</li><li>मैग्नीशियम पौधों में एंजाइमों को सक्रिय करता है।</li></ul>" },
+        { q: "कोबाल्ट-60 कौन-सी किरणें उत्सर्जित करता है?", o: ["अल्फा किरणें", "बीटा किरणें", "गामा किरणें", "एक्स-रे"], a: 2, e: "<b>हल:</b> कोबाल्ट-60 अत्यंत वेधन क्षमता वाली 'गामा किरणें' उत्सर्जित करता है。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>इसका उपयोग कैंसर (ट्यूमर) के इलाज में किया जाता है।</li><li>गामा किरणों की वेधन क्षमता अल्फा/बीटा से अधिक होती है।</li><li>रेडियोधर्मिता की खोज हेनरी बेकेरल ने की थी।</li><li>आयोडीन-131 का उपयोग थायरॉइड के उपचार में होता है।</li><li>कार्बन-14 का उपयोग जीवाश्मों की उम्र पता लगाने में होता है।</li></ul>" },
+        { q: "पृथ्वी का पलायन वेग (Escape Velocity) कितना है?", o: ["9.8 Km/Sec", "11.2 Km/Sec", "2.38 Km/Sec", "42 Km/Sec"], a: 1, e: "<b>हल:</b> पृथ्वी का पलायन वेग 11.2 किमी/सेकंड है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>यह वह न्यूनतम गति है जो गुरुत्वाकर्षण से बचने के लिए आवश्यक है।</li><li>चंद्रमा का पलायन वेग केवल 2.38 किमी/सेकंड है।</li><li>इसी कारण चंद्रमा पर कोई वायुमंडल नहीं है।</li><li>सूर्य का पलायन वेग 615 किमी/सेकंड है।</li><li>पृथ्वी का गुरुत्वीय त्वरण (g) 9.8 m/s² होता है।</li></ul>" },
+        { q: "हीटर का तार (Coil) किस मिश्रधातु का बना होता है?", o: ["टंगस्टन", "नाइक्रोम", "तांबा", "एल्युमिनियम"], a: 1, e: "<b>हल:</b> हीटर का तार नाइक्रोम (Nichrome) का बना होता है। यह निकेल और क्रोमियम की मिश्रधातु है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>बल्ब का फिलामेंट 'टंगस्टन' धातु का बना होता है।</li><li>टंगस्टन का गलनांक अत्यधिक (लगभग 3422 °C) होता है।</li><li>विद्युत फ्यूज सीसा (Lead) और टिन की मिश्रधातु से बना होता है।</li><li>पीतल (Brass) तांबा और जिंक की मिश्रधातु है।</li><li>कांसा (Bronze) तांबा और टिन की मिश्रधातु है।</li></ul>" },
+        { q: "अम्ल (Acid) का लिटमस पत्र पर क्या प्रभाव पड़ता है?", o: ["लाल लिटमस को नीला", "नीले लिटमस को लाल", "रंगहीन", "कोई प्रभाव नहीं"], a: 1, e: "<b>हल:</b> अम्ल (Acid) नीले लिटमस पत्र को लाल कर देते हैं। (ट्रिक: अनिल - अ से अम्ल, नि से नीला, ल से लाल)।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>क्षार लाल लिटमस पत्र को नीला कर देते हैं।</li><li>लिटमस पत्र 'लाइकेन' पौधे से प्राप्त होता है।</li><li>अम्ल स्वाद में खट्टे होते हैं (पानी में H+ आयन देते हैं)।</li><li>क्षार स्वाद में कड़वे होते हैं (OH- आयन देते हैं)।</li><li>शुद्ध जल का pH मान 7 होता है।</li></ul>" },
+        { q: "दियासलाई (माचिस) बनाने में किसका प्रयोग किया जाता है?", o: ["सफेद फॉस्फोरस", "लाल फॉस्फोरस", "काला फॉस्फोरस", "पीला फॉस्फोरस"], a: 1, e: "<b>हल:</b> माचिस में लाल फॉस्फोरस (Red Phosphorus) का प्रयोग किया जाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>सफेद फॉस्फोरस हवा में अपने आप जलने लगता है।</li><li>माचिस की तीली पर पोटेशियम क्लोरेट भी लगा होता है।</li><li>सोडियम धातु को मिट्टी के तेल में रखा जाता है।</li><li>फॉस्फोरस हड्डियों के निर्माण के लिए आवश्यक है।</li><li>लाल फॉस्फोरस कम ज्वलनशील होता है।</li></ul>" },
+        { q: "मानव रक्त का कितना प्रतिशत भाग प्लाज्मा (Plasma) होता है?", o: ["40%", "55%", "65%", "70%"], a: 1, e: "<b>हल:</b> मानव रक्त में लगभग 55% भाग तरल प्लाज्मा का होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>प्लाज्मा में लगभग 90-92% पानी होता है।</li><li>रक्त का लाल रंग 'हीमोग्लोबिन' के कारण होता है।</li><li>WBC (सफेद रक्त कोशिकाएं) रोग प्रतिरोधक क्षमता बनाती हैं।</li><li>प्लेटलेट्स रक्त का थक्का जमाने में मदद करती हैं।</li><li>मनुष्य के शरीर में औसतन 5-6 लीटर रक्त होता है।</li></ul>" },
+        { q: "प्रत्येक मानव वृक्क (Kidney) का भार लगभग कितना होता है?", o: ["50 ग्राम", "100 ग्राम", "150 ग्राम", "250 ग्राम"], a: 2, e: "<b>हल:</b> वयस्क मनुष्य की प्रत्येक किडनी का वजन लगभग 150 ग्राम होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>किडनी की कार्यात्मक इकाई 'नेफ्रॉन' है।</li><li>प्रत्येक किडनी में लगभग 10 लाख नेफ्रॉन होते हैं।</li><li>किडनी रक्त से यूरिया को बाहर निकालती है।</li><li>मानव मूत्र का पीला रंग 'यूरोक्रोम' के कारण होता है।</li><li>मशीन द्वारा रक्त साफ करने को डायलिसिस कहते हैं।</li></ul>" },
+        { q: "मनुष्यों में मेरुदंड (Spinal Cord) से कितनी जोड़ी तंत्रिकाएँ (Nerves) निकलती हैं?", o: ["12 जोड़ी", "31 जोड़ी", "33 जोड़ी", "43 जोड़ी"], a: 1, e: "<b>हल:</b> मनुष्य के मेरुदंड से तंत्रिकाओं के 31 जोड़े (कुल 62) निकलते हैं।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>मानव मस्तिष्क से सीधे 12 जोड़ी तंत्रिकाएँ निकलती हैं।</li><li>मेरुदंड शरीर की 'प्रतिवर्ती क्रियाओं' को नियंत्रित करता है।</li><li>तंत्रिका कोशिका (Neuron) शरीर की सबसे लंबी कोशिका है।</li><li>इन कोशिकाओं में पुनरुत्पादन क्षमता सबसे कम होती है।</li><li>रीढ़ की हड्डी में कुल 33 कशेरुकाएँ होती हैं।</li></ul>" },
+        { q: "मानव मस्तिष्क का सबसे बड़ा भाग कौन-सा है?", o: ["सेरेब्रम (प्रमस्तिष्क)", "सेरेबेलम (अनुमस्तिष्क)", "मेडुला ओब्लोंगटा", "थैलेमस"], a: 0, e: "<b>हल:</b> मस्तिष्क का सबसे बड़ा भाग सेरेब्रम (Cerebrum) है, जो बुद्धि और सोचने का केंद्र है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>सेरेबेलम शरीर का संतुलन बनाए रखता है।</li><li>मेडुला ओब्लोंगटा अनैच्छिक क्रियाओं को नियंत्रित करता है।</li><li>हाइपोथैलेमस भूख, प्यास, और तापमान को नियंत्रित करता है।</li><li>वयस्क मस्तिष्क का वजन 1350-1400 ग्राम होता है।</li><li>EEG का उपयोग मस्तिष्क की गतिविधियों को रिकॉर्ड करने में होता है।</li></ul>" },
+        { q: "रक्त समूह (Blood Group) की खोज किसने की थी?", o: ["विलियम हार्वे", "कार्ल लैंडस्टीनर", "रॉबर्ट हुक", "लुई पाश्चर"], a: 1, e: "<b>हल:</b> रक्त समूहों (A, B, O) की खोज कार्ल लैंडस्टीनर ने 1900 में की थी।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>रक्त परिसंचरण तंत्र की खोज विलियम हार्वे ने की थी।</li><li>O- रक्त समूह 'सार्वभौमिक दाता' (Universal Donor) है।</li><li>AB+ 'सार्वभौमिक प्राप्तकर्ता' (Universal Recipient) है।</li><li>रक्त समूहों का निर्धारण एंटीजन (A और B) के आधार पर होता है।</li><li>रॉबर्ट हुक ने कोशिका (Cell) की खोज की थी।</li></ul>" },
+        { q: "सेफ्टी लैम्प (Safety Lamp) के आविष्कारक कौन हैं?", o: ["थॉमस एडिसन", "हम्फ्री डेवी", "जेम्स वाट", "माइकल फैराडे"], a: 1, e: "<b>हल:</b> कोयले की खदानों के लिए 'सेफ्टी लैम्प' का आविष्कार सर हम्फ्री डेवी ने किया था।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>थॉमस एडिसन ने बिजली के बल्ब का आविष्कार किया था।</li><li>जेम्स वाट ने भाप के इंजन का आविष्कार किया था।</li><li>माइकल फैराडे ने डायनेमो की खोज की थी।</li><li>अलेक्जेंडर ग्राहम बेल ने टेलीफोन का आविष्कार किया।</li><li>चार्ल्स बैबेज को कंप्यूटर का पिता कहा जाता है।</li></ul>" },
+        { q: "समुद्र की गहराई किस यंत्र से मापी जाती है?", o: ["अल्टीमीटर", "फैदोमीटर", "बैरोमीटर", "हाइड्रोमीटर"], a: 1, e: "<b>हल:</b> समुद्र की गहराई 'फैदोमीटर' नामक यंत्र से मापी जाती है। (1 फैदम = 6 फीट)।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>अल्टीमीटर का उपयोग विमानों की ऊंचाई मापने में होता है।</li><li>बैरोमीटर से वायुमंडलीय दबाव मापा जाता है।</li><li>हाइड्रोमीटर तरल पदार्थों का विशिष्ट गुरुत्व मापता है।</li><li>लैक्टोमीटर से दूध की शुद्धता मापी जाती है।</li><li>सोनार तकनीक से समुद्र के अंदर छिपी वस्तुओं का पता लगता है।</li></ul>" },
+        { q: "ध्वनि की तीव्रता मापने का मात्रक क्या है?", o: ["डेसीबल", "हर्ट्ज़", "जूल", "वाट"], a: 0, e: "<b>हल:</b> ध्वनि की तीव्रता मापने के लिए डेसीबल (dB) मात्रक का उपयोग किया जाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>ध्वनि की आवृत्ति (Frequency) हर्ट्ज़ (Hz) में मापी जाती है।</li><li>मनुष्य केवल 20 Hz से 20,000 Hz की ध्वनि सुन सकता है।</li><li>20,000 Hz से अधिक की ध्वनि को पराश्रव्य कहते हैं।</li><li>कार्य और ऊर्जा की SI इकाई जूल है।</li><li>शक्ति (Power) की SI इकाई वाट है।</li></ul>" },
+
+        // Hindi (91-100)
+        { q: "'सदैव' शब्द में कौन-सी संधि है?", o: ["गुण संधि", "वृद्धि संधि", "यण संधि", "अयादि संधि"], a: 1, e: "<b>हल:</b> 'सदा + एव'। यहाँ 'आ' और 'ए' मिलकर 'ऐ' बन गए हैं, जो वृद्धि संधि है。<br><br>💡 <b>व्याकरण नियम:</b> जिन शब्दों के बीच में दो मात्राएँ (ै या ौ) आती हैं, वहाँ अधिकतर वृद्धि संधि होती है (जैसे- एकैक, महौषध)।" },
+        { q: "'नीलकंठ' शब्द में कौन-सा समास है?", o: ["बहुव्रीहि", "तत्पुरुष", "अव्ययीभाव", "द्वंद्व"], a: 0, e: "<b>हल:</b> 'नीला है कंठ जिसका अर्थात् शिव'। दोनों पद मिलकर तीसरे की ओर संकेत कर रहे हैं, इसलिए बहुव्रीहि समास है。<br><br>💡 <b>व्याकरण नियम:</b> यदि किसी देवता (दशानन, गजानन, पीतांबर) का नाम आए, तो हमेशा बहुव्रीहि समास ही सही माना जाता है।" },
+        { q: "निम्नलिखित में से कौन-सा शब्द 'कमल' का पर्यायवाची नहीं है?", o: ["पंकज", "जलद", "सरोज", "राजीव"], a: 1, e: "<b>हल:</b> 'जलद' बादल का पर्यायवाची है (जल देने वाला)। कमल को जलज कहा जाता है。<br><br>💡 <b>व्याकरण ट्रिक:</b> पानी के पर्यायवाची के अंत में 'ज' लगाने से कमल (जलज), 'द' लगाने से बादल (जलद), और 'धि' लगाने से समुद्र (जलधि) बन जाता है।" },
+        { q: "'अनुराग' का सही विलोम शब्द क्या है?", o: ["सुहाग", "विराग", "राग", "वैराग्य"], a: 1, e: "<b>हल:</b> 'अनुराग' का अर्थ है प्रेम। इसका विलोम 'विराग' है जिसका अर्थ है मोह भंग होना。<br><br>💡 <b>व्याकरण नियम:</b> 'राग' का विलोम 'द्वेष' होता है। परीक्षा में 'अनुराग' का 'राग' करना एक सामान्य गलती है।" },
+        { q: "'आसमान सिर पर उठाना' मुहावरे का सही अर्थ क्या है?", o: ["बहुत शोर करना", "भारी बोझ उठाना", "बहुत घमंड करना", "असंभव कार्य करना"], a: 0, e: "<b>हल:</b> अर्थ: अत्यधिक शोरगुल करना या उपद्रव मचाना。<br><br>💡 <b>व्याकरण नियम:</b> 'आसमान पर दिमाग होना' = घमंड करना। 'आसमान के तारे तोड़ना' = असंभव कार्य करना।" },
+        { q: "'जो सब कुछ जानता हो' वाक्यांश के लिए एक उपयुक्त शब्द है:", o: ["अज्ञ", "सर्वज्ञ", "विशेषज्ञ", "कृतज्ञ"], a: 1, e: "<b>हल:</b> जो सब कुछ जानता हो उसे 'सर्वज्ञ' कहते हैं。<br><br>💡 <b>व्याकरण:</b> 'अज्ञ' = जो कुछ नहीं जानता। 'कृतज्ञ' = उपकार मानने वाला। 'कृतघ्न' = उपकार न मानने वाला।" },
+        { q: "निम्नलिखित में से किस शब्द की वर्तनी (Spelling) शुद्ध है?", o: ["आशिर्वाद", "आसीर्वाद", "आशीर्वाद", "आशिरवाद"], a: 2, e: "<b>हल:</b> शुद्ध शब्द 'आशीर्वाद' होता है (आशीः + वाद)। र् की ध्वनि व से पहले आती है, इसलिए रेफ व पर लगता है。<br><br>💡 <b>व्याकरण नियम:</b> 'उज्ज्वल' में दोनों 'ज' आधे होते हैं। 'कवयित्री' सही है (कवियत्री गलत है)।" },
+        { q: "'अग्नि' शब्द का तद्भव रूप क्या होगा?", o: ["आग", "अनल", "पावक", "दहन"], a: 0, e: "<b>हल:</b> संस्कृत (तत्सम) 'अग्नि' का हिंदी रूप (तद्भव) 'आग' है。<br><br>💡 <b>व्याकरण नियम:</b> अनल, पावक और दहन अग्नि के पर्यायवाची हैं। तत्सम वे शब्द हैं जो संस्कृत से बिना बदले हिंदी में आए (सूर्य, दुग्ध)।" },
+        { q: "'पेड़ से पत्ता गिरता है' - इस वाक्य में 'पेड़ से' में कौन-सा कारक है?", o: ["कर्म कारक", "करण कारक", "अपादान कारक", "संप्रदान कारक"], a: 2, e: "<b>हल:</b> जब कोई वस्तु अलग होती है (अलगाव का भाव), तो अपादान कारक होता है।<br><br>💡 <b>व्याकरण नियम:</b> 'से' साधन के रूप में करण कारक होता है (पेन <i>से</i> लिखा)। अलग होने, डरने या तुलना में अपादान कारक होता है।" },
+        { q: "हिंदी वर्णमाला में 'अंतस्थ व्यंजन' (Antasth Vyanjan) कौन-से हैं?", o: ["श, ष, स, ह", "क्ष, त्र, ज्ञ, श्र", "य, र, ल, व", "च, छ, ज, झ"], a: 2, e: "<b>हल:</b> य, र, ल, व को अंतस्थ व्यंजन कहा जाता है。<br><br>💡 <b>व्याकरण नियम:</b> 'श, ष, स, ह' ऊष्म व्यंजन हैं। 'क्ष, त्र, ज्ञ, श्र' संयुक्त व्यंजन हैं।" }
+    ];
+
+    let state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 105 * 60, submitted: false };
+    let timerInterval = null;
+    let isPaused = false;
+
+    window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+    function initDashboard() {
+        showScreen('dashboard-screen');
+        let completedData = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) completedData = JSON.parse(dataStr);
+        } catch(e) {}
+
+        if (completedData) {
+            document.getElementById('dash-unattempted').style.display = 'none';
+            document.getElementById('dash-attempted').style.display = 'block';
+            document.getElementById('dash-score-text').innerText = `${completedData.score}/100 Marks`;
+            document.getElementById('dash-progress-bar').style.width = `${completedData.score}%`;
+            document.getElementById('dash-date-text').innerText = `Attempted on ${completedData.date}`;
+        } else {
+            document.getElementById('dash-attempted').style.display = 'none';
+            document.getElementById('dash-unattempted').style.display = 'block';
+        }
+    }
+
+    function startTest() {
+        let saved = null;
+        try {
+            const savedStr = safeGetItem(STORAGE_KEY);
+            if(savedStr) saved = JSON.parse(savedStr);
+        } catch(e){}
+
+        if (saved && !saved.submitted) {
+            state = saved;
+        } else {
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 105 * 60, submitted: false };
+        }
+        initTestEnv();
+    }
+
+    function reattemptTest() {
+        if(confirm("Are you sure you want to start a fresh test? Your active progress will be lost.")) {
+            safeRemoveItem(STORAGE_KEY);
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 105 * 60, submitted: false };
+            initTestEnv();
+        }
+    }
+
+    function initTestEnv() {
+        showScreen('test-screen');
+        renderQuestion();
+        renderPalette();
+        updateStats();
+        
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+        setInterval(() => { if(!state.submitted) safeSetItem(STORAGE_KEY, JSON.stringify(state)); }, 2000);
+    }
+
+    function viewSavedResults() {
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(data) renderResultUI(data);
+    }
+
+    function showDashboard() { initDashboard(); }
+
+    function showScreen(id) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+    }
+
+    function updateTimer() {
+        if(isPaused || state.submitted) return;
+        if(state.time <= 0) { submitTest(); return; }
+        state.time--;
+        const m = Math.floor(state.time / 60), s = state.time % 60;
+        document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+    }
+
+    function toggleTheme() {
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    function renderQuestion() {
+        state.visited[state.currentQ] = true;
+        const q = finalQuestions[state.currentQ];
+        document.getElementById('q-no').innerText = `Question ${state.currentQ + 1}`;
+        document.getElementById('q-text').innerHTML = q.q;
+        let opts = '';
+        q.o.forEach((opt, i) => {
+            const isSel = state.answers[state.currentQ] === i;
+            const selClass = isSel ? 'selected' : '';
+            const charLabel = String.fromCharCode(65 + i);
+            opts += `<div class="glass-panel option ${selClass}" onclick="selectOption(${i})"><div class="opt-label">${charLabel}</div><div style="flex:1;">${opt}</div></div>`;
+        });
+        document.getElementById('options-box').innerHTML = opts;
+        renderPalette();
+        updateStats();
+    }
+
+    function selectOption(index) { state.answers[state.currentQ] = index; renderQuestion(); }
+    function clearResponse() { delete state.answers[state.currentQ]; delete state.marked[state.currentQ]; renderQuestion(); }
+    function markReview() { state.marked[state.currentQ] = true; changeQ(1); }
+    function saveNext() { delete state.marked[state.currentQ]; changeQ(1); }
+
+    function changeQ(step) {
+        const next = state.currentQ + step;
+        if(next >= 0 && next < finalQuestions.length) { state.currentQ = next; renderQuestion(); }
+    }
+
+    function renderPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        finalQuestions.forEach((_, i) => {
+            let cls = 's-0';
+            if(state.visited[i]) {
+                if(state.answers[i] !== undefined && state.marked[i]) cls = 's-4';
+                else if(state.marked[i]) cls = 's-3';
+                else if(state.answers[i] !== undefined) cls = 's-1';
+                else cls = 's-2';
+            }
+            const active = i === state.currentQ ? 'active' : '';
+            grid.innerHTML += `<button class="p-btn ${cls} ${active}" onclick="state.currentQ = ${i}; renderQuestion();">${i + 1}</button>`;
+        });
+    }
+
+    function updateStats() {
+        let ans=0, notans=0, notvis=0, mark=0;
+        finalQuestions.forEach((_, i) => {
+            if(!state.visited[i]) notvis++;
+            else if(state.marked[i]) mark++;
+            else if(state.answers[i] !== undefined) ans++;
+            else notans++;
+        });
+        document.getElementById('c-ans').innerText = ans; document.getElementById('c-notans').innerText = notans;
+        document.getElementById('c-notvis').innerText = notvis; document.getElementById('c-mark').innerText = mark;
+    }
+
+    function submitTest() {
+        if(!confirm("Are you sure you want to submit the test?")) return;
+        state.submitted = true; clearInterval(timerInterval);
+        let score=0, attempt=0, wrong=0;
+        finalQuestions.forEach((q, i) => {
+            if(state.answers[i] !== undefined) {
+                attempt++;
+                if(state.answers[i] === q.a) score++; else wrong++;
+            }
+        });
+        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const completedData = { score: score, attempted: attempt, wrong: wrong, time: state.time, date: today, userAnswers: state.answers };
+        
+        safeSetItem(COMPLETED_KEY, JSON.stringify(completedData));
+        safeRemoveItem(STORAGE_KEY);
+        
+        renderResultUI(completedData);
+    }
+
+    function renderResultUI(data) {
+        showScreen('result-screen');
+        const acc = data.attempted > 0 ? ((data.score / data.attempted) * 100).toFixed(1) : 0;
+        document.getElementById('r-score').innerText = `${data.score}`;
+        document.getElementById('r-attempt').innerText = data.attempted;
+        document.getElementById('r-wrong').innerText = data.wrong;
+        document.getElementById('r-acc').innerText = `${acc}%`;
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(!data) return;
+
+        let html = '';
+        finalQuestions.forEach((q, i) => {
+            const uAns = data.userAnswers[i];
+            let optHtml = '';
+            q.o.forEach((opt, oIdx) => {
+                let cls = '', checkMark = '';
+                if(oIdx === q.a) { cls = 'correct'; checkMark = ' ✔'; }
+                else if(oIdx === uAns && uAns !== q.a) { cls = 'wrong'; checkMark = ' ❌ (Your Answer)'; }
+                optHtml += `<div class="glass-panel sol-opt ${cls}"><strong>${String.fromCharCode(65 + oIdx)}.</strong> <div style="flex:1;">${opt} ${checkMark}</div></div>`;
+            });
+            let statusText = uAns !== undefined ? (uAns === q.a ? "हल किया (Correct)" : "हल किया (Incorrect)") : "हल नहीं किया (Unattempted)";
+            html += `<div class="glass-panel sol-card"><div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--primary);">प्र ${i+1}. ${q.q}</div>${optHtml}<div style="font-weight:bold; margin:15px 0; color:var(--text-muted);">Status: ${statusText}</div><div class="glass-panel sol-exp">${q.e}</div></div>`;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+</script>
+</body>
+</html>
