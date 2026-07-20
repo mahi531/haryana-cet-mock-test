@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Haryana GK Part 1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Beautiful Moving Gradient & Glassmorphism Theme */
+        :root {
+            --bg-grad-1: #4facfe; --bg-grad-2: #00f2fe; --bg-grad-3: #a18cd1; --bg-grad-4: #fbc2eb;
+            --glass-bg: rgba(255, 255, 255, 0.9); --glass-border: rgba(255, 255, 255, 0.6); --glass-shadow: rgba(31, 38, 135, 0.15);
+            --text-main: #1f2937; --text-muted: #64748b;
+            --primary: #2563eb; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --purple: #8b5cf6;
+            --option-bg: rgba(243, 244, 246, 0.8); --option-selected: rgba(219, 234, 254, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+        [data-theme="dark"] {
+            --bg-grad-1: #0f2027; --bg-grad-2: #203a43; --bg-grad-3: #2c5364; --bg-grad-4: #141e30;
+            --glass-bg: rgba(17, 25, 40, 0.85); --glass-border: rgba(255, 255, 255, 0.15); --glass-shadow: rgba(0, 0, 0, 0.5);
+            --text-main: #f9fafb; --text-muted: #94a3b8;
+            --primary: #3b82f6; 
+            --option-bg: rgba(55, 65, 81, 0.7); --option-selected: rgba(30, 58, 138, 0.8);
+            --card-bg: rgba(31, 41, 55, 0.95);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; touch-action: manipulation;}
+        
+        body { 
+            height: 100vh; height: 100dvh; 
+            background: linear-gradient(45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3), var(--bg-grad-4)); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+            color: var(--text-main); 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 var(--glass-shadow); border-radius: 12px; }
+        
+        .btn { font-family: 'Poppins', sans-serif; background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;}
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-warning { background: var(--warning); color: #fff;}
+        .btn-clear { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-mark { background: var(--purple); color: white; }
+        .btn-prev { background: var(--text-muted); color: white; }
+
+        /* Screens */
+        .screen { display: none; flex-direction: column; height: 100%; width: 100vw; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; }
+
+        /* --- DASHBOARD UI --- */
+        #dashboard-screen { overflow-y: auto; background: var(--card-bg); align-items: center; padding-bottom: 30px;}
+        
+        .dash-header-top { background: #1e293b; color: white; width: 100%; padding: 15px 20px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 15px; position: sticky; top:0; z-index: 100;}
+        
+        .dash-content { width: 100%; max-width: 800px; padding: 20px; }
+        .section-title { font-weight: 600; color: var(--primary); margin: 15px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 15px; }
+        
+        .dash-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--glass-border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .test-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text-main);}
+        .test-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        
+        .progress-container { width: 100%; height: 6px; background: var(--glass-border); border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #fbc02d; width: 0%; transition: width 0.5s ease;}
+        
+        .dash-actions { display: flex; gap: 12px; margin-top: 15px; }
+        .dash-actions .btn { flex: 1; padding: 10px; font-size: 14px; border-radius: 8px;}
+        
+        .syllabus-footer { display: flex; justify-content: space-between; font-size: 12px; color: var(--primary); border-top: 1px solid var(--glass-border); padding-top: 12px; margin-top: 15px; }
+
+        /* --- TEST SCREEN UI --- */
+        header.test-head { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-bottom: 10px; margin-inline: 10px; }
+        .header-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: 700; background: var(--card-bg); border: 1px solid var(--glass-border); color: var(--danger); padding: 5px 12px; border-radius: 20px; }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 0 10px 10px 10px; }
+        .question-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        .q-header { padding: 10px 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
+        .q-body { flex: 1; padding: 15px; overflow-y: auto; font-size: 16px; line-height: 1.6; }
+        
+        .options-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;}
+        .option { padding: 12px; border: 2px solid var(--glass-border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--option-bg); font-weight: 500; font-size: 15px;}
+        .option.selected { border-color: var(--primary); background: var(--option-selected); color: var(--primary); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--glass-border); display: flex; justify-content: center; align-items: center; font-weight: bold; }
+        .option.selected .opt-label { background: var(--primary); color: white; border-color: var(--primary);}
+        
+        .q-footer { padding: 10px; border-top: 1px solid var(--glass-border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-radius: 0 0 12px 12px; }
+
+        /* --- PALETTE UI --- */
+        .palette-section { width: 320px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .palette-header { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; font-weight: bold; font-size: 15px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; font-size: 12px; border-bottom: 1px solid var(--glass-border); font-weight: 500;}
+        .stat-item { display: flex; align-items: center; gap: 6px;}
+        .badge { width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 10px; font-weight: bold;}
+        .s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);} 
+        .s-1 { background: var(--success); } .s-2 { background: var(--danger); } .s-3 { background: var(--purple); } 
+        .s-4 { background: var(--primary); position: relative; }
+        .s-4::after { content: '✔'; position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; background: white; color: var(--primary); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 8px; }
+        
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .p-btn.s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);}
+        .p-btn.active { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.1);}
+        .submit-area { padding: 10px; border-top: 1px solid var(--glass-border); border-radius: 0 0 12px 12px;}
+
+        /* --- RESULTS & SOLUTIONS UI --- */
+        #result-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        #solution-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        .sol-card { padding: 20px; margin-bottom: 15px; width: 100%; max-width: 800px; }
+        .sol-opt { padding: 10px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; gap: 10px; align-items: center; font-size: 15px; background: var(--card-bg);}
+        .sol-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); text-decoration: line-through;}
+        .sol-exp { margin-top: 15px; padding: 15px; background: rgba(37, 99, 235, 0.05); border: 1px solid var(--glass-border); border-left: 4px solid var(--primary); border-radius: 8px; font-size: 14.5px; line-height: 1.6; }
+        .sol-exp ul { padding-left: 20px; margin-top: 8px; }
+        .sol-exp li { margin-bottom: 6px; }
+
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+
+        @media (max-width: 992px) {
+            .main-area { flex-direction: column; overflow-y: auto;}
+            .question-section { flex: none; min-height: 450px;}
+            .palette-section { width: 100%; flex: none; min-height: 350px;}
+            .q-footer .btn { padding: 10px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="dashboard-screen" class="screen active">
+        <div class="dash-header-top">
+            <span style="cursor: pointer;" onclick="alert('Going Back')">&#8592;</span>
+            Testbook - Mock Tests
+        </div>
+
+        <div class="dash-content">
+            <!-- Unattempted State -->
+            <div id="dash-unattempted" style="display: none;">
+                <div class="section-title">Suggested Next Test</div>
+                <div class="dash-card">
+                    <div class="test-title">Haryana GK Part 1</div>
+                    <div class="test-meta">
+                        <span>25 Qs • 25 mins • 25.0 Marks</span>
+                    </div>
+                    <div class="test-meta" style="justify-content: flex-end;">
+                        <button class="btn btn-outline" style="padding: 6px 20px; border-radius: 20px;" onclick="startTest()">Start Test 🚀</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span>Syllabus: Haryana History & Mahabharat GK</span>
+                        <span style="color:var(--success);">🔗 Share</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attempted State -->
+            <div id="dash-attempted" style="display: none;">
+                <div class="dash-card">
+                    <div class="test-title">Haryana GK Part 1</div>
+                    <div class="test-meta" style="margin-bottom: 5px;">
+                        <span id="dash-score-text" style="font-size: 15px; color: var(--text-muted);">0/25.0 Marks . 1.5K/2.9K Rank</span>
+                    </div>
+                    
+                    <!-- Progress Bar matching screenshot style -->
+                    <div class="progress-container"><div class="progress-fill" id="dash-progress-bar"></div></div>
+
+                    <div class="dash-actions">
+                        <button class="btn btn-outline" onclick="viewSavedResults()">View Results</button>
+                        <button class="btn btn-outline" onclick="reattemptTest()">Reattempt &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAUSE OVERLAY -->
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px; font-size: 2rem;">Test Paused ⏸️</h2>
+        <button class="btn btn-primary" style="font-size: 1.2rem; padding: 10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+    </div>
+
+    <!-- TEST SCREEN -->
+    <div id="test-screen" class="screen">
+        <header class="glass-panel test-head">
+            <div class="header-title">Haryana GK Part 1</div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="toggleTheme()">🌓 Theme</button>
+                <button class="btn btn-warning" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="togglePause()">⏸ Pause</button>
+                <div class="timer-box">⏱ <span id="timer-display">25:00</span></div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="glass-panel question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--success); font-weight:bold;">+1 <span style="color: var(--text-muted); font-weight:normal;">|</span> <span style="color: var(--danger);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <button class="btn btn-mark" onclick="markReview()">Mark & Next</button>
+                    <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                    <button class="btn btn-prev" onclick="changeQ(-1)">Previous</button>
+                    <button class="btn btn-primary" onclick="saveNext()">Save & Next</button>
+                </div>
+            </div>
+
+            <div class="glass-panel palette-section">
+                <div class="palette-header">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">25</div> Not Visit</div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn btn-primary" style="width: 100%; background: var(--success); font-size: 15px; padding: 10px;" onclick="submitTest()">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen" class="screen">
+        <div style="width: 100%; max-width: 800px; margin-bottom: 15px;"><button class="btn btn-clear" onclick="showDashboard()">&#8592; Back to Dashboard</button></div>
+        <div class="glass-panel" style="max-width: 800px; width: 100%; padding: 25px;">
+            <h1 style="color: var(--primary); text-align: center;">Test Submitted Successfully! 🎉</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 25px 0;">
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-score" style="color: var(--primary); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Score</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-attempt" style="color: var(--success); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Attempted</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-wrong" style="color: var(--danger); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Wrong</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-acc" style="color: var(--purple); font-size: 1.8rem;">0%</h2><p style="color: var(--text-muted); font-size:12px;">Accuracy</p></div>
+            </div>
+            <button class="btn btn-primary" style="width:100%; font-size: 15px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+        </div>
+    </div>
+
+    <!-- SOLUTION SCREEN -->
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%; margin:0 auto;">
+            <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 12px 15px; position: sticky; top: 5px; z-index: 10;">
+                <h3 style="color: var(--primary);">Detailed Solutions</h3>
+                <button class="btn btn-clear" style="padding: 5px 10px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+            </div>
+            <div id="sol-container"></div>
+        </div>
+    </div>
+
+<script>
+    // Storage Keys
+    const MEMORY_STORE = {};
+    function safeGetItem(key) { try { return localStorage.getItem(key) || MEMORY_STORE[key] || null; } catch(e) { return MEMORY_STORE[key] || null; } }
+    function safeSetItem(key, value) { try { localStorage.setItem(key, value); } catch(e) {} MEMORY_STORE[key] = value; }
+    function safeRemoveItem(key) { try { localStorage.removeItem(key); } catch(e) {} delete MEMORY_STORE[key]; }
+
+    const STORAGE_KEY = 'haryana_gk_part1_active'; 
+    const COMPLETED_KEY = 'haryana_gk_part1_comp';
+
+    // 25 Questions with 5-6 Detailed Extra Facts (Matching Part 9 format)
+    const finalQuestions = [
+        { q: "हरियाणा में निम्नलिखित में से कौनसा स्थल, किवदंतियों के अनुसार वह स्थान है जहाँ भगवान कृष्ण ने भगवदगीता का उपदेश दिया था?", o: ["बड़खल झील", "ज्योतिसर", "मनसा देवी मंदिर", "बाबा रामेश्वर दास मंदिर"], a: 1, e: "<b>हल:</b> ज्योतिसर<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>ज्योतिसर तीर्थ कुरुक्षेत्र-पेहोवा मार्ग पर स्थित है। 'ज्योति' का अर्थ प्रकाश और 'सर' का अर्थ सरोवर है।</li><li>मान्यता है कि यहीं पर एक प्राचीन वट-वृक्ष (बरगद के पेड़) के नीचे भगवान कृष्ण ने अर्जुन को गीता का ज्ञान दिया था।</li><li>यह कुरुक्षेत्र के सबसे पवित्र और प्राचीन तीर्थ स्थलों में से एक है।</li><li>यहां शंकराचार्य द्वारा स्थापित एक प्राचीन शिव मंदिर भी मौजूद है।</li><li>कुरुक्षेत्र विकास बोर्ड ने यहां 'लाइट एंड साउंड शो' (Light and Sound Show) की भी व्यवस्था की है।</li></ul>" },
+        { q: "महाभारत मूलतः निम्न में से किस नाम से जाना जाता था?", o: ["धर्म भारत", "पांचाली कथा", "जय संहिता", "जय भारत"], a: 2, e: "<b>हल:</b> जय संहिता<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>शुरुआत में जब इसमें केवल 8800 श्लोक थे, तब इसे 'जय संहिता' (विजय का ग्रंथ) कहा जाता था।</li><li>श्लोकों की संख्या 24,000 होने पर इसे 'भारत' कहा जाने लगा।</li><li>जब श्लोकों की संख्या 1 लाख (शतसाहस्री संहिता) पूरी हो गई, तब इसे 'महाभारत' नाम दिया गया।</li><li>यह विश्व का सबसे बड़ा और लंबा महाकाव्य (Epic) है।</li><li>महाभारत में कुल 18 पर्व (अध्याय) हैं, जिनमें भीष्म पर्व सबसे महत्वपूर्ण माना जाता है।</li></ul>" },
+        { q: "निम्न में से कौन-सा/से शक्तिशाली राजवंश, हरियाणा के इतिहास से संबंधित हैं/हैं?", o: ["पुरु वंश", "भरत वंश", "कुरु वंश", "इनमें से सभी"], a: 3, e: "<b>हल:</b> इनमें से सभी<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>प्राचीन काल में हरियाणा क्षेत्र पर पुरु, भरत और कुरु तीनों शक्तिशाली राजवंशों का शासन रहा है।</li><li>राजा कुरु के नाम पर ही कुरुक्षेत्र (कुरुओं की भूमि) का नाम पड़ा।</li><li>माना जाता है कि राजा कुरु ने ही कुरुक्षेत्र में हल चलाकर इसे कृषि योग्य बनाया था।</li><li>भरत वंश के राजा भरत के नाम पर ही हमारे देश का नाम 'भारत' पड़ा।</li><li>हस्तिनापुर कुरु वंश की राजधानी हुआ करती थी।</li></ul>" },
+        { q: "गीता जयंती समारोह किस माह में मनाया जाता है?", o: ["कार्तिक में", "मार्गशीर्ष में", "आश्विन में", "श्रावण में"], a: 1, e: "<b>हल:</b> मार्गशीर्ष में<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>हिन्दू पंचांग के अनुसार मार्गशीर्ष (अगहन) माह के शुक्ल पक्ष की एकादशी को गीता जयंती मनाई जाती है।</li><li>इस दिन को 'मोक्षदा एकादशी' भी कहा जाता है, क्योंकि इसी दिन गीता का ज्ञान दिया गया था।</li><li>कुरुक्षेत्र में इस अवसर पर 'अंतरराष्ट्रीय गीता महोत्सव' का भव्य आयोजन होता है।</li><li>ग्रेगोरियन कैलेंडर के अनुसार यह आमतौर पर नवंबर या दिसंबर महीने में आता है।</li><li>इस महोत्सव में शिल्प मेला, सरस मेला और सांस्कृतिक कार्यक्रमों का भी आयोजन किया जाता है।</li></ul>" },
+        { q: "महाकाव्य 'महाभारत' के रचयिता कौन हैं?", o: ["माघ", "कालिदास", "महर्षि वाल्मीकि", "महर्षि वेदव्यास"], a: 3, e: "<b>हल:</b> महर्षि वेदव्यास<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>महर्षि वेदव्यास (जिनका पूरा नाम कृष्ण द्वैपायन था) ने महाभारत की रचना की थी।</li><li>मान्यताओं के अनुसार उन्होंने इसकी रचना कुरुक्षेत्र में पवित्र सरस्वती नदी के किनारे की थी।</li><li>वेदव्यास जी श्लोक बोलते जाते थे और भगवान श्री गणेश उन्हें लिखते जाते थे।</li><li>महर्षि वाल्मीकि ने 'रामायण' की रचना की थी, न कि महाभारत की।</li><li>उत्तराखंड के बद्रीनाथ में स्थित 'व्यास गुफा' को भी महाभारत के लेखन स्थल के रूप में जाना जाता है।</li></ul>" },
+        { q: "महाभारत के 'नकुल दिग्विजयम्' शीर्षक में हरियाणा के किस शहर का वर्णन प्राप्त होता है?", o: ["सिरसा", "फतेहाबाद", "नारनौल", "रोहतक"], a: 3, e: "<b>हल:</b> रोहतक<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>महाभारत में नकुल द्वारा पश्चिमी दिशा की विजय यात्रा (दिग्विजय) का वर्णन है, जिसमें रोहतक (प्राचीन नाम: रोहीतक) का विशेष उल्लेख है।</li><li>रोहतक उस समय बहुधान्यक (हरियाणा) क्षेत्र का एक अत्यंत समृद्ध और महत्वपूर्ण नगर था।</li><li>नकुल दिग्विजयम् में सिरसा का भी 'शैरीषकम' (Sairishakam) नाम से उल्लेख मिलता है।</li><li>रोहतक योद्धाओं (यौधेय गणराज्य) का भी एक प्रमुख केंद्र रहा है।</li><li>रोहतक की स्थापना राजा रोहताश भानु द्वारा की गई मानी जाती है।</li></ul>" },
+        { q: "प्रारंभिक ऐतिहासिक काल में हरियाणा किस महाजनपद का हिस्सा हुआ करता था?", o: ["कोसल", "अंग", "मगध", "कुरु"], a: 3, e: "<b>हल:</b> कुरु<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>प्राचीन भारत के 16 महाजनपदों में कुरु एक अत्यंत शक्तिशाली और प्रमुख महाजनपद था।</li><li>कुरु महाजनपद की राजधानी इंद्रप्रस्थ (वर्तमान दिल्ली) और हस्तिनापुर थी।</li><li>हरियाणा का अधिकांश भाग (विशेषकर उत्तरी हरियाणा) इसी कुरु महाजनपद के अंतर्गत आता था।</li><li>बौद्ध ग्रंथ 'अंगुत्तर निकाय' में इन 16 महाजनपदों का उल्लेख मिलता है।</li><li>कुरुओं के अलावा, दक्षिणी हरियाणा का कुछ हिस्सा मत्स्य और शूरसेन महाजनपद से भी लगता था।</li></ul>" },
+        { q: "कुरुक्षेत्र के युद्ध का वर्णन धृतराष्ट्र को किसने सुनाया था?", o: ["शंकराचार्य द्वारा", "माधवाचार्य द्वारा", "संजय द्वारा", "वल्लभाचार्य द्वारा"], a: 2, e: "<b>हल:</b> संजय द्वारा<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>संजय हस्तिनापुर के अंधे राजा धृतराष्ट्र के मंत्री, सलाहकार और सारथी थे।</li><li>महर्षि वेदव्यास ने संजय को युद्ध देखने के लिए 'दिव्य दृष्टि' (Divine Vision) का वरदान दिया था।</li><li>इसी दिव्य दृष्टि से वे राजमहल में बैठे-बैठे ही कुरुक्षेत्र युद्ध का सजीव और आँखों-देखा वर्णन धृतराष्ट्र को सुना रहे थे।</li><li>भगवदगीता के श्लोक भी संजय द्वारा धृतराष्ट्र को सुनाए गए संवाद का ही हिस्सा हैं।</li><li>संजय गावलगण नामक सूत के पुत्र थे, इसलिए इन्हें गावलगणि भी कहा जाता है।</li></ul>" },
+        { q: "गीता का प्रथम श्लोक 'कुरुक्षेत्र' की व्याख्या किस रूप में करता है?", o: ["शिक्षाक्षेत्र", "रणक्षेत्र", "युद्धक्षेत्र", "धर्मक्षेत्र"], a: 3, e: "<b>हल:</b> धर्मक्षेत्र<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>भगवदगीता का पहला श्लोक है: 'धर्मक्षेत्रे कुरुक्षेत्रे समवेता युयुत्सवः...' (अर्थात धर्मभूमि कुरुक्षेत्र में युद्ध की इच्छा से इकट्ठे हुए)।</li><li>यह श्लोक कौरव पिता धृतराष्ट्र द्वारा संजय से पूछा गया पहला और गीता का एकमात्र श्लोक है।</li><li>कुरुक्षेत्र को धर्म की स्थापना के लिए लड़े गए युद्ध के कारण 'धर्मक्षेत्र' कहा गया।</li><li>यह भूमि प्राचीन काल से ही ऋषियों और मुनियों की तपस्थली रही है।</li><li>कुरुक्षेत्र को वैदिक सभ्यता का पालना (Cradle of Vedic Civilization) भी कहा जाता है।</li></ul>" },
+        { q: "प्राचीनकाल में हरियाणा राज्य अन्य किस नाम से जाना जाता था?", o: ["ब्रह्मावर्त प्रदेश", "ब्रह्मर्षि प्रदेश", "ब्रह्मोपदेश", "ये सभी"], a: 3, e: "<b>हल:</b> ये सभी<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>मनुस्मृति के अनुसार, सरस्वती और दृषद्वती नदियों के बीच स्थित पवित्र प्रदेश को 'ब्रह्मावर्त' कहा जाता था।</li><li>देवताओं द्वारा उत्पन्न होने के कारण इस भूमि को 'ब्रह्मोपदेश' कहा गया।</li><li>महान ऋषियों और मुनियों की तपोभूमि होने के कारण इसे 'ब्रह्मर्षि प्रदेश' भी कहा जाता था।</li><li>ऋग्वेद में इसे 'रज हरियाणे' कहा गया है।</li><li>महाभारत काल में इसे 'बहुधान्यक' (अत्यधिक अनाज वाली भूमि) कहा जाता था।</li></ul>" },
+        { q: "महाभारत काल से सदियों पहले कुरु वंश के आर्यों के काल को निम्नलिखित में से किस युग की शुरूआत के साथ चिह्नित किया गया था?", o: ["कृषि युग", "ताम्र युग", "लौह युग", "धातु युग"], a: 0, e: "<b>हल:</b> कृषि युग<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>पौराणिक कथाओं के अनुसार, राजा कुरु ने कुरुक्षेत्र की भूमि पर स्वयं सोने का हल चलाकर इसे कृषि योग्य बनाया था।</li><li>कुरुओं द्वारा कृषि की शुरुआत करने के कारण इस काल को 'कृषि युग' (Agriculture Era) की शुरुआत माना जाता है।</li><li>कुरुओं द्वारा उपजाई गई इस भूमि को 'आदि रूपा' भी कहा जाता था।</li><li>यही कारण है कि आज भी हरियाणा कृषि उत्पादन (विशेषकर गेहूं) में अग्रणी है।</li><li>हरियाणा को 'भारत की गेहूं की टोकरी' भी कहा जाता है।</li></ul>" },
+        { q: "कुल वेदों की संख्या कितनी है?", o: ["5", "4", "2", "3"], a: 1, e: "<b>हल:</b> 4<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>सनातन धर्म में वेदों की कुल संख्या 4 है - ऋग्वेद, यजुर्वेद, सामवेद और अथर्ववेद।</li><li>इनमें 'ऋग्वेद' सबसे प्राचीन है, जिसमें देवताओं की स्तुति और गायत्री मंत्र का उल्लेख है।</li><li>'सामवेद' को भारतीय संगीत का जनक माना जाता है।</li><li>'यजुर्वेद' में यज्ञों के नियम और कर्मकांडों का वर्णन है।</li><li>'अथर्ववेद' में तंत्र-मंत्र, जादू-टोना और आयुर्वेद चिकित्सा का वर्णन है।</li></ul>" },
+        { q: "हरियाणा का सर्वप्रथम उल्लेख किस ग्रंथ में मिलता है?", o: ["ऋग्वेद", "सामवेद", "यजुर्वेद", "अथर्ववेद"], a: 0, e: "<b>हल:</b> ऋग्वेद<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>हरियाणा क्षेत्र का सबसे प्राचीन और प्रथम उल्लेख विश्व के सबसे पुराने ग्रंथ 'ऋग्वेद' में मिलता है।</li><li>ऋग्वेद में इस पवित्र क्षेत्र को 'रज हरियाणे' (Raj Haryane) के नाम से संबोधित किया गया है।</li><li>इसके बाद बाणभट्ट द्वारा रचित 'हर्षचरित' में इस क्षेत्र को 'श्रीकंठ जनपद' कहा गया।</li><li>दसवीं शताब्दी में पुष्पदंत द्वारा रचित 'महापुराण' में पहली बार 'हरियाणु' शब्द का प्रयोग हुआ।</li><li>स्कंद पुराण में इसे 'हरियाला' (Hariyala) कहा गया है।</li></ul>" },
+        { q: "किस काल में हरियाणा को 'मध्य देश' कहा जाता था?", o: ["पूर्व वैदिक काल", "पुरापाषाण काल", "उत्तर वैदिक काल", "उत्तर पाषाण काल"], a: 2, e: "<b>हल:</b> उत्तर वैदिक काल<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>उत्तर वैदिक काल में आर्यों का विस्तार पंजाब और हरियाणा से आगे गंगा-यमुना दोआब तक हो गया था।</li><li>इस भौगोलिक विस्तार के बाद, आर्यों के मुख्य निवास क्षेत्र (हरियाणा-पश्चिमी यूपी) को 'मध्य देश' (Middle Country) की संज्ञा दी जाने लगी।</li><li>इस काल में कुरु और पांचाल इस 'मध्य देश' के सबसे प्रमुख और शक्तिशाली राज्य बन गए थे।</li><li>इसी समय लोहे का व्यापक उपयोग शुरू हुआ, जिससे जंगलों को साफ कर कृषि का विस्तार हुआ।</li><li>ब्राह्मण ग्रंथों और उपनिषदों की रचना भी इसी काल में हुई थी।</li></ul>" },
+        { q: "'विचार सागर' नामक पुस्तक किसने लिखी है?", o: ["बनारसी दास", "ऊधो दास", "हरि दास", "निश्चल दास"], a: 3, e: "<b>हल:</b> निश्चल दास<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>संत निश्चल दास हरियाणा के एक बहुत ही प्रसिद्ध दादूपंथी संत और वेदान्त दर्शन के प्रकांड विद्वान थे।</li><li>उनका जन्म हरियाणा के रोहतक/हिसार क्षेत्र (किढ़ौली गाँव) में हुआ था।</li><li>'विचार सागर' उनकी सबसे प्रसिद्ध और महान रचना है जो हिंदी भाषा में वेदान्त दर्शन को समझाती है।</li><li>यह ग्रंथ साधुओं और संन्यासियों के बीच वेदान्त को समझने के लिए अत्यधिक लोकप्रिय है।</li><li>इन्होंने 'वृत्ति प्रभाकर' और 'युक्ति प्रकाश' नामक अन्य महत्वपूर्ण ग्रंथों की भी रचना की थी।</li></ul>" },
+        { q: "करनाल के पास किस जगह योद्धा दुर्योधन ने स्वयं को पाराशर ताल में तब तक छिपाकर रखा था जब तक कृष्ण के उपहास से उसे बाहर नहीं निकाला?", o: ["तारोओरी", "बहलोलपुर", "आस्थली", "इनमें से कोई नहीं"], a: 1, e: "<b>हल:</b> बहलोलपुर<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>महाभारत युद्ध के अंतिम दिन (18वें दिन) अपनी सारी सेना नष्ट होने पर दुर्योधन पानी में छिप गया था।</li><li>दुर्योधन को 'जलस्तम्भन' (पानी में सांस रोककर रहने की) विद्या आती थी, जिसका प्रयोग उसने पाराशर ताल में किया।</li><li>यह स्थान हरियाणा के करनाल जिले के 'बहलोलपुर' गाँव में स्थित पाराशर तीर्थ माना जाता है।</li><li>श्री कृष्ण और पांडवों के ललकारने (उपहास करने) पर वह बाहर आया।</li><li>इसके बाद ही भीम और दुर्योधन के बीच भयंकर गदा युद्ध हुआ, जिसमें दुर्योधन मारा गया।</li></ul>" },
+        { q: "कपिध्वज किसका दूसरा नाम है?", o: ["कृष्ण", "बलराम", "अर्जुन", "कर्ण"], a: 2, e: "<b>हल:</b> अर्जुन<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>कुरुक्षेत्र युद्ध में अर्जुन के रथ की ध्वजा (झंडे) पर वानर रूप में स्वयं हनुमान जी विराजमान थे।</li><li>'कपि' का अर्थ वानर और 'ध्वज' का अर्थ झंडा होता है, इसलिए अर्जुन को 'कपिध्वज' कहा जाता है।</li><li>अर्जुन के पास 'गांडीव' नामक प्रसिद्ध धनुष था।</li><li>अर्जुन को सव्यसाची (बाएं हाथ से भी बाण चलाने वाला), पार्थ और धनंजय भी कहा जाता है।</li><li>अर्जुन देवराज इंद्र और माता कुंती के पुत्र थे।</li></ul>" },
+        { q: "कुरुक्षेत्र के किस मन्दिर की दीवारों पर भगवद्गीता के सभी श्लोक लिखे हुए हैं?", o: ["वाल्मीकि मन्दिर", "नारायण मन्दिर", "ज्योतिसर मन्दिर", "बिड़ला मन्दिर"], a: 3, e: "<b>हल:</b> बिड़ला मन्दिर<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>इस भव्य मंदिर का निर्माण 1952 में स्वर्गीय श्री जुगल किशोर बिड़ला द्वारा करवाया गया था।</li><li>यह मंदिर कुरुक्षेत्र-पेहोवा मार्ग (ब्रह्म सरोवर के पास) पर स्थित है।</li><li>इसकी सबसे बड़ी विशेषता यह है कि इसकी लाल पत्थर (Red Marble) की दीवारों पर गीता के सभी 18 अध्याय (700 श्लोक) उकेरे गए हैं।</li><li>मंदिर परिसर में भगवान कृष्ण द्वारा अर्जुन को गीता उपदेश देते हुए एक विशाल रथ की संगमरमर की मूर्ति भी है।</li><li>इस मंदिर का नाम 'भगवद्गीता मंदिर' भी है।</li></ul>" },
+        { q: "दुनिया की सबसे बड़ी भगवद्गीता को निम्न में से किस मंदिर में रखा गया है?", o: ["माता काली देवी मंदिर", "इस्कॉन श्री कृष्ण अर्जुन मंदिर", "भीमेश्वरी देवी मंदिर", "श्री हनुमान मंदिर"], a: 1, e: "<b>हल:</b> इस्कॉन श्री कृष्ण अर्जुन मंदिर<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>यह विशाल और भव्य इस्कॉन (ISKCON) मंदिर कुरुक्षेत्र में स्थित है।</li><li>यहाँ रखी गीता (Astounding Bhagavad Gita) दुनिया की सबसे बड़ी और भारी भगवद्गीता है।</li><li>इस गीता का वजन लगभग 800 किलोग्राम (800 kg) है और यह 2.8 मीटर लंबी है।</li><li>इसे इटली (मिलान शहर) में एक विशेष सिंथेटिक, वाटरप्रूफ और अनटियरेबल (न फटने वाले) कागज पर छापा गया था।</li><li>इसका अनावरण प्रधानमंत्री नरेंद्र मोदी जी द्वारा किया गया था।</li></ul>" },
+        { q: "महाभारत काल में हरियाणा निम्नलिखित में से कौन से नाम से जाना जाता था?", o: ["हरितदेश", "हरितप्रदेश", "बहुधान्यक", "हरितधान्यक"], a: 2, e: "<b>हल:</b> बहुधान्यक<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>'बहुधान्यक' का शाब्दिक अर्थ है - 'अत्यंत समृद्ध भूमि' या वह स्थान जहाँ अत्यधिक अनाज पैदा होता हो।</li><li>महाभारत में हरियाणा क्षेत्र की कृषि समृद्धि को दर्शाने के लिए इस शब्द का प्रयोग किया गया था।</li><li>हरियाणा में मिले योद्धाओं (यौधेय गणराज्य) के सिक्कों पर भी 'बहुधान्यक' शब्द अंकित मिला है, जो इसकी प्राचीनता प्रमाणित करता है।</li><li>आज भी हरियाणा 'भारत की गेहूं की टोकरी' के रूप में अपनी बहुधान्यक पहचान बनाए हुए है।</li><li>महाभारत काल में कुरुओं द्वारा कृषि योग्य बनाई गई भूमि को 'आदि रूपा' भी कहा जाता था।</li></ul>" },
+        { q: "महाभारत की लड़ाई कितने दिन लड़ी गई?", o: ["8 दिन", "10 दिन", "15 दिन", "18 दिन"], a: 3, e: "<b>हल:</b> 18 दिन<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>कौरवों और पांडवों के बीच कुरुक्षेत्र की पवित्र भूमि पर लड़ा गया यह महायुद्ध 18 दिनों तक चला था।</li><li>इस युद्ध में कुल 18 अक्षौहिणी सेनाओं (11 कौरव + 7 पांडव) ने भाग लिया था।</li><li>इसी '18' संख्या के महत्व के कारण महर्षि वेदव्यास ने महाभारत महाकाव्य को 18 'पर्वों' (अध्यायों) में विभाजित किया है।</li><li>भगवदगीता में भी कुल 18 अध्याय ही हैं।</li><li>युद्ध के 10वें दिन भीष्म पितामह तीरों की शय्या पर गिरे थे।</li></ul>" },
+        { q: "नरकतारी (अनरक) तीर्थ किस नदी के किनारे स्थित है, जिसका उल्लेख महाभारत में दिया गया है?", o: ["यमुना", "सतलुज", "गंगा", "सरस्वती"], a: 3, e: "<b>हल:</b> सरस्वती<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>कुरुक्षेत्र का नरकतारी (अनरक) तीर्थ पौराणिक सरस्वती नदी के किनारे स्थित माना जाता है।</li><li>मान्यता है कि महाभारत युद्ध के 10वें दिन भीष्म पितामह इसी स्थान पर बाणों की शय्या (Bed of Arrows) पर लेटे थे।</li><li>प्यास लगने पर अर्जुन ने धरती में बाण मारकर यहीं से पाताल-गंगा (सरस्वती का जल) निकालकर उनकी प्यास बुझाई थी।</li><li>इस स्थान को 'भीष्म कुंड' या 'बाण गंगा' के नाम से भी जाना जाता है।</li><li>यह कुरुक्षेत्र-पेहोवा मार्ग पर स्थित एक प्रमुख पर्यटन और तीर्थ स्थल है।</li></ul>" },
+        { q: "पांडु-पिंडारा पवित्र जगह किस शहर के निकटतम स्थित है?", o: ["जींद", "हिसार", "दिल्ली", "रोहतक"], a: 0, e: "<b>हल:</b> जींद<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>पांडु-पिंडारा हरियाणा के जींद जिले में स्थित एक अत्यंत पवित्र तीर्थ स्थल है।</li><li>मान्यता है कि महाभारत युद्ध के बाद पांडवों ने अपने पूर्वजों की शांति के लिए यहाँ सोमवती अमावस्या के दिन पिंडदान किया था।</li><li>कहा जाता है कि पांडवों को सोमवती अमावस्या के लिए यहाँ 12 वर्ष तक तपस्या/इंतज़ार करना पड़ा था।</li><li>इस तीर्थ स्थल को हरियाणा का 'लघु हरिद्वार' (Mini Haridwar) भी कहा जाता है।</li><li>यहाँ स्नान और पिंडदान करने का विशेष धार्मिक महत्व है।</li></ul>" },
+        { q: "महाभारत में भीष्म का वास्तविक नाम क्या था?", o: ["देवव्रत", "अभिमन्यु", "परीक्षित", "राजन्य"], a: 0, e: "<b>हल:</b> देवव्रत<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>देवव्रत हस्तिनापुर के राजा शांतनु और माता गंगा के आठवें पुत्र थे। (पहले सात पुत्रों को गंगा ने नदी में बहा दिया था)।</li><li>देवव्रत ने अपने पिता के विवाह (सत्यवती से) की खातिर आजीवन ब्रह्मचारी रहने और राजसिंहासन का त्याग करने की कठोर प्रतिज्ञा की थी।</li><li>इस 'भीष्म प्रतिज्ञा' (कठोर प्रतिज्ञा) के कारण ही देवताओं ने उनका नाम 'भीष्म' रखा।</li><li>इनकी पितृभक्ति से प्रसन्न होकर राजा शांतनु ने इन्हें 'इच्छा मृत्यु' (जब तक स्वयं न चाहें, मृत्यु नहीं होगी) का वरदान दिया था।</li><li>भीष्म 8वें वसु (प्रभास) के अवतार माने जाते हैं।</li></ul>" },
+        { q: "निम्न में से किस विद्वान ने आर्य सभ्यता (वैदिक सभ्यता) को 'चित्रित धूसर मृदभाण्ड' (PGW) की सभ्यता से जोड़ा है?", o: ["डॉ. एच.आर. गुप्ता", "जी.सी. अवस्थी", "बी.बी. लाल", "इनमें से कोई नहीं"], a: 2, e: "<b>हल:</b> बी.बी. लाल (B.B. Lal)<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>बी.बी. लाल (ब्रज बासी लाल) भारत के जाने-माने पुरातत्वविद (Archaeologist) थे, जिन्हें पद्म विभूषण से भी सम्मानित किया गया।</li><li>उन्होंने 1950 के दशक में कुरुक्षेत्र, हस्तिनापुर, पानीपत, सोनीपत आदि महाभारत कालीन स्थलों की खुदाई की थी।</li><li>खुदाई में उन्हें 'चित्रित धूसर मृदभाण्ड' (Painted Grey Ware - PGW) यानी स्लेटी रंग के रंगे हुए मिट्टी के बर्तन मिले।</li><li>इसी आधार पर उन्होंने PGW संस्कृति को महाभारत काल (लौह युग) और वैदिक आर्यों की सभ्यता से जोड़ा है।</li><li>उन्होंने अयोध्या में बाबरी मस्जिद के नीचे मंदिर के अवशेष मिलने का भी दावा किया था।</li></ul>" }
+    ];
+
+    let state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+    let timerInterval = null;
+    let isPaused = false;
+
+    window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+    function initDashboard() {
+        showScreen('dashboard-screen');
+        let completedData = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) completedData = JSON.parse(dataStr);
+        } catch(e) {}
+
+        if (completedData) {
+            document.getElementById('dash-unattempted').style.display = 'none';
+            document.getElementById('dash-attempted').style.display = 'block';
+            document.getElementById('dash-score-text').innerText = `${completedData.score}/25.0 Marks . 1.5K/2.9K Rank`;
+            document.getElementById('dash-progress-bar').style.width = `${(completedData.score / 25) * 100}%`;
+        } else {
+            document.getElementById('dash-attempted').style.display = 'none';
+            document.getElementById('dash-unattempted').style.display = 'block';
+        }
+    }
+
+    function startTest() {
+        let saved = null;
+        try {
+            const savedStr = safeGetItem(STORAGE_KEY);
+            if(savedStr) saved = JSON.parse(savedStr);
+        } catch(e){}
+
+        if (saved && !saved.submitted) {
+            state = saved;
+        } else {
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+        }
+        initTestEnv();
+    }
+
+    function reattemptTest() {
+        if(confirm("Are you sure you want to start a fresh test? Your active progress will be lost.")) {
+            safeRemoveItem(STORAGE_KEY);
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+            initTestEnv();
+        }
+    }
+
+    function initTestEnv() {
+        showScreen('test-screen');
+        renderQuestion();
+        renderPalette();
+        updateStats();
+        
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+        setInterval(() => { if(!state.submitted) safeSetItem(STORAGE_KEY, JSON.stringify(state)); }, 2000);
+    }
+
+    function viewSavedResults() {
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(data) renderResultUI(data);
+    }
+
+    function showDashboard() { initDashboard(); }
+
+    function showScreen(id) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+    }
+
+    function updateTimer() {
+        if(isPaused || state.submitted) return;
+        if(state.time <= 0) { submitTest(); return; }
+        state.time--;
+        const m = Math.floor(state.time / 60), s = state.time % 60;
+        document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+    }
+
+    function toggleTheme() {
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    function renderQuestion() {
+        state.visited[state.currentQ] = true;
+        const q = finalQuestions[state.currentQ];
+        document.getElementById('q-no').innerText = `Question ${state.currentQ + 1}`;
+        document.getElementById('q-text').innerHTML = q.q;
+        let opts = '';
+        q.o.forEach((opt, i) => {
+            const isSel = state.answers[state.currentQ] === i;
+            const selClass = isSel ? 'selected' : '';
+            const charLabel = String.fromCharCode(65 + i);
+            opts += `<div class="glass-panel option ${selClass}" onclick="selectOption(${i})"><div class="opt-label">${charLabel}</div><div style="flex:1;">${opt}</div></div>`;
+        });
+        document.getElementById('options-box').innerHTML = opts;
+        renderPalette();
+        updateStats();
+    }
+
+    function selectOption(index) { state.answers[state.currentQ] = index; renderQuestion(); }
+    function clearResponse() { delete state.answers[state.currentQ]; delete state.marked[state.currentQ]; renderQuestion(); }
+    function markReview() { state.marked[state.currentQ] = true; changeQ(1); }
+    function saveNext() { delete state.marked[state.currentQ]; changeQ(1); }
+
+    function changeQ(step) {
+        const next = state.currentQ + step;
+        if(next >= 0 && next < finalQuestions.length) { state.currentQ = next; renderQuestion(); }
+    }
+
+    function renderPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        finalQuestions.forEach((_, i) => {
+            let cls = 's-0';
+            if(state.visited[i]) {
+                if(state.answers[i] !== undefined && state.marked[i]) cls = 's-4';
+                else if(state.marked[i]) cls = 's-3';
+                else if(state.answers[i] !== undefined) cls = 's-1';
+                else cls = 's-2';
+            }
+            const active = i === state.currentQ ? 'active' : '';
+            grid.innerHTML += `<button class="p-btn ${cls} ${active}" onclick="state.currentQ = ${i}; renderQuestion();">${i + 1}</button>`;
+        });
+    }
+
+    function updateStats() {
+        let ans=0, notans=0, notvis=0, mark=0;
+        finalQuestions.forEach((_, i) => {
+            if(!state.visited[i]) notvis++;
+            else if(state.marked[i]) mark++;
+            else if(state.answers[i] !== undefined) ans++;
+            else notans++;
+        });
+        document.getElementById('c-ans').innerText = ans; document.getElementById('c-notans').innerText = notans;
+        document.getElementById('c-notvis').innerText = notvis; document.getElementById('c-mark').innerText = mark;
+    }
+
+    function submitTest() {
+        if(!confirm("Are you sure you want to submit the test?")) return;
+        state.submitted = true; clearInterval(timerInterval);
+        let score=0, attempt=0, wrong=0;
+        finalQuestions.forEach((q, i) => {
+            if(state.answers[i] !== undefined) {
+                attempt++;
+                if(state.answers[i] === q.a) score++; else wrong++;
+            }
+        });
+        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const completedData = { score: score, attempted: attempt, wrong: wrong, time: state.time, date: today, userAnswers: state.answers };
+        
+        safeSetItem(COMPLETED_KEY, JSON.stringify(completedData));
+        safeRemoveItem(STORAGE_KEY);
+        
+        renderResultUI(completedData);
+    }
+
+    function renderResultUI(data) {
+        showScreen('result-screen');
+        const acc = data.attempted > 0 ? ((data.score / data.attempted) * 100).toFixed(1) : 0;
+        document.getElementById('r-score').innerText = `${data.score}`;
+        document.getElementById('r-attempt').innerText = data.attempted;
+        document.getElementById('r-wrong').innerText = data.wrong;
+        document.getElementById('r-acc').innerText = `${acc}%`;
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(!data) return;
+
+        let html = '';
+        finalQuestions.forEach((q, i) => {
+            const uAns = data.userAnswers[i];
+            let optHtml = '';
+            q.o.forEach((opt, oIdx) => {
+                let cls = '', checkMark = '';
+                if(oIdx === q.a) { cls = 'correct'; checkMark = ' ✔'; }
+                else if(oIdx === uAns && uAns !== q.a) { cls = 'wrong'; checkMark = ' ❌ (Your Answer)'; }
+                optHtml += `<div class="glass-panel sol-opt ${cls}"><strong>${String.fromCharCode(65 + oIdx)}.</strong> <div style="flex:1;">${opt} ${checkMark}</div></div>`;
+            });
+            let statusText = uAns !== undefined ? (uAns === q.a ? "हल किया (Correct)" : "हल किया (Incorrect)") : "हल नहीं किया (Unattempted)";
+            html += `<div class="glass-panel sol-card"><div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--primary);">प्र ${i+1}. ${q.q}</div>${optHtml}<div style="font-weight:bold; margin:15px 0; color:var(--text-muted);">Status: ${statusText}</div><div class="glass-panel sol-exp">${q.e}</div></div>`;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+</script>
+</body>
+</html>
