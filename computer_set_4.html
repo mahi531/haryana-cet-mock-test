@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Computer Knowledge Set 4</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Beautiful Moving Gradient & Glassmorphism Theme */
+        :root {
+            --bg-grad-1: #4facfe; --bg-grad-2: #00f2fe; --bg-grad-3: #a18cd1; --bg-grad-4: #fbc2eb;
+            --glass-bg: rgba(255, 255, 255, 0.9); --glass-border: rgba(255, 255, 255, 0.6); --glass-shadow: rgba(31, 38, 135, 0.15);
+            --text-main: #1f2937; --text-muted: #64748b;
+            --primary: #2563eb; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --purple: #8b5cf6;
+            --option-bg: rgba(243, 244, 246, 0.8); --option-selected: rgba(219, 234, 254, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+        [data-theme="dark"] {
+            --bg-grad-1: #0f2027; --bg-grad-2: #203a43; --bg-grad-3: #2c5364; --bg-grad-4: #141e30;
+            --glass-bg: rgba(17, 25, 40, 0.85); --glass-border: rgba(255, 255, 255, 0.15); --glass-shadow: rgba(0, 0, 0, 0.5);
+            --text-main: #f9fafb; --text-muted: #94a3b8;
+            --primary: #3b82f6; 
+            --option-bg: rgba(55, 65, 81, 0.7); --option-selected: rgba(30, 58, 138, 0.8);
+            --card-bg: rgba(31, 41, 55, 0.95);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; touch-action: manipulation;}
+        
+        body { 
+            height: 100vh; height: 100dvh; 
+            background: linear-gradient(45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3), var(--bg-grad-4)); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+            color: var(--text-main); 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 var(--glass-shadow); border-radius: 12px; }
+        
+        .btn { font-family: 'Poppins', sans-serif; background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;}
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-warning { background: var(--warning); color: #fff;}
+        .btn-clear { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-mark { background: var(--purple); color: white; }
+        .btn-prev { background: var(--text-muted); color: white; }
+
+        /* Screens */
+        .screen { display: none; flex-direction: column; height: 100%; width: 100vw; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; }
+
+        /* --- DASHBOARD UI --- */
+        #dashboard-screen { overflow-y: auto; background: var(--card-bg); align-items: center; padding-bottom: 30px;}
+        
+        .dash-header-top { background: #1e293b; color: white; width: 100%; padding: 15px 20px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 15px; position: sticky; top:0; z-index: 100;}
+        
+        .dash-content { width: 100%; max-width: 800px; padding: 20px; }
+        .section-title { font-weight: 600; color: var(--primary); margin: 15px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 15px; }
+        
+        .dash-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--glass-border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .test-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text-main);}
+        .test-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        
+        .progress-container { width: 100%; height: 6px; background: var(--glass-border); border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #fbc02d; width: 0%; transition: width 0.5s ease;}
+        
+        .dash-actions { display: flex; gap: 12px; margin-top: 15px; }
+        .dash-actions .btn { flex: 1; padding: 10px; font-size: 14px; border-radius: 8px;}
+        
+        .syllabus-footer { display: flex; justify-content: space-between; font-size: 12px; color: var(--primary); border-top: 1px solid var(--glass-border); padding-top: 12px; margin-top: 15px; }
+
+        /* --- TEST SCREEN UI --- */
+        header.test-head { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-bottom: 10px; margin-inline: 10px; }
+        .header-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: 700; background: var(--card-bg); border: 1px solid var(--glass-border); color: var(--danger); padding: 5px 12px; border-radius: 20px; }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 0 10px 10px 10px; }
+        .question-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        .q-header { padding: 10px 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
+        .q-body { flex: 1; padding: 15px; overflow-y: auto; font-size: 16px; line-height: 1.6; }
+        
+        .options-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;}
+        .option { padding: 12px; border: 2px solid var(--glass-border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--option-bg); font-weight: 500; font-size: 15px;}
+        .option.selected { border-color: var(--primary); background: var(--option-selected); color: var(--primary); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--glass-border); display: flex; justify-content: center; align-items: center; font-weight: bold; }
+        .option.selected .opt-label { background: var(--primary); color: white; border-color: var(--primary);}
+        
+        .q-footer { padding: 10px; border-top: 1px solid var(--glass-border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-radius: 0 0 12px 12px; }
+
+        /* --- PALETTE UI --- */
+        .palette-section { width: 320px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .palette-header { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; font-weight: bold; font-size: 15px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; font-size: 12px; border-bottom: 1px solid var(--glass-border); font-weight: 500;}
+        .stat-item { display: flex; align-items: center; gap: 6px;}
+        .badge { width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 10px; font-weight: bold;}
+        .s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);} 
+        .s-1 { background: var(--success); } .s-2 { background: var(--danger); } .s-3 { background: var(--purple); } 
+        .s-4 { background: var(--primary); position: relative; }
+        .s-4::after { content: '✔'; position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; background: white; color: var(--primary); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 8px; }
+        
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .p-btn.s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);}
+        .p-btn.active { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.1);}
+        .submit-area { padding: 10px; border-top: 1px solid var(--glass-border); border-radius: 0 0 12px 12px;}
+
+        /* --- RESULTS & SOLUTIONS UI --- */
+        #result-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        #solution-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        .sol-card { padding: 20px; margin-bottom: 15px; width: 100%; max-width: 800px; }
+        .sol-opt { padding: 10px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; gap: 10px; align-items: center; font-size: 15px; background: var(--card-bg);}
+        .sol-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); text-decoration: line-through;}
+        .sol-exp { margin-top: 15px; padding: 15px; background: rgba(37, 99, 235, 0.05); border: 1px solid var(--glass-border); border-left: 4px solid var(--primary); border-radius: 8px; font-size: 14.5px; line-height: 1.6; }
+        .sol-exp ul { padding-left: 20px; margin-top: 8px; }
+        .sol-exp li { margin-bottom: 6px; }
+
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+
+        @media (max-width: 992px) {
+            .main-area { flex-direction: column; overflow-y: auto;}
+            .question-section { flex: none; min-height: 450px;}
+            .palette-section { width: 100%; flex: none; min-height: 350px;}
+            .q-footer .btn { padding: 10px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="dashboard-screen" class="screen active">
+        <div class="dash-header-top">
+            <a href="haryanapolice.html" style="color: white; text-decoration: none; font-size: 20px; margin-right: 10px;">&#8592;</a>
+            Mock Tests
+        </div>
+
+        <div class="dash-content">
+            <!-- Unattempted State -->
+            <div id="dash-unattempted" style="display: none;">
+                <div class="section-title">Suggested Next Test</div>
+                <div class="dash-card">
+                    <div class="test-title">Computer Knowledge - Set 4</div>
+                    <div class="test-meta">
+                        <span>25 Qs • 25 mins • 25.0 Marks</span>
+                    </div>
+                    <div class="test-meta" style="justify-content: flex-end;">
+                        <button class="btn btn-outline" style="padding: 6px 20px; border-radius: 20px;" onclick="startTest()">Start Test 🚀</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span>Syllabus: MS Office, OpenOffice, Internet & Programming</span>
+                        <span style="color:var(--success);">🔗 Share</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attempted State -->
+            <div id="dash-attempted" style="display: none;">
+                <div class="dash-card">
+                    <div class="test-title">Computer Knowledge - Set 4</div>
+                    <div class="test-meta" style="margin-bottom: 5px;">
+                        <span id="dash-score-text" style="font-size: 15px; color: var(--text-muted);">0/25.0 Marks</span>
+                    </div>
+                    
+                    <div class="progress-container"><div class="progress-fill" id="dash-progress-bar"></div></div>
+
+                    <div class="dash-actions">
+                        <button class="btn btn-outline" onclick="viewSavedResults()">View Results</button>
+                        <button class="btn btn-outline" onclick="reattemptTest()">Reattempt &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAUSE OVERLAY -->
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px; font-size: 2rem;">Test Paused ⏸️</h2>
+        <button class="btn btn-primary" style="font-size: 1.2rem; padding: 10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+    </div>
+
+    <!-- TEST SCREEN -->
+    <div id="test-screen" class="screen">
+        <header class="glass-panel test-head">
+            <div class="header-title">Computer Set 4</div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="toggleTheme()">🌓 Theme</button>
+                <button class="btn btn-warning" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="togglePause()">⏸ Pause</button>
+                <div class="timer-box">⏱ <span id="timer-display">25:00</span></div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="glass-panel question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--success); font-weight:bold;">+1 <span style="color: var(--text-muted); font-weight:normal;">|</span> <span style="color: var(--danger);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <button class="btn btn-mark" onclick="markReview()">Mark & Next</button>
+                    <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                    <button class="btn btn-prev" onclick="changeQ(-1)">Previous</button>
+                    <button class="btn btn-primary" onclick="saveNext()">Save & Next</button>
+                </div>
+            </div>
+
+            <div class="glass-panel palette-section">
+                <div class="palette-header">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">25</div> Not Visit</div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn btn-primary" style="width: 100%; background: var(--success); font-size: 15px; padding: 10px;" onclick="submitTest()">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen" class="screen">
+        <div style="width: 100%; max-width: 800px; margin-bottom: 15px;"><button class="btn btn-clear" onclick="showDashboard()">&#8592; Back to Dashboard</button></div>
+        <div class="glass-panel" style="max-width: 800px; width: 100%; padding: 25px;">
+            <h1 style="color: var(--primary); text-align: center;">Test Submitted Successfully! 🎉</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 25px 0;">
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-score" style="color: var(--primary); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Score</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-attempt" style="color: var(--success); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Attempted</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-wrong" style="color: var(--danger); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Wrong</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-acc" style="color: var(--purple); font-size: 1.8rem;">0%</h2><p style="color: var(--text-muted); font-size:12px;">Accuracy</p></div>
+            </div>
+            <button class="btn btn-primary" style="width:100%; font-size: 15px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+        </div>
+    </div>
+
+    <!-- SOLUTION SCREEN -->
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%; margin:0 auto;">
+            <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 12px 15px; position: sticky; top: 5px; z-index: 10;">
+                <h3 style="color: var(--primary);">Detailed Solutions</h3>
+                <button class="btn btn-clear" style="padding: 5px 10px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+            </div>
+            <div id="sol-container"></div>
+        </div>
+    </div>
+
+<script>
+    const MEMORY_STORE = {};
+    function safeGetItem(key) { try { return localStorage.getItem(key) || MEMORY_STORE[key] || null; } catch(e) { return MEMORY_STORE[key] || null; } }
+    function safeSetItem(key, value) { try { localStorage.setItem(key, value); } catch(e) {} MEMORY_STORE[key] = value; }
+    function safeRemoveItem(key) { try { localStorage.removeItem(key); } catch(e) {} delete MEMORY_STORE[key]; }
+
+    const STORAGE_KEY = 'comp_set4_active'; 
+    const COMPLETED_KEY = 'comp_set4_comp';
+
+    // 25 Questions extracted from provided image (Q.95 to Q.119)
+    const finalQuestions = [
+        { 
+            q: "IBM PC-AT में AT का पूर्ण रूप क्या होता है ?", 
+            o: ["अप्लाइड प्रौद्योगिकी", "एडवांस टेक्नोलॉजी", "एडीशनल टेक्नोलॉजी", "उपरोक्त में से कोई नहीं"], 
+            a: 1, 
+            e: "<b>हल:</b> (B) एडवांस टेक्नोलॉजी (Advanced Technology)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>IBM PC/AT को 1984 में रिलीज़ किया गया था।</li><li>यह 16-बिट Intel 80286 माइक्रोप्रोसेसर पर आधारित था।</li><li>PC-XT का पूर्ण रूप 'eXtended Technology' होता है, जो AT से पुराना था।</li><li>IBM (International Business Machines) को 'Big Blue' के नाम से भी जाना जाता है।</li><li>IBM PC-AT में पहली बार 5.25 इंच की हाई-डेंसिटी फ्लॉपी डिस्क ड्राइव (1.2 MB) पेश की गई थी।</li></ul>" 
+        },
+        { 
+            q: "MS- पावर प्वाइन्ट के किस मेन्यू में two content ऑप्शन उपलब्ध होता है-", 
+            o: ["न्यू स्लाइड", "एनिमेशन", "व्यू", "डाटा"], 
+            a: 0, 
+            e: "<b>हल:</b> (A) न्यू स्लाइड (New Slide)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>'Two Content' पावरपॉइंट में एक स्लाइड लेआउट (Slide Layout) का प्रकार है, जिसमें एक टाइटल और दो अलग-अलग कंटेंट बॉक्स होते हैं।</li><li>जब आप होम टैब (Home Tab) से 'New Slide' पर क्लिक करते हैं, तो विभिन्न लेआउट्स दिखाई देते हैं।</li><li>अन्य लेआउट्स में Title Slide, Blank, Comparison और Picture with Caption शामिल होते हैं।</li><li>पावरपॉइंट का डिफ़ॉल्ट फाइल एक्सटेंशन .pptx होता है।</li><li>नई ब्लैंक प्रेजेंटेशन खोलने की शॉर्टकट कुंजी Ctrl + N है।</li></ul>" 
+        },
+        { 
+            q: "इनमें से कौन 'आफिस कलेक्शन' के आप्शन माइक्रोसॉफ्ट क्लिप आर्गेनाइजर में नहीं है ?", 
+            o: ["एकेडमिक", "एग्रीकल्चर", "एनीमल", "कोर्पोरेट"], 
+            a: 3, 
+            e: "<b>हल:</b> (D) कोर्पोरेट (Corporate)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>माइक्रोसॉफ्ट क्लिप ऑर्गेनाइज़र (Clip Organizer) पुराने MS Office वर्जन्स (जैसे Office 2003/2007) में क्लिपआर्ट को मैनेज करने का टूल था।</li><li>इसमें डिफ़ॉल्ट रूप से Academic, Agriculture, Animals, Business जैसी श्रेणियाँ (Categories) होती थीं।</li><li>'Corporate' नाम की कोई डिफ़ॉल्ट मुख्य श्रेणी इसमें नहीं पाई जाती थी।</li><li>क्लिपआर्ट का उपयोग डॉक्यूमेंट्स को विज़ुअली आकर्षक बनाने के लिए किया जाता है।</li><li>आधुनिक MS Office वर्जन्स में क्लिपआर्ट को हटाकर ऑनलाइन पिक्चर्स (Online Pictures) का फीचर दे दिया गया है।</li></ul>" 
+        },
+        { 
+            q: "ओपन ऑफिस प्रेजेन्टेशन में कौन-सा बटन \"स्लाइड शो\" प्रारंभ करने हेतु इस्तेमाल किया जाता है ?", 
+            o: ["एफ 6 (F6)", "एफ 5 (F5)", "एफ 4 (F4)", "एफ 3 (F3)"], 
+            a: 1, 
+            e: "<b>हल:</b> (B) एफ 5 (F5)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>ओपन ऑफिस इम्प्रेस (OpenOffice Impress) में प्रेजेंटेशन की शुरुआत से स्लाइड शो शुरू करने के लिए F5 कुंजी का प्रयोग होता है।</li><li>वर्तमान स्लाइड (Current Slide) से स्लाइड शो शुरू करने के लिए Shift + F5 दबाया जाता है।</li><li>स्लाइड शो से बाहर आने (Exit) के लिए Esc (Escape) बटन का उपयोग किया जाता है।</li><li>MS PowerPoint में भी स्लाइड शो के लिए बिल्कुल इन्हीं शॉर्टकट कुंजियों (F5 / Shift+F5) का प्रयोग होता है।</li><li>ओपन ऑफिस एक फ्री और ओपन-सोर्स ऑफिस सूट है, जिसे Apache द्वारा प्रबंधित किया जाता है।</li></ul>" 
+        },
+        { 
+            q: "ओपन ऑफिस प्रेजेन्टेशन के किस कैप्शन में \"हाइड स्लाइड\" पाया जाता है ?", 
+            o: ["टूल्स", "फार्मेट", "स्लाइड शो", "विंडो"], 
+            a: 2, 
+            e: "<b>हल:</b> (C) स्लाइड शो (Slide Show)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>'Hide Slide' (स्लाइड छिपाएं) विकल्प का उपयोग किसी विशेष स्लाइड को प्रेजेंटेशन के दौरान न दिखाने के लिए किया जाता है।</li><li>यह स्लाइड डिलीट नहीं होती, बल्कि केवल स्लाइड शो के समय छिप (Hide) जाती है।</li><li>ओपन ऑफिस इम्प्रेस में यह विकल्प 'Slide Show' मेनू के अंदर मिलता है।</li><li>छिपी हुई स्लाइड के नंबर के ऊपर एक तिरछी लाइन (Slash) आ जाती है जिससे उसकी पहचान होती है।</li><li>MS PowerPoint में भी यह फीचर 'Slide Show' टैब में ही होता है।</li></ul>" 
+        },
+        { 
+            q: "ओपन ऑफिस के फार्मेट कैप्शन में इनमें से कौन नहीं पाया जाता है ?", 
+            o: ["कैरेक्टर", "स्लाइड", "पैराग्राफ", "लाइन"], 
+            a: 1, 
+            e: "<b>हल:</b> (B) स्लाइड (Slide)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>ओपन ऑफिस इम्प्रेस के 'Format' मेनू में टेक्स्ट और ऑब्जेक्ट्स की फॉर्मेटिंग के विकल्प होते हैं, जैसे Character (फ़ॉन्ट), Paragraph और Line।</li><li>'Slide' से संबंधित विकल्प (जैसे Slide Design, Slide Layout) अलग से 'Format' मेनू का हिस्सा न होकर, प्रॉपर्टीज़ या 'Slide' मेनू (नये वर्जन्स में) में होते हैं।</li><li>कैरेक्टर (Character) फॉर्मेटिंग में फ़ॉन्ट का आकार, रंग और स्टाइल (Bold/Italic) बदला जाता है।</li><li>पैराग्राफ (Paragraph) में अलाइनमेंट (Left, Right, Center) और लाइन स्पेसिंग सेट की जाती है।</li><li>ओपन ऑफिस इम्प्रेस फाइलों का डिफ़ॉल्ट एक्सटेंशन .odp (OpenDocument Presentation) होता है।</li></ul>" 
+        },
+        { 
+            q: "ओपन ऑफिस प्रेजेन्टेशन के किस कैप्शन में 'फ्लोटिंग फ्रेम' आप्शन पाया जाता है ?", 
+            o: ["फार्मेट", "टूल", "इंसर्ट", "एडिट"], 
+            a: 2, 
+            e: "<b>हल:</b> (C) इंसर्ट (Insert)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>'Floating Frame' का उपयोग स्लाइड या डॉक्यूमेंट के अंदर किसी अन्य डॉक्यूमेंट या HTML पेज को एम्बेड (Embed) करने के लिए किया जाता है।</li><li>चूंकि यह एक बाहरी तत्व (Element) को जोड़ने का काम है, इसलिए यह 'Insert' मेनू में पाया जाता है (Insert -> Floating Frame)।</li><li>इंसर्ट मेनू में पिक्चर्स, चार्ट्स, टेबल्स और हाइपरलिंक जैसी चीजें भी पाई जाती हैं।</li><li>फ्लोटिंग फ्रेम में एक स्क्रॉलबार (Scrollbar) आ सकता है अगर कंटेंट फ्रेम के आकार से बड़ा हो।</li><li>ओपन ऑफिस राइटर (Word processor) में भी यह विकल्प इंसर्ट मेनू में ही होता है।</li></ul>" 
+        },
+        { 
+            q: "ओपन ऑफिस प्रेजेन्टेशन में निम्न में से कौन से आप्शन नहीं है ?", 
+            o: ["आउट लाइन", "नोट्स", "स्लाइड सार्टर", "डेटा"], 
+            a: 3, 
+            e: "<b>हल:</b> (D) डेटा (Data)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>ओपन ऑफिस इम्प्रेस (या पावरपॉइंट) में स्लाइड्स को देखने के विभिन्न तरीके (Views) होते हैं।</li><li>Outline View में प्रेजेंटेशन का केवल टेक्स्ट (Title और Bullet points) दिखाई देता है।</li><li>Notes View में स्पीकर (Speaker) अपने बोलने के लिए हर स्लाइड के नीचे नोट्स लिख सकता है।</li><li>Slide Sorter View में सभी स्लाइड्स छोटी-छोटी (Thumbnails) एक साथ दिखती हैं, जिससे उनका क्रम (Order) बदलना आसान होता है।</li><li>'Data' नाम का कोई व्यू प्रेजेंटेशन सॉफ्टवेयर्स में नहीं होता; यह डेटाबेस (जैसे MS Access / Base) या स्प्रेडशीट का हिस्सा है।</li></ul>" 
+        },
+        { 
+            q: "किस कैप्शन में ओपन ऑफिस का 'वर्जन' पाया जाता है?", 
+            o: ["फाइल", "हेल्प", "एडिट", "फार्मेट"], 
+            a: 1, 
+            e: "<b>हल:</b> (B) हेल्प (Help)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>किसी भी सॉफ्टवेयर का वर्ज़न (Version) और कॉपीराइट जानकारी आमतौर पर 'Help' मेनू के 'About' सेक्शन में होती है (Help -> About OpenOffice)।</li><li>वर्ज़न नंबर (जैसे 4.1.14) बताता है कि सॉफ्टवेयर कितना नया या अपडेटेड है।</li><li>सॉफ्टवेयर से जुड़ी कोई भी समस्या होने पर हेल्प मेनू (या F1 कुंजी) का उपयोग किया जाता है।</li><li>'File' मेनू में सेव, ओपन, प्रिंट जैसे विकल्प होते हैं।</li><li>'Edit' मेनू में कट, कॉपी, पेस्ट, अनडू (Undo) जैसी कमांड्स होती हैं।</li></ul>" 
+        },
+        { 
+            q: "ओपन ऑफिस प्रेजेन्टेशन में \"आधर (Other) टैब\" डालने का सही क्रम क्या है ?", 
+            o: ["इंसर्ट -> फार्मेटिंग मार्क्स -> आधर", "इंसर्ट -> फील्ड्स -> टाइम -> आधर", "इंसर्ट -> फील्ड्स -> आधर", "इंसर्ट -> हाइपरलिंक -> आधर"], 
+            a: 2, 
+            e: "<b>हल:</b> (C) इंसर्ट -> फील्ड्स -> आधर (Insert -> Fields -> Other)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>प्रेजेंटेशन या डॉक्यूमेंट में डायनामिक (बदलने वाली) जानकारी डालने के लिए 'Fields' का उपयोग होता है।</li><li>Fields में आमतौर पर Date, Time, Page Number, Author Name आदि शामिल होते हैं।</li><li>ओपन ऑफिस में और अधिक कस्टमाइज़्ड फील्ड्स डालने के लिए 'Insert' मेनू से 'Fields' और फिर 'Other' का चयन किया जाता है।</li><li>'Other' फील्ड बॉक्स में डॉक्यूमेंट इन्फो (Document Info), वेरिएबल्स (Variables) और डेटाबेस फील्ड्स के विकल्प मिलते हैं।</li><li>यह सुविधा बार-बार एक ही जानकारी (जैसे फाइल का नाम) टाइप करने का समय बचाती है।</li></ul>" 
+        },
+        { 
+            q: "MS-Word के किस आप्शन में 'Thesaurus' ऑप्शन होता है-", 
+            o: ["व्यू", "रिव्यू", "डेटा", "होम"], 
+            a: 1, 
+            e: "<b>हल:</b> (B) रिव्यू (Review)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>Thesaurus (थिसॉरस) टूल का उपयोग किसी शब्द के समानार्थी (Synonyms) और विलोम (Antonyms) शब्द खोजने के लिए किया जाता है।</li><li>यह MS Word के 'Review' टैब में 'Proofing' ग्रुप के अंतर्गत आता है।</li><li>Thesaurus को खोलने की शॉर्टकट कुंजी Shift + F7 है।</li><li>Spelling & Grammar चेक (F7) भी इसी 'Review' टैब का हिस्सा है।</li><li>यह टूल लेखकों को उनके डॉक्यूमेंट्स में बेहतर शब्दावली (Vocabulary) का उपयोग करने में मदद करता है।</li></ul>" 
+        },
+        { 
+            q: "A.I. की कोर भाषा है-", 
+            o: ["लिस्प (LISP)", "जावा", "पी.सी.", "VC++"], 
+            a: 0, 
+            e: "<b>हल:</b> (A) लिस्प (LISP)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>LISP का पूर्ण रूप 'LISt Processing' है।</li><li>इसे 1958 में जॉन मैकार्थी (John McCarthy) द्वारा विकसित किया गया था, जिन्हें आर्टिफिशियल इंटेलिजेंस (A.I.) का जनक भी कहा जाता है।</li><li>यह पुरानी लेकिन A.I. प्रोग्रामिंग के लिए सबसे मजबूत और क्लासिक भाषाओं में से एक है।</li><li>Prolog (Programming in Logic) एक अन्य भाषा है जो मुख्य रूप से A.I. और एक्सपर्ट सिस्टम के लिए बनाई गई थी।</li><li>वर्तमान समय में A.I. और मशीन लर्निंग (Machine Learning) के लिए सबसे अधिक इस्तेमाल की जाने वाली भाषा Python है।</li></ul>" 
+        },
+        { 
+            q: "प्रोग्रामिंग भाषाओं में मल्टीथ्रेड कन्सेप्ट..... में प्रारम्भ हुआ था।", 
+            o: ["5GL", "3GL", "1GL", "4GL"], 
+            a: 1, 
+            e: "<b>हल:</b> (B) 3GL (Third Generation Languages)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>3GL (तीसरी पीढ़ी की भाषाएं) में C, C++, Java, PASCAL और BASIC जैसी उच्च स्तरीय (High-level) भाषाएं आती हैं।</li><li>'Multithreading' एक ऐसी प्रोग्रामिंग तकनीक है जिसमें एक ही प्रोग्राम (प्रोसेस) के कई हिस्से (Threads) एक साथ (Concurrent) रन होते हैं।</li><li>यह तकनीक मुख्य रूप से Java और C++ (3GLs) जैसी भाषाओं में बहुत लोकप्रिय हुई।</li><li>1GL मशीन भाषा (0 और 1) थी, और 2GL असेंबली भाषा (Assembly Language) थी।</li><li>4GL (चौथी पीढ़ी) में डेटाबेस क्वेरी भाषाएं (जैसे SQL) आती हैं, और 5GL मुख्य रूप से A.I. (जैसे Prolog) के लिए होती हैं।</li></ul>" 
+        },
+        { 
+            q: ".....एक स्क्रिप्टिंग भाषा नहीं है-", 
+            o: ["एच टी एम एल (HTML)", "एक्स एम एल (XML)", "पोस्टस्क्रिप्ट (Postscript)", "जावास्क्रिप्ट (Javascript)"], 
+            a: 2, 
+            e: "<b>हल:</b> (C) पोस्टस्क्रिप्ट (Postscript)। (दिए गए विकल्पों और उत्तर कुंजिका के आधार पर। यद्यपि HTML/XML मार्कअप भाषाएँ हैं, PostScript एक 'पेज डिस्क्रिप्शन लैंग्वेज' है)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>PostScript का विकास एडोब सिस्टम्स (Adobe Systems) द्वारा किया गया था; इसका उपयोग मुख्य रूप से प्रिंटरों को यह बताने के लिए किया जाता है कि पेज कैसा दिखना चाहिए।</li><li>Javascript एक सच्ची स्क्रिप्टिंग भाषा है जिसका उपयोग वेब पेजों को इंटरएक्टिव बनाने के लिए किया जाता है।</li><li>HTML (HyperText Markup Language) वेब पेज का ढांचा (Structure) बनाती है, यह प्रोग्रामिंग या स्क्रिप्टिंग भाषा नहीं है।</li><li>XML (eXtensible Markup Language) का उपयोग डेटा को स्टोर और ट्रांसपोर्ट करने के लिए किया जाता है।</li><li>Python, PHP और Ruby अन्य प्रमुख स्क्रिप्टिंग भाषाओं के उदाहरण हैं।</li></ul>" 
+        },
+        { 
+            q: "निम्नलिखित में से कौन 'फाइंड एण्ड रिप्लेस' के लिए सही क्रम क्या है ?", 
+            o: ["एडिट -> फाइंड -> रिप्लेस", "एडिट -> फाइल -> फाइंड -> रिप्लेस", "एडिट -> सेव -> फाइंड -> रिप्लेस", "एडिट -> सर्च -> रिप्लेस"], 
+            a: 0, 
+            e: "<b>हल:</b> (A) एडिट -> फाइंड -> रिप्लेस (Edit -> Find -> Replace)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>पुराने MS Office और अधिकांश बेसिक टेक्स्ट एडिटर्स (जैसे Notepad) में Find और Replace का विकल्प 'Edit' मेनू में होता है।</li><li>'Find' (खोजने) की शॉर्टकट कुंजी Ctrl + F है।</li><li>'Replace' (बदलने) की शॉर्टकट कुंजी Ctrl + H है।</li><li>'Replace All' विकल्प से डॉक्यूमेंट में मौजूद वह शब्द एक ही क्लिक में हर जगह बदल जाता है।</li><li>नए MS Word वर्जन्स में (Office 2007 और उसके बाद), Find/Replace 'Home' टैब के एकदम दायें हिस्से (Editing ग्रुप) में पाए जाते हैं।</li></ul>" 
+        },
+        { 
+            q: "निम्न में से कौन 'पेज लेआउट कैप्शन' का माइक्रो साफ्ट वर्ड में आप्शन नहीं है ?", 
+            o: ["मार्जिनस", "ओरियन्टेशन", "साइज", "टेबल"], 
+            a: 3, 
+            e: "<b>हल:</b> (D) टेबल (Table)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>टेबल (Table) बनाने का विकल्प 'Page Layout' टैब में नहीं, बल्कि 'Insert' टैब में होता है।</li><li>MS Word के 'Page Layout' टैब का मुख्य काम पेज की सेटिंग (Page Setup) करना होता है।</li><li>Margins विकल्प से पेज के चारों ओर खाली छोड़ी जाने वाली जगह (Top, Bottom, Left, Right) सेट की जाती है।</li><li>Orientation पेज की दिशा तय करता है, जो दो प्रकार का होता है: Portrait (लंबा) और Landscape (चौड़ा)।</li><li>Size विकल्प से पेज का आकार (जैसे A4, Letter, Legal) चुना जाता है।</li></ul>" 
+        },
+        { 
+            q: "निम्न में से कौन पेज नंबर ऑप्शन पाने का सही क्रम है माइक्रोसॉफ्ट वर्ड के आधार पर", 
+            o: ["इंसर्ट -> टेबल -> पेज नंबर", "इंसर्ट -> पेज नंबर", "इंसर्ट -> करेंट पोज़िशन -> पेज नंबर", "इंसर्ट -> शेप -> पेज नंबर"], 
+            a: 1, 
+            e: "<b>हल:</b> (B) इंसर्ट -> पेज नंबर (Insert -> Page Number)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>डॉक्यूमेंट के हर पन्ने पर आटोमैटिक नंबर डालने के लिए 'Insert' टैब से 'Page Number' चुना जाता है।</li><li>पेज नंबर को पेज के ऊपरी हिस्से (Header), निचले हिस्से (Footer) या मार्जिन (Margin) में रखा जा सकता है।</li><li>आप 'Format Page Numbers' का उपयोग करके नंबरिंग की शैली (जैसे 1,2,3 या i,ii,iii) बदल सकते हैं।</li><li>अगर आप पहले पेज (Cover page) पर नंबर नहीं चाहते हैं, तो 'Different First Page' विकल्प चुन सकते हैं।</li><li>पेज नंबर हटाने के लिए उसी मेनू में 'Remove Page Numbers' का विकल्प भी मिलता है।</li></ul>" 
+        },
+        { 
+            q: "माइक्रोसॉफ्ट वर्ड में चित्र डालने का सही क्रम बताएँ।", 
+            o: ["इंसर्ट -> टेबल -> पिक्चर", "इंसर्ट -> पिक्चर -> सेलेक्ट -> इंसर्ट", "इंसर्ट -> पिक्चर -> कैंसिल", "इंसर्ट -> चार्ट -> पिक्चर"], 
+            a: 1, 
+            e: "<b>हल:</b> (B) इंसर्ट -> पिक्चर -> सेलेक्ट -> इंसर्ट (Insert -> Picture -> Select image -> Insert)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>डॉक्यूमेंट में कोई फोटो या इमेज जोड़ने के लिए सबसे पहले 'Insert' टैब पर क्लिक किया जाता है।</li><li>वहाँ 'Pictures' (या Picture) विकल्प चुनने पर कंप्यूटर की ड्राइव खुल जाती है, जहाँ से आप फोटो सेलेक्ट (Select) कर सकते हैं।</li><li>MS Word कई प्रकार के इमेज फॉर्मेट सपोर्ट करता है, जैसे JPEG, PNG, और GIF।</li><li>इमेज डालने के बाद एक नया टैब 'Format' खुल जाता है, जिससे आप पिक्चर पर बॉर्डर, इफ़ेक्ट (Effects) और क्रॉपिंग (Cropping) कर सकते हैं।</li><li>'Wrap Text' विकल्प से इमेज को टेक्स्ट के बीच में आसानी से एडजस्ट किया जा सकता है।</li></ul>" 
+        },
+        { 
+            q: "माइक्रोसॉफ्ट वर्ड में चार्ट कहाँ पाया जाता है ?", 
+            o: ["इंसर्ट कैप्शन में", "होम कैप्शन में", "पेज लेआउट कैप्शन में", "फाइल कैप्शन में"], 
+            a: 0, 
+            e: "<b>हल:</b> (A) इंसर्ट कैप्शन में (Insert tab)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>डेटा को ग्राफ़िकल (चित्रों के) रूप में दिखाने के लिए चार्ट (Chart) का उपयोग किया जाता है।</li><li>यह 'Insert' टैब के 'Illustrations' ग्रुप में मिलता है।</li><li>MS Word में चार्ट इंसर्ट करते ही डेटा एंटर करने के लिए MS Excel की एक छोटी विंडो (Spreadsheet) अपने आप खुल जाती है।</li><li>चार्ट कई प्रकार के होते हैं, जैसे Pie Chart, Bar Chart, Line Chart और Column Chart।</li><li>Pie Chart का उपयोग तब होता है जब आपको किसी एक पूरी चीज़ के विभिन्न हिस्सों (Percentages) को दिखाना हो।</li></ul>" 
+        },
+        { 
+            q: "माइक्रोसॉफ्ट वर्ड में एक नई फाइल बनाने का सही क्रम बताएँ ?", 
+            o: ["फाइल -> सेव -> नेम", "फाइल -> नया -> ब्लैंक डाक्यूमेंट -> क्रिएट", "फाइल -> नया -> क्रिएट -> ओके", "फाइल -> सेव -> नया -> नेम"], 
+            a: 1, 
+            e: "<b>हल:</b> (B) फाइल -> नया -> ब्लैंक डाक्यूमेंट -> क्रिएट (File -> New -> Blank Document -> Create)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>यह क्रम MS Word में एक एकदम नया, खाली पेज खोलने का मानक (Standard) तरीका है।</li><li>नई फाइल (Blank Document) खोलने की शॉर्टकट कुंजी Ctrl + N है।</li><li>'File -> New' में जाने पर ब्लैंक डॉक्यूमेंट के अलावा पहले से बने हुए टेम्प्लेट (Templates) भी मिलते हैं, जैसे रेज़्यूमे (Resume) या लेटर।</li><li>वर्ड में बनी फाइल को 'Document' कहा जाता है, जिसका डिफ़ॉल्ट नाम 'Document1' होता है।</li><li>इस फाइल को सेव करने के लिए Ctrl + S (File -> Save) का प्रयोग होता है।</li></ul>" 
+        },
+        { 
+            q: "माइक्रोसॉफ्ट वर्ड में किसी फाइल के अवयवों को कॉपी करने का शार्ट-कट बटन क्या है ?", 
+            o: ["कंट्रोल + पी (Ctrl+P)", "कंट्रोल + वी (Ctrl+V)", "कंट्रोल + के (Ctrl+K)", "कंट्रोल + सी (Ctrl+C)"], 
+            a: 3, 
+            e: "<b>हल:</b> (D) कंट्रोल + सी (Ctrl+C)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>'Copy' कमांड किसी सेलेक्ट किए गए टेक्स्ट या ऑब्जेक्ट की एक डुप्लीकेट (नकल) बना लेती है।</li><li>कॉपी किया गया डेटा कंप्यूटर की एक अस्थायी मेमोरी (Temporary Memory) में चला जाता है, जिसे 'क्लिपबोर्ड' (Clipboard) कहते हैं।</li><li>इस डेटा को दूसरी जगह रखने (Paste) के लिए Ctrl + V शॉर्टकट का इस्तेमाल होता है।</li><li>डेटा को उसकी मूल जगह से हटाकर (Cut) दूसरी जगह ले जाने के लिए Ctrl + X का इस्तेमाल होता है।</li><li>अन्य विकल्पों में: Ctrl + P (Print करने के लिए) और Ctrl + K (Hyperlink जोड़ने के लिए) उपयोग होता है।</li></ul>" 
+        },
+        { 
+            q: "माइक्रोसॉफ्ट वर्ड में शब्दों को \"बोल्ड\" करने का तरीका क्या है ?", 
+            o: ["शब्दों को चुने -> 'बोल्ड' बटन दबाने", "शब्दों को चुने -> सेव -> 'बोल्ड' बटन दबाने", "शब्दों को चुने -> सेव -> 'अंडर लाइन' बटन दबाने", "शब्दों को चुने -> पेस्ट -> 'बोल्ड' बटन दबाने"], 
+            a: 0, 
+            e: "<b>हल:</b> (A) शब्दों को चुने -> 'बोल्ड' बटन दबाने (Select words -> Click 'Bold' button)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>बोल्ड (Bold) करने से टेक्स्ट सामान्य से अधिक गहरा और मोटा दिखाई देता है, जिससे वह हाईलाइट हो जाता है।</li><li>किसी भी फॉर्मेटिंग को लागू करने से पहले टेक्स्ट को सेलेक्ट (Select) करना अनिवार्य है।</li><li>टेक्स्ट को बोल्ड करने की शॉर्टकट कुंजी Ctrl + B है।</li><li>बोल्ड बटन 'Home' टैब के 'Font' ग्रुप में 'B' अक्षर के रूप में दिखाई देता है।</li><li>इसी प्रकार इटैलिक (तिरछा) करने के लिए Ctrl + I (I बटन) और अंडरलाइन (नीचे रेखा) के लिए Ctrl + U (U बटन) का उपयोग होता है।</li></ul>" 
+        },
+        { 
+            q: "माइक्रोसॉफ्ट वर्ड में किसी टैक्स्ट को सबस्क्रिप्ट बनाने के लिए कौन-सा क्रम उचित है ?", 
+            o: ["सेलेक्ट/हाइलाइट करे -> सेव -> इंसर्ट", "टैक्स्ट को सेलेक्ट करें -> इंसर्ट -> सबस्क्रिप्ट", "टैक्स्ट चुने -> पेज लेआउट -> सबस्क्रिप्ट", "टैक्स्ट को सेलेक्ट करें -> फोरमेट -> फौंट (Format -> Font)"], 
+            a: 3, 
+            e: "<b>हल:</b> (D) टैक्स्ट को सेलेक्ट करें -> फोरमेट -> फौंट (Format -> Font)। (नोट: यह MS Word के पुराने वर्जन्स, जैसे Word 2003 का क्रम है। नए वर्जन्स में यह Home टैब में होता है)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>सबस्क्रिप्ट (Subscript) में अक्षर सामान्य लाइन से थोड़ा नीचे और छोटे आकार में लिखा जाता है (जैसे पानी का सूत्र H₂O में '2')।</li><li>सबस्क्रिप्ट लागू करने की शॉर्टकट कुंजी Ctrl + = (Equal sign) है।</li><li>सुपरस्क्रिप्ट (Superscript) में अक्षर सामान्य लाइन से ऊपर लिखा जाता है (जैसे X² में '2')।</li><li>सुपरस्क्रिप्ट की शॉर्टकट कुंजी Ctrl + Shift + + (Plus sign) है।</li><li>आधुनिक MS Word में (2007 और बाद), Subscript और Superscript बटन सीधे 'Home' टैब के 'Font' ग्रुप में उपलब्ध होते हैं।</li></ul>" 
+        },
+        { 
+            q: "माइक्रोसॉफ्ट वर्ड में \"टेक्स्ट बाक्स\" (Text Box) कहाँ से मिलता है?", 
+            o: ["होम कैप्शन में", "फाइल कैप्शन में", "इंसर्ट कैप्शन में", "मेलिंग कैप्शन में"], 
+            a: 2, 
+            e: "<b>हल:</b> (C) इंसर्ट कैप्शन में (Insert tab)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>टेक्स्ट बॉक्स (Text Box) एक ऐसा बॉक्स होता है जिसमें आप टेक्स्ट लिख सकते हैं और फिर उस बॉक्स को पेज पर कहीं भी खिसका (Move) कर रख सकते हैं।</li><li>यह 'Insert' टैब के 'Text' ग्रुप में पाया जाता है।</li><li>डिफ़ॉल्ट टेक्स्ट लाइन से हटकर अगर पेज के किसी कोने (जैसे साइडबार या कोटेशन) में टेक्स्ट लिखना हो, तो टेक्स्ट बॉक्स बहुत उपयोगी होता है।</li><li>आप टेक्स्ट बॉक्स की आउटलाइन (Border) हटा सकते हैं या उसमें रंग (Fill color) भर सकते हैं।</li><li>माइक्रोसॉफ्ट वर्ड में पहले से डिज़ाइन किए हुए (Built-in) कई टेक्स्ट बॉक्स टेम्प्लेट भी होते हैं।</li></ul>" 
+        },
+        { 
+            q: "स्वतः हेडर एवं फुटर माइक्रोसॉफ्ट वर्ड में कौन कौन-से हैं ?", 
+            o: ["मिलीमीटर (मि.मि.)", "इंच (Inch)", "सेंटीमीटर (सी.एम.)", "नैनो मीटर (एन.एम.)"], 
+            a: 1, 
+            e: "<b>हल:</b> (B) इंच (Inch)। (प्रश्न का आशय MS Word में डिफ़ॉल्ट हेडर/फुटर मार्जिन की मापन इकाई (Measurement Unit) से है)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>MS Word (US वर्ज़न) में पेज की मार्जिन, हेडर और फुटर डिफ़ॉल्ट रूप से इंच (Inches) में मापे जाते हैं।</li><li>डिफ़ॉल्ट रूप से हेडर (Header) पेज के टॉप से 0.5 इंच नीचे और फुटर (Footer) पेज के बॉटम से 0.5 इंच ऊपर होता है।</li><li>हेडर पेज का सबसे ऊपरी हिस्सा होता है जहाँ टाइटल, चैप्टर का नाम या लोगो लिखा जाता है।</li><li>फुटर पेज का सबसे निचला हिस्सा होता है जहाँ पेज नंबर, लेखक का नाम या तारीख लिखी जाती है।</li><li>यूज़र अपनी सुविधानुसार MS Word की सेटिंग्स (Word Options) में जाकर मापन इकाई को इंच से सेंटीमीटर (cm) में बदल सकता है।</li></ul>" 
+        }
+    ];
+
+    let state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+    let timerInterval = null;
+    let isPaused = false;
+
+    window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+    function initDashboard() {
+        showScreen('dashboard-screen');
+        let completedData = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) completedData = JSON.parse(dataStr);
+        } catch(e) {}
+
+        if (completedData) {
+            document.getElementById('dash-unattempted').style.display = 'none';
+            document.getElementById('dash-attempted').style.display = 'block';
+            document.getElementById('dash-score-text').innerText = `${completedData.score}/25.0 Marks`;
+            document.getElementById('dash-progress-bar').style.width = `${(completedData.score / 25) * 100}%`;
+        } else {
+            document.getElementById('dash-attempted').style.display = 'none';
+            document.getElementById('dash-unattempted').style.display = 'block';
+        }
+    }
+
+    function startTest() {
+        let saved = null;
+        try {
+            const savedStr = safeGetItem(STORAGE_KEY);
+            if(savedStr) saved = JSON.parse(savedStr);
+        } catch(e){}
+
+        if (saved && !saved.submitted) {
+            state = saved;
+        } else {
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+        }
+        initTestEnv();
+    }
+
+    function reattemptTest() {
+        if(confirm("Are you sure you want to start a fresh test? Your active progress will be lost.")) {
+            safeRemoveItem(STORAGE_KEY);
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+            initTestEnv();
+        }
+    }
+
+    function initTestEnv() {
+        showScreen('test-screen');
+        renderQuestion();
+        renderPalette();
+        updateStats();
+        
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+        setInterval(() => { if(!state.submitted) safeSetItem(STORAGE_KEY, JSON.stringify(state)); }, 2000);
+    }
+
+    function viewSavedResults() {
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(data) renderResultUI(data);
+    }
+
+    function showDashboard() { initDashboard(); }
+
+    function showScreen(id) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+    }
+
+    function updateTimer() {
+        if(isPaused || state.submitted) return;
+        if(state.time <= 0) { submitTest(); return; }
+        state.time--;
+        const m = Math.floor(state.time / 60), s = state.time % 60;
+        document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+    }
+
+    function toggleTheme() {
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    function renderQuestion() {
+        state.visited[state.currentQ] = true;
+        const q = finalQuestions[state.currentQ];
+        document.getElementById('q-no').innerText = `Question ${state.currentQ + 1}`;
+        document.getElementById('q-text').innerHTML = q.q;
+        let opts = '';
+        q.o.forEach((opt, i) => {
+            const isSel = state.answers[state.currentQ] === i;
+            const selClass = isSel ? 'selected' : '';
+            const charLabel = String.fromCharCode(65 + i);
+            opts += `<div class="glass-panel option ${selClass}" onclick="selectOption(${i})"><div class="opt-label">${charLabel}</div><div style="flex:1;">${opt}</div></div>`;
+        });
+        document.getElementById('options-box').innerHTML = opts;
+        renderPalette();
+        updateStats();
+    }
+
+    function selectOption(index) { state.answers[state.currentQ] = index; renderQuestion(); }
+    function clearResponse() { delete state.answers[state.currentQ]; delete state.marked[state.currentQ]; renderQuestion(); }
+    function markReview() { state.marked[state.currentQ] = true; changeQ(1); }
+    function saveNext() { delete state.marked[state.currentQ]; changeQ(1); }
+
+    function changeQ(step) {
+        const next = state.currentQ + step;
+        if(next >= 0 && next < finalQuestions.length) { state.currentQ = next; renderQuestion(); }
+    }
+
+    function renderPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        finalQuestions.forEach((_, i) => {
+            let cls = 's-0';
+            if(state.visited[i]) {
+                if(state.answers[i] !== undefined && state.marked[i]) cls = 's-4';
+                else if(state.marked[i]) cls = 's-3';
+                else if(state.answers[i] !== undefined) cls = 's-1';
+                else cls = 's-2';
+            }
+            const active = i === state.currentQ ? 'active' : '';
+            grid.innerHTML += `<button class="p-btn ${cls} ${active}" onclick="state.currentQ = ${i}; renderQuestion();">${i + 1}</button>`;
+        });
+    }
+
+    function updateStats() {
+        let ans=0, notans=0, notvis=0, mark=0;
+        finalQuestions.forEach((_, i) => {
+            if(!state.visited[i]) notvis++;
+            else if(state.marked[i]) mark++;
+            else if(state.answers[i] !== undefined) ans++;
+            else notans++;
+        });
+        document.getElementById('c-ans').innerText = ans; document.getElementById('c-notans').innerText = notans;
+        document.getElementById('c-notvis').innerText = notvis; document.getElementById('c-mark').innerText = mark;
+    }
+
+    function submitTest() {
+        if(!confirm("Are you sure you want to submit the test?")) return;
+        state.submitted = true; clearInterval(timerInterval);
+        let score=0, attempt=0, wrong=0;
+        finalQuestions.forEach((q, i) => {
+            if(state.answers[i] !== undefined) {
+                attempt++;
+                if(state.answers[i] === q.a) score++; else wrong++;
+            }
+        });
+        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const completedData = { score: score, attempted: attempt, wrong: wrong, time: state.time, date: today, userAnswers: state.answers };
+        
+        safeSetItem(COMPLETED_KEY, JSON.stringify(completedData));
+        safeRemoveItem(STORAGE_KEY);
+        
+        renderResultUI(completedData);
+    }
+
+    function renderResultUI(data) {
+        showScreen('result-screen');
+        const acc = data.attempted > 0 ? ((data.score / data.attempted) * 100).toFixed(1) : 0;
+        document.getElementById('r-score').innerText = `${data.score}`;
+        document.getElementById('r-attempt').innerText = data.attempted;
+        document.getElementById('r-wrong').innerText = data.wrong;
+        document.getElementById('r-acc').innerText = `${acc}%`;
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(!data) return;
+
+        let html = '';
+        finalQuestions.forEach((q, i) => {
+            const uAns = data.userAnswers[i];
+            let optHtml = '';
+            q.o.forEach((opt, oIdx) => {
+                let cls = '', checkMark = '';
+                if(oIdx === q.a) { cls = 'correct'; checkMark = ' ✔'; }
+                else if(oIdx === uAns && uAns !== q.a) { cls = 'wrong'; checkMark = ' ❌ (Your Answer)'; }
+                optHtml += `<div class="glass-panel sol-opt ${cls}"><strong>${String.fromCharCode(65 + oIdx)}.</strong> <div style="flex:1;">${opt} ${checkMark}</div></div>`;
+            });
+            let statusText = uAns !== undefined ? (uAns === q.a ? "हल किया (Correct)" : "हल किया (Incorrect)") : "हल नहीं किया (Unattempted)";
+            html += `<div class="glass-panel sol-card"><div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--primary);">प्र ${i+1}. ${q.q}</div>${optHtml}<div style="font-weight:bold; margin:15px 0; color:var(--text-muted);">Status: ${statusText}</div><div class="glass-panel sol-exp">${q.e}</div></div>`;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Computer Knowledge Set 3</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Beautiful Moving Gradient & Glassmorphism Theme */
+        :root {
+            --bg-grad-1: #4facfe; --bg-grad-2: #00f2fe; --bg-grad-3: #a18cd1; --bg-grad-4: #fbc2eb;
+            --glass-bg: rgba(255, 255, 255, 0.9); --glass-border: rgba(255, 255, 255, 0.6); --glass-shadow: rgba(31, 38, 135, 0.15);
+            --text-main: #1f2937; --text-muted: #64748b;
+            --primary: #2563eb; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --purple: #8b5cf6;
+            --option-bg: rgba(243, 244, 246, 0.8); --option-selected: rgba(219, 234, 254, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+        [data-theme="dark"] {
+            --bg-grad-1: #0f2027; --bg-grad-2: #203a43; --bg-grad-3: #2c5364; --bg-grad-4: #141e30;
+            --glass-bg: rgba(17, 25, 40, 0.85); --glass-border: rgba(255, 255, 255, 0.15); --glass-shadow: rgba(0, 0, 0, 0.5);
+            --text-main: #f9fafb; --text-muted: #94a3b8;
+            --primary: #3b82f6; 
+            --option-bg: rgba(55, 65, 81, 0.7); --option-selected: rgba(30, 58, 138, 0.8);
+            --card-bg: rgba(31, 41, 55, 0.95);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; touch-action: manipulation;}
+        
+        body { 
+            height: 100vh; height: 100dvh; 
+            background: linear-gradient(45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3), var(--bg-grad-4)); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+            color: var(--text-main); 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 var(--glass-shadow); border-radius: 12px; }
+        
+        .btn { font-family: 'Poppins', sans-serif; background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;}
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-warning { background: var(--warning); color: #fff;}
+        .btn-clear { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-mark { background: var(--purple); color: white; }
+        .btn-prev { background: var(--text-muted); color: white; }
+
+        /* Screens */
+        .screen { display: none; flex-direction: column; height: 100%; width: 100vw; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; }
+
+        /* --- DASHBOARD UI --- */
+        #dashboard-screen { overflow-y: auto; background: var(--card-bg); align-items: center; padding-bottom: 30px;}
+        
+        .dash-header-top { background: #1e293b; color: white; width: 100%; padding: 15px 20px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 15px; position: sticky; top:0; z-index: 100;}
+        
+        .dash-content { width: 100%; max-width: 800px; padding: 20px; }
+        .section-title { font-weight: 600; color: var(--primary); margin: 15px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 15px; }
+        
+        .dash-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--glass-border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .test-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text-main);}
+        .test-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        
+        .progress-container { width: 100%; height: 6px; background: var(--glass-border); border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #fbc02d; width: 0%; transition: width 0.5s ease;}
+        
+        .dash-actions { display: flex; gap: 12px; margin-top: 15px; }
+        .dash-actions .btn { flex: 1; padding: 10px; font-size: 14px; border-radius: 8px;}
+        
+        .syllabus-footer { display: flex; justify-content: space-between; font-size: 12px; color: var(--primary); border-top: 1px solid var(--glass-border); padding-top: 12px; margin-top: 15px; }
+
+        /* --- TEST SCREEN UI --- */
+        header.test-head { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-bottom: 10px; margin-inline: 10px; }
+        .header-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: 700; background: var(--card-bg); border: 1px solid var(--glass-border); color: var(--danger); padding: 5px 12px; border-radius: 20px; }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 0 10px 10px 10px; }
+        .question-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        .q-header { padding: 10px 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
+        .q-body { flex: 1; padding: 15px; overflow-y: auto; font-size: 16px; line-height: 1.6; }
+        
+        .options-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;}
+        .option { padding: 12px; border: 2px solid var(--glass-border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--option-bg); font-weight: 500; font-size: 15px;}
+        .option.selected { border-color: var(--primary); background: var(--option-selected); color: var(--primary); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--glass-border); display: flex; justify-content: center; align-items: center; font-weight: bold; }
+        .option.selected .opt-label { background: var(--primary); color: white; border-color: var(--primary);}
+        
+        .q-footer { padding: 10px; border-top: 1px solid var(--glass-border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-radius: 0 0 12px 12px; }
+
+        /* --- PALETTE UI --- */
+        .palette-section { width: 320px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .palette-header { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; font-weight: bold; font-size: 15px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; font-size: 12px; border-bottom: 1px solid var(--glass-border); font-weight: 500;}
+        .stat-item { display: flex; align-items: center; gap: 6px;}
+        .badge { width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 10px; font-weight: bold;}
+        .s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);} 
+        .s-1 { background: var(--success); } .s-2 { background: var(--danger); } .s-3 { background: var(--purple); } 
+        .s-4 { background: var(--primary); position: relative; }
+        .s-4::after { content: '✔'; position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; background: white; color: var(--primary); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 8px; }
+        
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .p-btn.s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);}
+        .p-btn.active { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.1);}
+        .submit-area { padding: 10px; border-top: 1px solid var(--glass-border); border-radius: 0 0 12px 12px;}
+
+        /* --- RESULTS & SOLUTIONS UI --- */
+        #result-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        #solution-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        .sol-card { padding: 20px; margin-bottom: 15px; width: 100%; max-width: 800px; }
+        .sol-opt { padding: 10px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; gap: 10px; align-items: center; font-size: 15px; background: var(--card-bg);}
+        .sol-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); text-decoration: line-through;}
+        .sol-exp { margin-top: 15px; padding: 15px; background: rgba(37, 99, 235, 0.05); border: 1px solid var(--glass-border); border-left: 4px solid var(--primary); border-radius: 8px; font-size: 14.5px; line-height: 1.6; }
+        .sol-exp ul { padding-left: 20px; margin-top: 8px; }
+        .sol-exp li { margin-bottom: 6px; }
+
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+
+        @media (max-width: 992px) {
+            .main-area { flex-direction: column; overflow-y: auto;}
+            .question-section { flex: none; min-height: 450px;}
+            .palette-section { width: 100%; flex: none; min-height: 350px;}
+            .q-footer .btn { padding: 10px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="dashboard-screen" class="screen active">
+        <div class="dash-header-top">
+            <a href="haryanapolice.html" style="color: white; text-decoration: none; font-size: 20px; margin-right: 10px;">&#8592;</a>
+            Mock Tests
+        </div>
+
+        <div class="dash-content">
+            <!-- Unattempted State -->
+            <div id="dash-unattempted" style="display: none;">
+                <div class="section-title">Suggested Next Test</div>
+                <div class="dash-card">
+                    <div class="test-title">Computer Knowledge - Set 3</div>
+                    <div class="test-meta">
+                        <span>25 Qs • 25 mins • 25.0 Marks</span>
+                    </div>
+                    <div class="test-meta" style="justify-content: flex-end;">
+                        <button class="btn btn-outline" style="padding: 6px 20px; border-radius: 20px;" onclick="startTest()">Start Test 🚀</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span>Syllabus: Networking, Communication & Multimedia</span>
+                        <span style="color:var(--success);">🔗 Share</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attempted State -->
+            <div id="dash-attempted" style="display: none;">
+                <div class="dash-card">
+                    <div class="test-title">Computer Knowledge - Set 3</div>
+                    <div class="test-meta" style="margin-bottom: 5px;">
+                        <span id="dash-score-text" style="font-size: 15px; color: var(--text-muted);">0/25.0 Marks</span>
+                    </div>
+                    
+                    <div class="progress-container"><div class="progress-fill" id="dash-progress-bar"></div></div>
+
+                    <div class="dash-actions">
+                        <button class="btn btn-outline" onclick="viewSavedResults()">View Results</button>
+                        <button class="btn btn-outline" onclick="reattemptTest()">Reattempt &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAUSE OVERLAY -->
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px; font-size: 2rem;">Test Paused ⏸️</h2>
+        <button class="btn btn-primary" style="font-size: 1.2rem; padding: 10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+    </div>
+
+    <!-- TEST SCREEN -->
+    <div id="test-screen" class="screen">
+        <header class="glass-panel test-head">
+            <div class="header-title">Computer Set 3</div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="toggleTheme()">🌓 Theme</button>
+                <button class="btn btn-warning" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="togglePause()">⏸ Pause</button>
+                <div class="timer-box">⏱ <span id="timer-display">25:00</span></div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="glass-panel question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--success); font-weight:bold;">+1 <span style="color: var(--text-muted); font-weight:normal;">|</span> <span style="color: var(--danger);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <button class="btn btn-mark" onclick="markReview()">Mark & Next</button>
+                    <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                    <button class="btn btn-prev" onclick="changeQ(-1)">Previous</button>
+                    <button class="btn btn-primary" onclick="saveNext()">Save & Next</button>
+                </div>
+            </div>
+
+            <div class="glass-panel palette-section">
+                <div class="palette-header">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">25</div> Not Visit</div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn btn-primary" style="width: 100%; background: var(--success); font-size: 15px; padding: 10px;" onclick="submitTest()">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen" class="screen">
+        <div style="width: 100%; max-width: 800px; margin-bottom: 15px;"><button class="btn btn-clear" onclick="showDashboard()">&#8592; Back to Dashboard</button></div>
+        <div class="glass-panel" style="max-width: 800px; width: 100%; padding: 25px;">
+            <h1 style="color: var(--primary); text-align: center;">Test Submitted Successfully! 🎉</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 25px 0;">
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-score" style="color: var(--primary); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Score</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-attempt" style="color: var(--success); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Attempted</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-wrong" style="color: var(--danger); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Wrong</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-acc" style="color: var(--purple); font-size: 1.8rem;">0%</h2><p style="color: var(--text-muted); font-size:12px;">Accuracy</p></div>
+            </div>
+            <button class="btn btn-primary" style="width:100%; font-size: 15px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+        </div>
+    </div>
+
+    <!-- SOLUTION SCREEN -->
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%; margin:0 auto;">
+            <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 12px 15px; position: sticky; top: 5px; z-index: 10;">
+                <h3 style="color: var(--primary);">Detailed Solutions</h3>
+                <button class="btn btn-clear" style="padding: 5px 10px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+            </div>
+            <div id="sol-container"></div>
+        </div>
+    </div>
+
+<script>
+    const MEMORY_STORE = {};
+    function safeGetItem(key) { try { return localStorage.getItem(key) || MEMORY_STORE[key] || null; } catch(e) { return MEMORY_STORE[key] || null; } }
+    function safeSetItem(key, value) { try { localStorage.setItem(key, value); } catch(e) {} MEMORY_STORE[key] = value; }
+    function safeRemoveItem(key) { try { localStorage.removeItem(key); } catch(e) {} delete MEMORY_STORE[key]; }
+
+    const STORAGE_KEY = 'comp_set3_active'; 
+    const COMPLETED_KEY = 'comp_set3_comp';
+
+    // 25 Questions extracted from provided images (Q.59 to Q.83)
+    const finalQuestions = [
+        { 
+            q: "Data link level पर Error detection निम्न में से किसके द्वारा ज्ञात किया जाता है ?", 
+            o: ["bit stubbing", "cyclic redundancy codes", "hamming codes", "equalization"], 
+            a: 1, 
+            e: "<b>हल:</b> (B) cyclic redundancy codes (CRC)। <br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>OSI मॉडल में कुल 7 लेयर्स होती हैं, जिसमें Data Link Layer दूसरी लेयर है।</li><li>CRC (Cyclic Redundancy Check) एक तकनीक है जो डेटा ट्रांसमिशन में होने वाली त्रुटियों (Errors) का पता लगाती है।</li><li>यह तकनीक पॉलीनॉमियल डिवीज़न (Polynomial division) के सिद्धांत पर कार्य करती है।</li><li>Data Link Layer का मुख्य काम Raw bits को Frames में बदलना है।</li><li>MAC एड्रेस (Media Access Control) भी Data Link Layer का ही हिस्सा होता है।</li></ul>" 
+        },
+        { 
+            q: "Baud का मतलब है-", 
+            o: ["इकाई समय में प्रसारित bits की संख्या", "इकाई समय में प्रसारित bytes की संख्या", "वह दर जिस पर सिग्नल परिवर्तित होता है", "उपरोक्त में से कोई नहीं"], 
+            a: 1, 
+            e: "<b>हल:</b> (B) इकाई समय में प्रसारित bytes की संख्या। (नोट: तकनीकी रूप से Baud दर का अर्थ 'वह दर जिस पर सिग्नल परिवर्तित होता है' (C) है, परन्तु दिए गए उत्तर-पत्रक के अनुसार विकल्प B चिन्हित है)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>Baud rate असल में कम्युनिकेशन चैनल में प्रति सेकंड सिग्नल में होने वाले बदलावों (Symbol rate) को मापता है।</li><li>Bit rate और Baud rate दोनों अलग-अलग हैं; Bit rate प्रति सेकंड ट्रांसमिट हुए बिट्स की संख्या है (bps)।</li><li>Baud शब्द का नाम फ्रांसीसी इंजीनियर एमिल बाडोट (Émile Baudot) के नाम पर रखा गया है।</li><li>पुराने टेलीफोन मॉडेम की गति मापने के लिए Baud rate का खूब प्रयोग होता था।</li><li>यदि एक सिग्नल परिवर्तन 1 बिट को दर्शाता है, तो Baud rate और Bit rate समान होते हैं।</li></ul>" 
+        },
+        { 
+            q: "Serial communication में start और stop bits का उपयोग निम्न में से किसके लिए होता है?", 
+            o: ["error detection", "error correction", "synchronization", "None of these"], 
+            a: 2, 
+            e: "<b>हल:</b> (C) synchronization। <br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>Start और Stop bits का उपयोग 'Asynchronous' सीरियल कम्युनिकेशन में किया जाता है।</li><li>यह रिसीवर को बताता है कि डेटा का कैरेक्टर कब शुरू हो रहा है और कब खत्म हो रहा है, जिससे सिंक्रोनाइज़ेशन बना रहता है।</li><li>आमतौर पर Start bit की वैल्यू '0' (Space) और Stop bit की वैल्यू '1' (Mark) होती है।</li><li>UART (Universal Asynchronous Receiver-Transmitter) इसी सिद्धांत पर काम करने वाला एक माइक्रोचिप है।</li><li>सिंक्रोनस (Synchronous) कम्युनिकेशन में स्टार्ट/स्टॉप बिट्स की जरूरत नहीं होती क्योंकि उसमें क्लॉक (Clock) सिग्नल भेजा जाता है।</li></ul>" 
+        },
+        { 
+            q: "एक 2400 bps की लाइन पर कितने characters प्रति सेकण्ड की दर से transmit किये जा सकते हैं (7-bits + 1 parity) यदि transfer synchronous हो (1 start तथा 1 stop bit) ?", 
+            o: ["300", "240", "250", "275"], 
+            a: 1, 
+            e: "<b>हल:</b> (B) 240। <br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>एक कैरेक्टर का कुल आकार = 7 बिट्स (डेटा) + 1 पैरिटी + 1 स्टार्ट + 1 स्टॉप = कुल 10 बिट्स।</li><li>यदि लाइन की स्पीड 2400 bps (बिट्स प्रति सेकंड) है, तो प्रति सेकंड कैरेक्टर = 2400 / 10 = 240 कैरेक्टर्स।</li><li>bps (Bits Per Second) डेटा ट्रांसफर स्पीड मापने की इकाई है।</li><li>Parity bit का उपयोग डेटा ट्रांसमिशन में एरर (Error) चेक करने के लिए किया जाता है (Even या Odd parity)।</li><li>यह प्रश्न एसिंक्रोनस ट्रांसमिशन के सिद्धांत पर आधारित है जहाँ स्टार्ट और स्टॉप बिट्स जोड़े जाते हैं।</li></ul>" 
+        },
+        { 
+            q: "Ethernet CSMA/CD में, collision handling के लिए media access management द्वारा transmitted special bit sequence को कहते हैं-", 
+            o: ["preamble", "postamble", "jam", "उपरोक्त में से कोई नहीं"], 
+            a: 2, 
+            e: "<b>हल:</b> (C) jam। <br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>CSMA/CD का पूरा नाम Carrier Sense Multiple Access with Collision Detection है।</li><li>जब नेटवर्क पर दो डिवाइस एक साथ डेटा भेज देते हैं, तो 'टकराव' (Collision) होता है।</li><li>टकराव का पता चलने पर ट्रांसमिटिंग डिवाइस एक 32-बिट का 'Jam Signal' भेजता है ताकि नेटवर्क के सभी डिवाइस को टकराव की जानकारी मिल जाए।</li><li>Jam सिग्नल के बाद डिवाइस एक रैंडम समय के लिए रुक जाते हैं, जिसे 'Backoff Algorithm' कहते हैं।</li><li>CSMA/CD मुख्य रूप से IEEE 802.3 (Ethernet) स्टैंडर्ड में इस्तेमाल होता है।</li></ul>" 
+        },
+        { 
+            q: "Network routing का वह तरीका जिसमें transmitting एवं receiving DTE के बीच के हर सम्भव पथ का उपयोग होता है, कहलाती है", 
+            o: ["random routing", "packet flooding", "directory routing", "message switching"], 
+            a: 3, 
+            e: "<b>हल:</b> (D) message switching। <br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>नेटवर्क में डेटा भेजने के तीन मुख्य तरीके हैं: सर्किट स्विचिंग, पैकेट स्विचिंग और मैसेज स्विचिंग।</li><li>Message Switching में पूरे मैसेज को एक नोड पर स्टोर (Store) किया जाता है और फिर आगे फॉरवर्ड (Forward) किया जाता है।</li><li>वर्तमान इंटरनेट व्यवस्था 'Packet Switching' पर आधारित है, जहाँ डेटा छोटे पैकेट्स में टूटकर अलग-अलग रास्तों से जाता है।</li><li>'Flooding' वह तकनीक है जिसमें एक इनकमिंग पैकेट को छोड़कर बाकी सभी पोर्ट्स पर ब्रॉडकास्ट कर दिया जाता है।</li><li>राउटर (Router) OSI मॉडल की Network Layer (Layer 3) पर काम करता है।</li></ul>" 
+        },
+        { 
+            q: "निम्न में से कौन-सा standard RS-232 C signal नहीं है?", 
+            o: ["RTS", "CTS", "DSR", "VDR"], 
+            a: 3, 
+            e: "<b>हल:</b> (D) VDR। <br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>RS-232 C कंप्यूटर और बाहरी डिवाइस (जैसे मॉडेम) के बीच सीरियल कम्युनिकेशन का एक पुराना स्टैंडर्ड है।</li><li>RTS का मतलब 'Request To Send' है (डेटा भेजने की अनुमति मांगना)।</li><li>CTS का मतलब 'Clear To Send' है (डिवाइस तैयार है)।</li><li>DSR का मतलब 'Data Set Ready' है (मॉडेम पावर ऑन है)।</li><li>इसमें आमतौर पर 9-पिन (DB-9) या 25-पिन (DB-25) कनेक्टर का इस्तेमाल होता है। VDR इसका कोई सिग्नल नहीं है।</li></ul>" 
+        },
+        { 
+            q: "निम्न में से कौन-सा ISO level, physical communications facilities से ज्यादा नजदीकी संबंध रखता है ?", 
+            o: ["Application", "Session", "Network", "Data link"], 
+            a: 3, 
+            e: "<b>हल:</b> (D) Data link। <br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>OSI (Open Systems Interconnection) मॉडल को ISO द्वारा 1984 में विकसित किया गया था।</li><li>Physical Layer (Layer 1) हार्डवेयर और केबल्स से सीधे जुड़ी होती है, और Data Link (Layer 2) उसके ठीक ऊपर होती है। दिए गए विकल्पों में Data Link सबसे नज़दीक है।</li><li>Application Layer (Layer 7) यूज़र के सबसे नज़दीक होती है (जैसे वेब ब्राउज़र)।</li><li>Network Layer (Layer 3) IP एड्रेसिंग और राउटिंग का काम संभालती है।</li><li>Session Layer (Layer 5) दो डिवाइस के बीच कनेक्शन स्थापित करने और समाप्त करने का काम करती है।</li></ul>" 
+        },
+        { 
+            q: "Object Browser", 
+            o: ["Command buttons और Textboxes को दर्शाता है ।", "Frequently used shortcuts को object के रूप में दर्शाता है ।", "एक Context Menu है ।", "Object liabilities तथा उनके data और Code के साथ सम्बन्ध को दिखाता है ।"], 
+            a: 3, 
+            e: "<b>हल:</b> (D) Object liabilities तथा उनके data और Code के साथ सम्बन्ध को दिखाता है । <br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>ऑब्जेक्ट ब्राउज़र प्रोग्रामिंग (विशेषकर OOPs) में एक टूल है जो क्लासेस, प्रॉपर्टीज़, मेथड्स और इवेंट्स को देखने में मदद करता है।</li><li>IDE (Integrated Development Environment) जैसे Visual Studio या Visual Basic में इसका प्रमुखता से उपयोग होता है।</li><li>यह डेवलपर्स को कोड की संरचना (Structure) और लाइब्रेरीज़ को नेविगेट करने की सुविधा देता है।</li><li>C++, Java और C# जैसी भाषाओं में 'ऑब्जेक्ट' डेटा और फंक्शन का एक समूह होता है।</li><li>Object Browser से आप पहले से बनी (Built-in) और खुद की बनाई (Custom) दोनों तरह की क्लासेस देख सकते हैं।</li></ul>" 
+        },
+        { 
+            q: "Multimedia क्या है ?", 
+            o: ["Multimedia, text और graphics का combination है ।", "Multimedia, audio का उपयोग है ।", "Multimedia, video का उपयोग है ।", "Multimedia, information के presentation का तरीका है ।"], 
+            a: 0, 
+            e: "<b>हल:</b> (A) Multimedia, text और graphics का combination है । <br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>मल्टीमीडिया (Multi + Media) दो शब्दों से बना है जिसका अर्थ है एक से अधिक माध्यमों का उपयोग।</li><li>इसमें Text, Audio, Video, Graphics और Animation का संयोजन (Combination) होता है।</li><li>कंप्यूटर पर मल्टीमीडिया फाइलें चलाने के लिए साउंड कार्ड (Sound Card) और ग्राफिक्स कार्ड की आवश्यकता होती है।</li><li>यह शिक्षा, गेमिंग, विज्ञापन और मनोरंजन के क्षेत्र में क्रांति ला चुका है।</li><li>वेब पेज पर मल्टीमीडिया कंटेंट जोड़ने के लिए HTML5 में विशेष टैग्स (जैसे &lt;video&gt; और &lt;audio&gt;) दिए गए हैं।</li></ul>" 
+        },
+        { 
+            q: "Multimedia कौन से तीन मुख्य क्षेत्रों में उपयोग होता है?", 
+            o: ["Education, Television and Radio", "Education, Information and Entertainment", "Television, Movies and Newspapers", "Television, Movies and Education"], 
+            a: 1, 
+            e: "<b>हल:</b> (B) Education, Information and Entertainment। <br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>एजुकेशन (शिक्षा) में ई-लर्निंग, स्मार्ट क्लासेस और ट्यूटोरियल्स मल्टीमीडिया पर आधारित हैं।</li><li>एंटरटेनमेंट (मनोरंजन) में वीडियो गेम्स, फिल्में और एनिमेशन इसके सबसे बड़े उदाहरण हैं।</li><li>इन्फॉर्मेशन (सूचना) क्षेत्र में न्यूज़ वेबसाइट्स, कियोस्क (Kiosk) और डिजिटल एनसाइक्लोपीडिया (जैसे Encarta) शामिल हैं।</li><li>शिक्षा और मनोरंजन के मिश्रण को आजकल 'Edutainment' (एडुटेनमेंट) भी कहा जाता है।</li><li>मल्टीमीडिया को इंटरएक्टिव (Interactive) बनाने के लिए यूज़र इनपुट (माउस, कीबोर्ड, टचस्क्रीन) का प्रयोग किया जाता है।</li></ul>" 
+        },
+        { 
+            q: "सबसे बड़ा audio file format कौन-सा है ?", 
+            o: ["WAV", "BMA", "MP3", "JPG"], 
+            a: 2, 
+            e: "<b>हल:</b> (C) MP3। (नोट: यद्यपि WAV फाइलें अनकंप्रेस्ड होने के कारण साइज में MP3 से बहुत बड़ी होती हैं, परन्तु दिए गए उत्तर-पत्रक में MP3 को सही माना गया है, संभवतः व्यापक उपयोग के संदर्भ में)।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>MP3 (MPEG Audio Layer-3) दुनिया का सबसे लोकप्रिय और 'Lossy Compression' वाला ऑडियो फॉर्मेट है।</li><li>WAV (Waveform Audio) अनकंप्रेस्ड फॉर्मेट है, जिसकी साउंड क्वालिटी ओरिजिनल होती है और साइज बहुत बड़ा होता है।</li><li>JPG (Joint Photographic Experts Group) एक इमेज फाइल फॉर्मेट है, ऑडियो नहीं।</li><li>FLAC (Free Lossless Audio Codec) ऑडियो का ऐसा फॉर्मेट है जिसमें फाइल छोटी भी होती है और क्वालिटी भी कम नहीं होती (Lossless)।</li><li>MIDI फॉर्मेट में असली आवाज़ रिकॉर्ड नहीं होती, बल्कि केवल म्यूजिकल नोट्स (डिजिटल इंस्ट्रक्शंस) सेव होते हैं।</li></ul>" 
+        },
+        { 
+            q: "Animation क्या है ?", 
+            o: ["एक file format", "object का apparent movement", "एक cartoon", "Pictures का collection"], 
+            a: 1, 
+            e: "<b>हल:</b> (B) object का apparent movement (वस्तुओं की स्पष्ट गति)। <br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>एनिमेशन कई स्थिर चित्रों (Still Images) को तेजी से एक के बाद एक दिखाने की प्रक्रिया है जिससे गति (Movement) का भ्रम पैदा होता है।</li><li>यह मानव आँख के 'Persistence of Vision' (दृष्टि निर्बंध) सिद्धांत पर काम करता है।</li><li>सिनेमा या एनिमेशन में आम तौर पर एक सेकंड में 24 फ्रेम (24 fps - frames per second) दिखाए जाते हैं।</li><li>कंप्यूटर एनिमेशन में वस्तुओं को बनाने के लिए CGI (Computer Generated Imagery) का प्रयोग होता है।</li><li>डिज़्नी (Disney) जैसी कंपनियों ने प्रारंभिक 2D एनिमेशन को बहुत लोकप्रिय बनाया था।</li></ul>" 
+        },
+        { 
+            q: "Animation के दो प्रकार कौन-से हैं ?", 
+            o: ["Fast और slow", "2D और 3D", "Path-based और Cell-based", "Hand made और computerised"], 
+            a: 1, 
+            e: "<b>हल:</b> (B) 2D और 3D। <br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>2D (Two-Dimensional) एनिमेशन सपाट होता है, इसमें केवल X और Y अक्ष (चौड़ाई और ऊंचाई) होते हैं।</li><li>3D (Three-Dimensional) एनिमेशन में गहराई (Depth - Z अक्ष) भी होती है, जिससे यह असली जैसा लगता है।</li><li>टॉम एंड जेरी (Tom & Jerry) या मिकी माउस पारंपरिक 2D एनिमेशन के उदाहरण हैं।</li><li>पिक्सर (Pixar) की 'Toy Story' (1995) दुनिया की पहली पूरी तरह से कंप्यूटर एनिमेटेड 3D फिल्म थी।</li><li>3D एनिमेशन बनाने के लिए माया (Autodesk Maya) और ब्लेंडर (Blender) जैसे सॉफ्टवेयर्स का इस्तेमाल होता है।</li></ul>" 
+        },
+        { 
+            q: "कौन-सा image file format animated हो सकता है?", 
+            o: ["JPEG", "CDR", "GIF", "MPEG"], 
+            a: 2, 
+            e: "<b>हल:</b> (C) GIF। <br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>GIF का पूरा नाम Graphics Interchange Format है।</li><li>इसे 1987 में स्टीव विल्हाइट (Steve Wilhite) द्वारा CompuServe कंपनी में बनाया गया था।</li><li>GIF में कई इमेजेज को एक ही फाइल में सेव किया जा सकता है, जो लूप (Loop) में प्ले होकर एनिमेशन बनाती हैं।</li><li>यह केवल 256 रंगों (8-bit color) का सपोर्ट करता है, इसलिए यह उच्च क्वालिटी के फोटोज़ के लिए अच्छा नहीं है।</li><li>JPEG (Joint Photographic Experts Group) स्थिर इमेजेज के लिए है, और MPEG (Moving Picture Experts Group) वीडियो के लिए है।</li></ul>" 
+        },
+        { 
+            q: "'लैन' (LAN) में कौन-सी चीज उपयोग में नहीं आती ?", 
+            o: ["मॉडेम", "मॉनीटर", "प्रिन्टर", "केबल"], 
+            a: 0, 
+            e: "<b>हल:</b> (A) मॉडेम। <br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>LAN (Local Area Network) एक छोटी भौगोलिक जगह (जैसे एक ऑफिस या बिल्डिंग) में कंप्यूटरों को जोड़ता है।</li><li>मॉडेम (Modem) का मुख्य काम इंटरनेट (WAN) से जुड़ना और सिग्नल को एनालॉग से डिजिटल (और विपरीत) में बदलना है, न कि LAN के अंदर कम्युनिकेशन करना।</li><li>LAN बनाने के लिए ईथरनेट केबल (Ethernet Cable - CAT5/CAT6), हब (Hub) या स्विच (Switch) का प्रयोग होता है।</li><li>LAN में रखे प्रिंटर को नेटवर्क प्रिंटर कहते हैं, जिसे सभी कंप्यूटर शेयर कर सकते हैं।</li><li>LAN में कंप्यूटर को नेटवर्क से जोड़ने के लिए NIC (Network Interface Card) का होना ज़रूरी है।</li></ul>" 
+        },
+        { 
+            q: "बिल गेट्स किस कम्पनी से जुड़े हैं ?", 
+            o: ["एप्पल", "लोटस", "माइक्रोसॉफ्ट", "याहू"], 
+            a: 2, 
+            e: "<b>हल:</b> (C) माइक्रोसॉफ्ट। <br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>बिल गेट्स (Bill Gates) ने अपने मित्र पॉल एलन (Paul Allen) के साथ मिलकर 4 अप्रैल 1975 को माइक्रोसॉफ्ट (Microsoft) की स्थापना की थी।</li><li>माइक्रोसॉफ्ट दुनिया की सबसे बड़ी सॉफ्टवेयर कंपनियों में से एक है, जो Windows ऑपरेटिंग सिस्टम और MS Office के लिए प्रसिद्ध है।</li><li>Apple कंपनी की स्थापना स्टीव जॉब्स (Steve Jobs) ने की थी।</li><li>बिल गेट्स वर्ष 2000 में माइक्रोसॉफ्ट के CEO पद से हट गए थे।</li><li>वर्तमान में माइक्रोसॉफ्ट के CEO सत्या नडेला (Satya Nadella) हैं, जो भारतीय मूल के हैं।</li></ul>" 
+        },
+        { 
+            q: "इनमें से कौन-सा ईमेल पता सही है ?", 
+            o: ["surjit.gmail@", "john@bhopal.cmm", "rahim@hotmail.comma", "ram@yahoo.co.in"], 
+            a: 3, 
+            e: "<b>हल:</b> (D) ram@yahoo.co.in। <br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>किसी भी सही ईमेल एड्रेस के दो मुख्य भाग होते हैं: यूज़रनेम (Username) और डोमेन नेम (Domain Name)।</li><li>इन दोनों भागों को '@' (At the rate) चिह्न द्वारा अलग किया जाता है (जैसे username@domain.com)।</li><li>विकल्प A में '@' के बाद डोमेन नहीं है, विकल्प B में .cmm (गलत एक्सटेंशन) है, और विकल्प C में .comma अमान्य है।</li><li>ईमेल (Electronic Mail) का आविष्कार 1971 में रे टॉमलिंसन (Ray Tomlinson) ने किया था।</li><li>ईमेल भेजने के लिए SMTP (Simple Mail Transfer Protocol) का उपयोग किया जाता है।</li></ul>" 
+        },
+        { 
+            q: "इनमें से कौन सर्च इंजन नहीं है ?", 
+            o: ["गूगल", "याहू", "एम.एस.एन.", "बी.एस.एन.एल."], 
+            a: 3, 
+            e: "<b>हल:</b> (D) बी.एस.एन.एल. (BSNL)। <br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>BSNL (Bharat Sanchar Nigam Limited) भारत सरकार की एक टेलीकॉम और इंटरनेट सर्विस प्रोवाइडर (ISP) कंपनी है, यह सर्च इंजन नहीं है।</li><li>गूगल (Google) दुनिया का सबसे लोकप्रिय सर्च इंजन है, जिसे लैरी पेज और सर्गेई ब्रिन ने 1998 में बनाया था।</li><li>सर्च इंजन इंटरनेट पर मौजूद अरबों वेब पेजों में से यूज़र द्वारा खोजे गए कीवर्ड (Keyword) की जानकारी ढूंढ कर लाते हैं।</li><li>सर्च इंजन वेब पेजों को खोजने के लिए 'वेब क्रॉलर' (Web Crawlers) या 'स्पाइडर्स' (Spiders) नामक प्रोग्राम का इस्तेमाल करते हैं।</li><li>MSN (Microsoft Network) और Yahoo (याहू) भी वेब पोर्टल और सर्च इंजन सेवाएँ प्रदान करते हैं।</li></ul>" 
+        },
+        { 
+            q: "किसी कार्यालय में कार्यरत कई कम्प्यूटरों को जोड़ने की क्या विधि है ?", 
+            o: ["लैन (LAN)", "वेन (WAN)", "मेन (MAN)", "केन (CAN)"], 
+            a: 0, 
+            e: "<b>हल:</b> (A) लैन (LAN)। <br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>LAN (Local Area Network) का उपयोग एक सीमित क्षेत्र जैसे एक कमरा, कार्यालय (Office), या बिल्डिंग के कंप्यूटरों को जोड़ने के लिए किया जाता है।</li><li>LAN की स्पीड बहुत अधिक होती है (आमतौर पर 100 Mbps से 10 Gbps तक)।</li><li>WAN (Wide Area Network) शहरों और देशों को जोड़ता है (जैसे इंटरनेट)।</li><li>MAN (Metropolitan Area Network) एक पूरे शहर को कवर करता है (जैसे शहर का केबल टीवी नेटवर्क)।</li><li>LAN नेटवर्क को सुरक्षित और प्रबंधित (Manage) करना आसान और सस्ता होता है।</li></ul>" 
+        },
+        { 
+            q: "Copying a file to your computer from another computer over the phone using a modem.", 
+            o: ["Duplicating", "Copying", "Configuration", "Downloading"], 
+            a: 3, 
+            e: "<b>हल:</b> (D) Downloading (डाउनलोडिंग)। <br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>किसी दूरस्थ कंप्यूटर (Server) से अपने लोकल कंप्यूटर (Client) पर फाइल प्राप्त करने की प्रक्रिया को डाउनलोडिंग कहते हैं।</li><li>इसके विपरीत, अपने कंप्यूटर से सर्वर पर फाइल भेजने को अपलोडिंग (Uploading) कहते हैं।</li><li>इंटरनेट पर फाइलें ट्रांसफर करने के लिए मुख्य रूप से FTP (File Transfer Protocol) और HTTP का उपयोग किया जाता है।</li><li>मॉडेम (Modem) टेलीफोन लाइन (एनालॉग) और कंप्यूटर (डिजिटल) के बीच डेटा ट्रांसफर को संभव बनाता है।</li><li>डाउनलोड की स्पीड को आमतौर पर Mbps (Megabits per second) में मापा जाता है।</li></ul>" 
+        },
+        { 
+            q: "What does LAN stand for ?", 
+            o: ["Line Area Network", "Limited Area Network", "Leading Area Network", "Local Area Network"], 
+            a: 3, 
+            e: "<b>हल:</b> (D) Local Area Network। <br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>LAN कंप्यूटर और नेटवर्किंग डिवाइस का एक समूह है जो एक छोटे भौगोलिक क्षेत्र (घर, स्कूल, ऑफिस) में जुड़े होते हैं।</li><li>LAN में कनेक्शन के लिए आमतौर पर ट्विस्टेड पेयर केबल (Twisted pair cable) या वाई-फाई (Wi-Fi) का इस्तेमाल होता है।</li><li>दो या दो से अधिक LAN को आपस में जोड़ने के लिए राउटर (Router) का उपयोग किया जाता है।</li><li>LAN में डेटा ट्रांसमिशन के लिए 'ईथरनेट' (Ethernet) सबसे लोकप्रिय तकनीक है।</li><li>LAN का स्वामित्व और रखरखाव निजी (Private) होता है, किसी बाहरी टेलीकॉम कंपनी का नहीं।</li></ul>" 
+        },
+        { 
+            q: "Which one of the following is not a valid type of Networking ?", 
+            o: ["LAN", "VAN", "MAN", "WAN"], 
+            a: 1, 
+            e: "<b>हल:</b> (B) VAN। <br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>कम्प्यूटर नेटवर्क के 3 मुख्य प्रकार होते हैं: LAN (लोकल), MAN (मेट्रोपोलिटन) और WAN (वाइड एरिया नेटवर्क)।</li><li>VAN (Value Added Network) एक अलग तरह की सेवा है जहाँ कंपनियाँ सुरक्षित संचार के लिए किराये पर नेटवर्क सेवाएँ देती हैं, यह बुनियादी भौगोलिक नेटवर्क प्रकार नहीं है।</li><li>PAN (Personal Area Network) भी एक प्रकार है, जिसका रेंज 10 मीटर होता है (जैसे ब्लूटूथ, हॉटस्पॉट)।</li><li>CAN (Campus Area Network) का उपयोग यूनिवर्सिटी या बड़े कॉलेज कैंपस में होता है।</li><li>WAN का सबसे अच्छा और बड़ा उदाहरण 'इंटरनेट' (Internet) है।</li></ul>" 
+        },
+        { 
+            q: "सुरक्षात्मक अवरोध जो प्राइवेट नेटवर्क एवं इन्टरनेट के बीच होते हैं, कहलाते हैं-", 
+            o: ["प्रोटोकॉल्स", "फायरवाल्स", "फोल्डर", "वायरस"], 
+            a: 1, 
+            e: "<b>हल:</b> (B) फायरवाल्स (Firewalls)। <br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>फायरवॉल (Firewall) एक नेटवर्क सिक्योरिटी सिस्टम है जो आने वाले (Incoming) और जाने वाले (Outgoing) नेटवर्क ट्रैफिक की निगरानी करता है।</li><li>यह पहले से तय किए गए सुरक्षा नियमों (Rules) के आधार पर डेटा को अनुमति देता है या ब्लॉक करता है।</li><li>यह बाहरी हैकर्स और साइबर हमलों से प्राइवेट नेटवर्क (जैसे ऑफिस का LAN) को बचाता है।</li><li>फायरवॉल हार्डवेयर भी हो सकता है और सॉफ्टवेयर भी (जैसे Windows Defender Firewall)।</li><li>ध्यान दें कि फायरवॉल एंटीवायरस (Antivirus) नहीं है; एंटीवायरस कंप्यूटर के अंदर मौजूद वायरस को हटाता है, जबकि फायरवॉल उन्हें नेटवर्क में घुसने से रोकता है।</li></ul>" 
+        },
+        { 
+            q: "ग्रुपवेयर (Groupware) है-", 
+            o: ["प्रोजेक्ट टूल", "कम्युनिकेशन टूल", "प्रिंटिंग टूल", "मैसेजिंग टूल"], 
+            a: 1, 
+            e: "<b>हल:</b> (B) कम्युनिकेशन टूल। (यह एक कोलैबोरेटिव और कम्युनिकेशन सॉफ्टवेयर है)। <br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>ग्रुपवेयर ऐसे सॉफ्टवेयर प्रोग्राम्स को कहते हैं जो एक ही नेटवर्क पर काम कर रहे लोगों को एक साथ मिलकर (Collaborate) काम करने में मदद करते हैं।</li><li>इसे 'Collaborative Software' भी कहा जाता है।</li><li>Microsoft Teams, Slack, Zoom और Google Workspace ग्रुपवेयर के आधुनिक उदाहरण हैं।</li><li>यह फ़ाइल शेयरिंग, वीडियो कॉन्फ्रेंसिंग, कैलेंडर शेड्यूलिंग और ईमेल जैसी सुविधाएँ एक ही मंच पर देता है।</li><li>यह क्लाइंट-सर्वर (Client-Server) आर्किटेक्चर पर काम करता है, जिससे टीम की उत्पादकता (Productivity) बढ़ती है।</li></ul>" 
+        }
+    ];
+
+    let state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+    let timerInterval = null;
+    let isPaused = false;
+
+    window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+    function initDashboard() {
+        showScreen('dashboard-screen');
+        let completedData = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) completedData = JSON.parse(dataStr);
+        } catch(e) {}
+
+        if (completedData) {
+            document.getElementById('dash-unattempted').style.display = 'none';
+            document.getElementById('dash-attempted').style.display = 'block';
+            document.getElementById('dash-score-text').innerText = `${completedData.score}/25.0 Marks`;
+            document.getElementById('dash-progress-bar').style.width = `${(completedData.score / 25) * 100}%`;
+        } else {
+            document.getElementById('dash-attempted').style.display = 'none';
+            document.getElementById('dash-unattempted').style.display = 'block';
+        }
+    }
+
+    function startTest() {
+        let saved = null;
+        try {
+            const savedStr = safeGetItem(STORAGE_KEY);
+            if(savedStr) saved = JSON.parse(savedStr);
+        } catch(e){}
+
+        if (saved && !saved.submitted) {
+            state = saved;
+        } else {
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+        }
+        initTestEnv();
+    }
+
+    function reattemptTest() {
+        if(confirm("Are you sure you want to start a fresh test? Your active progress will be lost.")) {
+            safeRemoveItem(STORAGE_KEY);
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+            initTestEnv();
+        }
+    }
+
+    function initTestEnv() {
+        showScreen('test-screen');
+        renderQuestion();
+        renderPalette();
+        updateStats();
+        
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+        setInterval(() => { if(!state.submitted) safeSetItem(STORAGE_KEY, JSON.stringify(state)); }, 2000);
+    }
+
+    function viewSavedResults() {
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(data) renderResultUI(data);
+    }
+
+    function showDashboard() { initDashboard(); }
+
+    function showScreen(id) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+    }
+
+    function updateTimer() {
+        if(isPaused || state.submitted) return;
+        if(state.time <= 0) { submitTest(); return; }
+        state.time--;
+        const m = Math.floor(state.time / 60), s = state.time % 60;
+        document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+    }
+
+    function toggleTheme() {
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    function renderQuestion() {
+        state.visited[state.currentQ] = true;
+        const q = finalQuestions[state.currentQ];
+        document.getElementById('q-no').innerText = `Question ${state.currentQ + 1}`;
+        document.getElementById('q-text').innerHTML = q.q;
+        let opts = '';
+        q.o.forEach((opt, i) => {
+            const isSel = state.answers[state.currentQ] === i;
+            const selClass = isSel ? 'selected' : '';
+            const charLabel = String.fromCharCode(65 + i);
+            opts += `<div class="glass-panel option ${selClass}" onclick="selectOption(${i})"><div class="opt-label">${charLabel}</div><div style="flex:1;">${opt}</div></div>`;
+        });
+        document.getElementById('options-box').innerHTML = opts;
+        renderPalette();
+        updateStats();
+    }
+
+    function selectOption(index) { state.answers[state.currentQ] = index; renderQuestion(); }
+    function clearResponse() { delete state.answers[state.currentQ]; delete state.marked[state.currentQ]; renderQuestion(); }
+    function markReview() { state.marked[state.currentQ] = true; changeQ(1); }
+    function saveNext() { delete state.marked[state.currentQ]; changeQ(1); }
+
+    function changeQ(step) {
+        const next = state.currentQ + step;
+        if(next >= 0 && next < finalQuestions.length) { state.currentQ = next; renderQuestion(); }
+    }
+
+    function renderPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        finalQuestions.forEach((_, i) => {
+            let cls = 's-0';
+            if(state.visited[i]) {
+                if(state.answers[i] !== undefined && state.marked[i]) cls = 's-4';
+                else if(state.marked[i]) cls = 's-3';
+                else if(state.answers[i] !== undefined) cls = 's-1';
+                else cls = 's-2';
+            }
+            const active = i === state.currentQ ? 'active' : '';
+            grid.innerHTML += `<button class="p-btn ${cls} ${active}" onclick="state.currentQ = ${i}; renderQuestion();">${i + 1}</button>`;
+        });
+    }
+
+    function updateStats() {
+        let ans=0, notans=0, notvis=0, mark=0;
+        finalQuestions.forEach((_, i) => {
+            if(!state.visited[i]) notvis++;
+            else if(state.marked[i]) mark++;
+            else if(state.answers[i] !== undefined) ans++;
+            else notans++;
+        });
+        document.getElementById('c-ans').innerText = ans; document.getElementById('c-notans').innerText = notans;
+        document.getElementById('c-notvis').innerText = notvis; document.getElementById('c-mark').innerText = mark;
+    }
+
+    function submitTest() {
+        if(!confirm("Are you sure you want to submit the test?")) return;
+        state.submitted = true; clearInterval(timerInterval);
+        let score=0, attempt=0, wrong=0;
+        finalQuestions.forEach((q, i) => {
+            if(state.answers[i] !== undefined) {
+                attempt++;
+                if(state.answers[i] === q.a) score++; else wrong++;
+            }
+        });
+        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const completedData = { score: score, attempted: attempt, wrong: wrong, time: state.time, date: today, userAnswers: state.answers };
+        
+        safeSetItem(COMPLETED_KEY, JSON.stringify(completedData));
+        safeRemoveItem(STORAGE_KEY);
+        
+        renderResultUI(completedData);
+    }
+
+    function renderResultUI(data) {
+        showScreen('result-screen');
+        const acc = data.attempted > 0 ? ((data.score / data.attempted) * 100).toFixed(1) : 0;
+        document.getElementById('r-score').innerText = `${data.score}`;
+        document.getElementById('r-attempt').innerText = data.attempted;
+        document.getElementById('r-wrong').innerText = data.wrong;
+        document.getElementById('r-acc').innerText = `${acc}%`;
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(!data) return;
+
+        let html = '';
+        finalQuestions.forEach((q, i) => {
+            const uAns = data.userAnswers[i];
+            let optHtml = '';
+            q.o.forEach((opt, oIdx) => {
+                let cls = '', checkMark = '';
+                if(oIdx === q.a) { cls = 'correct'; checkMark = ' ✔'; }
+                else if(oIdx === uAns && uAns !== q.a) { cls = 'wrong'; checkMark = ' ❌ (Your Answer)'; }
+                optHtml += `<div class="glass-panel sol-opt ${cls}"><strong>${String.fromCharCode(65 + oIdx)}.</strong> <div style="flex:1;">${opt} ${checkMark}</div></div>`;
+            });
+            let statusText = uAns !== undefined ? (uAns === q.a ? "हल किया (Correct)" : "हल किया (Incorrect)") : "हल नहीं किया (Unattempted)";
+            html += `<div class="glass-panel sol-card"><div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--primary);">प्र ${i+1}. ${q.q}</div>${optHtml}<div style="font-weight:bold; margin:15px 0; color:var(--text-muted);">Status: ${statusText}</div><div class="glass-panel sol-exp">${q.e}</div></div>`;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+</script>
+</body>
+</html>
