@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Computer Knowledge Set 6</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Beautiful Moving Gradient & Glassmorphism Theme */
+        :root {
+            --bg-grad-1: #4facfe; --bg-grad-2: #00f2fe; --bg-grad-3: #a18cd1; --bg-grad-4: #fbc2eb;
+            --glass-bg: rgba(255, 255, 255, 0.9); --glass-border: rgba(255, 255, 255, 0.6); --glass-shadow: rgba(31, 38, 135, 0.15);
+            --text-main: #1f2937; --text-muted: #64748b;
+            --primary: #2563eb; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --purple: #8b5cf6;
+            --option-bg: rgba(243, 244, 246, 0.8); --option-selected: rgba(219, 234, 254, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+        [data-theme="dark"] {
+            --bg-grad-1: #0f2027; --bg-grad-2: #203a43; --bg-grad-3: #2c5364; --bg-grad-4: #141e30;
+            --glass-bg: rgba(17, 25, 40, 0.85); --glass-border: rgba(255, 255, 255, 0.15); --glass-shadow: rgba(0, 0, 0, 0.5);
+            --text-main: #f9fafb; --text-muted: #94a3b8;
+            --primary: #3b82f6; 
+            --option-bg: rgba(55, 65, 81, 0.7); --option-selected: rgba(30, 58, 138, 0.8);
+            --card-bg: rgba(31, 41, 55, 0.95);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; touch-action: manipulation;}
+        
+        body { 
+            height: 100vh; height: 100dvh; 
+            background: linear-gradient(45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3), var(--bg-grad-4)); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+            color: var(--text-main); 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 var(--glass-shadow); border-radius: 12px; }
+        
+        .btn { font-family: 'Poppins', sans-serif; background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;}
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-warning { background: var(--warning); color: #fff;}
+        .btn-clear { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-mark { background: var(--purple); color: white; }
+        .btn-prev { background: var(--text-muted); color: white; }
+
+        /* Screens */
+        .screen { display: none; flex-direction: column; height: 100%; width: 100vw; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; }
+
+        /* --- DASHBOARD UI --- */
+        #dashboard-screen { overflow-y: auto; background: var(--card-bg); align-items: center; padding-bottom: 30px;}
+        
+        .dash-header-top { background: #1e293b; color: white; width: 100%; padding: 15px 20px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 15px; position: sticky; top:0; z-index: 100;}
+        
+        .dash-content { width: 100%; max-width: 800px; padding: 20px; }
+        .section-title { font-weight: 600; color: var(--primary); margin: 15px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 15px; }
+        
+        .dash-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--glass-border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .test-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text-main);}
+        .test-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        
+        .progress-container { width: 100%; height: 6px; background: var(--glass-border); border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #fbc02d; width: 0%; transition: width 0.5s ease;}
+        
+        .dash-actions { display: flex; gap: 12px; margin-top: 15px; }
+        .dash-actions .btn { flex: 1; padding: 10px; font-size: 14px; border-radius: 8px;}
+        
+        .syllabus-footer { display: flex; justify-content: space-between; font-size: 12px; color: var(--primary); border-top: 1px solid var(--glass-border); padding-top: 12px; margin-top: 15px; }
+
+        /* --- TEST SCREEN UI --- */
+        header.test-head { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-bottom: 10px; margin-inline: 10px; }
+        .header-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: 700; background: var(--card-bg); border: 1px solid var(--glass-border); color: var(--danger); padding: 5px 12px; border-radius: 20px; }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 0 10px 10px 10px; }
+        .question-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        .q-header { padding: 10px 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
+        .q-body { flex: 1; padding: 15px; overflow-y: auto; font-size: 16px; line-height: 1.6; }
+        
+        .options-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;}
+        .option { padding: 12px; border: 2px solid var(--glass-border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--option-bg); font-weight: 500; font-size: 15px;}
+        .option.selected { border-color: var(--primary); background: var(--option-selected); color: var(--primary); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--glass-border); display: flex; justify-content: center; align-items: center; font-weight: bold; }
+        .option.selected .opt-label { background: var(--primary); color: white; border-color: var(--primary);}
+        
+        .q-footer { padding: 10px; border-top: 1px solid var(--glass-border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-radius: 0 0 12px 12px; }
+
+        /* --- PALETTE UI --- */
+        .palette-section { width: 320px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .palette-header { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; font-weight: bold; font-size: 15px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; font-size: 12px; border-bottom: 1px solid var(--glass-border); font-weight: 500;}
+        .stat-item { display: flex; align-items: center; gap: 6px;}
+        .badge { width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 10px; font-weight: bold;}
+        .s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);} 
+        .s-1 { background: var(--success); } .s-2 { background: var(--danger); } .s-3 { background: var(--purple); } 
+        .s-4 { background: var(--primary); position: relative; }
+        .s-4::after { content: '✔'; position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; background: white; color: var(--primary); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 8px; }
+        
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .p-btn.s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);}
+        .p-btn.active { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.1);}
+        .submit-area { padding: 10px; border-top: 1px solid var(--glass-border); border-radius: 0 0 12px 12px;}
+
+        /* --- RESULTS & SOLUTIONS UI --- */
+        #result-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        #solution-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        .sol-card { padding: 20px; margin-bottom: 15px; width: 100%; max-width: 800px; }
+        .sol-opt { padding: 10px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; gap: 10px; align-items: center; font-size: 15px; background: var(--card-bg);}
+        .sol-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); text-decoration: line-through;}
+        .sol-exp { margin-top: 15px; padding: 15px; background: rgba(37, 99, 235, 0.05); border: 1px solid var(--glass-border); border-left: 4px solid var(--primary); border-radius: 8px; font-size: 14.5px; line-height: 1.6; }
+        .sol-exp ul { padding-left: 20px; margin-top: 8px; }
+        .sol-exp li { margin-bottom: 6px; }
+
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+
+        @media (max-width: 992px) {
+            .main-area { flex-direction: column; overflow-y: auto;}
+            .question-section { flex: none; min-height: 450px;}
+            .palette-section { width: 100%; flex: none; min-height: 350px;}
+            .q-footer .btn { padding: 10px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="dashboard-screen" class="screen active">
+        <div class="dash-header-top">
+            <!-- Back to main menu link -->
+            <a href="haryanapolice.html" style="color: white; text-decoration: none; font-size: 20px; margin-right: 10px;">&#8592;</a>
+            Mock Tests
+        </div>
+
+        <div class="dash-content">
+            <!-- Unattempted State -->
+            <div id="dash-unattempted" style="display: none;">
+                <div class="section-title">Suggested Next Test</div>
+                <div class="dash-card">
+                    <div class="test-title">Computer Knowledge - Set 6</div>
+                    <div class="test-meta">
+                        <span>25 Qs • 25 mins • 25.0 Marks</span>
+                    </div>
+                    <div class="test-meta" style="justify-content: flex-end;">
+                        <button class="btn btn-outline" style="padding: 6px 20px; border-radius: 20px;" onclick="startTest()">Start Test 🚀</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span>Syllabus: Programming Languages, Basics & MS Office</span>
+                        <span style="color:var(--success);">🔗 Share</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attempted State -->
+            <div id="dash-attempted" style="display: none;">
+                <div class="dash-card">
+                    <div class="test-title">Computer Knowledge - Set 6</div>
+                    <div class="test-meta" style="margin-bottom: 5px;">
+                        <span id="dash-score-text" style="font-size: 15px; color: var(--text-muted);">0/25.0 Marks</span>
+                    </div>
+                    
+                    <div class="progress-container"><div class="progress-fill" id="dash-progress-bar"></div></div>
+
+                    <div class="dash-actions">
+                        <button class="btn btn-outline" onclick="viewSavedResults()">View Results</button>
+                        <button class="btn btn-outline" onclick="reattemptTest()">Reattempt &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAUSE OVERLAY -->
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px; font-size: 2rem;">Test Paused ⏸️</h2>
+        <button class="btn btn-primary" style="font-size: 1.2rem; padding: 10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+    </div>
+
+    <!-- TEST SCREEN -->
+    <div id="test-screen" class="screen">
+        <header class="glass-panel test-head">
+            <div class="header-title">Computer Set 6</div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="toggleTheme()">🌓 Theme</button>
+                <button class="btn btn-warning" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="togglePause()">⏸ Pause</button>
+                <div class="timer-box">⏱ <span id="timer-display">25:00</span></div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="glass-panel question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--success); font-weight:bold;">+1 <span style="color: var(--text-muted); font-weight:normal;">|</span> <span style="color: var(--danger);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <button class="btn btn-mark" onclick="markReview()">Mark & Next</button>
+                    <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                    <button class="btn btn-prev" onclick="changeQ(-1)">Previous</button>
+                    <button class="btn btn-primary" onclick="saveNext()">Save & Next</button>
+                </div>
+            </div>
+
+            <div class="glass-panel palette-section">
+                <div class="palette-header">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">25</div> Not Visit</div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn btn-primary" style="width: 100%; background: var(--success); font-size: 15px; padding: 10px;" onclick="submitTest()">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen" class="screen">
+        <div style="width: 100%; max-width: 800px; margin-bottom: 15px;"><button class="btn btn-clear" onclick="showDashboard()">&#8592; Back to Dashboard</button></div>
+        <div class="glass-panel" style="max-width: 800px; width: 100%; padding: 25px;">
+            <h1 style="color: var(--primary); text-align: center;">Test Submitted Successfully! 🎉</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 25px 0;">
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-score" style="color: var(--primary); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Score</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-attempt" style="color: var(--success); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Attempted</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-wrong" style="color: var(--danger); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Wrong</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-acc" style="color: var(--purple); font-size: 1.8rem;">0%</h2><p style="color: var(--text-muted); font-size:12px;">Accuracy</p></div>
+            </div>
+            <button class="btn btn-primary" style="width:100%; font-size: 15px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+        </div>
+    </div>
+
+    <!-- SOLUTION SCREEN -->
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%; margin:0 auto;">
+            <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 12px 15px; position: sticky; top: 5px; z-index: 10;">
+                <h3 style="color: var(--primary);">Detailed Solutions</h3>
+                <button class="btn btn-clear" style="padding: 5px 10px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+            </div>
+            <div id="sol-container"></div>
+        </div>
+    </div>
+
+<script>
+    const MEMORY_STORE = {};
+    function safeGetItem(key) { try { return localStorage.getItem(key) || MEMORY_STORE[key] || null; } catch(e) { return MEMORY_STORE[key] || null; } }
+    function safeSetItem(key, value) { try { localStorage.setItem(key, value); } catch(e) {} MEMORY_STORE[key] = value; }
+    function safeRemoveItem(key) { try { localStorage.removeItem(key); } catch(e) {} delete MEMORY_STORE[key]; }
+
+    const STORAGE_KEY = 'comp_set6_active'; 
+    const COMPLETED_KEY = 'comp_set6_comp';
+
+    // 25 Custom Questions Extracted from User's Image (Set 6)
+    const finalQuestions = [
+        { 
+            q: "किसी फाइल या फोल्डर का नाम बदलने का सही चुनाव है-", 
+            o: ["न्यू", "रिनेम", "रिफ्रेश", "एडिट"], 
+            a: 1, 
+            e: "<b>हल:</b> (B) रिनेम। किसी भी फाइल या फोल्डर का नाम बदलने के लिए 'Rename' विकल्प का प्रयोग किया जाता है।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>Windows में किसी फाइल/फोल्डर को Rename करने की शॉर्टकट कुंजी F2 होती है।</li><li>फ़ाइल का नाम बदलते समय आप उसका एक्सटेंशन भी बदल सकते हैं, यदि एक्सटेंशन दिखाई दे रहा हो।</li><li>विंडोज में किसी फ़ाइल के नाम में \\ / : * ? \" < > | आदि चिन्हों का प्रयोग नहीं किया जा सकता।</li><li>Mac OS में फाइल का नाम बदलने के लिए फाइल सेलेक्ट करके 'Return' (Enter) की दबाई जाती है।</li><li>कमांड प्रॉम्प्ट (CMD) में फाइल का नाम बदलने के लिए 'ren' या 'rename' कमांड का उपयोग होता है।</li></ul>" 
+        },
+        { 
+            q: "किसी डॉक्यूमेंट को प्रिंट करने की सही प्रक्रिया है-", 
+            o: ["डाक्यूमेंट खोलो -> फाइल -> प्रिंट", "डाक्यूमेंट खोलो -> एडिट -> प्रिंट", "न्यू -> फाइल -> प्रिंट", "कॉपी -> ओपन -> प्रिंट"], 
+            a: 0, 
+            e: "<b>हल:</b> (A) डाक्यूमेंट खोलो -> फाइल -> प्रिंट। प्रिंट करने के लिए सबसे पहले फाइल को खोला जाता है, फिर 'File' मेनू में जाकर 'Print' का चयन किया जाता है।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>MS Word या किसी अन्य प्रोग्राम में प्रिंट करने की शॉर्टकट कुंजी Ctrl + P होती है।</li><li>MS Office में प्रिंट करने से पहले डॉक्यूमेंट कैसा दिखेगा, यह देखने के लिए 'Print Preview' (Ctrl + F2) का प्रयोग होता है।</li><li>प्रिंट डायलॉग बॉक्स में आप यह तय कर सकते हैं कि आपको सभी पेज प्रिंट करने हैं या कोई विशेष पेज (Current Page)।</li><li>डॉक्यूमेंट को हॉरिजॉन्टल (आड़ा) या वर्टिकल (खड़ा) प्रिंट करने के विकल्प को 'Page Orientation' (Landscape/Portrait) कहते हैं।</li><li>A4 पेपर का मानक आकार 8.27 × 11.69 इंच (210 × 297 मिमी) होता है, जो प्रिंटिंग में सर्वाधिक प्रयोग होता है।</li></ul>" 
+        },
+        { 
+            q: "वर्ड फाइल में टेबल डालने के लिये सही विधि है-", 
+            o: ["इन्सर्ट -> टेबल -> सेलेक्ट रो एण्ड कॉलम -> ओके", "इन्सर्ट -> फाइल -> टेबल -> ओके", "इन्सर्ट -> पैराग्राफ -> रो एण्ड कॉलम -> ओके", "इन्सर्ट -> एडिट -> रो एण्ड कॉलम -> ओके"], 
+            a: 0, 
+            e: "<b>हल:</b> (A) इन्सर्ट -> टेबल -> सेलेक्ट रो एण्ड कॉलम -> ओके। MS Word में टेबल बनाने के लिए Insert मेनू का उपयोग किया जाता है।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>MS Word में टेबल इन्सर्ट करने के लिए 'Insert' टैब में 'Table' विकल्प पर क्लिक करना होता है।</li><li>MS Word में डिफ़ॉल्ट ग्रिड का उपयोग करके एक बार में 10x8 (कॉलम x पंक्ति) की टेबल डाली जा सकती है।</li><li>एक टेबल में न्यूनतम 1 पंक्ति (Row) और 1 स्तंभ (Column) हो सकता है।</li><li>MS Word की टेबल में अधिकतम 63 कॉलम हो सकते हैं, जबकि पंक्तियों की संख्या असीमित है।</li><li>टेबल के सेल में कर्सर को अगले सेल में ले जाने के लिए 'Tab' कुंजी का प्रयोग किया जाता है।</li></ul>" 
+        },
+        { 
+            q: "एम.एस. ऑफिस का हिस्सा नहीं है-", 
+            o: ["वर्ड", "एक्सेल", "फोटोशॉप", "पावर पॉइन्ट"], 
+            a: 2, 
+            e: "<b>हल:</b> (C) फोटोशॉप। Adobe Photoshop एक इमेज एडिटिंग सॉफ्टवेयर है जो Adobe Inc. द्वारा विकसित किया गया है, यह Microsoft Office का हिस्सा नहीं है।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>MS Word एक वर्ड प्रोसेसिंग सॉफ्टवेयर है जिसका प्रयोग डॉक्यूमेंट बनाने के लिए होता है।</li><li>MS Excel एक स्प्रेडशीट प्रोग्राम है जो डेटा कैलकुलेशन और एनालिसिस के लिए इस्तेमाल होता है।</li><li>MS PowerPoint एक प्रेजेंटेशन सॉफ्टवेयर है जो स्लाइड शो बनाने के काम आता है।</li><li>MS Access डेटाबेस मैनेजमेंट के लिए MS Office का एक महत्वपूर्ण टूल है।</li><li>MS Outlook का उपयोग ईमेल क्लाइंट और पर्सनल इंफॉर्मेशन मैनेजर के रूप में किया जाता है।</li></ul>" 
+        },
+        { 
+            q: "एम.एस. वर्ड का पूर्ण रूप है-", 
+            o: ["माइक्रो सॉफ्ट वर्ड", "माइक्रो सिस्टम वर्ड", "मिनी सॉफ्ट वर्ड", "माई सिस्टम वर्ड"], 
+            a: 0, 
+            e: "<b>हल:</b> (A) माइक्रो सॉफ्ट वर्ड। MS Word का पूरा नाम Microsoft Word है।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>Microsoft Word को पहली बार 1983 में 'Multi-Tool Word' के नाम से रिलीज़ किया गया था।</li><li>इसकी शुरुआत ज़ेनिक्स (Xenix) सिस्टम्स के लिए हुई थी।</li><li>MS Word फाइल का डिफ़ॉल्ट एक्सटेंशन .docx (2007 और बाद के वर्ज़न में) होता है।</li><li>यह दुनिया का सबसे ज्यादा इस्तेमाल होने वाला वर्ड प्रोसेसिंग सॉफ्टवेयर है।</li><li>MS Word के नए वर्ज़न्स 'Microsoft 365' के तहत क्लाउड-आधारित सब्सक्रिप्शन के रूप में भी उपलब्ध हैं।</li></ul>" 
+        },
+        { 
+            q: "डाक्यूमेंट सेव (Save) करना।", 
+            o: ["Ctrl + S", "Ctrl + G", "Ctrl + F", "Ctrl + U"], 
+            a: 0, 
+            e: "<b>हल:</b> (A) Ctrl + S। एमएस वर्ड या किसी भी विंडोज प्रोग्राम में फाइल को सुरक्षित (Save) करने के लिए Ctrl + S का उपयोग होता है।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>Ctrl + S से मौजूदा फाइल उसी स्थान पर अपडेट हो जाती है।</li><li>'Save As' करने के लिए F12 कुंजी का इस्तेमाल किया जाता है, जिससे फाइल को नए नाम या नए स्थान पर सेव किया जा सकता है।</li><li>Ctrl + F का प्रयोग डॉक्यूमेंट में किसी शब्द को खोजने (Find) के लिए किया जाता है।</li><li>Ctrl + G का प्रयोग डॉक्यूमेंट में किसी विशिष्ट पेज, लाइन या सेक्शन पर जाने (Go To) के लिए होता है।</li><li>Ctrl + U का प्रयोग चयनित टेक्स्ट को अंडरलाइन (Underline) करने के लिए किया जाता है।</li></ul>" 
+        },
+        { 
+            q: "Spelling and Grammar की जाँच करना।", 
+            o: ["F1", "F5", "F7", "F10"], 
+            a: 2, 
+            e: "<b>हल:</b> (C) F7। स्पेलिंग और ग्रामर चेक करने के लिए MS Office में F7 शॉर्टकट कुंजी का उपयोग होता है।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>MS Word में गलत स्पेलिंग के नीचे लाल (Red) रंग की लहरदार रेखा दिखाई देती है।</li><li>व्याकरण (Grammar) की गलती होने पर नीली (Blue) या हरी (Green) लहरदार रेखा दिखाई देती है।</li><li>Shift + F7 का उपयोग 'Thesaurus' (पर्यायवाची/विलोम शब्द का शब्दकोश) खोलने के लिए किया जाता है।</li><li>F1 कुंजी का उपयोग हमेशा 'Help' (सहायता) मेनू खोलने के लिए होता है।</li><li>F5 कुंजी MS Word में 'Find, Replace, and Go To' डायलॉग बॉक्स खोलती है, जबकि ब्राउज़र में यह पेज को रिफ्रेश करती है।</li></ul>" 
+        },
+        { 
+            q: "......... का उपयोग करते हुए पहले कम्प्यूटर प्रोग्राम किए गए थे-", 
+            o: ["एसेंबली लैंग्वेज", "मशीन लैंग्वेज", "सोर्स कोड", "ऑब्जेक्ट कोड"], 
+            a: 1, 
+            e: "<b>हल:</b> (B) मशीन लैंग्वेज। दुनिया के सबसे पहले कंप्यूटर प्रोग्राम मशीन भाषा (0 और 1 के बाइनरी कोड) में लिखे गए थे।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>मशीन भाषा प्रथम पीढ़ी (First Generation) की कंप्यूटर भाषा है, जिसे कंप्यूटर सीधे समझता है।</li><li>इसके लिए किसी ट्रांसलेटर (जैसे कंपाइलर या इंटरप्रेटर) की आवश्यकता नहीं होती।</li><li>एसेंबली लैंग्वेज (Assembly Language) द्वितीय पीढ़ी की भाषा है, जिसमें निमोनिक्स (Mnemonics) का इस्तेमाल होता है (जैसे ADD, SUB)।</li><li>सोर्स कोड (Source Code) वह प्रोग्राम है जो इंसान द्वारा उच्च स्तरीय भाषा (जैसे C, Java) में लिखा जाता है।</li><li>ऑब्जेक्ट कोड (Object Code) वह कोड है जो सोर्स कोड को कंपाइल करने के बाद मशीन भाषा में बनता है।</li></ul>" 
+        },
+        { 
+            q: "पास्कल (Pascal) -", 
+            o: ["कम्प्यूटर की एक भाषा है", "कम्प्यूटर की इकाई है", "कम्प्यूटर का ऑपरेटिंग सिस्टम है", "कम्प्यूटर का एक प्रकार है"], 
+            a: 0, 
+            e: "<b>हल:</b> (A) कम्प्यूटर की एक भाषा है। पास्कल एक उच्च स्तरीय प्रोग्रामिंग भाषा है।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>पास्कल भाषा का विकास 1970 में निकलॉस विर्थ (Niklaus Wirth) ने किया था।</li><li>इसका नाम प्रसिद्ध फ्रांसीसी गणितज्ञ और दार्शनिक 'ब्लेस पास्कल' (Blaise Pascal) के नाम पर रखा गया है।</li><li>यह भाषा मुख्य रूप से छात्रों को प्रोग्रामिंग (Programming) और डेटा स्ट्रक्चर सिखाने के उद्देश्य से बनाई गई थी।</li><li>पास्कल एक स्ट्रक्चर्ड प्रोग्रामिंग भाषा (Structured Programming Language) का उदाहरण है।</li><li>पास्कल का उन्नत और ऑब्जेक्ट-ओरिएंटेड संस्करण बाद में 'डेल्फी' (Delphi) के रूप में सामने आया।</li></ul>" 
+        },
+        { 
+            q: "इनमें से कौन कम्प्यूटर भाषा नहीं है-", 
+            o: ["BASIC", "FORTRAN", "COBOL", "IBM"], 
+            a: 3, 
+            e: "<b>हल:</b> (D) IBM। IBM (International Business Machines) एक प्रसिद्ध अमेरिकी मल्टीनेशनल टेक्नोलॉजी कंपनी है, न कि कोई कंप्यूटर भाषा।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>IBM को 'Big Blue' के नाम से भी जाना जाता है।</li><li>BASIC (Beginner's All-purpose Symbolic Instruction Code) एक सरल प्रोग्रामिंग भाषा है जिसे 1964 में बनाया गया था।</li><li>FORTRAN (Formula Translation) पहली उच्च-स्तरीय भाषा है, जिसे 1957 में IBM की टीम ने ही विकसित किया था।</li><li>COBOL (Common Business Oriented Language) मुख्य रूप से व्यावसायिक अनुप्रयोगों (Business applications) के लिए 1959 में बनाई गई थी।</li><li>C, C++, Java, Python आदि अन्य प्रमुख उच्च-स्तरीय (High-Level) कंप्यूटर भाषाएं हैं।</li></ul>" 
+        },
+        { 
+            q: "फोरट्रान (FORTRAN) भाषा का प्रयोग किया जाता है-", 
+            o: ["फोटो बनाने में", "व्यवसाय में", "गणित में", "शिक्षा में"], 
+            a: 2, 
+            e: "<b>हल:</b> (C) गणित में। फोरट्रान (Formula Translation) का मुख्य रूप से उपयोग गणितीय, वैज्ञानिक और इंजीनियरिंग गणनाओं के लिए किया जाता है।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>FORTRAN का पूरा नाम \"Formula Translation\" है।</li><li>इसे 1957 में IBM के जॉन बैकस (John Backus) द्वारा विकसित किया गया था।</li><li>यह दुनिया की सबसे पहली उच्च स्तरीय (High-Level) प्रोग्रामिंग भाषा मानी जाती है।</li><li>इसका उपयोग सुपर कंप्यूटरों में मौसम की भविष्यवाणी (Weather forecasting) और भौतिकी के सिमुलेशन में बहुत होता है।</li><li>FORTRAN मुख्य रूप से गणना प्रधान (Computationally intensive) कार्यों के लिए डिजाइन की गई थी।</li></ul>" 
+        },
+        { 
+            q: "प्रोग्रामन हेतु विकसित की गई सर्वप्रथम भाषा कौन है-", 
+            o: ["कोबोल", "फोरट्रॉन", "सी", "सी++"], 
+            a: 1, 
+            e: "<b>हल:</b> (B) फोरट्रॉन। FORTRAN (Formula Translation) प्रोग्रामिंग के लिए विकसित की गई दुनिया की सबसे पहली हाई-लेवल भाषा है।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>FORTRAN के विकास ने असेंबली भाषा से हाई-लेवल प्रोग्रामिंग की ओर बड़ा कदम बढ़ाया था।</li><li>COBOL (1959) फोरट्रान के तुरंत बाद बिजनेस कार्यों के लिए विकसित की गई थी।</li><li>'C' भाषा को 1972 में डेनिस रिची (Dennis Ritchie) ने बेल लैब्स में विकसित किया था।</li><li>'C++' भाषा को 1980 के दशक में ब्यार्ने स्ट्रॉस्ट्रुप (Bjarne Stroustrup) ने बनाया था, जिसमें ऑब्जेक्ट-ओरिएंटेड फीचर्स जोड़े गए।</li><li>C भाषा का उपयोग यूनिक्स (Unix) ऑपरेटिंग सिस्टम को लिखने के लिए किया गया था।</li></ul>" 
+        },
+        { 
+            q: "किसी प्रोग्राम का चित्र के रूप में प्रदर्शन क्या कहलाता है-", 
+            o: ["चार्ट", "हल चार्ट", "फ्लोचार्ट", "मिक्स चार्ट"], 
+            a: 2, 
+            e: "<b>हल:</b> (C) फ्लोचार्ट। फ्लोचार्ट (Flowchart) किसी अल्गोरिदम या प्रोग्राम के स्टेप-बाय-स्टेप लॉजिक का चित्रमय (Graphical) प्रदर्शन है।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>फ्लोचार्ट में अंडाकार (Oval) चिह्न का उपयोग प्रोग्राम को 'Start' या 'End' करने के लिए होता है।</li><li>समानांतर चतुर्भुज (Parallelogram) का उपयोग 'Input' और 'Output' को दर्शाने के लिए किया जाता है।</li><li>आयत (Rectangle) का उपयोग 'प्रोसेसिंग' (Processing) के लिए किया जाता है।</li><li>हीरे (Diamond / Rhombus) का उपयोग 'निर्णय' (Decision making - Yes/No) के लिए किया जाता है।</li><li>तीर (Arrows) यह दर्शाते हैं कि प्रोग्राम का फ्लो (प्रवाह) किस दिशा में जा रहा है।</li></ul>" 
+        },
+        { 
+            q: "प्रोग्राम के लिए विकसित पहली उच्च स्तरीय भाषा है-", 
+            o: ["BASIC", "FORTRAN", "LOGO", "COBOL"], 
+            a: 1, 
+            e: "<b>हल:</b> (B) FORTRAN। यह प्रश्न बार-बार विभिन्न परीक्षाओं में पूछा जाता है। फोरट्रान पहली हाई-लेवल लैंग्वेज है।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>उच्च स्तरीय भाषाएँ (High-Level Languages) इंसान के पढ़ने और समझने में आसान होती हैं, क्योंकि इनमें अंग्रेजी के शब्दों का प्रयोग होता है।</li><li>कंप्यूटर हाई-लेवल भाषा को सीधे नहीं समझ सकता; इसके लिए कंपाइलर या इंटरप्रेटर की आवश्यकता होती है।</li><li>मशीन भाषा (0, 1) 'Low-Level Language' की श्रेणी में आती है।</li><li>असेंबली भाषा को भी लो-लेवल लैंग्वेज माना जाता है।</li><li>LOGO भाषा का निर्माण वाल्य मूर्स (Wally Feurzeig) और सेमोर पैपर्ट (Seymour Papert) ने किया था।</li></ul>" 
+        },
+        { 
+            q: "LOGO भाषा का प्रयोग किया जाता है-", 
+            o: ["व्यवसाय में", "गणित में", "बच्चों की शिक्षा में", "सरल भाषा लिखने में"], 
+            a: 2, 
+            e: "<b>हल:</b> (C) बच्चों की शिक्षा में। LOGO एक शैक्षिक प्रोग्रामिंग भाषा है, जिसका उपयोग मुख्य रूप से बच्चों को कंप्यूटर और प्रोग्रामिंग के मूल सिद्धांत सिखाने के लिए किया जाता है।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>LOGO में स्क्रीन पर एक 'कछुआ' (Turtle) होता है, जिसे कमांड देकर चित्र बनाए जाते हैं (जैसे FORWARD 100)।</li><li>यह भाषा मुख्य रूप से 'LISP' भाषा पर आधारित थी।</li><li>इसका उद्देश्य बच्चों में तार्किक सोच (Logical thinking) और समस्या-समाधान (Problem-solving) कौशल विकसित करना था।</li><li>LOGO का विकास 1967 के दशक में एमआईटी (MIT) में हुआ था।</li><li>वर्तमान में बच्चों को प्रोग्रामिंग सिखाने के लिए 'Scratch' जैसी ब्लॉक-आधारित भाषाओं का उपयोग अधिक किया जाता है।</li></ul>" 
+        },
+        { 
+            q: "निम्नलिखित में से कौन-सी वैज्ञानिक कम्प्यूटर भाषा है-", 
+            o: ["BASIC", "COBOL", "FORTRAN", "PASCAL"], 
+            a: 2, 
+            e: "<b>हल:</b> (C) FORTRAN। फोरट्रान (Formula Translation) वैज्ञानिक और इंजीनियरिंग रिसर्च के लिए सबसे अधिक उपयोग की जाने वाली भाषा है।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>वैज्ञानिक गणनाओं के लिए यह सबसे पुरानी और विश्वसनीय भाषा है।</li><li>नासा (NASA) और अन्य वैज्ञानिक संगठन आज भी पुराने सिस्टम्स में फोरट्रान का उपयोग करते हैं।</li><li>यह ऐरे (Arrays) और कॉम्प्लेक्स नंबर्स (Complex numbers) की गणना में बहुत शक्तिशाली है।</li><li>इसके विपरीत COBOL विशेष रूप से व्यापारिक (Business) डेटा प्रोसेसिंग के लिए है।</li><li>BASIC भाषा का उपयोग शुरुआती दौर में छात्रों को प्रोग्रामिंग का परिचय देने के लिए किया जाता था।</li></ul>" 
+        },
+        { 
+            q: "कम्प्यूटर भाषा FORTRAN किस क्षेत्र में उपयोगी है-", 
+            o: ["व्यवसाय", "रेखाचित्र", "विज्ञान", "वाणिज्य"], 
+            a: 2, 
+            e: "<b>हल:</b> (C) विज्ञान। फोरट्रान का मुख्य उद्देश्य ही विज्ञान (Science) और इंजीनियरिंग के जटिल फॉर्मूलों को हल करना है।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>FORTRAN के विकास ने वैज्ञानिकों को सीधे गणितीय फॉर्मूले टाइप करके कंप्यूटर से गणना करवाने की सुविधा दी।</li><li>इससे पहले वैज्ञानिकों को मशीन या असेंबली भाषा में कोडिंग करनी पड़ती थी, जो बहुत कठिन थी।</li><li>आज के समय में वैज्ञानिक शोध और डेटा साइंस में FORTRAN की जगह 'Python' और 'R' जैसी भाषाओं ने ले ली है।</li><li>वाणिज्य (Commerce) और बिज़नेस के क्षेत्र में FORTRAN उपयोगी नहीं थी, इसीलिए COBOL का जन्म हुआ।</li><li>रेखाचित्र (Graphics) के लिए C++ और Java जैसी भाषाओं का प्रयोग अधिक होता है।</li></ul>" 
+        },
+        { 
+            q: "BASIC भाषा का प्रयोग किया जाता है-", 
+            o: ["व्यवसाय में", "गणित में", "बच्चों की शिक्षा में", "सरल भाषा को सिखाने में"], 
+            a: 3, 
+            e: "<b>हल:</b> (D) सरल भाषा को सिखाने में। BASIC (Beginner's All-purpose Symbolic Instruction Code) का निर्माण छात्रों और शुरुआती लोगों को प्रोग्रामिंग सिखाने के लिए किया गया था।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>BASIC का विकास 1964 में जॉन केमेनी (John Kemeny) और थॉमस कुर्ट्ज़ (Thomas Kurtz) ने डार्टमाउथ कॉलेज में किया था।</li><li>माइक्रोसॉफ्ट के संस्थापकों (बिल गेट्स और पॉल एलन) का पहला प्रोडक्ट भी 'Altair BASIC' का इंटरप्रेटर ही था।</li><li>यह भाषा इंटरप्रेटर (Interpreter) का उपयोग करती है, जिससे गलतियां खोजना आसान हो जाता है।</li><li>विजुअल बेसिक (Visual Basic या VB) इसी BASIC भाषा का ग्राफिकल वर्ज़न है जो Microsoft द्वारा लाया गया था।</li><li>यह भाषा सरल अंग्रेजी शब्दों (जैसे PRINT, IF, THEN, GOTO) का उपयोग करती है।</li></ul>" 
+        },
+        { 
+            q: "COBOL भाषा का प्रयोग किया जाता है-", 
+            o: ["व्यवसाय", "गणित में", "बच्चों की शिक्षा में", "इनमें से कोई नहीं"], 
+            a: 0, 
+            e: "<b>हल:</b> (A) व्यवसाय। COBOL (Common Business Oriented Language) मुख्य रूप से बिज़नेस, फाइनेंस और एडमिनिस्ट्रेटिव सिस्टम के लिए उपयोग होती है।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>ग्रेस हॉपर (Grace Hopper) को COBOL के विकास का मुख्य श्रेय दिया जाता है।</li><li>दुनिया भर के कई पुराने बैंकिंग और सरकारी सिस्टम (Mainframe Computers) आज भी COBOL पर ही चलते हैं।</li><li>यह भाषा बहुत अधिक मात्रा में डेटा (Large volume of data) प्रोसेस करने में सक्षम है।</li><li>COBOL का कोड अंग्रेजी वाक्यों जैसा दिखता है, जिससे इसे समझना आसान होता है (उदा: MULTIPLY PRICE BY QTY GIVING TOTAL)।</li><li>Y2K (Year 2000) बग के समय COBOL प्रोग्रामर्स की बहुत अधिक मांग बढ़ गई थी।</li></ul>" 
+        },
+        { 
+            q: "कम्प्यूटर भाषा COBOL किसके लिए उपयोगी है-", 
+            o: ["व्यावसायिक कार्य", "ग्राफिक कार्य", "वैज्ञानिक कार्य", "पेन्ट कार्य"], 
+            a: 0, 
+            e: "<b>हल:</b> (A) व्यावसायिक कार्य। कोबोल भाषा मुख्य रूप से व्यावसायिक कार्यों (Business Applications) जैसे पेरोल (Payroll), इन्वेंटरी और अकाउंटिंग के लिए उपयोगी है।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>वैज्ञानिक कार्यों के लिए FORTRAN का उपयोग होता है।</li><li>ग्राफिक्स और गेमिंग के लिए C, C++ या C# का प्रयोग होता है।</li><li>आर्टिफिशियल इंटेलिजेंस (AI) और मशीन लर्निंग (ML) के लिए Python और LISP जैसी भाषाएं प्रयोग होती हैं।</li><li>वेबसाइट डेवलपमेंट के लिए HTML, CSS, JavaScript और PHP का उपयोग होता है।</li><li>डेटाबेस मैनेजमेंट के लिए SQL (Structured Query Language) का उपयोग किया जाता है।</li></ul>" 
+        },
+        { 
+            q: "किस कम्प्यूटर भाषा का प्रयोग वाणिज्यिक कार्यों में किया जाता है-", 
+            o: ["FORTRAN", "BASIC", "COBOL", "PASCAL"], 
+            a: 2, 
+            e: "<b>हल:</b> (C) COBOL। वाणिज्यिक (Commercial) कार्यों के लिए सबसे अधिक COBOL का ही प्रयोग किया गया है।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>वाणिज्यिक कार्यों में बड़े-बड़े डेटाबेस और ट्रांजैक्शन की प्रोसेसिंग होती है, जिसमें COBOL बहुत कुशल है।</li><li>FORTRAN वाणिज्यिक कार्यों के बजाय जटिल कैलकुलेशन के लिए उपयुक्त है।</li><li>PASCAL का उपयोग शिक्षा और स्ट्रक्चर्ड प्रोग्रामिंग के लिए अधिक किया गया।</li><li>वर्तमान में वाणिज्यिक कार्यों के लिए Java, C# और Python का व्यापक उपयोग हो रहा है।</li><li>ERP (Enterprise Resource Planning) सॉफ्टवेयर जैसे SAP भी बड़ी वाणिज्यिक प्रणालियों को संभालने के लिए उपयोग किए जाते हैं।</li></ul>" 
+        },
+        { 
+            q: "उच्च स्तरीय भाषा को मशीन भाषा में बदलता है-", 
+            o: ["कम्पाइलर", "इंटरप्रेटर", "दोनों", "इनमें से कोई नहीं"], 
+            a: 2, 
+            e: "<b>हल:</b> (C) दोनों। कंपाइलर (Compiler) और इंटरप्रेटर (Interpreter) दोनों ही उच्च स्तरीय भाषा (High-Level Language) को मशीन भाषा (0 और 1) में बदलने का कार्य करते हैं।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li><b>कंपाइलर:</b> यह पूरे प्रोग्राम को एक ही बार में स्कैन करता है और उसे मशीन कोड में बदल देता है। यह तेज़ होता है (उदा: C, C++ में प्रयोग)।</li><li><b>इंटरप्रेटर:</b> यह प्रोग्राम को लाइन-बाय-लाइन पढ़ता है और मशीन कोड में बदलता है। इसमें गलतियां ढूँढना आसान होता है, लेकिन यह धीमा होता है (उदा: Python, BASIC में प्रयोग)।</li><li>अगर प्रोग्राम में कोई सिंटैक्स एरर (Syntax error) हो, तो कंपाइलर एक साथ सभी एरर की लिस्ट दे देता है।</li><li>इंटरप्रेटर पहली गलती मिलने पर ही रुक जाता है और जब तक उसे सुधारा न जाए, आगे नहीं बढ़ता।</li><li>Java में कंपाइलर और इंटरप्रेटर दोनों का उपयोग होता है (पहले Bytecode बनता है, फिर JVM उसे इंटरप्रेट करता है)।</li></ul>" 
+        },
+        { 
+            q: "असेम्बलर (Assembler) का कार्य है-", 
+            o: ["बेसिक भाषा को यंत्र भाषा में परिवर्तित करना", "उच्च स्तरीय भाषा को यंत्र भाषा में परिवर्तित करना", "असेम्बली भाषा को यंत्र भाषा में परिवर्तित करना", "असेम्बली भाषा को उच्च स्तरीय भाषा में परिवर्तित करना"], 
+            a: 2, 
+            e: "<b>हल:</b> (C) असेम्बली भाषा को यंत्र भाषा में परिवर्तित करना। असेंबलर एक ट्रांसलेटर प्रोग्राम है जो असेंबली भाषा (Assembly Language) को मशीन भाषा (Machine Language) में ट्रांसलेट करता है।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>असेंबली भाषा में 'Mnemonic codes' (जैसे ADD, MOV, JMP) का उपयोग होता है, जिसे कंप्यूटर सीधे नहीं समझ सकता।</li><li>असेंबलर इन निमोनिक्स को बाइनरी कोड (0, 1) में बदलता है।</li><li>असेंबली भाषा 'लो-लेवल लैंग्वेज' (Low-Level Language) के अंतर्गत आती है।</li><li>यह भाषा हार्डवेयर (Hardware) के बहुत करीब होती है, इसलिए इसका उपयोग माइक्रोप्रोसेसर और माइक्रो-कंट्रोलर की कोडिंग में होता है।</li><li>उच्च स्तरीय भाषा को मशीन भाषा में बदलने का काम कंपाइलर या इंटरप्रेटर करते हैं, असेंबलर नहीं।</li></ul>" 
+        },
+        { 
+            q: "अंग्रेजी भाषा के समान उच्चस्तरीय कम्प्यूटर भाषा है-", 
+            o: ["FORTRAN", "PASCAL", "COBOL", "C++"], 
+            a: 2, 
+            e: "<b>हल:</b> (C) COBOL। COBOL को विशेष रूप से इस तरह से डिजाइन किया गया था कि इसका कोड आम अंग्रेजी भाषा के वाक्यों जैसा दिखाई दे।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>ग्रेस हॉपर ने जोर दिया था कि प्रोग्रामिंग भाषाएं गणितीय प्रतीकों के बजाय अंग्रेजी के शब्दों पर आधारित होनी चाहिए।</li><li>COBOL प्रोग्राम में 'Division', 'Section', 'Paragraph' और 'Sentence' जैसी संरचनाएँ होती हैं।</li><li>यह नॉन-टेक्निकल लोगों (जैसे मैनेजर) के लिए भी समझना आसान था।</li><li>इसकी इसी विशेषता के कारण व्यापारिक जगत में इसे बहुत तेजी से अपनाया गया।</li><li>अन्य भाषाएं जैसे C++ या FORTRAN गणितीय और प्रतीकात्मक (Symbolic) अधिक होती हैं।</li></ul>" 
+        },
+        { 
+            q: "किस भाषा में सर्वाधिक उपयुक्त डॉक्यूमेन्टेशन सम्भव है-", 
+            o: ["FORTRAN", "COBOL", "PASCAL", "C++"], 
+            a: 1, 
+            e: "<b>हल:</b> (B) COBOL। चूँकि COBOL अंग्रेजी भाषा के समान है, इसलिए इसके कोड को पढ़ना और समझना (Documentation) बहुत आसान होता है।<br><br>💡 <b>5 महत्वपूर्ण अतिरिक्त तथ्य:</b><ul><li>डॉक्यूमेंटेशन (Documentation) का अर्थ है प्रोग्राम के बारे में लिखित जानकारी देना, ताकि भविष्य में कोई दूसरा प्रोग्रामर उसे समझ सके।</li><li>COBOL में प्रोग्राम का कोड ही अपने आप में एक तरह का डॉक्यूमेंटेशन होता है (Self-documenting)।</li><li>आधुनिक भाषाओं (जैसे Java, Python) में कॉमेंट्स (Comments) का उपयोग करके बेहतरीन डॉक्यूमेंटेशन किया जाता है।</li><li>Python में 'Docstrings' का उपयोग फंक्शन्स के बारे में जानकारी देने के लिए होता है।</li><li>सॉफ्टवेयर इंजीनियरिंग में अच्छे डॉक्यूमेंटेशन को बहुत महत्वपूर्ण माना जाता है ताकि मेंटेनेंस आसान हो सके।</li></ul>" 
+        }
+    ];
+
+    let state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+    let timerInterval = null;
+    let isPaused = false;
+
+    window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+    function initDashboard() {
+        showScreen('dashboard-screen');
+        let completedData = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) completedData = JSON.parse(dataStr);
+        } catch(e) {}
+
+        if (completedData) {
+            document.getElementById('dash-unattempted').style.display = 'none';
+            document.getElementById('dash-attempted').style.display = 'block';
+            document.getElementById('dash-score-text').innerText = `${completedData.score}/25.0 Marks`;
+            document.getElementById('dash-progress-bar').style.width = `${(completedData.score / 25) * 100}%`;
+        } else {
+            document.getElementById('dash-attempted').style.display = 'none';
+            document.getElementById('dash-unattempted').style.display = 'block';
+        }
+    }
+
+    function startTest() {
+        let saved = null;
+        try {
+            const savedStr = safeGetItem(STORAGE_KEY);
+            if(savedStr) saved = JSON.parse(savedStr);
+        } catch(e){}
+
+        if (saved && !saved.submitted) {
+            state = saved;
+        } else {
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+        }
+        initTestEnv();
+    }
+
+    function reattemptTest() {
+        if(confirm("Are you sure you want to start a fresh test? Your active progress will be lost.")) {
+            safeRemoveItem(STORAGE_KEY);
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+            initTestEnv();
+        }
+    }
+
+    function initTestEnv() {
+        showScreen('test-screen');
+        renderQuestion();
+        renderPalette();
+        updateStats();
+        
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+        setInterval(() => { if(!state.submitted) safeSetItem(STORAGE_KEY, JSON.stringify(state)); }, 2000);
+    }
+
+    function viewSavedResults() {
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(data) renderResultUI(data);
+    }
+
+    function showDashboard() { initDashboard(); }
+
+    function showScreen(id) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+    }
+
+    function updateTimer() {
+        if(isPaused || state.submitted) return;
+        if(state.time <= 0) { submitTest(); return; }
+        state.time--;
+        const m = Math.floor(state.time / 60), s = state.time % 60;
+        document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+    }
+
+    function toggleTheme() {
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    function renderQuestion() {
+        state.visited[state.currentQ] = true;
+        const q = finalQuestions[state.currentQ];
+        document.getElementById('q-no').innerText = `Question ${state.currentQ + 1}`;
+        document.getElementById('q-text').innerHTML = q.q;
+        let opts = '';
+        q.o.forEach((opt, i) => {
+            const isSel = state.answers[state.currentQ] === i;
+            const selClass = isSel ? 'selected' : '';
+            const charLabel = String.fromCharCode(65 + i);
+            opts += `<div class="glass-panel option ${selClass}" onclick="selectOption(${i})"><div class="opt-label">${charLabel}</div><div style="flex:1;">${opt}</div></div>`;
+        });
+        document.getElementById('options-box').innerHTML = opts;
+        renderPalette();
+        updateStats();
+    }
+
+    function selectOption(index) { state.answers[state.currentQ] = index; renderQuestion(); }
+    function clearResponse() { delete state.answers[state.currentQ]; delete state.marked[state.currentQ]; renderQuestion(); }
+    function markReview() { state.marked[state.currentQ] = true; changeQ(1); }
+    function saveNext() { delete state.marked[state.currentQ]; changeQ(1); }
+
+    function changeQ(step) {
+        const next = state.currentQ + step;
+        if(next >= 0 && next < finalQuestions.length) { state.currentQ = next; renderQuestion(); }
+    }
+
+    function renderPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        finalQuestions.forEach((_, i) => {
+            let cls = 's-0';
+            if(state.visited[i]) {
+                if(state.answers[i] !== undefined && state.marked[i]) cls = 's-4';
+                else if(state.marked[i]) cls = 's-3';
+                else if(state.answers[i] !== undefined) cls = 's-1';
+                else cls = 's-2';
+            }
+            const active = i === state.currentQ ? 'active' : '';
+            grid.innerHTML += `<button class="p-btn ${cls} ${active}" onclick="state.currentQ = ${i}; renderQuestion();">${i + 1}</button>`;
+        });
+    }
+
+    function updateStats() {
+        let ans=0, notans=0, notvis=0, mark=0;
+        finalQuestions.forEach((_, i) => {
+            if(!state.visited[i]) notvis++;
+            else if(state.marked[i]) mark++;
+            else if(state.answers[i] !== undefined) ans++;
+            else notans++;
+        });
+        document.getElementById('c-ans').innerText = ans; document.getElementById('c-notans').innerText = notans;
+        document.getElementById('c-notvis').innerText = notvis; document.getElementById('c-mark').innerText = mark;
+    }
+
+    function submitTest() {
+        if(!confirm("Are you sure you want to submit the test?")) return;
+        state.submitted = true; clearInterval(timerInterval);
+        let score=0, attempt=0, wrong=0;
+        finalQuestions.forEach((q, i) => {
+            if(state.answers[i] !== undefined) {
+                attempt++;
+                if(state.answers[i] === q.a) score++; else wrong++;
+            }
+        });
+        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const completedData = { score: score, attempted: attempt, wrong: wrong, time: state.time, date: today, userAnswers: state.answers };
+        
+        safeSetItem(COMPLETED_KEY, JSON.stringify(completedData));
+        safeRemoveItem(STORAGE_KEY);
+        
+        renderResultUI(completedData);
+    }
+
+    function renderResultUI(data) {
+        showScreen('result-screen');
+        const acc = data.attempted > 0 ? ((data.score / data.attempted) * 100).toFixed(1) : 0;
+        document.getElementById('r-score').innerText = `${data.score}`;
+        document.getElementById('r-attempt').innerText = data.attempted;
+        document.getElementById('r-wrong').innerText = data.wrong;
+        document.getElementById('r-acc').innerText = `${acc}%`;
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(!data) return;
+
+        let html = '';
+        finalQuestions.forEach((q, i) => {
+            const uAns = data.userAnswers[i];
+            let optHtml = '';
+            q.o.forEach((opt, oIdx) => {
+                let cls = '', checkMark = '';
+                if(oIdx === q.a) { cls = 'correct'; checkMark = ' ✔'; }
+                else if(oIdx === uAns && uAns !== q.a) { cls = 'wrong'; checkMark = ' ❌ (Your Answer)'; }
+                optHtml += `<div class="glass-panel sol-opt ${cls}"><strong>${String.fromCharCode(65 + oIdx)}.</strong> <div style="flex:1;">${opt} ${checkMark}</div></div>`;
+            });
+            let statusText = uAns !== undefined ? (uAns === q.a ? "हल किया (Correct)" : "हल किया (Incorrect)") : "हल नहीं किया (Unattempted)";
+            html += `<div class="glass-panel sol-card"><div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--primary);">प्र ${i+1}. ${q.q}</div>${optHtml}<div style="font-weight:bold; margin:15px 0; color:var(--text-muted);">Status: ${statusText}</div><div class="glass-panel sol-exp">${q.e}</div></div>`;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+</script>
+</body>
+</html>
