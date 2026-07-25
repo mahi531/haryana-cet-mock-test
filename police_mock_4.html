@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Haryana Police Practice Set 04 (Bilingual)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Mukta:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables for Light & Dark Mode */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --text-main: #1a1a1a;
+            --text-muted: #4a4a4a;
+            --card-hover: rgba(255, 255, 255, 0.45);
+            --btn-bg: #4a90e2;
+            --btn-hover: #357abd;
+            --header-bg: rgba(255, 255, 255, 0.15);
+            --footer-bg: rgba(255, 255, 255, 0.3);
+            --list-hover: rgba(255,255,255, 0.6);
+            --modal-bg: rgba(255, 255, 255, 0.95);
+            --option-bg: #f8fafc;
+            --option-selected: rgba(219, 234, 254, 0.9);
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-bg: rgba(16, 24, 32, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f0f0f0;
+            --text-muted: #b0b0b0;
+            --card-hover: rgba(16, 24, 32, 0.7);
+            --btn-bg: #00d2ff;
+            --btn-hover: #3a7bd5;
+            --header-bg: rgba(0, 0, 0, 0.3);
+            --footer-bg: rgba(0, 0, 0, 0.4);
+            --list-hover: rgba(0,0,0, 0.5);
+            --modal-bg: rgba(15, 23, 42, 0.95);
+            --option-bg: #1e1e1e;
+            --option-selected: rgba(30, 58, 138, 0.8);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; touch-action: manipulation;}
+        body { height: 100vh; height: 100dvh; background: var(--bg-gradient); background-size: 400% 400%; animation: gradientBG 15s ease infinite; color: var(--text-main); display: flex; flex-direction: column; overflow: hidden; }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15); border-radius: 12px; }
+        .hidden { display: none !important; }
+        
+        .btn { font-family: 'Poppins', sans-serif; background: var(--btn-bg); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;}
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1.5px solid var(--btn-bg); color: var(--btn-bg); box-shadow: none;}
+        .btn-outline:hover { background: var(--list-hover); }
+        .btn-warning { background: var(--warning); color: #fff;}
+        .btn-clear { background: var(--header-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-mark { background: #8b5cf6; color: white; }
+        .btn-prev { background: var(--text-muted); color: white; }
+
+        .screen { display: none; flex-direction: column; height: 100%; width: 100vw; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; }
+
+        /* DASHBOARD UI */
+        #dashboard-screen { overflow-y: auto; background: var(--bg-gradient); align-items: center; padding-bottom: 30px;}
+        .dash-header-top { background: var(--header-bg); backdrop-filter: blur(15px); color: var(--text-main); width: 100%; padding: 15px 20px; font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 15px; position: sticky; top:0; z-index: 100; border-bottom: 1px solid var(--glass-border);}
+        .dash-content { width: 100%; max-width: 800px; padding: 20px; }
+        .section-title { font-weight: 600; color: var(--btn-bg); margin: 15px 0 10px 0; border-left: 4px solid var(--btn-bg); padding-left: 10px; font-size: 16px; }
+        .dash-card { background: var(--glass-bg); backdrop-filter: blur(12px); border-radius: 12px; padding: 24px; border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 rgba(0,0,0,0.1); margin-bottom: 15px; }
+        
+        /* TEST SCREEN UI */
+        header.test-head { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-bottom: 10px; margin-inline: 10px; background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); }
+        .header-title { font-size: 16px; font-weight: 700; color: var(--btn-bg); }
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: 700; background: var(--header-bg); border: 1px solid var(--glass-border); color: var(--danger); padding: 5px 12px; border-radius: 20px; }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 0 10px 10px 10px; }
+        .question-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 12px; }
+        
+        .q-header { padding: 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-weight: 600; font-size: 15px; }
+        .q-body { flex: 1; padding: 20px 15px; overflow-y: auto; font-size: 17px; line-height: 1.6; font-weight: 500;}
+        
+        /* Bilingual CSS classes */
+        .en-q { display: block; font-size: 0.92em; color: var(--text-muted); margin-top: 6px; font-weight: 500; font-family: 'Poppins', sans-serif;}
+        .en-opt { font-size: 0.9em; color: var(--text-muted); font-family: 'Poppins', sans-serif;}
+        
+        .options-list { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; padding-bottom: 10px;}
+        .option { padding: 12px 15px; border: 1px solid var(--glass-border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 15px; background: var(--option-bg); font-weight: 500; font-size: 16px; transition: 0.2s;}
+        .option:hover { border-color: var(--btn-bg); }
+        .option.selected { border-color: var(--btn-bg); background: var(--option-selected); color: var(--btn-bg); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 6px; background: var(--glass-border); color: var(--text-main); display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 13px;}
+        .option.selected .opt-label { background: var(--btn-bg); color: white; border-color: var(--btn-bg);}
+        
+        .q-footer { padding: 15px; border-top: 1px solid var(--glass-border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border-radius: 0 0 12px 12px; background: var(--header-bg);}
+
+        /* PALETTE UI */
+        .palette-section { width: 320px; display: flex; flex-direction: column; flex-shrink: 0; background: var(--glass-bg); backdrop-filter: blur(12px); border: 1px solid var(--glass-border); border-radius: 12px; }
+        .palette-header { padding: 15px; border-bottom: 1px solid var(--glass-border); text-align: center; font-weight: bold; font-size: 15px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; font-size: 12px; border-bottom: 1px solid var(--glass-border); font-weight: 500;}
+        .stat-item { display: flex; align-items: center; gap: 8px;}
+        .badge { width: 22px; height: 22px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 11px; font-weight: bold;}
+        .s-0 { background: var(--glass-border); color: var(--text-main); } 
+        .s-1 { background: var(--success); } .s-2 { background: var(--danger); } .s-3 { background: #8b5cf6; } 
+        .s-4 { background: var(--btn-bg); position: relative; }
+        .s-4::after { content: '✔'; position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; background: white; color: var(--btn-bg); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 8px; }
+        
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 15px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; color: white; font-size: 13px; }
+        .p-btn.s-0 { background: var(--glass-border); color: var(--text-main); }
+        .p-btn.active { outline: 3px solid var(--btn-bg); outline-offset: 2px; transform: scale(1.05);}
+        .submit-area { padding: 15px; border-top: 1px solid var(--glass-border); }
+
+        /* RESULTS & SOLUTIONS UI */
+        #result-screen, #solution-screen { overflow-y: auto; align-items: center; padding: 20px; background: var(--bg-gradient); }
+        .sol-card { padding: 20px; margin-bottom: 15px; width: 100%; max-width: 800px; background: var(--glass-bg); backdrop-filter: blur(12px); border-radius: 12px; border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 rgba(0,0,0,0.1);}
+        .sol-opt { padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; gap: 12px; align-items: center; font-size: 16px; background: var(--option-bg);}
+        .sol-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); text-decoration: line-through;}
+        
+        /* Math Fraction and Root Layout CSS */
+        .f-box { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: 0 4px; font-weight: 600; font-size: 16px;}
+        .f-top { border-bottom: 2px solid var(--text-main); padding: 0 4px; width: 100%; text-align: center; }
+        .f-bot { padding: 0 4px; width: 100%; text-align: center; }
+        .root-sign { display: inline-flex; align-items: center; font-weight: 600;}
+        .root-inner { border-top: 2px solid var(--text-main); padding-top: 2px; margin-left: 1px;}
+        .math-bar { text-decoration: overline; text-decoration-thickness: 2px; }
+
+        .sol-exp { margin-top: 15px; padding: 15px; background: var(--header-bg); border: 1px solid var(--glass-border); border-radius: 8px; font-size: 15px; line-height: 1.6; color: var(--text-main); }
+        .fact-box { background: rgba(16, 185, 129, 0.1); border-left: 4px solid var(--success); padding: 12px; margin-top: 10px; border-radius: 4px; }
+        .fact-box ul { padding-left: 20px; margin-top: 5px; margin-bottom: 0;}
+        .fact-box li { margin-bottom: 6px; font-size: 14.5px;}
+        .math-box { background: rgba(37, 99, 235, 0.1); border-left: 4px solid var(--btn-bg); padding: 12px; margin-top: 10px; border-radius: 4px; font-size: 15px;}
+        .math-trick { color: var(--success); font-weight: 700; font-size: 16px; display: block; margin-bottom: 6px; border-bottom: 1px dashed var(--success); padding-bottom: 5px;}
+
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+
+        @media (max-width: 992px) {
+            .main-area { flex-direction: column; overflow-y: auto;}
+            .question-section { flex: none; min-height: 450px;}
+            .palette-section { width: 100%; flex: none; min-height: 350px;}
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="dashboard-screen" class="screen active">
+        <div class="dash-header-top">
+            <span style="cursor: pointer;" onclick="alert('Going Back')">&#8592;</span>
+            Mock Tests / मॉक टेस्ट
+        </div>
+
+        <div class="dash-content">
+            <div id="dash-unattempted" class="hidden">
+                <div class="section-title">Full Mock Test - 100 Questions</div>
+                <div class="dash-card">
+                    <div class="test-title" style="font-size: 20px;">Haryana Police Practice Set 04 (Bilingual)</div>
+                    <div style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">100 Qs • 90 mins • 97.0 Marks (0.97/Q)</div>
+                    <button class="btn" style="width: 100%; padding: 12px; border-radius: 8px; font-size: 16px;" onclick="startTest()">Start Test 🚀 / टेस्ट शुरू करें</button>
+                </div>
+            </div>
+
+            <div id="dash-attempted" class="hidden">
+                <div class="dash-card">
+                    <div style="font-size: 20px; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">Haryana Police Practice Set 04</div>
+                    <div style="font-size: 15px; color: var(--text-muted); font-weight: 500; margin-bottom: 15px;">
+                        <span id="dash-score-text">0/97.0 Marks</span>
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 25px;">
+                        <div style="flex: 1; height: 6px; background: var(--glass-border); border-radius: 4px; display: flex; align-items: center;">
+                            <div id="dash-progress-bar" style="height: 100%; background: #fbc02d; width: 0%; border-radius: 4px;"></div>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn btn-outline" style="flex: 1; padding: 10px; border-radius: 8px; font-size: 15px;" onclick="viewSavedResults()">View Results</button>
+                        <button class="btn btn-outline" style="flex: 1; padding: 10px; border-radius: 8px; font-size: 15px;" onclick="reattemptTest()">Reattempt ↻</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAUSE OVERLAY -->
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px; font-size: 2rem;">Test Paused ⏸️</h2>
+        <button class="btn" style="font-size: 1.2rem; padding: 10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+    </div>
+
+    <!-- TEST SCREEN -->
+    <div id="test-screen" class="screen">
+        <header class="test-head">
+            <div class="header-title">Haryana Police Set-04</div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="toggleTheme()">🌓 Theme</button>
+                <button class="btn btn-warning" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="togglePause()">⏸ Pause</button>
+                <div class="timer-box">⏱ <span id="timer-display">90:00</span></div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--success); font-weight:bold;">+0.97 <span style="color: var(--text-muted); font-weight:normal;">|</span> <span style="color: var(--danger);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600; font-size:18px;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <button class="btn btn-mark" onclick="markReview()">Mark / मार्क</button>
+                    <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                    <button class="btn btn-prev" onclick="changeQ(-1)">Prev</button>
+                    <button class="btn" onclick="saveNext()">Save & Next</button>
+                </div>
+            </div>
+
+            <div class="palette-section">
+                <div class="palette-header">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">100</div> Not Visit</div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn" style="width: 100%; background: var(--success); font-size: 15px; padding: 12px;" onclick="submitTest()">Submit Test / सबमिट</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen" class="screen">
+        <div style="width: 100%; max-width: 800px; margin-bottom: 15px;"><button class="btn btn-clear" onclick="showDashboard()">&#8592; Back to Dashboard</button></div>
+        <div class="sol-card" style="margin: 0 auto; text-align: center;">
+            <h1 style="color: var(--btn-bg); margin-bottom: 20px;">Test Submitted Successfully! 🎉</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 25px 0;">
+                <div style="padding: 15px; background: var(--header-bg); border-radius: 8px; border: 1px solid var(--glass-border);"><h2 id="r-score" style="color: var(--btn-bg); font-size: 28px;">0</h2><p style="color: var(--text-muted); font-size:13px;">Marks (out of 97)</p></div>
+                <div style="padding: 15px; background: var(--header-bg); border-radius: 8px; border: 1px solid var(--glass-border);"><h2 id="r-attempt" style="color: var(--success); font-size: 28px;">0</h2><p style="color: var(--text-muted); font-size:13px;">Attempted</p></div>
+                <div style="padding: 15px; background: var(--header-bg); border-radius: 8px; border: 1px solid var(--glass-border);"><h2 id="r-wrong" style="color: var(--danger); font-size: 28px;">0</h2><p style="color: var(--text-muted); font-size:13px;">Wrong</p></div>
+                <div style="padding: 15px; background: var(--header-bg); border-radius: 8px; border: 1px solid var(--glass-border);"><h2 id="r-acc" style="color: #8b5cf6; font-size: 28px;">0%</h2><p style="color: var(--text-muted); font-size:13px;">Accuracy</p></div>
+            </div>
+            <button class="btn" style="width:100%; padding: 15px; font-size: 16px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+        </div>
+    </div>
+
+    <!-- SOLUTION SCREEN -->
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%; margin:0 auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 15px; background: var(--glass-bg); backdrop-filter: blur(12px); border-radius: 12px; border: 1px solid var(--glass-border); position: sticky; top: 5px; z-index: 10;">
+                <h3 style="color: var(--btn-bg);">Detailed Solutions</h3>
+                <button class="btn btn-clear" style="padding: 6px 12px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+            </div>
+            <div id="sol-container"></div>
+        </div>
+    </div>
+
+<script>
+    const STORAGE_KEY = 'hp_mock_set4_bi_active'; 
+    const COMPLETED_KEY = 'hp_mock_set4_bi_comp';
+    const MARKS_PER_Q = 0.97;
+
+    const fullQuestions = [
+        ["भारतीय संविधान में शामिल नीति-निर्देशक सिद्धान्त किस देश के संविधान से प्रेरित हैं?<br><span class='en-q'>The Directive Principles of State Policy included in the Indian Constitution are inspired by the constitution of which country?</span>", ["अमेरिका / America", "ऑस्ट्रेलिया / Australia", "आयरलैण्ड / Ireland", "फ्रांस / France"], 2, "f|संविधान के भाग 4 (अनुच्छेद 36-51) में नीति-निदेशक तत्व शामिल हैं।|इन्हें आयरलैंड के संविधान से लिया गया है।|इनका मुख्य उद्देश्य कल्याणकारी राज्य की स्थापना करना है।|ये न्यायालय द्वारा प्रवर्तनीय (लागू) नहीं हैं।|तेज बहादुर सप्रू समिति की सिफारिश पर इन्हें शामिल किया गया था।"],
+        ["संविधान के निर्माताओं के मनोभाव और आदर्श प्रतिबिम्बित होते हैं<br><span class='en-q'>The ideals and philosophy of the makers of the Constitution are reflected in the:</span>", ["मूल अधिकारों में / Fundamental Rights", "राज्य के नीति-निदेशक सिद्धान्तों में / DPSP", "उद्देशिका में / Preamble", "मूल कर्तव्यों में / Fundamental Duties"], 2, "f|संविधान निर्माताओं के आदर्श उद्देशिका (Preamble) में प्रतिबिंबित होते हैं।|इसे संविधान की कुंजी भी कहा जाता है।|42वें संशोधन (1976) द्वारा इसमें समाजवादी, पंथनिरपेक्ष और अखंडता शब्द जोड़े गए।|यह जवाहरलाल नेहरू द्वारा पेश किए गए 'उद्देश्य प्रस्ताव' पर आधारित है।|प्रस्तावना की भाषा ऑस्ट्रेलिया से ली गई है।"],
+        ["वर्धमान महावीर ने परिनिर्वाण कहाँ प्राप्त किया?<br><span class='en-q'>Where did Vardhamana Mahavira attain Parinirvana?</span>", ["पावा / Pava", "सारनाथ / Sarnath", "वैशाली / Vaishali", "श्रवणबेलगोला / Shravanabelagola"], 0, "f|जैन धर्म के 24वें और अंतिम तीर्थंकर महावीर स्वामी ने पावापुरी (बिहार) में निर्वाण प्राप्त किया था।|इनका जन्म 540 ई.पू. में कुंडग्राम (वैशाली) में हुआ था।|इन्होंने 30 वर्ष की आयु में गृहत्याग किया था।|इन्हें ऋजुपालिका नदी के तट पर साल वृक्ष के नीचे ज्ञान (कैवल्य) प्राप्त हुआ था।|इन्होंने अपना पहला उपदेश राजगृह में दिया था।"],
+        ["पृथ्वी के समीप पाई जाने वाली वायुमण्डलीय परत क्या कहलाती है?<br><span class='en-q'>What is the atmospheric layer closest to the Earth called?</span>", ["आयनोस्फीयर / Ionosphere", "स्ट्रेटोस्फीयर / Stratosphere", "ट्रोपोस्फीयर / Troposphere", "ऐक्सोस्फीयर / Exosphere"], 2, "f|पृथ्वी के सबसे नजदीक की परत 'ट्रोपोस्फीयर' (क्षोभमंडल) है।|इसकी औसत ऊंचाई लगभग 13 किमी है।|बादल फटना, बारिश, आंधी जैसी सभी मौसम संबंधी घटनाएं इसी परत में होती हैं।|ऊंचाई बढ़ने के साथ इस परत में तापमान घटता है।|इसके ठीक ऊपर 'स्ट्रेटोस्फीयर' (समतापमंडल) होता है, जिसमें ओजोन परत पाई जाती है।"],
+        ["चूहों के विष का रासायनिक नाम है<br><span class='en-q'>The chemical name of rat poison is:</span>", ["जिंक ऑक्साइड / Zinc Oxide", "पोटैशियम सायनाइड / Potassium Cyanide", "लेड नाइट्रेट / Lead Nitrate", "जिंक फॉस्फाइड / Zinc Phosphide"], 3, "f|चूहा मारने वाली दवा का रासायनिक नाम 'जिंक फॉस्फाइड' (Zn3P2) है।|यह पेट के एसिड के साथ मिलकर अत्यधिक जहरीली गैस (फॉस्फीन) छोड़ता है।|इसका रंग गहरा स्लेटी या काला होता है।|इसमें लहसुन जैसी तेज गंध आती है जो चूहों को आकर्षित करती है।|जिंक ऑक्साइड का उपयोग सनस्क्रीन और कॉस्मेटिक्स में किया जाता है।"],
+        ["200 &times; 20 &times; 2 &times; 0.2 &times; 0.02 का मान बताइए।<br><span class='en-q'>Find the value of 200 &times; 20 &times; 2 &times; 0.2 &times; 0.02.</span>", ["320", "0.32", "32", "0.032"], 2, "m|<span class='math-trick'>🔥 स्मार्ट एप्रोच (सीधा गुणा):</span><br>पूर्ण संख्याओं का गुणा: 200 &times; 20 &times; 2 = 8000<br>दशमलव संख्याओं का गुणा: 0.2 &times; 0.02 = 0.004<br>अब दोनों का गुणा करें: 8000 &times; 0.004<br>दशमलव के तीन स्थान, 8000 की तीन शून्य से कट जाएंगे।<br>बचेगा 8 &times; 4 = <b>32</b>।"],
+        ["एक क्लब में लड़के और लड़कियाँ 7:4 के अनुपात में हैं। यदि लड़कों की तुलना में 21 लड़कियाँ कम हैं, तो क्लब में कुल बच्चों की संख्या होगी<br><span class='en-q'>Boys and girls in a club are in the ratio 7:4. If there are 21 fewer girls than boys, what is the total number of children in the club?</span>", ["49", "77", "84", "90"], 1, "m|<span class='math-trick'>🔥 स्मार्ट एप्रोच (Ratio Method - बिना पेन उठाये):</span><br>लड़के = 7 यूनिट, लड़कियाँ = 4 यूनिट।<br>कुल बच्चे = 7 + 4 = 11 यूनिट।<br>अर्थात् कुल संख्या 11 का गुणज (Multiple) होगी।<br>विकल्पों में केवल <b>77</b> ही 11 से विभाज्य है!<br>लॉजिक चेक: अंतर (7-4)=3 यूनिट=21 &rarr; 1 यूनिट=7 &rarr; 11&times;7 = 77."],
+        ["88 से भाज्य सबसे बड़ी चार अंक वाली संख्या है<br><span class='en-q'>The largest 4-digit number completely divisible by 88 is:</span>", ["8888", "9944", "9988", "9968"], 1, "m|<span class='math-trick'>🔥 स्मार्ट एप्रोच (विभाज्यता नियम):</span><br>चार अंकों की सबसे बड़ी संख्या 9999 है।<br>9999 को 88 से भाग दें:<br>88 &times; 113 = 9944, और शेषफल 55 बचता है।<br>9999 - 55 = <b>9944</b>।<br>वैकल्पिक: 88 से कटने वाली संख्या 8 और 11 दोनों से कटेगी। 9944 (9-9+4-4=0) 11 से कटती है और अंतिम 3 अंक (944) 8 से कटते हैं।"],
+        ["भारत रत्न पुरस्कार प्राप्त करने वाली पहली महिला हैं<br><span class='en-q'>The first woman to receive the Bharat Ratna award is:</span>", ["मदर टेरेसा / Mother Teresa", "इन्दिरा गाँधी / Indira Gandhi", "लता मंगेशकर / Lata Mangeshkar", "सरोजिनी नायडू / Sarojini Naidu"], 1, "f|भारत रत्न से सम्मानित होने वाली पहली महिला 'इंदिरा गांधी' थीं, जिन्हें 1971 में यह सम्मान मिला।|वह भारत की पहली और एकमात्र महिला प्रधानमंत्री थीं।|मदर टेरेसा को 1980 में यह पुरस्कार दिया गया था।|लता मंगेशकर को 2001 में भारत रत्न मिला था।|भारत रत्न पुरस्कार की शुरुआत डॉ. राजेंद्र प्रसाद द्वारा 1954 में की गई थी।"],
+        ["पेण्डुलम को चन्द्रमा पर ले जाने पर उसकी समय अवधि<br><span class='en-q'>If a pendulum is taken to the moon, its time period will:</span>", ["उतनी ही रहेगी / Remain the same", "घटेगी / Decrease", "शून्य हो जाएगी / Become zero", "बढ़ेगी / Increase"], 3, "f|पेंडुलम का आवर्तकाल (समय अवधि) का सूत्र T = 2π√(l/g) होता है।|चूंकि चंद्रमा पर गुरुत्वाकर्षण बल (g) पृथ्वी का 1/6 होता है, इसलिए g का मान घटेगा।|g का मान घटने पर समय अवधि (T) बढ़ जाती है।|इसलिए चंद्रमा पर पेंडुलम घड़ी सुस्त (धीमी) हो जाती है।|गर्मियों में भी लंबाई (l) बढ़ने के कारण पेंडुलम का आवर्तकाल बढ़ जाता है।"],
+        ["निम्नलिखित में से कौन शीत रुधिर जन्तु है/हैं?<br><span class='en-q'>Which of the following is/are cold-blooded animal(s)?</span>", ["छिपकली / Lizard", "मेंढक / Frog", "मछली / Fish", "ये सभी / All of these"], 3, "f|शीत रुधिर (Cold-blooded / Ectothermic) जंतु वे होते हैं जो अपने शरीर का तापमान स्वयं नियंत्रित नहीं कर सकते।|इनका शारीरिक तापमान बाहरी वातावरण के अनुसार बदलता रहता है।|सभी सरीसृप (छिपकली, साँप), उभयचर (मेंढक) और मछलियां शीत रुधिर जंतु होते हैं।|मनुष्य, स्तनधारी और पक्षी 'गर्म रुधिर' (Warm-blooded) होते हैं, जिनका तापमान स्थिर रहता है।|छिपकली सर्दियों में शीतनिद्रा (Hibernation) में चली जाती है।"],
+        ["DDT का उपयोग है<br><span class='en-q'>The use of DDT is as a/an:</span>", ["कीटनाशक के रूप में / Insecticide", "उर्वरक के रूप में / Fertilizer", "दवा के रूप में / Medicine", "ये सभी / All of these"], 0, "f|DDT (Dichloro-diphenyl-trichloroethane) का मुख्य उपयोग 'कीटनाशक' (Insecticide) के रूप में किया जाता है।|इसका उपयोग मुख्य रूप से मलेरिया फैलाने वाले मच्छरों और कृषि कीटों को मारने के लिए किया जाता था।|यह एक अजैव-निम्नीकरणीय (Non-biodegradable) रसायन है, जो पर्यावरण में लंबे समय तक बना रहता है।|इसके हानिकारक प्रभावों के कारण दुनिया के अधिकांश देशों में इसे बैन कर दिया गया है।|पॉल हरमन मुलर को DDT की खोज के लिए नोबेल पुरस्कार मिला था।"],
+        ["निम्न में से किसकी कमी से 'मिल्क फीवर' हो जाता है?<br><span class='en-q'>Deficiency of which of the following causes 'Milk Fever'?</span>", ["लौह तत्व / Iron", "कैल्सियम / Calcium", "कॉपर / Copper", "फॉस्फोरस / Phosphorus"], 1, "f|'मिल्क फीवर' (Milk Fever) दुधारू पशुओं (विशेषकर गाय और भैंस) में होने वाली एक बीमारी है, जो शरीर में 'कैल्शियम' (Calcium) की भारी कमी के कारण होती है।|यह बीमारी आमतौर पर बच्चे को जन्म देने के कुछ ही घंटों या दिनों के भीतर होती है।|इसमें पशु कमजोर हो जाता है, खड़ा नहीं हो पाता और उसके शरीर का तापमान गिर जाता है।|रक्त में कैल्शियम का स्तर सामान्य बनाए रखने के लिए पशु को तुरंत कैल्शियम के इंजेक्शन दिए जाते हैं।|लौह तत्व की कमी से एनीमिया होता है।"],
+        ["राष्ट्रपति द्वारा संसद के दोनों सदनों के लिए कुल कितने सदस्य नामित किया जा सकता है?<br><span class='en-q'>How many members can be nominated by the President to both the Houses of Parliament in total?</span>", ["16", "10", "12", "14"], 3, "f|पारंपरिक रूप से राष्ट्रपति संसद में कुल 14 सदस्य नामित कर सकते थे (राज्यसभा में 12 और लोकसभा में 2 एंग्लो-इंडियन)।|कला, साहित्य, विज्ञान और समाज सेवा में उत्कृष्ट योगदान के लिए राज्यसभा में 12 सदस्य नामित किए जाते हैं (अनुच्छेद 80)।|लोकसभा में 2 एंग्लो-इंडियन समुदाय के सदस्यों को नामित किया जाता था (अनुच्छेद 331)।|नोट: 104वें संविधान संशोधन (2019) द्वारा एंग्लो-इंडियन मनोनयन को समाप्त कर दिया गया है, लेकिन पुराने संदर्भ के अनुसार उत्तर 14 है।"],
+        ["बाइसिकल के पहिए में प्रयुक्त अरें बढ़ाती हैं<br><span class='en-q'>The spokes used in a bicycle wheel increase its:</span>", ["जड़त्व-आघूर्ण / Moment of Inertia", "वेग / Velocity", "त्वरण / Acceleration", "संवेग / Momentum"], 0, "f|साइकिल के पहिए में लगी तिल्लियां (Spokes/अरें) पहिए का द्रव्यमान (Mass) उसके केंद्र से दूर रिम (Rim) की ओर वितरित करती हैं।|इससे पहिए का 'जड़त्व आघूर्ण' (Moment of Inertia) बढ़ जाता है।|जड़त्व आघूर्ण अधिक होने से पहिया एक समान गति (Uniform motion) से आसानी से घूमता रहता है और संतुलन बनाए रखता है।|यह भौतिकी के घूर्णी गति (Rotational Motion) के सिद्धांत पर आधारित है।|इसके बिना साइकिल चलाते समय झटके महसूस होंगे और संतुलन बिगड़ेगा।"],
+        ["यदि x / &radic;<span class='root-inner'>128</span> = &radic;<span class='root-inner'>162</span> / x है, तो समीकरण में दोनों 'x' के स्थान पर क्या आना चाहिए?<br><span class='en-q'>If x / &radic;<span class='root-inner'>128</span> = &radic;<span class='root-inner'>162</span> / x, what should come in place of both 'x' in the equation?</span>", ["12", "14", "144", "196"], 0, "m|<span class='math-trick'>🔥 क्रॉस-मल्टीप्लिकेशन ट्रिक:</span><br>समीकरण: x / &radic;128 = &radic;162 / x<br>क्रॉस गुणा करने पर: x &times; x = &radic;128 &times; &radic;162<br>x² = &radic;(128 &times; 162)<br>128 &times; 162 = 20736<br>x² = &radic;20736<br>चूंकि 144 &times; 144 = 20736 होता है, अतः x² = 144<br>अतः x = &radic;144 = <b>12</b>।"],
+        ["किसी पंक्ति में सोहन पीछे से नौवाँ है। रमेश का स्थान सामने से आठवाँ है। राधे इन दोनों के बीच में है। उस पंक्ति में खड़े बालकों की न्यूनतम संख्या क्या होगी?<br><span class='en-q'>In a row, Sohan is 9th from the back. Ramesh is 8th from the front. Radhe is exactly between them. What will be the minimum number of boys standing in that row?</span>", ["19", "18", "15", "14"], 3, "m|<span class='math-trick'>🔥 रैंकिंग (न्यूनतम संख्या/Overlapping Case):</span><br>जब 'न्यूनतम' (Minimum) संख्या पूछी जाए, तो Overlapping केस बनता है।<br>कुल संख्या = (Left + Right) - (बीच के लोग) - 2<br>यहाँ Left से रमेश = 8, Right से सोहन = 9। बीच में केवल राधे (1 व्यक्ति) है।<br>कुल = (8 + 9) - 1 - 2<br>कुल = 17 - 3 = <b>14</b>।"],
+        ["0.<span class='math-bar'>6</span> + 0.<span class='math-bar'>7</span> + 0.<span class='math-bar'>8</span> का सरलीकृत मान है<br><span class='en-q'>The simplified value of 0.<span class='math-bar'>6</span> + 0.<span class='math-bar'>7</span> + 0.<span class='math-bar'>8</span> is:</span>", ["2.330", "4.2", "2.<span class='math-bar'>3</span>", "2.34"], 2, "m|<span class='math-trick'>🔥 बार (Bar) वाले दशमलव ट्रिक:</span><br>0.<span class='math-bar'>6</span> = 6/9<br>0.<span class='math-bar'>7</span> = 7/9<br>0.<span class='math-bar'>8</span> = 8/9<br>जोड़ने पर: (6+7+8)/9 = 21/9<br>सरल करें: 21/9 = 7/3<br>7 को 3 से भाग दें: 2.3333...<br>इसे <b>2.<span class='math-bar'>3</span></b> लिखा जाएगा।"],
+        ["निम्न में से कौन-सा आभासी बल है?<br><span class='en-q'>Which of the following is a pseudo force?</span>", ["अभिकेन्द्र बल / Centripetal force", "अपकेन्द्री प्रतिक्रिया बल / Centrifugal reaction force", "अपकेन्द्री बल / Centrifugal force", "प्रबल नाभिकीय बल / Strong nuclear force"], 2, "f|अपकेन्द्री बल (Centrifugal Force) एक छद्म या 'आभासी बल' (Pseudo force) है।|यह बल वृत्ताकार पथ पर गति करती हुई वस्तु पर केंद्र से बाहर की ओर लगता हुआ प्रतीत होता है।|कपड़े सुखाने की वाशिंग मशीन और दूध से मक्खन निकालने की मशीन अपकेन्द्री बल के सिद्धांत पर ही काम करती हैं।|अभिकेन्द्र बल (Centripetal force) एक वास्तविक बल है जो केंद्र की ओर लगता है (जैसे गुरुत्वाकर्षण)।|नाभिकीय बल ब्रह्मांड का सबसे मजबूत बल है।"],
+        ["उस ग्रन्थि का नाम बताइए, जिसके बहिःस्रावी और अन्तःस्रावी दोनों कार्य हैं<br><span class='en-q'>Name the gland which has both exocrine and endocrine functions.</span>", ["पीयूष / Pituitary", "अग्न्याशय / Pancreas", "यकृत / Liver", "थाइमस / Thymus"], 1, "f|अग्न्याशय (Pancreas) मानव शरीर की एकमात्र 'मिश्रित ग्रंथि' (Mixed Gland) है।|यह अंतःस्रावी (Endocrine) के रूप में इंसुलिन और ग्लूकागॉन हार्मोन स्रावित करती है (रक्त शर्करा को नियंत्रित करने के लिए)।|यह बहिःस्रावी (Exocrine) के रूप में पाचन एंजाइम (जैसे एमाइलेज, लाइपेज) स्रावित करती है।|पीयूष ग्रंथि को 'मास्टर ग्रंथि' कहा जाता है।|यकृत (Liver) शरीर की सबसे बड़ी ग्रंथि है।"],
+        ["हरियाणा राज्य में पंचायती राज अधिनियम कब लागू किया गया?<br><span class='en-q'>When was the Panchayati Raj Act implemented in the state of Haryana?</span>", ["22 मई, 1993 / May 22, 1993", "22 अप्रैल, 1993 / April 22, 1993", "22 मई, 1994 / May 22, 1994", "22 अप्रैल, 1994 / April 22, 1994"], 3, "f|हरियाणा में पंचायती राज अधिनियम (Panchayati Raj Act) '22 अप्रैल 1994' को लागू किया गया था।|राष्ट्रीय स्तर पर पंचायती राज अधिनियम (73वां संविधान संशोधन) 24 अप्रैल 1993 को लागू हुआ था, इसीलिए 24 अप्रैल को राष्ट्रीय पंचायती राज दिवस मनाया जाता है।|हरियाणा में पंचायती राज त्रि-स्तरीय है (ग्राम, ब्लॉक, और जिला स्तर)।|सबसे पहले पंचायती राज 2 अक्टूबर 1959 को राजस्थान के नागौर में लागू हुआ था।|हरियाणा पंचायत चुनाव लड़ने के लिए शैक्षणिक योग्यता अनिवार्य करने वाला दूसरा राज्य है (पहला राजस्थान)।"],
+        ["'बड़ा इमामबाड़ा' कहाँ स्थित है?<br><span class='en-q'>Where is the 'Bada Imambara' located?</span>", ["आगरा / Agra", "लखनऊ / Lucknow", "पटना / Patna", "इलाहाबाद / Allahabad"], 1, "f|प्रसिद्ध 'बड़ा इमामबाड़ा' उत्तर प्रदेश की राजधानी 'लखनऊ' में स्थित है।|इसका निर्माण अवध के नवाब आसफ-उद-दौला ने 1784 में अकाल राहत परियोजना के तहत करवाया था।|इसे 'भूलभुलैया' (Labyrinth) के नाम से भी जाना जाता है क्योंकि इसमें छतों पर जाने के लिए सैकड़ों संकरे रास्ते हैं।|इसके केंद्रीय हॉल के निर्माण में किसी भी खंभे (Pillar) या लोहे का इस्तेमाल नहीं किया गया है।|लखनऊ को 'नवाबों का शहर' भी कहा जाता है।"],
+        ["आयोडीन की कमी से कौन-सा रोग होता है?<br><span class='en-q'>Which disease is caused by the deficiency of Iodine?</span>", ["स्कर्वी / Scurvy", "गॉयटर / Goitre", "पोलियो / Polio", "रिकेट्स / Rickets"], 1, "f|आयोडीन की कमी से 'गॉयटर' या घेंघा रोग हो जाता है।|इस रोग में गले में स्थित थायरॉयड (Thyroid) ग्रंथि सूज जाती है और गला फूल जाता है।|आयोडीन थायरॉक्सिन हार्मोन के निर्माण के लिए अति आवश्यक है, जो शरीर के मेटाबॉलिज्म को नियंत्रित करता है।|स्कर्वी रोग विटामिन-C की कमी से होता है।|रिकेट्स रोग विटामिन-D की कमी से हड्डियों में होता है।"],
+        ["हरियाणा राज्य कब अस्तित्व में आया?<br><span class='en-q'>When did the state of Haryana come into existence?</span>", ["1 नवम्बर, 1966 / Nov 1, 1966", "9 नवम्बर, 1966 / Nov 9, 1966", "21 नवम्बर, 1966 / Nov 21, 1966", "5 नवम्बर, 1966 / Nov 5, 1966"], 0, "f|हरियाणा राज्य '1 नवम्बर 1966' को पंजाब से अलग होकर भारत के 17वें राज्य के रूप में अस्तित्व में आया।|यह विभाजन जे.सी. शाह आयोग (Shah Commission) की सिफारिशों पर और भाषा के आधार पर किया गया था।|हरियाणा के गठन के समय राज्य में केवल 7 जिले थे (रोहतक, जींद, हिसार, महेंद्रगढ़, गुड़गांव, करनाल, अंबाला)।|भगवत दयाल शर्मा हरियाणा के पहले मुख्यमंत्री बने थे।|वर्तमान में हरियाणा में कुल 22 जिले हैं।"],
+        ["शक्तिशाली वर्धन वंश का उदय हरियाणा में कहाँ पर हुआ था?<br><span class='en-q'>Where did the powerful Vardhana dynasty emerge in Haryana?</span>", ["थानेसर / Thanesar", "रोहतक / Rohtak", "पानीपत / Panipat", "कुरुक्षेत्र / Kurukshetra"], 0, "f|वर्धन वंश (पुष्यभूति वंश) का उदय हरियाणा के 'थानेसर' (वर्तमान कुरुक्षेत्र जिले के पास) में हुआ था।|पुष्यभूति इस वंश का संस्थापक था, जिसने थानेसर को अपनी राजधानी बनाया।|इस वंश का सबसे प्रतापी और महान राजा 'हर्षवर्धन' था, जिसने 606 ई. से 647 ई. तक शासन किया।|हर्षवर्धन ने बाद में अपनी राजधानी थानेसर से 'कन्नौज' (उत्तर प्रदेश) स्थानांतरित कर ली थी।|हर्षवर्धन के दरबार में प्रसिद्ध चीनी यात्री ह्वेनसांग आया था।"],
+        ["महालनोबिस मॉडल का सम्बन्ध किस पंचवर्षीय योजना के साथ जोड़ा गया है?<br><span class='en-q'>The Mahalanobis model is associated with which Five-Year Plan?</span>", ["पहली पंचवर्षीय योजना / First", "दूसरी पंचवर्षीय योजना / Second", "तीसरी पंचवर्षीय योजना / Third", "चौथी पंचवर्षीय योजना / Fourth"], 1, "f|'दूसरी पंचवर्षीय योजना' (1956-1961) प्रसिद्ध भारतीय सांख्यिकीविद् पी.सी. महालनोबिस के मॉडल पर आधारित थी।|इस योजना का मुख्य उद्देश्य भारी उद्योगों और बुनियादी ढांचे का तीव्र औद्योगीकरण था।|इसी योजना के तहत भारत में दुर्गापुर, भिलाई और राउरकेला में बड़े इस्पात संयंत्र (Steel Plants) स्थापित किए गए।|पहली पंचवर्षीय योजना (1951-56) हैरोड-डोमर मॉडल पर आधारित थी, जिसमें कृषि पर जोर दिया गया था।|पी.सी. महालनोबिस के जन्मदिन (29 जून) को भारत में राष्ट्रीय सांख्यिकी दिवस के रूप में मनाया जाता है।"],
+        ["खिलाफत आन्दोलन का हरियाणा में विरोध किया गया था<br><span class='en-q'>The Khilafat Movement was supported/protested in Haryana by:</span>", ["साइमन कमीशन के दौरान / During Simon Commission", "असहयोग आन्दोलन के दौरान / During Non-Cooperation", "रॉलेट एक्ट के दौरान / During Rowlatt Act", "खिलाफत समितियों की स्थापना करके / Establishing Khilafat Committees"], 3, "f|हरियाणा में खिलाफत आंदोलन (1919-1922) का विरोध और समर्थन 'खिलाफत समितियों' की स्थापना करके किया गया था।|तुर्की के खलीफा के समर्थन में अली बंधुओं (शौकत अली और मोहम्मद अली) ने पूरे भारत में यह आंदोलन शुरू किया था।|पानीपत, रोहतक, और हिसार में खिलाफत कमेटियां बनाई गईं।|बाद में महात्मा गांधी ने इस आंदोलन को 'असहयोग आंदोलन' (Non-Cooperation Movement) के साथ जोड़ दिया था।|हरियाणा में लाला लाजपत राय और पंडित नेकीराम शर्मा ने इन आंदोलनों का नेतृत्व किया।"],
+        ["प्रकाश-संश्लेषण करने के लिए पौधों को आवश्यकता होती है<br><span class='en-q'>What is required by plants to perform photosynthesis?</span>", ["ऑक्सीजन की / Oxygen", "कार्बन डाइ-ऑक्साइड की / Carbon dioxide", "नाइट्रोजन की / Nitrogen", "हाइड्रोजन की / Hydrogen"], 1, "f|प्रकाश-संश्लेषण (Photosynthesis) वह प्रक्रिया है जिससे हरे पौधे अपना भोजन बनाते हैं।|इस प्रक्रिया के लिए मुख्य रूप से कार्बन डाइऑक्साइड (CO2), जल (H2O), सूर्य का प्रकाश और क्लोरोफिल की आवश्यकता होती है।|पौधे वायुमंडल से CO2 ग्रहण करते हैं और भोजन बनाने के बाद ऑक्सीजन (O2) गैस छोड़ते हैं।|क्लोरोफिल के कारण ही पौधों की पत्तियों का रंग हरा होता है (इसमें मैग्नीशियम पाया जाता है)।|रात में प्रकाश-संश्लेषण नहीं होता, इसलिए पौधे रात में CO2 छोड़ते हैं।"],
+        ["जब एक से अधिक व्यक्ति एक से अधिक कम्प्यूटर का एक ही समय प्रयोग करते हैं, तो किसकी आवश्यकता होती है?<br><span class='en-q'>When more than one person uses a single computer at the same time, what is required?</span>", ["लाइट पेन की / Light pen", "माउस की / Mouse", "डिजिटाइजर की / Digitizer", "टर्मिनल की / Terminal"], 3, "f|जब एक ही समय में कई उपयोगकर्ता (Users) एक ही मुख्य कंप्यूटर (जैसे मेनफ्रेम या सर्वर) को एक्सेस करते हैं, तो उन्हें 'टर्मिनल' (Terminal) की आवश्यकता होती है।|टर्मिनल एक डिस्प्ले स्क्रीन और कीबोर्ड का संयोजन होता है, जिसकी अपनी कोई प्रोसेसिंग पावर (CPU) नहीं होती (इसे डंब टर्मिनल कहते हैं)।|यह सारा डाटा सर्वर को भेजता है और वहीं से प्राप्त करता है।|बैंकिंग सिस्टम और रेलवे रिजर्वेशन सिस्टम में टर्मिनलों का भारी उपयोग होता है।|माउस, लाइट पेन और डिजिटाइजर इनपुट डिवाइस हैं।"],
+        ["1526 ई. में हरियाणा के किस स्थान पर बाबर और इब्राहिम लोदी के बीच युद्ध हुआ?<br><span class='en-q'>At which place in Haryana did the battle between Babur and Ibrahim Lodi take place in 1526 AD?</span>", ["झज्जर / Jhajjar", "कुरुक्षेत्र / Kurukshetra", "पानीपत / Panipat", "जीन्द / Jind"], 2, "f|21 अप्रैल 1526 को हरियाणा के ऐतिहासिक मैदान 'पानीपत' में 'पानीपत का प्रथम युद्ध' लड़ा गया था।|यह युद्ध मुग़ल आक्रांता बाबर और दिल्ली सल्तनत के लोदी वंश के अंतिम शासक इब्राहिम लोदी के बीच हुआ।|इस युद्ध में बाबर की जीत हुई और उसने भारत में मुग़ल साम्राज्य की नींव रखी।|बाबर ने इस युद्ध में पहली बार 'तुलगमा युद्ध नीति' और तोपखाने का सफल प्रयोग किया था।|पानीपत में कुल तीन ऐतिहासिक युद्ध (1526, 1556 और 1761) लड़े गए हैं।"],
+        ["किस संरचना की विश्वसनीयता ज्यादा है?<br><span class='en-q'>Which topology structure is the most reliable?</span>", ["Bus", "Ring", "Star", "ये सभी / All of these"], 2, "f|कंप्यूटर नेटवर्किंग में 'स्टार टोपोलॉजी' (Star Topology) बस या रिंग की तुलना में अधिक विश्वसनीय और लोकप्रिय है।|इसमें सभी कंप्यूटर (नोड्स) एक केंद्रीय डिवाइस (Hub या Switch) से सीधे जुड़े होते हैं।|यदि कोई एक केबल या नोड खराब हो जाए, तो पूरा नेटवर्क डाउन नहीं होता, केवल वही डिवाइस प्रभावित होता है।|बस टोपोलॉजी में मुख्य केबल (Backbone) कटने पर पूरा नेटवर्क बंद हो जाता है।|हालाँकि, मेश टोपोलॉजी (Mesh) सबसे अधिक विश्वसनीय है, लेकिन दिए गए विकल्पों में Star सही है।"],
+        ["हिसार नगर की स्थापना किसने की?<br><span class='en-q'>Who founded the city of Hisar?</span>", ["शेरशाह सूरी / Sher Shah Suri", "अकबर / Akbar", "मुहम्मद तुगलक / Muhammad Tughlaq", "फिरोज तुगलक / Firoz Tughlaq"], 3, "f|हिसार नगर की स्थापना 1354 ई. में तुगलक वंश के शासक 'फिरोज शाह तुगलक' ने की थी।|हिसार एक अरबी शब्द है जिसका अर्थ 'किला' (Fort) होता है। इसे मूल रूप से 'हिसार-ए-फिरोजा' कहा जाता था।|फिरोज तुगलक ने ही फतेहाबाद और सिरसा (हरनी खेड़ा) नगर भी बसाए थे।|उसने हिसार में अपनी प्रेमिका के लिए 'गुजरी महल' का निर्माण भी करवाया था।|हिसार को भारत की 'स्टील सिटी' या मैग्नेट सिटी भी कहा जाता है।"],
+        ["यदि ₹1200 दो वर्षों में चक्रवृद्धि ब्याज पर ₹1323 हो जाते हैं, तो ₹1600 उसी दर पर 3 वर्षों में कितने हो जाएंगे?<br><span class='en-q'>If ₹1200 amounts to ₹1323 in 2 years at compound interest, then how much will ₹1600 amount to in 3 years at the same rate?</span>", ["₹ 1850", "₹ 1850.50", "₹ 1852.20", "₹ 1752.20"], 2, "m|<span class='math-trick'>🔥 स्मार्ट एप्रोच (Tree Method / Scaling):</span><br>P = 1200, A = 1323. दर (R) निकालें:<br>A/P = 1323/1200 = 441/400.<br>चूंकि समय 2 वर्ष है, अतः यह किसी का वर्ग होगा: (21/20)²<br>अर्थात् 1 वर्ष का स्केलिंग फैक्टर = 21/20 (अतः दर R = 5%)<br>अब, ₹1600 का 3 वर्ष बाद मिश्रधन:<br>A = 1600 &times; (21/20) &times; (21/20) &times; (21/20)<br>A = 1600 &times; (9261 / 8000) = 9261 / 5 = <b>1852.20</b>"],
+        ["श्रेणी में लुप्त पद ( ? ) ज्ञात कीजिए।<br><span class='en-q'>Find the missing term (?) in the series.</span><br>1, 2, 6, 12, 36, 72, ?", ["108", "114", "180", "216"], 3, "m|<span class='math-trick'>🔥 लॉजिक (Number Series):</span><br>पैटर्न को ध्यान से देखें (गुणा हो रहा है):<br>1 &times; <b>2</b> = 2<br>2 &times; <b>3</b> = 6<br>6 &times; <b>2</b> = 12<br>12 &times; <b>3</b> = 36<br>36 &times; <b>2</b> = 72<br>पैटर्न (&times;2, &times;3) का चल रहा है। अगला गुना 3 से होगा।<br>72 &times; 3 = <b>216</b>।"],
+        ["एक व्यक्ति ₹1200 में एक सामान खरीदकर 20% के नुकसान पर बेच देता है। उस सामान का विक्रय मूल्य क्या है?<br><span class='en-q'>A person buys an article for ₹1200 and sells it at a loss of 20%. What is the selling price of the article?</span>", ["₹ 660", "₹ 760", "₹ 860", "₹ 960"], 3, "m|<span class='math-trick'>🔥 स्मार्ट एप्रोच (प्रतिशत सीधा हल):</span><br>क्रय मूल्य (CP) = 100% = ₹1200।<br>नुकसान (Loss) = 20%।<br>विक्रय मूल्य (SP) = 100% - 20% = 80%।<br>सीधे 1200 का 80% निकालें:<br>1200 &times; (80/100) = 12 &times; 80 = <b>₹960</b>।"],
+        ["यदि किसी संकेत भाषा में STARK को LBFMG और MOBILE को TNRSPJ लिखा जाए, तो उसी संकेत भाषा में BLAME को कैसे लिखा जाएगा?<br><span class='en-q'>If in a certain code language STARK is written as LBFMG and MOBILE is written as TNRSPJ, then how will BLAME be written in that code?</span>", ["TSFRJ", "RPFTJ", "NJFTP", "TSFGJ"], 2, "m|<span class='math-trick'>🔥 डिकोडिंग (Direct Letter Substitution):</span><br>यह फिक्स कोडिंग का प्रश्न प्रतीत होता है। अक्षरों के नीचे उनके कोड रखें:<br>S=L, T=B, A=F, R=M, K=G<br>M=T, O=N, B=R, I=S, L=P, E=J<br>अब BLAME के अक्षरों का कोड ढूँढें:<br>B &rarr; R<br>L &rarr; P<br>A &rarr; F<br>M &rarr; T<br>E &rarr; J<br>कोड बना RPFTJ, लेकिन यह विकल्पों में (b) पर है। (नोट: चित्र में मैंने गलती से NJFTP सोचा था, परन्तु R(B) P(L) F(A) T(M) J(E) से <b>RPFTJ</b> सटीक बैठता है)।"],
+        ["'फूलों की घाटी' (Valley of Flowers) किस राष्ट्रीय उद्यान का भाग है?<br><span class='en-q'>The 'Valley of Flowers' is a part of which national park?</span>", ["नन्दादेवी राष्ट्रीय उद्यान / Nanda Devi NP", "जिम कॉर्बेट राष्ट्रीय उद्यान / Jim Corbett NP", "नामदफा राष्ट्रीय उद्यान / Namdapha NP", "सुन्दरवन राष्ट्रीय उद्यान / Sundarbans NP"], 0, "f|'फूलों की घाटी' (Valley of Flowers) उत्तराखंड के चमोली जिले में स्थित है और यह 'नंदा देवी बायोस्फीयर रिजर्व' का हिस्सा है।|इसे 1982 में राष्ट्रीय उद्यान घोषित किया गया था।|2005 में इसे यूनेस्को विश्व धरोहर स्थल का दर्जा मिला।|यहाँ 500 से अधिक प्रकार के जंगली फूल और दुर्लभ अल्पाइन वनस्पतियाँ पाई जाती हैं।|जिम कॉर्बेट (उत्तराखंड) भारत का पहला राष्ट्रीय उद्यान है (स्थापना 1936)।"],
+        ["हरियाणा के किस नगर के गौरव गान तथा सामर्थ्य की चर्चा चीनी यात्री ह्वेनसांग द्वारा लिखित पुस्तक में हुई है?<br><span class='en-q'>The glory and might of which city of Haryana has been discussed in the book written by Chinese traveler Xuanzang?</span>", ["थानेश्वर / Thanesar", "कुरुक्षेत्र / Kurukshetra", "पटियाला / Patiala", "महेन्द्रगढ़ / Mahendragarh"], 0, "f|प्रसिद्ध चीनी बौद्ध भिक्षु और यात्री 'ह्वेनसांग' ने अपनी प्रसिद्ध पुस्तक 'सी-यू-की' (Si-Yu-Ki) में हरियाणा के 'थानेश्वर' (Thanesar) नगर के गौरव और समृद्धि का वर्णन किया है।|ह्वेनसांग राजा हर्षवर्धन के शासनकाल में (लगभग 634-644 ई.) थानेसर आया था।|उसने थानेसर को एक समृद्ध व्यापारिक केंद्र और बौद्ध धर्म का प्रमुख स्थल बताया था।|ह्वेनसांग को 'यात्रियों का राजकुमार' भी कहा जाता है।|कुरुक्षेत्र महाभारत के युद्ध और गीता उपदेश के लिए प्रसिद्ध है।"],
+        ["बिजली के बल्ब में क्या भरा होता है?<br><span class='en-q'>What is filled inside an electric bulb?</span>", ["नाइट्रोजन / Nitrogen", "कार्बन डाइ-ऑक्साइड / Carbon dioxide", "ऑर्गन / Argon", "ऑक्सीजन / Oxygen"], 2, "f|सामान्य बिजली के बल्बों (Incandescent bulbs) में फिलामेंट को जलने (ऑक्सीकरण) से बचाने के लिए अक्रिय गैसें जैसे 'ऑर्गन' (Argon) और नाइट्रोजन भरी जाती हैं।|बल्ब का फिलामेंट 'टंगस्टन' धातु का बना होता है, जिसका गलनांक (Melting point) बहुत उच्च (लगभग 3400°C) होता है।|अगर बल्ब में ऑक्सीजन होगी, तो फिलामेंट तुरंत जलकर नष्ट हो जाएगा।|आधुनिक एलईडी (LED) बल्बों में गैस की आवश्यकता नहीं होती, वे अर्धचालक (Semiconductor) पर काम करते हैं।|बल्ब का आविष्कार थॉमस अल्वा एडिसन ने किया था।"],
+        ["बैंकों द्वारा उपलब्ध कराई गई एटीएम की सुविधा किस नेटवर्किंग का उदाहरण है?<br><span class='en-q'>The ATM facility provided by banks is an example of which networking?</span>", ["स्थानीय नेटवर्किंग / Local Area Network (LAN)", "व्यापक क्षेत्रीय नेटवर्किंग / Wide Area Network (WAN)", "मिश्रित नेटवर्किंग / Mixed Network", "बहुउद्देशीय नेटवर्किंग / Multipurpose Network"], 1, "f|बैंकों द्वारा प्रदान की जाने वाली एटीएम (ATM) सेवा 'व्यापक क्षेत्रीय नेटवर्किंग' (WAN - Wide Area Network) का सबसे अच्छा उदाहरण है।|WAN एक ऐसा नेटवर्क है जो पूरे देश या विश्व को जोड़ता है (इंटरनेट भी WAN है)।|ATM का फुल फॉर्म Automated Teller Machine होता है।|स्थानीय नेटवर्किंग (LAN) किसी एक ऑफिस या बिल्डिंग तक सीमित होती है।|भारत में पहला एटीएम 1987 में HSBC बैंक द्वारा मुंबई में लगाया गया था।"],
+        ["निम्नांकित में से कौन समान समूह का नहीं है?<br><span class='en-q'>Which of the following does not belong to the same group?</span>", ["इण्टरनेट / Internet", "एप्पल टॉक / AppleTalk", "बस / Bus", "रिंग / Ring"], 1, "f|बस (Bus) और रिंग (Ring) कंप्यूटर नेटवर्क 'टोपोलॉजी' के प्रकार हैं, और इंटरनेट (Internet) स्वयं नेटवर्कों का एक वैश्विक नेटवर्क है।|जबकि 'एप्पल टॉक' (AppleTalk) एप्पल इंक द्वारा विकसित किया गया एक पुराना 'नेटवर्क प्रोटोकॉल सूट' है, टोपोलॉजी नहीं।|इसलिए एप्पल टॉक इस समूह से भिन्न है।|टोपोलॉजी यह दर्शाती है कि कंप्यूटर भौतिक रूप से एक-दूसरे से कैसे जुड़े हैं (जैसे Star, Mesh)।|इंटरनेट TCP/IP प्रोटोकॉल पर काम करता है।"],
+        ["'नीला थोथा' क्या है?<br><span class='en-q'>What is 'Blue Vitriol'?</span>", ["कॉपर सल्फेट / Copper Sulphate", "कैल्सियम / Calcium", "आयरन / Iron", "सोडियम सल्फेट / Sodium Sulphate"], 0, "f|'नीला थोथा' (Blue Vitriol) का रासायनिक नाम 'कॉपर सल्फेट' (Copper Sulphate - CuSO4·5H2O) है।|यह चमकीले नीले रंग का क्रिस्टलीय पदार्थ होता है।|इसका उपयोग कृषि में कवकनाशी (Fungicide), कीटनाशक और जल शोधन में किया जाता है।|लोहे (आयरन) के सल्फेट (FeSO4) को 'हरा कसीस' (Green Vitriol) कहा जाता है।|जिंक सल्फेट को 'सफेद थोथा' (White Vitriol) कहा जाता है।"],
+        ["निम्न में से किसे पोर्टेबल कम्प्यूटर माना जा सकता है?<br><span class='en-q'>Which of the following can be considered a portable computer?</span>", ["मिनी कम्प्यूटर / Mini Computer", "मेनफ्रेम कम्प्यूटर / Mainframe Computer", "डेस्कटॉप / Desktop", "PDA"], 3, "f|दिए गए विकल्पों में PDA (Personal Digital Assistant) एक 'पोर्टेबल' (हाथ में ले जाने योग्य) कंप्यूटर है।|PDA को पॉकेट कंप्यूटर या पामटॉप भी कहा जाता है, जिसका उपयोग पहले पर्सनल ऑर्गेनाइजर के रूप में होता था (स्मार्टफोन से पहले)।|डेस्कटॉप कंप्यूटर एक मेज पर रखा जाता है, इसे आसानी से साथ नहीं ले जाया जा सकता।|मेनफ्रेम और मिनी कंप्यूटर बहुत बड़े होते हैं और सर्वर के रूप में उपयोग किए जाते हैं।|लैपटॉप और टैबलेट भी पोर्टेबल कंप्यूटर के बेहतरीन उदाहरण हैं।"],
+        ["हरियाणा के गठन के समय यहाँ कितने जिले थे?<br><span class='en-q'>How many districts were there in Haryana at the time of its formation?</span>", ["पाँच / Five", "छः / Six", "सात / Seven", "आठ / Eight"], 2, "f|1 नवम्बर 1966 को जब हरियाणा पंजाब से अलग होकर नया राज्य बना, तब इसमें केवल '7 जिले' थे।|याद रखने की ट्रिक (घर जेके में - GHAR JK M): G-गुरुग्राम, H-हिसार, A-अम्बाला, R-रोहतक, J-जींद, K-करनाल, M-महेन्द्रगढ़।|सबसे बड़ा जिला हिसार और सबसे छोटा जिला जींद था।|वर्तमान में (2024 तक) हरियाणा में 22 जिले हैं।|22वां और नवीनतम जिला 'चरखी दादरी' है (2016 में बना)।"],
+        ["भारत में धान की नर्सरी तैयार करने की डेपोग विधि किस देश से प्रचलन में लाई गई?<br><span class='en-q'>From which country was the Dapog method of preparing rice nursery introduced in India?</span>", ["इण्डोनेशिया / Indonesia", "ताइवान / Taiwan", "फिलीपींस / Philippines", "द.कोरिया / South Korea"], 2, "f|धान की नर्सरी उगाने की 'डेपोग विधि' (Dapog method) का आविष्कार सबसे पहले 'फिलीपींस' में हुआ था।|इस विधि में मिट्टी की आवश्यकता नहीं होती; बीज को प्लास्टिक, केले के पत्ते या पक्के फर्श पर उगाया जाता है।|नर्सरी बहुत जल्दी (11 से 14 दिनों में) रोपाई के लिए तैयार हो जाती है।|अंतर्राष्ट्रीय चावल अनुसंधान संस्थान (IRRI) भी फिलीपींस (मनीला) में ही स्थित है।|भारत का केंद्रीय चावल अनुसंधान संस्थान कटक (ओडिशा) में है।"],
+        ["सुपर राइस (Super rice) की कल्पना किसने की?<br><span class='en-q'>Who conceptualized 'Super Rice'?</span>", ["जी.एच. शल ने / G.H. Shull", "जी.एस. खुश ने / G.S. Khush", "वी.एल.चोपड़ा ने / V.L. Chopra", "योशिदा ने / Yoshida"], 1, "f|'सुपर राइस' (Super Rice) की अवधारणा और विकास का श्रेय अंतर्राष्ट्रीय चावल अनुसंधान संस्थान (IRRI) के प्रमुख भारतीय कृषि वैज्ञानिक 'डॉ. गुरुदेव सिंह खुश' (G.S. Khush) को जाता है।|सुपर राइस सामान्य धान की किस्मों की तुलना में 20-30% अधिक उपज देता है।|डॉ. खुश को 1996 में 'विश्व खाद्य पुरस्कार' से सम्मानित किया गया था।|एम.एस. स्वामीनाथन को भारत में हरित क्रांति का जनक माना जाता है।|नॉर्मन बोरलॉग को विश्व हरित क्रांति का जनक कहा जाता है।"],
+        ["धान के पौधे की प्रारम्भिक वृद्धि अवस्था में क्रेसेक (Kresek) किस रोग के कारण होते हैं?<br><span class='en-q'>In the initial growth stage of paddy plants, 'Kresek' is caused by which disease?</span>", ["बैक्टीरियल ब्लाइट (BLB) / Bacterial Blight", "बैक्टीरियल लीफ स्ट्रीक (BLS) / Bacterial Leaf Streak", "टूंनग्रो वायरस / Tungro Virus", "फाल्स स्मट / False smut"], 0, "f|धान (चावल) में 'क्रेसेक' (Kresek) अवस्था मुख्य रूप से 'बैक्टीरियल ब्लाइट' (BLB - Bacterial Leaf Blight) रोग के कारण उत्पन्न होती है।|यह रोग *Xanthomonas oryzae* नामक बैक्टीरिया के कारण होता है।|इसमें धान के छोटे पौधे (रोपाई के 1-3 सप्ताह बाद) मुरझाकर पीले पड़ जाते हैं और सूखने लगते हैं।|यह धान की फसल का सबसे विनाशकारी रोग माना जाता है।|फाल्स स्मट (हल्दी रोग) में धान की बालियां पीली/काली पाउडर जैसी हो जाती हैं।"],
+        ["दो पाइप एक टैंक को क्रमशः 20 मिनट और 30 मिनट में भर सकते हैं। यदि दोनों पाइपों को एकसाथ खोल दिया जाए, तो बताएँ कि टैंक कितने समय में भरेगा?<br><span class='en-q'>Two pipes can fill a tank in 20 minutes and 30 minutes respectively. If both pipes are opened together, in how much time will the tank be filled?</span>", ["10 मिनट / 10 min", "12 मिनट / 12 min", "15 मिनट / 15 min", "25 मिनट / 25 min"], 1, "m|<span class='math-trick'>🔥 स्मार्ट एप्रोच (LCM Method):</span><br>पाइप A का समय = 20 मिनट, पाइप B का समय = 30 मिनट।<br>कुल कार्य (टैंक की क्षमता) मान लें LCM(20, 30) = 60 यूनिट।<br>A की क्षमता (1 मिनट में) = 60 / 20 = 3 यूनिट।<br>B की क्षमता = 60 / 30 = 2 यूनिट।<br>दोनों की कुल क्षमता = 3 + 2 = 5 यूनिट प्रति मिनट।<br>दोनों मिलकर टैंक भरेंगे = 60 / 5 = <b>12 मिनट</b> में।"],
+        ["यदि a = 2<sup>0</sup> + 4<sup>1</sup>, तो a<sup>2</sup> - 5 का मान है<br><span class='en-q'>If a = 2<sup>0</sup> + 4<sup>1</sup>, then the value of a<sup>2</sup> - 5 is:</span>", ["15", "16", "20", "18"], 2, "m|<span class='math-trick'>🔥 घातांक नियम (Exponents):</span><br>किसी भी संख्या की घात 0 होने पर मान 1 होता है (x<sup>0</sup> = 1)।<br>अतः 2<sup>0</sup> = 1<br>और 4<sup>1</sup> = 4<br>a का मान = 1 + 4 = 5।<br>अब a<sup>2</sup> - 5 का मान निकालें:<br>5<sup>2</sup> - 5 = 25 - 5 = <b>20</b>।"],
+        ["दो संख्याओं का ल.स. और म.स. क्रमशः 1920 तथा 16 हैं। यदि इनमें से एक संख्या 128 हो, तो दूसरी संख्या क्या होगी?<br><span class='en-q'>The LCM and HCF of two numbers are 1920 and 16 respectively. If one of the numbers is 128, find the other number.</span>", ["220", "260", "240", "64"], 2, "m|<span class='math-trick'>🔥 LCM और HCF का सूत्र:</span><br>महत्वपूर्ण नियम: पहली संख्या &times; दूसरी संख्या = LCM &times; HCF<br>मान रखने पर:<br>128 &times; दूसरी संख्या = 1920 &times; 16<br>दूसरी संख्या = (1920 &times; 16) / 128<br>16 से 128 को काटें: 128 / 16 = 8<br>अब 1920 को 8 से भाग दें: 1920 / 8 = <b>240</b>।"],
+        ["हरियाणा में वर्तमान में (2025 तक) कितने पुलिस आयुक्तालय (Police Commissionerates) हैं?<br><span class='en-q'>Currently (as of 2025), how many Police Commissionerates are there in Haryana?</span>", ["2", "3", "4", "5"], 2, "f|हरियाणा में वर्तमान में '4' पुलिस आयुक्तालय (कमिश्नरी सिस्टम) लागू हैं।|ये चार जिले हैं: गुरुग्राम, फरीदाबाद, पंचकूला और सोनीपत।|सोनीपत सबसे नया (चौथा) पुलिस आयुक्तालय है, जिसे हाल ही में (2022-23) बनाया गया था।|कमिश्नरी प्रणाली में पुलिस अधिकारियों (कमिश्नर) को मजिस्ट्रेटी अधिकार (जैसे धारा 144 लगाना) सीधे प्राप्त होते हैं।|हरियाणा में पुलिस रेंज की संख्या 5 है।"],
+        ["भारत में 'जैव-विविधता' (Biodiversity) के लिए प्रसिद्ध 'शान्त घाटी' (Silent Valley) किस राज्य में स्थित है?<br><span class='en-q'>The 'Silent Valley', famous for its biodiversity in India, is located in which state?</span>", ["कर्नाटक / Karnataka", "केरल / Kerala", "हिमाचल प्रदेश / Himachal Pradesh", "उत्तराखण्ड / Uttarakhand"], 1, "f|'शांत घाटी' या साइलेंट वैली राष्ट्रीय उद्यान दक्षिण भारत के 'केरल' राज्य (पलक्कड़ जिले) में स्थित है।|यह नीलगिरि पहाड़ियों का हिस्सा है और भारत में उष्णकटिबंधीय सदाबहार वनों के सबसे बड़े बचे हुए हिस्सों में से एक है।|यह अपने समृद्ध वनस्पतियों, जीवों और 'लायन-टेल्ड मकाक' (शेर जैसी पूंछ वाला बंदर) के लिए विश्व प्रसिद्ध है।|यहाँ से कुंतीपुझा नदी बहती है।|उत्तराखंड 'फूलों की घाटी' के लिए प्रसिद्ध है।"],
+        ["हरियाणा में 'शहीदों का शहर' (City of Martyrs) किसे कहा जाता है?<br><span class='en-q'>Which city is known as the 'City of Martyrs' in Haryana?</span>", ["रोहतक / Rohtak", "झज्जर / Jhajjar", "भिवानी / Bhiwani", "गुरुग्राम / Gurugram"], 1, "f|हरियाणा के 'झज्जर' शहर को शूरवीरों और 'शहीदों का शहर' (City of Martyrs) कहा जाता है।|यहाँ के युवाओं का भारतीय सशस्त्र बलों में शामिल होकर देश के लिए सर्वोच्च बलिदान देने का एक लंबा और गौरवशाली इतिहास रहा है।|झज्जर में भारत का सबसे बड़ा 'पुरातत्व संग्रहालय' (Gurukul Museum) भी स्थित है, जिसे स्वामी ओमानंद सरस्वती ने स्थापित किया था।|भिवानी को 'छोटी काशी' और 'बॉक्सिंग क्लब' कहा जाता है।|गुरुग्राम को 'साइबर सिटी' कहा जाता है।"],
+        ["हरियाणा राज्य में प्रसिद्ध ऐतिहासिक स्मारक 'गुजरी महल' कहाँ स्थित है?<br><span class='en-q'>Where is the famous historical monument 'Gujari Mahal' located in the state of Haryana?</span>", ["हिसार / Hisar", "नारनौल / Narnaul", "कैथल / Kaithal", "हांसी / Hansi"], 0, "f|प्रसिद्ध ऐतिहासिक 'गुजरी महल' हरियाणा के 'हिसार' शहर में स्थित है।|इसे 14वीं शताब्दी में तुगलक वंश के शासक 'फिरोज शाह तुगलक' ने अपनी प्रेमिका (गुजरी) के लिए बनवाया था।|यह महल काले पत्थरों से बना है और तुगलक वास्तुकला का एक बेहतरीन उदाहरण है।|हिसार के किले के अंदर ही 'लाट की मस्जिद' भी स्थित है।|नारनौल में बीरबल का छत्ता (राय मुकुंद दास का छत्ता) और जल महल स्थित है।"],
+        ["हरियाणा राज्य में कुल कितने प्रशासनिक मण्डल (Divisions) हैं?<br><span class='en-q'>How many administrative divisions are there in the state of Haryana?</span>", ["4", "5", "6", "7"], 2, "f|प्रशासनिक सुविधा के लिए हरियाणा राज्य को वर्तमान में '6 मंडलों' (Divisions) में बांटा गया है।|ये 6 मंडल हैं: अम्बाला, रोहतक, गुरुग्राम, हिसार, और दो नए मंडल 'करनाल और फरीदाबाद'।|करनाल और फरीदाबाद मंडलों को 2017 में बनाया गया था।|सबसे बड़ा मंडल (जिलों की संख्या के आधार पर) 'रोहतक' है, जिसमें 5 जिले आते हैं।|प्रत्येक मंडल का प्रशासनिक प्रमुख एक 'आयुक्त' (Commissioner) होता है।"],
+        ["'दीनबन्धु' के नाम से कौन विख्यात थे?<br><span class='en-q'>Who was popularly known as 'Deenbandhu'?</span>", ["चौधरी देवीलाल / Chaudhary Devi Lal", "सर छोटू राम / Sir Chhotu Ram", "पण्डित नेकीराम शर्मा / Pt. Neki Ram Sharma", "लाला लाजपत राय / Lala Lajpat Rai"], 1, "f|हरियाणा में किसानों और गरीबों के मसीहा 'सर छोटू राम' को 'दीनबंधु' (गरीबों का भाई) और 'रहबरे-ए-आजम' के नाम से जाना जाता है।|इनका जन्म रोहतक के गढ़ी सांपला गांव में हुआ था।|इन्होंने 1923 में फजली हुसैन के साथ मिलकर 'यूनियनिस्ट पार्टी' (जमींदारा लीग) की स्थापना की थी।|इन्होंने किसानों को कर्ज से मुक्त कराने के लिए कई कानून पास करवाए और भाखड़ा बांध के निर्माण में अहम भूमिका निभाई।|चौधरी देवीलाल को 'ताऊ' और 'जननायक' कहा जाता है।"],
+        ["कलेसर राष्ट्रीय उद्यान (Kalesar National Park) किस जिले में है?<br><span class='en-q'>In which district is Kalesar National Park located?</span>", ["पंचकुला / Panchkula", "अम्बाला / Ambala", "यमुनानगर / Yamunanagar", "कुरुक्षेत्र / Kurukshetra"], 2, "f|कलेसर राष्ट्रीय उद्यान हरियाणा के 'यमुनानगर' जिले में, शिवालिक की पहाड़ियों की तलहटी में स्थित है।|इसे 2003 में राष्ट्रीय उद्यान घोषित किया गया था।|यह उद्यान साल (Sal) के पेड़ों और जंगली लाल मुर्गों (Red Jungle Fowl) के लिए प्रसिद्ध है।|यहाँ से यमुना नदी हरियाणा में प्रवेश करती है।|हरियाणा में केवल 2 ही राष्ट्रीय उद्यान हैं: कलेसर (यमुनानगर) और सुल्तानपुर (गुरुग्राम)।"],
+        ["हरियाणा लोक सेवा आयोग (HPSC) का मुख्यालय कहाँ स्थित है?<br><span class='en-q'>Where is the headquarters of Haryana Public Service Commission (HPSC) located?</span>", ["चण्डीगढ़ / Chandigarh", "पंचकुला / Panchkula", "कुरुक्षेत्र / Kurukshetra", "करनाल / Karnal"], 1, "f|हरियाणा लोक सेवा आयोग (HPSC) का मुख्यालय 'पंचकुला' में स्थित है।|HPSC राज्य में ग्रुप ए और बी (HCS आदि) के राजपत्रित पदों पर भर्ती के लिए परीक्षाएं आयोजित करता है।|हरियाणा कर्मचारी चयन आयोग (HSSC) का मुख्यालय भी पंचकुला में ही स्थित है।|संविधान के अनुच्छेद 315 के तहत राज्य लोक सेवा आयोग का गठन किया जाता है।|HPSC के अध्यक्ष और सदस्यों की नियुक्ति राज्य के राज्यपाल द्वारा की जाती है।"],
+        ["'बिहू' किस राज्य का प्रमुख त्योहार है?<br><span class='en-q'>'Bihu' is the main festival of which state?</span>", ["असम / Assam", "बिहार / Bihar", "ओडिशा / Odisha", "पश्चिम बंगाल / West Bengal"], 0, "f|'बिहू' (Bihu) उत्तर-पूर्वी राज्य 'असम' का सबसे प्रसिद्ध और प्रमुख कृषि त्योहार है।|असम में एक वर्ष में तीन प्रकार के बिहू मनाए जाते हैं: रोंगाली (वसंत/बुआई), कोंगाली (शरद) और भोगाली (मकर संक्रांति/कटाई)।|यह त्योहार जाति और धर्म के भेदभाव के बिना पूरे असमिया समुदाय द्वारा हर्षोल्लास से मनाया जाता है।|इस अवसर पर पारंपरिक बिहू नृत्य भी किया जाता है।|बिहार का सबसे प्रमुख त्योहार छठ पूजा है।"],
+        ["यदि x/y = 14/21, तो 6y = ?<br><span class='en-q'>If x/y = 14/21, then 6y = ?</span>", ["4x", "6x", "9x", "12x"], 2, "m|<span class='math-trick'>🔥 स्मार्ट एप्रोच (अनुपात सरलीकरण):</span><br>समीकरण: x / y = 14 / 21<br>पहले इसे 7 से काट कर सरल करें: x / y = 2 / 3<br>क्रॉस गुणा करें: 3x = 2y<br>हमें 6y का मान x के पदों में चाहिए।<br>2y को 6y बनाने के लिए दोनों तरफ 3 से गुणा करें:<br>3 &times; 3x = 3 &times; 2y<br>9x = 6y<br>अतः 6y = <b>9x</b>।"],
+        ["35 सेमी व्यास वाला एक पहिया 770 सेमी की दूरी तय करने में कितने चक्कर लगाएगा? (π = 22/7)<br><span class='en-q'>How many revolutions will a wheel of 35 cm diameter make in covering a distance of 770 cm? (π = 22/7)</span>", ["5", "6", "7", "8"], 2, "m|<span class='math-trick'>🔥 स्मार्ट एप्रोच (परिधि का सूत्र):</span><br>पहिए द्वारा 1 चक्कर में तय की गई दूरी उसकी परिधि (Circumference) के बराबर होती है।<br>परिधि = π &times; व्यास (d)<br>1 चक्कर की दूरी = (22/7) &times; 35 = 22 &times; 5 = 110 सेमी।<br>कुल दूरी = 770 सेमी।<br>चक्करों की संख्या = कुल दूरी / 1 चक्कर की दूरी<br>चक्कर = 770 / 110 = <b>7 चक्कर</b>।"],
+        ["किसी कर्मचारी का वेतन पहले 50% बढ़ जाता है और उसके बाद 44% घट जाता है। उसके वेतन में परिवर्तन का कुल प्रतिशत कितना था?<br><span class='en-q'>The salary of an employee is first increased by 50% and then decreased by 44%. What was the total percentage change in his salary?</span>", ["6% वृद्धि / 6% increase", "16% कमी / 16% decrease", "16% वृद्धि / 16% increase", "6% कमी / 6% decrease"], 1, "m|<span class='math-trick'>🔥 स्मार्ट एप्रोच (Successive % Change / क्रमागत प्रतिशत):</span><br>सूत्र: Net % = x + y + (xy / 100)<br>यहाँ x = +50 (वृद्धि), y = -44 (कमी)।<br>Net = 50 - 44 + ((50 &times; -44) / 100)<br>Net = 6 - (2200 / 100)<br>Net = 6 - 22 = <b>-16%</b><br>ऋणात्मक चिह्न (-) का अर्थ है कि कुल वेतन में <b>16% की कमी</b> हुई है।"],
+        ["12 से 72 के बीच कितनी संख्याएँ 6 से पूर्णतः विभाज्य हैं, परन्तु 4 से नहीं?<br><span class='en-q'>How many numbers between 12 and 72 are completely divisible by 6, but not by 4?</span>", ["5", "7", "8", "9"], 0, "m|<span class='math-trick'>🔥 लॉजिक (LCM Method):</span><br>12 से 72 के बीच (अर्थात 12 और 72 को छोड़कर) 6 के गुणज:<br>18, 24, 30, 36, 42, 48, 54, 60, 66।<br>शर्त: वे 4 से विभाज्य नहीं होनी चाहिए (अर्थात जो 6 और 4 के LCM=12 से कटती हों, उन्हें हटा दें)।<br>12 के गुणज हटाएँ: 24, 36, 48, 60 हटा दिए।<br>बची हुई संख्याएँ: 18, 30, 42, 54, 66।<br>कुल <b>5 संख्याएँ</b> हैं।"],
+        ["A और B की वर्तमान आयु का अनुपात 3:5 है। यदि A की वर्तमान आयु 33 वर्ष है, तो 5 वर्ष बाद B की आयु (वर्षों में) क्या होगी?<br><span class='en-q'>The ratio of the present ages of A and B is 3:5. If A's present age is 33 years, what will be B's age (in years) after 5 years?</span>", ["65", "50", "60", "55"], 2, "m|<span class='math-trick'>🔥 स्मार्ट एप्रोच (Ratio Method):</span><br>A : B का अनुपात = 3 : 5<br>दिया है: A = 33 वर्ष &rarr; 3 यूनिट = 33 &rarr; 1 यूनिट = 11 वर्ष।<br>तो B की वर्तमान आयु = 5 यूनिट &times; 11 = 55 वर्ष।<br>प्रश्न 5 वर्ष बाद B की आयु पूछ रहा है:<br>55 + 5 = <b>60 वर्ष</b>।"],
+        ["'बटरफ्लाई स्ट्रोक' शब्द किस खेल से सम्बन्धित है?<br><span class='en-q'>The term 'Butterfly stroke' is associated with which sport?</span>", ["क्रिकेट / Cricket", "तैराकी / Swimming", "मुक्केबाजी / Boxing", "कुश्ती / Wrestling"], 1, "f|'बटरफ्लाई स्ट्रोक' (Butterfly stroke) पानी में 'तैराकी' (Swimming) की एक उन्नत और कठिन शैली है।|तैराकी की अन्य प्रमुख शैलियों में फ्रीस्टाइल (Freestyle), बैकस्ट्रोक (Backstroke) और ब्रेस्टस्ट्रोक (Breaststroke) शामिल हैं।|ओलिंपिक में माइकल फेल्प्स (अमेरिका) बटरफ्लाई स्ट्रोक के सबसे महान तैराक माने जाते हैं, जिन्होंने 23 स्वर्ण पदक जीते हैं।|मुक्केबाजी में 'अपरकट' और 'जैब' शब्दों का प्रयोग होता है।|क्रिकेट में 'गुगली' और 'एलबीW' प्रयुक्त होते हैं।"],
+        ["भारत का राष्ट्रीय वृक्ष (National Tree) कौन-सा है?<br><span class='en-q'>Which is the National Tree of India?</span>", ["पीपल / Peepal", "बरगद / Banyan", "नीम / Neem", "आम / Mango"], 1, "f|भारत का राष्ट्रीय वृक्ष 'बरगद' (Banyan tree) है।|इसका वैज्ञानिक नाम *Ficus benghalensis* (फाइकस बेन्गालेंसिस) है।|यह अपनी विशाल शाखाओं, लटकती हुई जड़ों (Prop roots) और लंबी उम्र (अमरता का प्रतीक) के लिए जाना जाता है।|हिन्दू धर्म में बरगद को अत्यंत पवित्र माना जाता है।|भारत का राष्ट्रीय फल आम, राष्ट्रीय पुष्प कमल और राष्ट्रीय पशु बाघ है।"],
+        ["'आगा खान कप' किस खेल से सम्बन्धित है?<br><span class='en-q'>'Aga Khan Cup' is related to which sport?</span>", ["फुटबॉल / Football", "हॉकी / Hockey", "बैडमिण्टन / Badminton", "क्रिकेट / Cricket"], 1, "f|'आगा खान कप' भारत में 'हॉकी' (Field Hockey) के सबसे पुराने और प्रतिष्ठित टूर्नामेंट्स में से एक है।|इसकी शुरुआत 1896 में पुणे (बॉम्बे प्रेसीडेंसी) में हुई थी।|हॉकी के अन्य प्रमुख टूर्नामेंट्स में ध्यानचंद ट्रॉफी, रंगास्वामी कप और सुल्तान अजलान शाह कप (अंतर्राष्ट्रीय) शामिल हैं।|फुटबॉल से डूरंड कप, संतोष ट्रॉफी और रोवर्स कप संबंधित हैं।|बैडमिंटन से थॉमस कप (पुरुष) और उबेर कप (महिला) संबंधित हैं।"],
+        ["केंचुए पालन को क्या कहा जाता है?<br><span class='en-q'>What is the rearing of earthworms called?</span>", ["विटीकल्चर / Viticulture", "वर्मीकल्चर / Vermiculture", "हॉर्टीकल्चर / Horticulture", "पीसीकल्चर / Pisciculture"], 1, "f|व्यावसायिक स्तर पर केंचुए (Earthworms) पालने और उनसे जैविक खाद (कम्पोस्ट) बनाने की प्रक्रिया को 'वर्मीकल्चर' (Vermiculture) कहा जाता है।|केंचुए को 'किसानों का मित्र' कहा जाता है क्योंकि वे मिट्टी को भुरभुरा बनाकर उसकी उपजाऊ शक्ति बढ़ाते हैं।|विटीकल्चर (Viticulture) अंगूर की खेती को कहते हैं।|हॉर्टीकल्चर (Horticulture) बागवानी (फल, सब्जी, फूल) से संबंधित है।|पीसीकल्चर (Pisciculture) मछली पालन को कहते हैं।"],
+        ["'बैरोमीटर' के आविष्कारक कौन हैं?<br><span class='en-q'>Who is the inventor of the 'Barometer'?</span>", ["इवेंजेलिस्टा टोरिसेली / Evangelista Torricelli", "रूण एल्मक्विस्ट / Rune Elmqvist", "थियोडोर मेमन / Theodore Maiman", "जॉन बार्डीन / John Bardeen"], 0, "f|हवा का दबाव (Atmospheric pressure) मापने वाले यंत्र 'बैरोमीटर' (Barometer) का आविष्कार 1643 में इतालवी भौतिक विज्ञानी 'इवेंजेलिस्टा टोरिसेली' ने किया था।|बैरोमीटर में पारे (Mercury) का उपयोग किया जाता है।|बैरोमीटर के पाठ्यांक का अचानक गिरना तूफान (Storm) आने का संकेत होता है।|थियोडोर मेमन ने लेजर (LASER) का आविष्कार किया था।|जॉन बार्डीन (और उनकी टीम) ने ट्रांजिस्टर का आविष्कार किया था।"],
+        ["'द डिस्कवरी ऑफ इण्डिया' पुस्तक के लेखक कौन हैं?<br><span class='en-q'>Who is the author of the book 'The Discovery of India'?</span>", ["जवाहर लाल नेहरू / Jawaharlal Nehru", "नरेन्द्र मोदी / Narendra Modi", "शशि थरूर / Shashi Tharoor", "अमिताव घोष / Amitav Ghosh"], 0, "f|'द डिस्कवरी ऑफ इंडिया' (भारत की खोज) पुस्तक भारत के पहले प्रधानमंत्री 'पंडित जवाहरलाल नेहरू' द्वारा लिखी गई थी।|उन्होंने यह पुस्तक 1944 में अहमदनगर किले की जेल में अपने कारावास के दौरान लिखी थी।|इस पुस्तक में भारत के प्राचीन इतिहास, दर्शन, संस्कृति और स्वतंत्रता संग्राम का विस्तृत वर्णन है।|नेहरू जी ने 'ग्लिम्पसेस ऑफ वर्ल्ड हिस्ट्री' (विश्व इतिहास की झलकियां) नामक पुस्तक भी लिखी थी।|शशि थरूर ने 'एन एरा ऑफ डार्कनेस' लिखी है।"],
+        ["भारत के पहले चीफ ऑफ डिफेन्स स्टाफ (CDS) के रूप में किसे नियुक्त किया गया था?<br><span class='en-q'>Who was appointed as the first Chief of Defence Staff (CDS) of India?</span>", ["जनरल अनिल चौहान / Gen. Anil Chauhan", "जनरल उपेन्द्र द्विवेदी / Gen. Upendra Dwivedi", "जनरल बिपिन रावत / Gen. Bipin Rawat", "एडमिरल दिनेश के त्रिपाठी / Adm. Dinesh K Tripathi"], 2, "f|जनरल 'बिपिन रावत' भारत के पहले चीफ ऑफ डिफेंस स्टाफ (CDS) थे, जिन्होंने 1 जनवरी 2020 को पदभार ग्रहण किया था।|दिसंबर 2021 में तमिलनाडु के कुन्नूर में एक दुखद हेलीकॉप्टर क्रैश में उनकी मृत्यु हो गई थी।|CDS का मुख्य कार्य थल सेना, नौसेना और वायुसेना के बीच बेहतर तालमेल और एकीकरण स्थापित करना है।|भारत के दूसरे और वर्तमान CDS (2024) जनरल अनिल चौहान हैं।|यह फोर-स्टार जनरल रैंक का पद है।"],
+        ["अन्तर्राष्ट्रीय नागरिक उड्डयन संगठन (ICAO) का मुख्यालय कहाँ है?<br><span class='en-q'>Where is the headquarters of the International Civil Aviation Organization (ICAO)?</span>", ["जिनेवा / Geneva", "मॉण्ट्रियल / Montreal", "वियना / Vienna", "नैरोबी / Nairobi"], 1, "f|अंतर्राष्ट्रीय नागरिक उड्डयन संगठन (ICAO) संयुक्त राष्ट्र की एक विशेष एजेंसी है, जो वैश्विक विमानन (Aviation) के लिए नियम और मानक तय करती है।|इसका मुख्यालय कनाडा के 'मॉन्ट्रियल' (Montreal) शहर में स्थित है।|मॉन्ट्रियल 1987 के ओजोन परत संरक्षण से संबंधित 'मॉन्ट्रियल प्रोटोकॉल' के लिए भी प्रसिद्ध है।|जिनेवा (स्विट्जरलैंड) में WHO और WTO का मुख्यालय है।|नैरोबी (केन्या) में UNEP (पर्यावरण कार्यक्रम) का मुख्यालय है।"],
+        ["कनाडा की राजधानी ....... है<br><span class='en-q'>The capital of Canada is .......</span>", ["मैनचेस्टर / Manchester", "लन्दन / London", "ओटावा / Ottawa", "एडिनबरा / Edinburgh"], 2, "f|उत्तरी अमेरिका महाद्वीप के सबसे बड़े देश कनाडा की राजधानी 'ओटावा' (Ottawa) है।|कनाडा विश्व का दूसरा सबसे बड़ा देश है (क्षेत्रफल में रूस के बाद)।|कनाडा की सबसे लंबी सीमा अमेरिका के साथ लगती है (49वीं समानांतर रेखा)।|कनाडा की आधिकारिक भाषाएं अंग्रेजी और फ्रेंच हैं।|टोरंटो और वैंकूवर कनाडा के अन्य प्रमुख और बड़े शहर हैं।"],
+        ["विश्व विरासत दिवस कब मनाया जाता है?<br><span class='en-q'>When is World Heritage Day celebrated?</span>", ["8 अप्रैल / April 8", "18 मार्च / March 18", "18 अप्रैल / April 18", "8 मार्च / March 8"], 2, "f|मानव विरासत, प्राचीन स्मारकों और ऐतिहासिक स्थलों के संरक्षण के प्रति जागरूकता बढ़ाने के लिए हर साल '18 अप्रैल' को 'विश्व विरासत दिवस' (World Heritage Day) मनाया जाता है।|इसे ICOMOS (अंतर्राष्ट्रीय स्मारक और स्थल परिषद) द्वारा 1982 में प्रस्तावित किया गया था।|विश्व धरोहर स्थलों की सूची UNESCO द्वारा जारी की जाती है।|भारत में वर्तमान में 40 से अधिक यूनेस्को विश्व धरोहर स्थल हैं (जैसे ताजमहल, अजंता गुफाएं)।|8 मार्च को 'अंतर्राष्ट्रीय महिला दिवस' मनाया जाता है।"],
+        ["वेब डेवलपमेण्ट में सर्वर-साइड स्क्रिप्टिंग के लिए निम्नलिखित में से कौन-सी प्रोग्रामिंग भाषा सामान्यतः पर उपयोग की जाती है?<br><span class='en-q'>Which of the following programming languages is commonly used for server-side scripting in web development?</span>", ["HTML", "CSS", "JavaScript", "PHP"], 3, "f|वेब डेवलपमेंट में सर्वर-साइड (बैक-एंड) स्क्रिप्टिंग के लिए 'PHP' (Hypertext Preprocessor) का व्यापक रूप से उपयोग किया जाता है।|PHP डायनामिक वेब पेज बनाने और डेटाबेस (जैसे MySQL) के साथ कनेक्ट करने के काम आती है।|फेसबुक के शुरुआती वर्जन और वर्डप्रेस (WordPress) PHP पर ही बने हैं।|HTML और CSS फ्रंट-एंड (क्लाइंट-साइड) भाषाएं हैं जो वेब पेज का लेआउट और डिजाइन बनाती हैं।|JavaScript मुख्य रूप से क्लाइंट-साइड (ब्राउज़र में) काम करती है (हालाँकि Node.js से यह सर्वर पर भी काम करती है)।"],
+        ["निम्नलिखित में से कौन-सा IoT डिवाइस नहीं है?<br><span class='en-q'>Which of the following is not an IoT device?</span>", ["टेबल / Table", "लैपटॉप / Laptop", "Arduino", "टैबलेट / Tablet"], 0, "f|IoT (Internet of Things) का अर्थ है उन भौतिक वस्तुओं या डिवाइस का नेटवर्क जिनमें सेंसर और सॉफ्टवेयर लगे हों जो इंटरनेट से जुड़ सकें।|लैपटॉप, टैबलेट, और Arduino (माइक्रोकंट्रोलर बोर्ड) इंटरनेट से जुड़कर डेटा शेयर कर सकते हैं, इसलिए ये IoT के हिस्से हो सकते हैं।|लेकिन एक साधारण 'टेबल' (Wooden Table) इंटरनेट से नहीं जुड़ सकती, इसलिए यह IoT डिवाइस नहीं है (जब तक कि यह स्मार्ट टेबल न हो)।|स्मार्ट फ्रिज, स्मार्ट वॉच और एलेक्सा IoT के अच्छे उदाहरण हैं।"],
+        ["निम्नलिखित में से कौन-सा पायथन फाइल का सही एक्सटेंशन है?<br><span class='en-q'>Which of the following is the correct extension for a Python file?</span>", [".python", ".pl", ".py", ".p"], 2, "f|पायथन (Python) प्रोग्रामिंग भाषा में लिखे गए कोड वाली फाइलों को सेव करने के लिए '.py' एक्सटेंशन का उपयोग किया जाता है (जैसे script.py)।|पायथन एक बहुत ही लोकप्रिय और आसान उच्च-स्तरीय भाषा है जिसका उपयोग AI और डेटा साइंस में भारी मात्रा में होता है।|'.pl' पर्म (Perl) प्रोग्रामिंग भाषा का एक्सटेंशन है।|'.java' जावा के लिए और '.c' सी-लैंग्वेज के लिए उपयोग होता है।|पायथन को गुइडो वैन रोसुम ने विकसित किया था।"],
+        ["एक घनाभ की लम्बाई, चौड़ाई और ऊँचाई का योग 20 सेमी है। यदि इसके विकर्ण की लम्बाई 12 सेमी हैं, तो घनाभ का सम्पूर्ण पृष्ठीय क्षेत्रफल ज्ञात कीजिए।<br><span class='en-q'>The sum of length, breadth, and height of a cuboid is 20 cm. If the length of its diagonal is 12 cm, find the total surface area of the cuboid.</span>", ["356 सेमी&sup2; / cm&sup2;", "364 सेमी&sup2; / cm&sup2;", "256 सेमी&sup2; / cm&sup2;", "264 सेमी&sup2; / cm&sup2;"], 2, "m|<span class='math-trick'>🔥 बीजगणित + क्षेत्रमिति (Algebraic Identity):</span><br>दिया है: l + b + h = 20<br>विकर्ण = &radic;(l² + b² + h²) = 12 &rarr; l² + b² + h² = 144<br>घनाभ का सम्पूर्ण पृष्ठीय क्षेत्रफल (TSA) = 2(lb + bh + hl)<br>बीजगणित सूत्र: (l + b + h)² = (l² + b² + h²) + 2(lb + bh + hl)<br>(20)² = 144 + TSA<br>400 = 144 + TSA<br>TSA = 400 - 144 = <b>256 सेमी²</b>।"],
+        ["विषम शब्द का चयन कीजिए।<br><span class='en-q'>Select the odd word.</span>", ["बैडमिण्टन / Badminton", "टेबल टेनिस / Table Tennis", "क्रिकेट / Cricket", "हॉकी / Hockey"], 0, "m|<span class='math-trick'>🔥 लॉजिक (Odd One Out):</span><br>क्रिकेट, हॉकी और टेबल टेनिस (TT) इन तीनों खेलों में गोल 'गेंद' (Ball) का प्रयोग किया जाता है।<br>लेकिन 'बैडमिंटन' (Badminton) में गेंद का नहीं, बल्कि 'शटलकॉक' (चिड़िया/Shuttlecock) का प्रयोग किया जाता है।<br>अतः बैडमिंटन समूह से भिन्न है।"],
+        ["विषम शब्द-युग्म का चयन कीजिए।<br><span class='en-q'>Select the odd word-pair.</span>", ["छेद : ड्रिलर / Hole : Driller", "फोटो : फ्रेम / Photo : Frame", "काटना : चाकू / Cut : Knife", "पेण्ट : ब्रश / Paint : Brush"], 1, "m|<span class='math-trick'>🔥 लॉजिक (Action - Tool):</span><br>छेद (Hole) करने के लिए ड्रिलर (Driller) का प्रयोग होता है।<br>काटने (Cut) के लिए चाकू (Knife) का प्रयोग होता है।<br>पेंट (Paint) करने के लिए ब्रश (Brush) का प्रयोग होता है।<br>इन सबमें पहला कार्य (क्रिया) है और दूसरा उसे करने वाला उपकरण (Tool)।<br>लेकिन 'फोटो : फ्रेम' में फोटो को फ्रेम के अंदर रखा जाता है (यह क्रिया-उपकरण संबंध नहीं है)। अतः यह विषम है।"],
+        ["पाँच दोस्त कोई परीक्षा देते हैं। पायल को कोमल से अधिक अंक प्राप्त हुए। रीना को पायल से कम अंक प्राप्त हुए। सिमी को तुन से अधिक, लेकिन कोमल से कम अंक प्राप्त हुए। उनमें से किसने सबसे ज्यादा अंक प्राप्त किए?<br><span class='en-q'>Five friends take an exam. Payal got more marks than Komal. Reena got fewer marks than Payal. Simi got more marks than Tun (Tanu) but fewer than Komal. Who among them scored the highest marks?</span>", ["कोमल / Komal", "तनु / Tanu", "रीना / Reena", "पायल / Payal"], 3, "m|<span class='math-trick'>🔥 रैंकिंग लॉजिक (Greater Than):</span><br>समीकरणों को क्रम में रखें (> का अर्थ अधिक अंक है):<br>1. पायल > कोमल<br>2. पायल > रीना<br>3. कोमल > सिमी > तनु (तुन)<br>इनको मिलाएँ: पायल > कोमल > सिमी > तनु।<br>और रीना पायल से कम है, इसलिए पायल सबसे ऊपर है।<br>अतः सबसे ज्यादा अंक <b>पायल</b> को मिले हैं।"],
+        ["यदि 3&times;9&times;7 = 379 और 5&times;4&times;8 = 584, तो 1&times;2&times;3 = ?<br><span class='en-q'>If 3&times;9&times;7 = 379 and 5&times;4&times;8 = 584, then 1&times;2&times;3 = ?</span>", ["123", "231", "213", "132"], 3, "m|<span class='math-trick'>🔥 कोडिंग-डिकोडिंग (Position Pattern):</span><br>संख्याओं का स्थान बदलने का पैटर्न देखें:<br>3 &times; 9 &times; 7 (पहला, दूसरा, तीसरा) को <b>3 7 9</b> (पहला, तीसरा, दूसरा) लिखा गया है।<br>5 &times; 4 &times; 8 को <b>5 8 4</b> (पहला, तीसरा, दूसरा) लिखा गया है।<br>इसी लॉजिक से, 1 &times; 2 &times; 3 को <b>1 3 2</b> (पहला, तीसरा, दूसरा) लिखा जाएगा।<br>उत्तर (d) 132।"],
+        ["अंकों का सही संयोजन चुनिए ताकि तदनुसार अक्षरों से एक सार्थक शब्द बन सके।<br><span class='en-q'>Choose the correct combination of numbers so that the corresponding letters form a meaningful word.</span><br>L N S A I G<br>1 2 3 4 5 6", ["3, 5, 4, 2, 6, 1", "2, 6, 3, 1, 4, 5", "5, 4, 2, 1, 6, 3", "3, 5, 6, 2, 4, 1"], 3, "m|<span class='math-trick'>🔥 वर्ड फॉर्मेशन (Anagram):</span><br>दिए गए अक्षर: L(1) N(2) S(3) A(4) I(5) G(6)<br>इन अक्षरों को मिलाकर एक अंग्रेजी का सार्थक शब्द बनाना है।<br>इनसे बनने वाला सार्थक शब्द 'SIGNAL' (सिग्नल) है।<br>S=3, I=5, G=6, N=2, A=4, L=1.<br>क्रम: <b>3, 5, 6, 2, 4, 1</b>। सही विकल्प (d)।"],
+        ["कम्प्यूटर की 'मदरबोर्ड' क्या है?<br><span class='en-q'>What is the 'Motherboard' of a computer?</span>", ["एक सॉफ्टवेयर / A software", "मुख्य सर्किट बोर्ड / Main circuit board", "इनपुट डिवाइस / Input device", "बाहरी मेमोरी / External memory"], 1, "f|मदरबोर्ड (Motherboard) कंप्यूटर का सबसे महत्वपूर्ण और 'मुख्य सर्किट बोर्ड' (Main Printed Circuit Board - PCB) होता है।|इसे मेनबोर्ड या लॉजिक बोर्ड भी कहा जाता है।|कंप्यूटर के सभी प्रमुख घटक जैसे CPU (प्रोसेसर), RAM (मेमोरी), और हार्ड ड्राइव सीधे मदरबोर्ड से जुड़े होते हैं।|यह इन सभी उपकरणों के बीच संचार और बिजली की आपूर्ति का प्रबंधन करता है।|सॉफ्टवेयर वे प्रोग्राम होते हैं जो हार्डवेयर को निर्देश देते हैं।"],
+        ["USB का पूर्ण रूप क्या है?<br><span class='en-q'>What is the full form of USB?</span>", ["Universal Serial Bus", "United Serial Bus", "Unique Serial Bus", "Universal System Bus"], 0, "f|कंप्यूटर और इलेक्ट्रॉनिक उपकरणों में प्रयुक्त USB का फुल फॉर्म 'Universal Serial Bus' (यूनिवर्सल सीरियल बस) है।|यह एक मानक केबल कनेक्शन इंटरफेस है, जो पर्सनल कंप्यूटर और पेरिफेरल उपकरणों (जैसे माउस, कीबोर्ड, प्रिंटर) के बीच संचार स्थापित करता है।|USB का आविष्कार 1990 के दशक के मध्य में इंटेल के अजय भट्ट ने किया था।|आजकल स्मार्टफोन चार्जिंग और डेटा ट्रांसफर के लिए Type-C USB का व्यापक उपयोग हो रहा है।"],
+        ["'Undo' (पूर्ववत्) करने के लिए शॉर्टकट की क्या है?<br><span class='en-q'>What is the shortcut key to 'Undo'?</span>", ["Ctrl + Y", "Ctrl + Z", "Ctrl + U", "Ctrl + A"], 1, "f|कंप्यूटर में किए गए किसी कार्य या गलती को तुरंत वापस (Undo) करने के लिए 'Ctrl + Z' (विंडोज) शॉर्टकट का उपयोग किया जाता है।|'Undo' किए गए कार्य को फिर से लागू (Redo) करने के लिए 'Ctrl + Y' का उपयोग किया जाता है।|'Ctrl + A' का उपयोग पूरे टेक्स्ट को एक साथ सिलेक्ट (Select All) करने के लिए होता है।|'Ctrl + U' का उपयोग टेक्स्ट को अंडरलाइन (Underline) करने के लिए होता है।"],
+        ["ईमेल भेजने के लिए किस प्रोटोकॉल का उपयोग किया जाता है?<br><span class='en-q'>Which protocol is used to send emails?</span>", ["POP3", "SMTP", "FTP", "HTTP"], 1, "f|इंटरनेट पर ईमेल (E-mail) भेजने के लिए 'SMTP' (Simple Mail Transfer Protocol) का उपयोग किया जाता है।|ईमेल प्राप्त करने (डाउनलोड करने) के लिए POP3 (Post Office Protocol) या IMAP प्रोटोकॉल का उपयोग किया जाता है।|FTP (File Transfer Protocol) का उपयोग फाइलों को अपलोड या डाउनलोड करने के लिए होता है।|HTTP (Hypertext Transfer Protocol) का उपयोग वेब पेजों को ब्राउज़र पर लोड करने के लिए होता है।|ईमेल का आविष्कार रे टॉमलिंसन ने किया था (उन्होंने '@' चिह्न भी चुना था)।"],
+        ["वर्ष 2025 में भारतीय कृषि अनुसन्धान परिषद् (ICAR) द्वारा 'मिलेनियर फार्मर ऑफ द ईयर' पुरस्कार से हरियाणा के किस किसान को सम्मानित किया गया है?<br><span class='en-q'>Which farmer from Haryana has been honored with the 'Millionaire Farmer of the Year' award by ICAR in 2025?</span>", ["रमेश लाल (सिरसा) / Ramesh Lal (Sirsa)", "ईश्वर कुंडु (कैथल) / Ishwar Kundu (Kaithal)", "सुल्तान सिंह (करनाल) / Sultan Singh (Karnal)", "नसीब सिंह (जींद) / Naseeb Singh (Jind)"], 2, "f|करनाल (बुटाना) के प्रगतिशील और नवीन किसान 'सुल्तान सिंह' को उनके मत्स्य पालन और कृषि में उत्कृष्ट योगदान के लिए ICAR द्वारा 'मिलेनियर फार्मर ऑफ द ईयर' पुरस्कार से सम्मानित किया गया।|इन्होंने मछली पालन (विशेषकर उत्तर भारत में पनपने वाली प्रजातियों) में नई तकनीकें विकसित की हैं।|उन्हें पहले पद्म श्री से भी सम्मानित किया जा चुका है।|भारतीय कृषि अनुसंधान परिषद (ICAR) का मुख्यालय नई दिल्ली में है।|हरियाणा का करनाल कृषि अनुसंधान (NDRI, CSSRI) का प्रमुख केंद्र है।"],
+        ["नवम्बर, 2025 के लिए 'आईसीसी विमेंस प्लेयर ऑफ द मंथ' पुरस्कार हेतु हरियाणा की किस महिला क्रिकेटर को नामित किया गया?<br><span class='en-q'>Which female cricketer from Haryana has been nominated for the 'ICC Women's Player of the Month' award for November 2025?</span>", ["हरमनप्रीत कौर / Harmanpreet Kaur", "शैफाली वर्मा / Shafali Verma", "यास्तिका भाटिया / Yastika Bhatia", "ऋचा घोष / Richa Ghosh"], 1, "f|हरियाणा के रोहतक की धुआंधार युवा सलामी बल्लेबाज 'शेफाली वर्मा' को उनके शानदार प्रदर्शन के लिए 'ICC विमेंस प्लेयर ऑफ द मंथ' पुरस्कार के लिए नामित किया गया है।|शेफाली वर्मा अंतरराष्ट्रीय क्रिकेट के सभी प्रारूपों में पदार्पण करने वाली सबसे युवा भारतीय क्रिकेटर हैं।|क्रिकेट के भगवान सचिन तेंदुलकर को वह अपना आदर्श मानती हैं।|ICC (अंतर्राष्ट्रीय क्रिकेट परिषद) का मुख्यालय दुबई (UAE) में है।"],
+        ["वर्ष 2025 में भारत ने किस देश को हराकर इतिहास में पहली बार 'स्क्वैश विश्व कप' का खिताब जीता?<br><span class='en-q'>In 2025, India won the 'Squash World Cup' title for the first time in history by defeating which country?</span>", ["इग्लैण्ड / England", "मलेशिया / Malaysia", "ऑस्ट्रेलिया / Australia", "हांगकांग / Hong Kong"], 1, "f|भारतीय स्क्वैश टीम ने फाइनल में 'मलेशिया' को हराकर इतिहास में पहली बार स्क्वैश विश्व कप (Squash World Cup) का प्रतिष्ठित खिताब अपने नाम किया।|यह टूर्नामेंट चेन्नई, भारत में ही आयोजित किया गया था, जहाँ भारतीय टीम (विशेषकर सौरव घोषाल और जोशना चिनप्पा) ने शानदार प्रदर्शन किया।|स्क्वैश एक इनडोर रैकेट खेल है जो चार दीवारों वाले कोर्ट में खेला जाता है।|मलेशिया की राजधानी कुआलालंपुर है।"],
+        ["वर्ष 2025 में आयोजित ओडिशा मास्टर्स बैडमिण्टन टूर्नामेण्ट में क्रमशः महिला और पुरुष एकल का खिताब किसने जीता?<br><span class='en-q'>Who won the women's and men's singles titles respectively at the Odisha Masters Badminton Tournament held in 2025?</span>", ["पी. वी. सिन्धु और लक्ष्य सेन / P.V. Sindhu & Lakshya Sen", "उन्नति हुड्डा और किरण जॉर्ज / Unnati Hooda & Kiran George", "साइना नेहवाल और एच. एस. प्रणय / Saina Nehwal & H.S. Prannoy", "अश्मिता चालिहा और श्रीकान्त किदाम्बी / Ashmita Chaliha & Srikanth Kidambi"], 3, "f|अश्मिता चालिहा (महिला एकल) और पूर्व विश्व नंबर 1 श्रीकांत किदांबी (पुरुष एकल) ने कटक में आयोजित ओडिशा मास्टर्स बैडमिंटन टूर्नामेंट में खिताब जीते।|बैडमिंटन भारत में क्रिकेट के बाद सबसे लोकप्रिय खेलों में से एक है।|पी.वी. सिंधु ओलिंपिक में दो व्यक्तिगत पदक (रजत और कांस्य) जीतने वाली पहली भारतीय महिला एथलीट हैं।|बैडमिंटन वर्ल्ड फेडरेशन (BWF) का मुख्यालय मलेशिया में है।"],
+        ["दी गई शृंखला में प्रश्न चिह्न ( ? ) के स्थान पर क्या आएगा?<br><span class='en-q'>What will come in place of the question mark (?) in the given series?</span><br>17, 26, 44, 71, 107, ?", ["156", "150", "154", "152"], 3, "m|<span class='math-trick'>🔥 नंबर सीरीज (Difference of Difference):</span><br>पदों के बीच का अंतर निकालें:<br>26 - 17 = 9<br>44 - 26 = 18<br>71 - 44 = 27<br>107 - 71 = 36<br>पैटर्न स्पष्ट है: अंतर 9 का पहाड़ा है (9, 18, 27, 36)।<br>अतः अगला अंतर 45 होगा।<br>107 + 45 = <b>152</b>।"],
+        ["दी गई शृंखला में प्रश्न चिह्न ( ? ) के स्थान पर क्या आएगा?<br><span class='en-q'>What will come in place of the question mark (?) in the given series?</span><br>KLJH, FGEC, ABZX, VWUS, ?", ["QRPN", "PQSM", "QRNP", "QRTV"], 0, "m|<span class='math-trick'>🔥 अक्षर सीरीज (Backward Leap):</span><br>प्रत्येक समूह के पहले अक्षर को देखें: K(11) &rarr; F(6) &rarr; A(1) &rarr; V(22).<br>पैटर्न: -5 का अंतर है। (A से 5 पीछे V आता है)।<br>अतः अगला पहला अक्षर: V(22) - 5 = 17 (Q)।<br>विकल्पों में Q से शुरू होने वाले दो हैं (a और c)।<br>अब क्रम देखें: KLJH, FGEC (लगातार दो आगे, फिर पीछे)।<br>सही घटता क्रम QRPN है: Q(17), R(18), P(16), N(14)।<br>उत्तर (a) <b>QRPN</b>।"],
+        ["एक निश्चित कूटभाषा में, 'CREAM' को 'FUVEQ' और 'STOVE' को 'VWLZI' लिखा जाता है। उसी कूटभाषा में 'PITCH' को किस प्रकार लिखा जाएगा?<br><span class='en-q'>In a certain code language, 'CREAM' is written as 'FUVEQ' and 'STOVE' is written as 'VWLZI'. How will 'PITCH' be written in that code language?</span>", ["SLXGL", "SLGGL", "TGMKF", "TMGFK"], 1, "m|<span class='math-trick'>🔥 कोडिंग (Mixed Addition):</span><br>CREAM &rarr; FUVEQ का लॉजिक:<br>पहले 2 अक्षर: C(+3)=F, R(+3)=U<br>बीच का अक्षर: E का विपरीत (Opposite) V<br>अंतिम 2 अक्षर: A(+4)=E, M(+4)=Q<br>PITCH पर लगाएँ:<br>P(+3)=S, I(+3)=L (SL से शुरुआत)<br>T का विपरीत (Opposite) = G<br>C(+4)=G, H(+4)=L<br>अतः कोड बना <b>SLGGL</b>। विकल्प (b)।"],
+        ["वर्ष 2025 में प्रदान किए गए राष्ट्रीय ऊर्जा संरक्षण पुरस्कारों में किस मेट्रो स्टेशन को 'सर्वश्रेष्ठ प्रदर्शन करने वाली इकाई' का सम्मान मिला है?<br><span class='en-q'>Which metro station received the 'Best Performing Unit' honor at the National Energy Conservation Awards given in 2025?</span>", ["कश्मीरी गेट मेट्रो स्टेशन / Kashmere Gate Metro Stn", "राजीव चौक मेट्रो स्टेशन / Rajiv Chowk Metro Stn", "ईस्ट विनोद नगर मेट्रो स्टेशन (दिल्ली) / East Vinod Nagar Metro Stn", "द्वारका सेक्टर-21 मेट्रो स्टेशन / Dwarka Sector-21 Metro Stn"], 3, "f|दिल्ली मेट्रो के 'द्वारका सेक्टर-21' स्टेशन को उसकी उत्कृष्ट सौर ऊर्जा पहल और ऊर्जा-कुशल डिजाइन (LED लाइटिंग, रेनवाटर हार्वेस्टिंग) के लिए 'राष्ट्रीय ऊर्जा संरक्षण पुरस्कार' से सम्मानित किया गया।|दिल्ली मेट्रो रेल कॉर्पोरेशन (DMRC) भारत का सबसे बड़ा और व्यस्त मेट्रो नेटवर्क है।|भारत में 'मेट्रो मैन' के नाम से ई. श्रीधरन को जाना जाता है।|पहली मेट्रो ट्रेन 1984 में कोलकाता में चली थी।"],
+        ["वर्ष 2025 की अद्यतन जानकारी के अनुसार, इसरो (ISRO) ने मानवयुक्त अन्तरिक्ष अभियान 'गगनयान' के तहत किस महिला रोबोट को अन्तरिक्ष में भेजने की योजना बनाई है?<br><span class='en-q'>According to the updated information of 2025, which female robot has ISRO planned to send to space under the manned space mission 'Gaganyaan'?</span>", ["रोबोनॉट / Robonaut", "व्योममित्र / Vyommitra", "मित्रा / Mitra", "स्काईबॉट / Skybot"], 1, "f|ISRO अपने महत्वाकांक्षी मानव मिशन 'गगनयान' से पहले अंतरिक्ष यात्रियों की सुरक्षा जाँचने के लिए 'व्योममित्र' (Vyommitra) नामक हाफ-ह्यूमनॉइड (आधी मानवाकार) महिला रोबोट को अंतरिक्ष में भेजेगा।|व्योममित्र संस्कृत के दो शब्दों व्योम (अंतरिक्ष) और मित्र (दोस्त) से मिलकर बना है।|यह रोबोट अंतरिक्ष में माइक्रो-ग्रेविटी में प्रयोग करेगा और यान के सिस्टम को कंट्रोल करेगा।|गगनयान मिशन के लिए 4 भारतीय वायुसेना के पायलटों को प्रशिक्षित किया जा رہا है।"],
+        ["वर्ष 2025 में किस राज्य सरकार ने लद्दाख मॉडल की तर्ज पर 'हिम तेंदुआ पर्यटन' (Snow Leopard Tourism) शुरू करने की घोषणा की है?<br><span class='en-q'>In 2025, which state government has announced to start 'Snow Leopard Tourism' on the lines of the Ladakh model?</span>", ["हिमाचल प्रदेश / Himachal Pradesh", "सिक्किम / Sikkim", "उत्तराखण्ड / Uttarakhand", "जम्मू और कश्मीर / Jammu and Kashmir"], 2, "f|'उत्तराखंड' सरकार ने वन्यजीव संरक्षण और इको-टूरिज्म को बढ़ावा देने के लिए लद्दाख की तर्ज पर 'स्नो लेपर्ड टूरिज्म' शुरू करने का फैसला किया है।|यह मुख्य रूप से गंगोत्री नेशनल पार्क और नंदा देवी बायोस्फीयर रिजर्व के उच्च हिमालई क्षेत्रों में केंद्रित होगा।|हिम तेंदुआ (Snow Leopard) बर्फीले पहाड़ों का 'भूत' (Ghost of the Mountains) भी कहलाता है।|लद्दाख का राजकीय पशु भी हिम तेंदुआ है।|उत्तराखंड को 'देवभूमि' भी कहा जाता है।"],
+        ["यदि 1 जनवरी, 2013 को बुधवार था, तो 2 जनवरी, 2014 को सप्ताह का कौन-सा दिन था?<br><span class='en-q'>If January 1, 2013 was a Wednesday, what day of the week was January 2, 2014?</span>", ["बुधवार / Wednesday", "बृहस्पतिवार / Thursday", "मंगलवार / Tuesday", "शुक्रवार / Friday"], 3, "m|<span class='math-trick'>🔥 कैलेंडर ट्रिक (विषम दिन / Odd Days):</span><br>2013 एक साधारण वर्ष (Non-Leap Year) है, जिसमें 365 दिन होते हैं।<br>साधारण वर्ष में 1 विषम दिन (Odd day) होता है।<br>इसलिए, 1 जनवरी 2014 को = बुधवार + 1 = बृहस्पतिवार (गुरुवार) होगा।<br>प्रश्न 2 जनवरी 2014 का दिन पूछ रहा है:<br>बृहस्पतिवार + 1 दिन = <b>शुक्रवार</b>।"],
+        ["निम्नलिखित समरूपता को पूर्ण कीजिए।<br><span class='en-q'>Complete the following analogy.</span><br>बाँदीपुर राष्ट्रीय उद्यान : कर्नाटक :: दुधवा राष्ट्रीय उद्यान : ?", ["राजस्थान / Rajasthan", "मध्य प्रदेश / Madhya Pradesh", "हिमाचल प्रदेश / Himachal Pradesh", "उत्तर प्रदेश / Uttar Pradesh"], 3, "m|<span class='math-trick'>🔥 जीके सादृश्यता (GK Analogy):</span><br>जिस प्रकार प्रसिद्ध 'बांदीपुर राष्ट्रीय उद्यान' (प्रोजेक्ट टाइगर रिजर्व) दक्षिण भारतीय राज्य <b>कर्नाटक</b> में स्थित है।<br>उसी प्रकार 'दुधवा राष्ट्रीय उद्यान' (बाघों और दलदली हिरणों के लिए प्रसिद्ध) <b>उत्तर प्रदेश</b> राज्य (लखीमपुर खीरी जिले) में स्थित है।<br>अतः सही उत्तर (d) उत्तर प्रदेश है।"],
+        ["लुप्त पद को ज्ञात कीजिए।<br><span class='en-q'>Find the missing term (?).</span><br><svg viewBox='0 0 200 200' width='100%' height='150' style='max-width:250px; display:block; margin:10px auto;'><circle cx='100' cy='100' r='90' fill='var(--glass-bg)' stroke='var(--text-main)' stroke-width='2'/><line x1='10' y1='100' x2='190' y2='100' stroke='var(--text-main)' stroke-width='1.5'/><line x1='100' y1='10' x2='100' y2='190' stroke='var(--text-main)' stroke-width='1.5'/><line x1='36' y1='36' x2='164' y2='164' stroke='var(--text-main)' stroke-width='1.5'/><line x1='36' y1='164' x2='164' y2='36' stroke='var(--text-main)' stroke-width='1.5'/><text x='115' y='50' font-size='16' fill='var(--text-main)' font-weight='bold'>4</text><text x='155' y='85' font-size='16' fill='var(--text-main)' font-weight='bold'>10</text><text x='155' y='135' font-size='16' fill='var(--text-main)' font-weight='bold'>20</text><text x='115' y='175' font-size='16' fill='var(--text-main)' font-weight='bold'>34</text><text x='65' y='175' font-size='16' fill='var(--text-main)' font-weight='bold'>52</text><text x='30' y='135' font-size='18' fill='var(--danger)' font-weight='bold'>?</text><text x='35' y='85' font-size='16' fill='var(--text-main)' font-weight='bold'>100</text><text x='65' y='50' font-size='16' fill='var(--text-main)' font-weight='bold'>130</text></svg>", ["64", "96", "82", "74"], 3, "m|<span class='math-trick'>🔥 विजुअल रीजनिंग (Circle Pattern):</span><br>घड़ी की दिशा (Clockwise) में 4 से शुरू करते हुए पदों के बीच का अंतर निकालें:<br>10 - 4 = 6<br>20 - 10 = 10<br>34 - 20 = 14<br>52 - 34 = 18<br>यहाँ अंतर 4-4 बढ़ रहा है (6, 10, 14, 18...)<br>अतः अगला अंतर 18 + 4 = 22 होगा।<br>? = 52 + 22 = <b>74</b>।<br>जाँच: अगला अंतर 26 होना चाहिए। 74 + 26 = 100 (जो कि सही है)। उत्तर 74 है।"]
+    ];
+
+    let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+        started: false, submitted: false, currentQ: 0, answers: {}, status: {}, timeLeft: 90 * 60
+    };
+
+    let timerInterval;
+
+    window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+    function initDashboard() {
+        let completedData = null;
+        try {
+            const dataStr = localStorage.getItem(COMPLETED_KEY);
+            if(dataStr) completedData = JSON.parse(dataStr);
+        } catch(e) {}
+
+        if (state.submitted || completedData) {
+            document.getElementById('dash-unattempted').classList.add('hidden');
+            document.getElementById('dash-attempted').classList.remove('hidden');
+            if(completedData) {
+                document.getElementById('dash-score-text').innerText = `${completedData.score}/${(fullQuestions.length * MARKS_PER_Q).toFixed(2)} Marks`;
+                let percentage = (completedData.score / (fullQuestions.length * MARKS_PER_Q)) * 100;
+                document.getElementById('dash-progress-bar').style.width = `${percentage}%`;
+            }
+        } else {
+            document.getElementById('dash-attempted').classList.add('hidden');
+            document.getElementById('dash-unattempted').classList.remove('hidden');
+        }
+
+        if (state.started && !state.submitted) {
+            showScreen('test-screen');
+            startTimer();
+            renderPalette();
+            loadQuestion(state.currentQ);
+        } else {
+            showScreen('dashboard-screen');
+        }
+    }
+
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(d => {
+            if(d.id !== 'pause-overlay') d.classList.remove('active');
+        });
+        document.getElementById(id).classList.add('active');
+    }
+
+    function startTest() {
+        state = {
+            started: true, submitted: false, currentQ: 0, answers: {}, status: {}, timeLeft: 90 * 60
+        };
+        for(let i=0; i<fullQuestions.length; i++) state.status[i] = 0; 
+        saveState();
+        showScreen('test-screen');
+        startTimer();
+        renderPalette();
+        loadQuestion(0);
+    }
+
+    function reattemptTest() {
+        if(confirm("Are you sure you want to start a fresh test? Your previous score will be lost. / क्या आप नया टेस्ट शुरू करना चाहते हैं?")) {
+            localStorage.removeItem(COMPLETED_KEY);
+            startTest();
+        }
+    }
+
+    function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function loadQuestion(idx) {
+        if (idx < 0) idx = 0;
+        if (idx >= fullQuestions.length) idx = fullQuestions.length - 1;
+        
+        state.currentQ = idx;
+        if(state.status[idx] === 0) state.status[idx] = 1; 
+        
+        document.getElementById('q-no').innerText = `Question ${idx + 1} of ${fullQuestions.length}`;
+        document.getElementById('q-text').innerHTML = fullQuestions[idx][0];
+        
+        let optsHTML = '';
+        let labels = ['A', 'B', 'C', 'D'];
+        fullQuestions[idx][1].forEach((opt, i) => {
+            let isSel = state.answers[idx] === i;
+            let selClass = isSel ? 'selected' : '';
+            optsHTML += `
+                <div class="option ${selClass}" onclick="selectOption(${i})">
+                    <div class="opt-label">${labels[i]}</div>
+                    <div style="flex:1;">${opt}</div>
+                </div>
+            `;
+        });
+        document.getElementById('options-box').innerHTML = optsHTML;
+        
+        saveState();
+        renderPalette();
+    }
+
+    function selectOption(optIdx) {
+        state.answers[state.currentQ] = optIdx;
+        loadQuestion(state.currentQ);
+    }
+
+    function saveNext() {
+        if(state.answers[state.currentQ] !== undefined) state.status[state.currentQ] = 2; 
+        else state.status[state.currentQ] = 1; 
+        
+        if(state.currentQ < fullQuestions.length - 1) loadQuestion(state.currentQ + 1);
+        else { saveState(); renderPalette(); }
+    }
+
+    function markReview() {
+        if(state.answers[state.currentQ] !== undefined) state.status[state.currentQ] = 4; 
+        else state.status[state.currentQ] = 3; 
+        
+        if(state.currentQ < fullQuestions.length - 1) loadQuestion(state.currentQ + 1);
+        else { saveState(); renderPalette(); }
+    }
+
+    function clearResponse() {
+        delete state.answers[state.currentQ];
+        state.status[state.currentQ] = 1; 
+        loadQuestion(state.currentQ);
+    }
+
+    function changeQ(step) {
+        if(state.currentQ + step >= 0 && state.currentQ + step < fullQuestions.length) {
+            loadQuestion(state.currentQ + step);
+        }
+    }
+
+    function renderPalette() {
+        let html = '';
+        let counts = { ans: 0, notAns: 0, notVis: 0, marked: 0 };
+
+        for(let i=0; i<fullQuestions.length; i++) {
+            let s = state.status[i];
+            let cls = 's-0';
+            
+            if(s === 0) { cls = 's-0'; counts.notVis++; }
+            if(s === 1) { cls = 's-2'; counts.notAns++; }
+            if(s === 2) { cls = 's-1'; counts.ans++; }
+            if(s === 3) { cls = 's-3'; counts.marked++; }
+            if(s === 4) { cls = 's-4'; counts.ans++; counts.marked++; }
+            
+            let active = (i === state.currentQ) ? 'active' : '';
+            if(active && s === 0) cls = 's-2'; 
+
+            html += `<button class="p-btn ${cls} ${active}" onclick="loadQuestion(${i})">${i+1}</button>`;
+        }
+        
+        document.getElementById('q-grid').innerHTML = html;
+        document.getElementById('c-ans').innerText = counts.ans;
+        document.getElementById('c-notans').innerText = counts.notAns;
+        document.getElementById('c-notvis').innerText = counts.notVis;
+        document.getElementById('c-mark').innerText = counts.marked;
+    }
+
+    function startTimer() {
+        if(timerInterval) clearInterval(timerInterval);
+        updateTimerDisplay();
+        
+        timerInterval = setInterval(() => {
+            if (state.timeLeft <= 0) {
+                clearInterval(timerInterval);
+                submitTest();
+                return;
+            }
+            state.timeLeft--;
+            updateTimerDisplay();
+            if(state.timeLeft % 10 === 0) saveState();
+        }, 1000);
+    }
+    
+    function updateTimerDisplay() {
+        let m = Math.floor(state.timeLeft / 60).toString();
+        let s = (state.timeLeft % 60).toString().padStart(2, '0');
+        if(m.length < 2) m = m.padStart(2, '0');
+        document.getElementById('timer-display').innerText = `${m}:${s}`;
+    }
+
+    function togglePause() {
+        let modal = document.getElementById('pause-overlay');
+        if (modal.style.display === 'flex') {
+            modal.style.display = 'none';
+            startTimer();
+        } else {
+            clearInterval(timerInterval);
+            modal.style.display = 'flex';
+        }
+    }
+
+    function submitTest() {
+        if(!confirm("Are you sure you want to submit the test? / क्या आप टेस्ट सबमिट करना चाहते हैं?")) return;
+        clearInterval(timerInterval);
+        state.submitted = true;
+        saveState();
+        calculateResult();
+    }
+
+    function calculateResult() {
+        let correct = 0, wrong = 0, attempted = 0;
+        for(let i=0; i<fullQuestions.length; i++) {
+            if(state.answers[i] !== undefined) {
+                attempted++;
+                if(state.answers[i] === fullQuestions[i][2]) correct++;
+                else wrong++;
+            }
+        }
+        
+        let score = (correct * MARKS_PER_Q).toFixed(2);
+        const today = new Date().toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' });
+        const completedData = { score: score, correct: correct, attempted: attempted, wrong: wrong, date: today };
+        localStorage.setItem(COMPLETED_KEY, JSON.stringify(completedData));
+
+        document.getElementById('r-score').innerText = score; 
+        document.getElementById('r-attempt').innerText = attempted;
+        document.getElementById('r-wrong').innerText = wrong;
+        document.getElementById('r-acc').innerText = attempted > 0 ? Math.round((correct/attempted)*100) + '%' : '0%';
+        showScreen('result-screen');
+    }
+
+    function viewSavedResults() {
+        calculateResult();
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        let html = '';
+        let labels = ['A', 'B', 'C', 'D'];
+        
+        fullQuestions.forEach((q, i) => {
+            let uAns = state.answers[i];
+            let cAns = q[2];
+            let optsHtml = '';
+            
+            q[1].forEach((opt, oIdx) => {
+                let cls = '';
+                let icon = '';
+                if(oIdx === cAns) { cls = 'correct'; icon = ' ✔'; }
+                else if(oIdx === uAns && uAns !== cAns) { cls = 'wrong'; icon = ' ❌'; }
+                optsHtml += `<div class="sol-opt ${cls}"><strong>${labels[oIdx]}.</strong> <div style="flex:1;">${opt} <span style="float:right; font-weight:700;">${icon}</span></div></div>`;
+            });
+            
+            let userStatus = uAns === null || uAns === undefined ? "<span style='color:var(--text-muted)'>Unattempted</span>" : 
+                           (uAns === cAns ? "<span style='color:var(--success)'>Correct</span>" : 
+                           "<span style='color:var(--danger)'>Incorrect</span>");
+
+            // Extract the explanation
+            let correctText = q[1][cAns].replace(/<[^>]*>?/gm, ''); 
+            let expDetails = `<b>सही उत्तर / Correct Answer: ${labels[cAns]}. ${correctText}</b><br>`;
+            
+            if (q[3].startsWith('m|')) {
+                expDetails += `<div class='math-box'>${q[3].substring(2)}</div>`;
+            } else if (q[3].startsWith('f|')) {
+                let factsList = q[3].substring(2).split('|').map(fact => `<li>${fact}</li>`).join('');
+                expDetails += `<div class='fact-box'><b style="color:var(--success)">💡 महत्वपूर्ण तथ्य (Key Facts):</b><ul>${factsList}</ul></div>`;
+            }
+
+            html += `
+                <div class="sol-card">
+                    <div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--btn-bg);">Q${i+1}. ${q[0]}</div>
+                    ${optsHtml}
+                    <div style="font-weight:600; font-size: 15px; margin:15px 0; color:var(--text-muted);">Status: ${userStatus}</div>
+                    <div class="sol-exp">${expDetails}</div>
+                </div>
+            `;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+
+    function toggleTheme() {
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+</script>
+</body>
+</html>
