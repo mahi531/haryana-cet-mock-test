@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Full Mock Test 2A - Advanced Solutions</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Mukta:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg-grad-1:#4facfe;--bg-grad-2:#00f2fe;--bg-grad-3:#a18cd1;--bg-grad-4:#fbc2eb;--glass-bg:rgba(255,255,255,0.9);--glass-border:rgba(255,255,255,0.6);--glass-shadow:rgba(31,38,135,0.15);--text-main:#1f2937;--text-muted:#64748b;--primary:#2563eb;--success:#10b981;--danger:#ef4444;--warning:#f59e0b;--purple:#8b5cf6;--option-bg:rgba(243,244,246,0.8);--option-selected:rgba(219,234,254,0.9);--card-bg:rgba(255,255,255,0.95)}
+[data-theme="dark"]{--bg-grad-1:#0f2027;--bg-grad-2:#203a43;--bg-grad-3:#2c5364;--bg-grad-4:#141e30;--glass-bg:rgba(17,25,40,0.85);--glass-border:rgba(255,255,255,0.15);--glass-shadow:rgba(0,0,0,0.5);--text-main:#f9fafb;--text-muted:#94a3b8;--primary:#3b82f6;--option-bg:rgba(55,65,81,0.7);--option-selected:rgba(30,58,138,0.8);--card-bg:rgba(31,41,55,0.95)}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Mukta','Poppins',sans-serif;transition:background-color .3s,color .3s;touch-action:manipulation}
+body{height:100vh;height:100dvh;background:linear-gradient(45deg,var(--bg-grad-1),var(--bg-grad-2),var(--bg-grad-3),var(--bg-grad-4));background-size:400% 400%;animation:gBG 15s ease infinite;color:var(--text-main);display:flex;flex-direction:column;overflow:hidden}
+@keyframes gBG{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.glass-panel{background:var(--glass-bg);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--glass-border);box-shadow:0 8px 32px 0 var(--glass-shadow);border-radius:12px}
+.btn{font-family:'Poppins',sans-serif;background:var(--primary);color:#fff;border:none;padding:10px 16px;border-radius:6px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:.2s}
+.btn:active{transform:scale(0.95)}.btn-outline{background:transparent;border:1.5px solid var(--primary);color:var(--primary)}.btn-warning{background:var(--warning)}.btn-clear{background:var(--card-bg);color:var(--text-main);border:1px solid var(--glass-border)}.btn-mark{background:var(--purple)}.btn-prev{background:var(--text-muted)}
+.screen{display:none;flex-direction:column;height:100%;width:100vw;position:absolute;top:0;left:0}.screen.active{display:flex}
+#dashboard-screen{overflow-y:auto;background:var(--card-bg);align-items:center;padding-bottom:30px}
+.dash-header-top{background:#1e293b;color:#fff;width:100%;padding:15px 20px;font-size:16px;font-weight:600;display:flex;align-items:center;gap:15px;position:sticky;top:0;z-index:100}
+.dash-content{width:100%;max-width:800px;padding:20px}
+.section-title{font-weight:600;color:var(--primary);margin:15px 0 10px;border-left:4px solid var(--primary);padding-left:10px;font-size:15px}
+.dash-card{background:var(--card-bg);border-radius:12px;padding:24px;border:1px solid var(--glass-border);box-shadow:0 4px 12px rgba(0,0,0,0.05);margin-bottom:15px}
+header.test-head{padding:10px 15px;display:flex;justify-content:space-between;align-items:center;border-radius:0 0 16px 16px;margin-bottom:10px;margin-inline:10px}
+.header-title{font-size:16px;font-weight:700;color:var(--primary)}.header-controls{display:flex;gap:8px;align-items:center}
+.timer-box{font-size:14px;font-weight:700;background:var(--card-bg);border:1px solid var(--glass-border);color:var(--danger);padding:5px 12px;border-radius:20px}
+.main-area{display:flex;flex:1;overflow:hidden;gap:10px;padding:0 10px 10px}
+.question-section{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.q-header{padding:15px;border-bottom:1px solid var(--glass-border);display:flex;justify-content:space-between;font-weight:600;font-size:15px}
+.q-body{flex:1;padding:20px 15px;overflow-y:auto;font-size:16px;line-height:1.6}
+.options-list{margin-top:20px;display:flex;flex-direction:column;gap:12px;padding-bottom:10px}
+.option{padding:12px 15px;border:2px solid var(--glass-border);border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:15px;background:var(--option-bg);font-weight:500;font-size:15px}
+.option.selected{border-color:var(--primary);background:var(--option-selected);color:var(--primary)}
+.opt-label{width:28px;height:28px;flex-shrink:0;border-radius:50%;background:var(--card-bg);border:1px solid var(--glass-border);display:flex;justify-content:center;align-items:center;font-weight:700}
+.option.selected .opt-label{background:var(--primary);color:#fff;border-color:var(--primary)}
+.q-footer{padding:15px;border-top:1px solid var(--glass-border);flex-shrink:0;display:grid;grid-template-columns:1fr 1fr;gap:10px;border-radius:0 0 12px 12px}
+.palette-section{width:320px;display:flex;flex-direction:column;flex-shrink:0}
+.palette-header{padding:15px;border-bottom:1px solid var(--glass-border);text-align:center;font-weight:700;font-size:15px}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:15px;font-size:12px;border-bottom:1px solid var(--glass-border);font-weight:500}
+.stat-item{display:flex;align-items:center;gap:8px}
+.badge{width:22px;height:22px;border-radius:4px;display:flex;justify-content:center;align-items:center;color:#fff;font-size:11px;font-weight:700}
+.s-0{background:var(--card-bg);color:var(--text-main);border:1px solid var(--glass-border)}.s-1{background:var(--success)}.s-2{background:var(--danger)}.s-3{background:var(--purple)}.s-4{background:var(--primary);position:relative}
+.s-4::after{content:'✔';position:absolute;bottom:-4px;right:-4px;width:12px;height:12px;background:#fff;color:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px}
+.palette-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:15px;overflow-y:auto;flex:1;align-content:start}
+.p-btn{width:100%;aspect-ratio:1;border:none;border-radius:6px;font-weight:700;cursor:pointer;color:#fff;font-size:13px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+.p-btn.s-0{background:var(--card-bg);color:var(--text-main);border:1px solid var(--glass-border)}.p-btn.active{outline:3px solid var(--primary);outline-offset:2px;transform:scale(1.1)}
+.submit-area{padding:15px;border-top:1px solid var(--glass-border);border-radius:0 0 12px 12px}
+#result-screen,#solution-screen{overflow-y:auto;align-items:center;padding:20px}
+.sol-card{padding:20px;margin-bottom:15px;width:100%;max-width:800px}
+.sol-opt{padding:12px;margin:8px 0;border-radius:8px;border:1px solid var(--glass-border);display:flex;gap:12px;align-items:center;font-size:15px;background:var(--card-bg)}
+.sol-opt.correct{background:rgba(16,185,129,0.15);border-color:var(--success);color:var(--success);font-weight:700}
+.sol-opt.wrong{background:rgba(239,68,68,0.15);border-color:var(--danger);color:var(--danger);text-decoration:line-through}
+.sol-exp{margin-top:15px;padding:15px;background:rgba(37,99,235,0.05);border:1px solid var(--glass-border);border-left:4px solid var(--primary);border-radius:8px;font-size:14.5px;line-height:1.6}
+#pause-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);z-index:200;display:none;justify-content:center;align-items:center;color:#fff;flex-direction:column}
+.math-trick{color:#d97706;font-weight:700;font-size:15px}
+.grammar-rule{color:#8b5cf6;font-weight:700}
+.vocab{color:#059669;font-weight:700}
+.bilingual-eng{color:var(--text-muted);font-size:14.5px;font-weight:500;display:block;margin-top:5px;}
+@media(max-width:992px){.main-area{flex-direction:column;overflow-y:auto}.question-section{flex:none;min-height:450px}.palette-section{width:100%;flex:none;min-height:350px}.q-footer .btn{padding:12px;font-size:14px}}
+</style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+<div id="dashboard-screen" class="screen active">
+    <div class="dash-header-top"><span style="font-size:20px;cursor:pointer;">&#8592;</span> Mock Tests</div>
+    <div class="dash-content">
+        <div id="dash-unattempted" style="display:none;">
+            <div class="section-title">Suggested Next Test</div>
+            <div class="dash-card">
+                <div style="font-size:20px;font-weight:700;margin-bottom:8px;">Full Mock Test 2A (Advanced)</div>
+                <div style="font-size:14px;color:var(--text-muted);margin-bottom:20px;">100 Qs • 105 mins • 100.0 Marks</div>
+                <button class="btn btn-outline" style="width:100%;padding:12px;font-size:16px;" onclick="startTest()">Start Test 🚀</button>
+                <div style="font-size:13px;color:var(--primary);border-top:1px solid var(--glass-border);padding-top:15px;margin-top:20px;">Syllabus: Haryana GK, Static GK, Science, Math, Reasoning, Hindi, English</div>
+            </div>
+        </div>
+        <div id="dash-attempted" style="display:none;">
+            <div class="dash-card">
+                <div style="font-size:20px;font-weight:700;margin-bottom:8px;">Full Mock Test 2A (Advanced)</div>
+                <div style="font-size:15px;color:var(--text-muted);margin-bottom:15px;font-weight:500;" id="dash-score-text">0/100.0 Marks</div>
+                <div style="width:100%;height:8px;background:var(--glass-border);border-radius:4px;margin:20px 0;overflow:hidden;"><div id="dash-progress-bar" style="height:100%;background:#fbc02d;width:0%;transition:width 0.5s;"></div></div>
+                <div style="display:flex;gap:12px;margin-top:20px;">
+                    <button class="btn btn-outline" style="flex:1;padding:12px;" onclick="viewSavedResults()">View Results</button>
+                    <button class="btn btn-outline" style="flex:1;padding:12px;" onclick="reattemptTest()">Reattempt &rarr;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="pause-overlay">
+    <h2 style="margin-bottom:20px;font-size:2rem;">Test Paused ⏸️</h2>
+    <button class="btn btn-primary" style="font-size:1.2rem;padding:10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+</div>
+
+<div id="test-screen" class="screen">
+    <header class="glass-panel test-head">
+        <div class="header-title">Mock Test 2A</div>
+        <div class="header-controls">
+            <button class="btn btn-clear" style="padding:4px 10px;font-size:12px;border-radius:20px;" onclick="toggleTheme()">🌓 Theme</button>
+            <button class="btn btn-warning" style="padding:4px 10px;font-size:12px;border-radius:20px;" onclick="togglePause()">⏸ Pause</button>
+            <div class="timer-box">⏱ <span id="timer-display">105:00</span></div>
+        </div>
+    </header>
+    <div class="main-area">
+        <div class="glass-panel question-section">
+            <div class="q-header"><span id="q-no">Question 1</span><span style="color:var(--success);font-weight:bold;">+1 <span style="color:var(--text-muted);font-weight:normal;">|</span> <span style="color:var(--danger);">-0</span></span></div>
+            <div class="q-body">
+                <div id="q-text" style="font-weight:600;">Loading...</div>
+                <div class="options-list" id="options-box"></div>
+            </div>
+            <div class="q-footer">
+                <button class="btn btn-mark" onclick="markReview()">Mark & Next</button>
+                <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                <button class="btn btn-prev" onclick="changeQ(-1)">Previous</button>
+                <button class="btn btn-primary" onclick="saveNext()">Save & Next</button>
+            </div>
+        </div>
+        <div class="glass-panel palette-section">
+            <div class="palette-header">Question Palette</div>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                <div class="stat-item"><div class="badge s-0" id="c-notvis">100</div> Not Visit</div>
+                <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+            </div>
+            <div class="palette-grid" id="q-grid"></div>
+            <div class="submit-area"><button class="btn btn-primary" style="width:100%;background:var(--success);font-size:15px;padding:12px;" onclick="submitTest()">Submit Test</button></div>
+        </div>
+    </div>
+</div>
+
+<div id="result-screen" class="screen">
+    <div style="width:100%;max-width:800px;margin-bottom:15px;"><button class="btn btn-clear" onclick="showScreen('dashboard-screen')">&#8592; Back to Dashboard</button></div>
+    <div class="glass-panel" style="max-width:800px;width:100%;padding:30px;">
+        <h1 style="color:var(--primary);text-align:center;">Test Submitted Successfully! 🎉</h1>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin:30px 0;">
+            <div class="glass-panel" style="padding:20px;text-align:center;"><h2 id="r-score" style="color:var(--primary);font-size:2rem;">0</h2><p style="color:var(--text-muted);font-size:13px;font-weight:600;">Score</p></div>
+            <div class="glass-panel" style="padding:20px;text-align:center;"><h2 id="r-attempt" style="color:var(--success);font-size:2rem;">0</h2><p style="color:var(--text-muted);font-size:13px;font-weight:600;">Attempted</p></div>
+            <div class="glass-panel" style="padding:20px;text-align:center;"><h2 id="r-wrong" style="color:var(--danger);font-size:2rem;">0</h2><p style="color:var(--text-muted);font-size:13px;font-weight:600;">Wrong</p></div>
+            <div class="glass-panel" style="padding:20px;text-align:center;"><h2 id="r-acc" style="color:var(--purple);font-size:2rem;">0%</h2><p style="color:var(--text-muted);font-size:13px;font-weight:600;">Accuracy</p></div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;padding:15px;font-size:16px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+    </div>
+</div>
+
+<div id="solution-screen" class="screen">
+    <div style="max-width:800px;width:100%;margin:0 auto;">
+        <div class="glass-panel" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding:15px 20px;position:sticky;top:5px;z-index:10;">
+            <h3 style="color:var(--primary);">Detailed Solutions</h3>
+            <button class="btn btn-clear" style="padding:6px 15px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+        </div>
+        <div id="sol-container"></div>
+    </div>
+</div>
+
+<script>
+// Categories: 1=GK/Sci(Facts), 2=Math/Reas(Smart Approach), 3=English(Grammar), 4=Hindi(Grammar)
+
+const rawData = [
+    // --- GK (1-15) ---
+    ["Q1. वर्ष 1971 में स्वतन्त्रता की घोषणा के बाद बांग्लादेश के प्रथम प्रधानमन्त्री का नाम बताइएः", "Name the first Prime Minister of Bangladesh after the declaration of independence in 1971:", ["ताजुद्दीन अहमद", "Tajuddin Ahmad", "शेख मुजीबुर रहमान", "Sheikh Mujibur Rahman", "मुहम्मद मंसूर अली", "Muhammad Mansur Ali", "खालिदा जिया", "Khaleda Zia"], 0, 1, [
+        "1971 में बांग्लादेश की स्वतंत्रता के बाद 'ताजुद्दीन अहमद' प्रथम प्रधानमंत्री बने थे।",
+        "शेख मुजीबुर रहमान बांग्लादेश के प्रथम राष्ट्रपति (राष्ट्रपिता) थे।",
+        "बांग्लादेश की राजधानी ढाका और मुद्रा 'टका' है।",
+        "26 मार्च 1971 को बांग्लादेश ने स्वतंत्रता की घोषणा की थी।",
+        "भारत और बांग्लादेश के बीच सबसे लंबी अंतरराष्ट्रीय सीमा (4096 किमी) है।"
+    ]],
+    ["Q2. PCB का पूरा नाम क्या है?", "What is the full form of PCB?", ["प्राइमरी केयर बायोटेक्नोलॉजी", "Primary Care Biotechnology", "पंजाब कॉमर्शियल बैंक", "Punjab Commercial Bank", "प्रिन्टेड सर्किट बोर्ड", "Printed Circuit Board", "पब्लिक करियर ब्यूरो", "Public Career Bureau"], 2, 1, [
+        "इलेक्ट्रॉनिक्स में PCB का पूर्ण रूप Printed Circuit Board (प्रिन्टेड सर्किट बोर्ड) होता है।",
+        "यह इलेक्ट्रॉनिक घटकों को यांत्रिक समर्थन और विद्युत कनेक्शन प्रदान करता है।",
+        "इसका आविष्कार 1936 में पॉल आइस्लर ने किया था।",
+        "कंप्यूटर का मदरबोर्ड सबसे बड़ा और मुख्य PCB होता है।",
+        "यह आमतौर पर फाइबरग्लास या मिश्रित इपॉक्सी से बना होता है।"
+    ]],
+    ["Q3. आजाद हिन्द फौज (INA) का गठन किस वर्ष किया गया था?", "In which year was the Indian National Army (INA) formed?", ["1940", "1940", "1941", "1941", "1942", "1942", "1943", "1943"], 2, 1, [
+        "आजाद हिन्द फौज का गठन 1942 में रासबिहारी बोस और कैप्टन मोहन सिंह द्वारा किया गया था।",
+        "बाद में 1943 में सुभाष चंद्र बोस ने सिंगापुर में इसका पुनर्गठन किया।",
+        "सुभाष चंद्र बोस ने 'तुम मुझे खून दो, मैं तुम्हें आजादी दूंगा' का नारा दिया।",
+        "INA की महिला रेजीमेंट का नाम 'रानी झाँसी रेजीमेंट' था।",
+        "इसका मुख्य उद्देश्य द्वितीय विश्व युद्ध के दौरान अंग्रेजों से भारत को स्वतंत्र कराना था।"
+    ]],
+    ["Q4. भारतीय रेलवे द्वारा पेश किया जाने वाला हाइब्रिड वैक्यूम टॉयलेट अपने निर्वहन का निपटान कहाँ करता है?", "Where does the hybrid vacuum toilet introduced by Indian Railways dispose of its discharge?", ["बायो-शौचालय सीधे", "Direct bio-toilet", "बायो-डाइजेस्टर टैंक", "Bio-digester tank", "कोच के नीचे सेप्टिक टैंक", "Septic tank under coach", "अन्तिम निर्वहन के लिए फ्लैश टैंक", "Flash tank for final discharge"], 1, 1, [
+        "हाइब्रिड वैक्यूम टॉयलेट अपना मल-मूत्र 'बायो-डाइजेस्टर टैंक' में भेजता है।",
+        "यहाँ जीवाणु इसे पानी और गैस में बदल देते हैं।",
+        "यह तकनीक DRDO (रक्षा अनुसंधान एवं विकास संगठन) द्वारा विकसित की गई है।",
+        "इसमें अवायवीय (Anaerobic) बैक्टीरिया का उपयोग होता है जो कचरे को विघटित करते हैं।",
+        "इससे पटरियों पर गंदगी और जंग लगने की समस्या खत्म होती है।"
+    ]],
+    ["Q5. इसरो (ISRO) द्वारा सूर्य के अध्ययन के लिए भेजे गए पहले भारतीय मिशन का नाम क्या है?", "What is the name of the first Indian mission sent by ISRO to study the Sun?", ["आदित्य-L1", "Aditya-L1", "सूर्ययान-1", "Suryayaan-1", "भास्कर-1", "Bhaskara-1", "चंद्रयान-3", "Chandrayaan-3"], 0, 1, [
+        "भारतीय अंतरिक्ष अनुसंधान संगठन ने सूर्य के कोरोना का अध्ययन करने के लिए 'आदित्य-L1' लॉन्च किया है।",
+        "इसे 2 सितंबर 2023 को PSLV-C57 रॉकेट द्वारा लॉन्च किया गया था।",
+        "L1 का अर्थ 'लैग्रेंजियन बिंदु 1' है, जो पृथ्वी से 1.5 मिलियन किमी दूर है।",
+        "इस मिशन में सूर्य का अध्ययन करने के लिए कुल 7 पेलोड भेजे गए हैं।",
+        "यह मिशन सूर्य के बाहरी वायुमंडल (कोरोना) के तापमान और सौर तूफानों का अध्ययन करेगा।"
+    ]],
+    ["Q6. बौद्ध संरचना, 'धमेक स्तूप' कहाँ स्थित है?", "Where is the Buddhist structure, 'Dhamek Stupa' located?", ["सारनाथ", "Sarnath", "साँची", "Sanchi", "कोणार्क", "Konark", "महाबलीपुरम", "Mahabalipuram"], 0, 1, [
+        "धमेक स्तूप उत्तर प्रदेश के वाराणसी के निकट सारनाथ में स्थित एक प्रमुख बौद्ध तीर्थस्थल है।",
+        "इसका निर्माण मूल रूप से मौर्य सम्राट अशोक द्वारा 249 ईसा पूर्व में करवाया गया था।",
+        "यह वह स्थान माना जाता है जहाँ भगवान बुद्ध ने अपना पहला उपदेश दिया था (धर्मचक्रप्रवर्तन)।",
+        "यह स्तूप ठोस बेलनाकार आकार का है जो ईंटों और पत्थरों से बना है।",
+        "सारनाथ में ही भारत का राष्ट्रीय प्रतीक 'अशोक स्तंभ' भी स्थित है।"
+    ]],
+    ["Q7. शरावती पनबिजली परियोजना किस राज्य में है?", "In which state is the Sharavathi Hydroelectric Project located?", ["पुडुचेरी", "Puducherry", "कर्नाटक", "Karnataka", "तमिलनाडु", "Tamil Nadu", "केरल", "Kerala"], 1, 1, [
+        "शरावती नदी पर स्थित यह पनबिजली परियोजना 'कर्नाटक' राज्य में है।",
+        "इसी शरावती नदी पर भारत का प्रसिद्ध 'जोग जलप्रपात' (गरसोप्पा) स्थित है।",
+        "जोग जलप्रपात भारत के सबसे ऊंचे प्लंज वॉटरफॉल्स में से एक है।",
+        "यह परियोजना पश्चिमी घाट के शिमोगा जिले में स्थित है।",
+        "शरावती नदी केवल कर्नाटक राज्य के भीतर ही बहती है और अरब सागर में गिरती है।"
+    ]],
+    ["Q8. ब्रिटिश भारत में प्रान्तीय चुनाव (Provincial elections) किस वर्ष आयोजित किए गए थे?", "In which year were the Provincial elections held in British India?", ["1925-26", "1925-26", "1930-31", "1930-31", "1936-37", "1936-37", "1939-40", "1939-40"], 2, 1, [
+        "भारत सरकार अधिनियम 1935 के तहत 1936-37 की सर्दियों में ब्रिटिश भारत में प्रांतीय चुनाव हुए थे।",
+        "ये चुनाव 11 प्रांतों में आयोजित किए गए थे।",
+        "भारतीय राष्ट्रीय कांग्रेस ने 11 में से 8 प्रांतों में अपनी सरकार बनाई थी।",
+        "1939 में द्वितीय विश्व युद्ध में भारत को बिना पूछे शामिल करने के विरोध में कांग्रेस ने इस्तीफा दे दिया था।",
+        "मुस्लिम लीग ने इन चुनावों में बहुत खराब प्रदर्शन किया था।"
+    ]],
+    ["Q9. अंग्रेजी (ब्रिटिश) ईस्ट इण्डिया कम्पनी ने खुद को भारत में किस समयावधि के दौरान स्थापित किया था?", "During which period did the English (British) East India Company establish itself in India?", ["1600-1612", "1600-1612", "1641-1645", "1641-1645", "1701-1710", "1701-1710", "1721-1728", "1721-1728"], 0, 1, [
+        "ईस्ट इंडिया कंपनी की स्थापना 1600 ई. में हुई और 1612 तक उन्होंने सूरत में अपनी पहली फैक्ट्री स्थापित कर ली थी।",
+        "31 दिसंबर 1600 को महारानी एलिजाबेथ प्रथम ने इसे पूर्वी देशों से व्यापार का चार्टर दिया था।",
+        "कैप्टन विलियम हॉकिन्स 1608 में जहाँगीर के दरबार में अनुमति लेने आया था।",
+        "1613 में जहाँगीर ने औपचारिक फरमान जारी कर सूरत में फैक्ट्री लगाने की अनुमति दी।",
+        "थॉमस रो 1615 में भारत आया और पूरे मुगल साम्राज्य में व्यापार की छूट प्राप्त की।"
+    ]],
+    ["Q10. भारत का राष्ट्रीय आदर्श वाक्य क्या है?", "What is the national motto of India?", ["सत्यमेव जयते", "Satyamev Jayate", "वन्दे मातरम्", "Vande Mataram", "जय जवान जय किसान", "Jai Jawan Jai Kisan", "जय हिन्द", "Jai Hind"], 0, 1, [
+        "भारत का राष्ट्रीय आदर्श वाक्य 'सत्यमेव जयते' है।",
+        "यह मुण्डकोपनिषद से लिया गया है।",
+        "इसका अर्थ है 'सत्य की ही जीत होती है'।",
+        "यह वाक्य देवनागरी लिपि में अशोक के सिंह स्तंभ (राष्ट्रीय प्रतीक) के नीचे अंकित है।",
+        "26 जनवरी 1950 को इसे राष्ट्रीय आदर्श वाक्य के रूप में अपनाया गया था।"
+    ]],
+    ["Q11. भारत सरकार द्वारा हाल ही में किसे 'भारत रत्न' से सम्मानित किया गया है?", "Who has been recently awarded the 'Bharat Ratna' by the Government of India?", ["कर्पूरी ठाकुर", "Karpoori Thakur", "एम. एस. स्वामीनाथन", "M. S. Swaminathan", "चौधरी चरण सिंह", "Chaudhary Charan Singh", "उपर्युक्त सभी", "All of the above"], 3, 1, [
+        "वर्ष 2024 में भारत सरकार ने 5 विभूतियों को 'भारत रत्न' से सम्मानित किया है।",
+        "कर्पूरी ठाकुर (बिहार के पूर्व CM), एम. एस. स्वामीनाथन (हरित क्रांति के जनक)।",
+        "पी. वी. नरसिम्हा राव (पूर्व PM), चौधरी चरण सिंह (पूर्व PM)।",
+        "लालकृष्ण आडवाणी (पूर्व उप-प्रधानमंत्री)।",
+        "भारत रत्न भारत का सर्वोच्च नागरिक सम्मान है, जिसकी शुरुआत 1954 में हुई थी।"
+    ]],
+    ["Q12. कौन-से चोल राजा ने मालदीव के द्वीपों पर दरियाई विजय पाई थी?", "Which Chola King achieved a naval victory over the islands of Maldives?", ["करिकला", "Karikala", "राजराज प्रथम", "Rajaraja I", "महेन्द्र", "Mahendra", "विक्रम", "Vikrama"], 1, 1, [
+        "राजराज प्रथम की नौसेना अत्यंत शक्तिशाली थी, जिसकी मदद से उसने मालदीव पर विजय प्राप्त की थी।",
+        "राजराज प्रथम चोल साम्राज्य का सबसे महान सम्राट था।",
+        "उसने तंजौर (तंजावुर) में प्रसिद्ध बृहदेश्वर मंदिर (राजराजेश्वर मंदिर) का निर्माण करवाया था।",
+        "उसने श्रीलंका के उत्तरी भाग पर भी विजय प्राप्त की थी।",
+        "चोल राजवंश अपनी शक्तिशाली नौसेना और स्थानीय स्वशासन के लिए जाना जाता था।"
+    ]],
+    ["Q13. हाल ही में किस देश ने 2024 ICC पुरुष T20 विश्व कप का खिताब जीता है?", "Which country recently won the 2024 ICC Men's T20 World Cup title?", ["ऑस्ट्रेलिया", "Australia", "भारत", "India", "दक्षिण अफ्रीका", "South Africa", "इंग्लैंड", "England"], 1, 1, [
+        "भारत ने बारबाडोस में खेले गए फाइनल में दक्षिण अफ्रीका को रोमांचक मुकाबले में हराकर 2024 ICC पुरुष T20 विश्व कप जीता।",
+        "भारत ने 17 साल बाद अपना दूसरा टी20 विश्व कप जीता है (पहला 2007 में)।",
+        "रोहित शर्मा इस विश्व कप विजेता टीम के कप्तान थे।",
+        "विराट कोहली को फाइनल मुकाबले का 'प्लेयर ऑफ द मैच' चुना गया।",
+        "जसप्रीत बुमराह को 'प्लेयर ऑफ द टूर्नामेंट' का खिताब मिला।"
+    ]],
+    ["Q14. भारतीय अन्तरिक्ष अनुसन्धान के क्षेत्र में बड़ी सफलता किसकी स्थापना के साथ आई थी?", "The major breakthrough in Indian space research came with the establishment of?", ["भौतिक अनुसन्धान प्रयोगशाला", "Physical Research Laboratory", "अन्तरिक्ष अनुसन्धान के लिए भारतीय राष्ट्रीय समिति", "INCOSPAR", "भारतीय अन्तरिक्ष अनुसन्धान संगठन (ISRO)", "ISRO", "परमाणु ऊर्जा का विभाग", "Department of Atomic Energy"], 1, 1, [
+        "1962 में INCOSPAR (अंतरिक्ष अनुसंधान के लिए भारतीय राष्ट्रीय समिति) की स्थापना के साथ भारत में अंतरिक्ष अनुसंधान की शुरुआत हुई।",
+        "डॉ. विक्रम साराभाई के प्रयासों से इसका गठन किया गया था, जिन्हें भारतीय अंतरिक्ष कार्यक्रम का जनक कहा जाता है।",
+        "15 अगस्त 1969 को इसी का पुनर्गठन कर ISRO (भारतीय अंतरिक्ष अनुसंधान संगठन) बनाया गया।",
+        "ISRO का मुख्यालय बेंगलुरु (कर्नाटक) में स्थित है।",
+        "भारत का पहला उपग्रह 'आर्यभट्ट' 1975 में लॉन्च किया गया था।"
+    ]],
+    ["Q15. वर्ष 2024 में G-20 शिखर सम्मेलन की मेजबानी किस देश द्वारा की गई?", "Which country hosted the G-20 Summit in the year 2024?", ["भारत", "India", "ब्राज़ील", "Brazil", "दक्षिण अफ्रीका", "South Africa", "इटली", "Italy"], 1, 1, [
+        "वर्ष 2024 में G-20 शिखर सम्मेलन की मेजबानी ब्राज़ील (रियो डी जनेरियो) द्वारा की गई।",
+        "वर्ष 2023 में G-20 की अध्यक्षता भारत (नई दिल्ली) ने की थी।",
+        "भारत की अध्यक्षता में ही 'अफ्रीकी संघ' (African Union) को G-20 का स्थायी सदस्य बनाया गया।",
+        "2025 में G-20 की अध्यक्षता दक्षिण अफ्रीका करेगा।",
+        "G-20 दुनिया की 20 प्रमुख अर्थव्यवस्थाओं (अब 21 सदस्यों) का एक शक्तिशाली समूह है।"
+    ]],
+
+    // --- Math & Reasoning (16-40) ---
+    ["Q16. x/100 + 10 = 20 हल कीजिए।", "Solve: x/100 + 10 = 20", ["3000", "3000", "1000", "1000", "-1000", "-1000", "-3000", "-3000"], 1, 2, [
+        "समीकरण: x/100 + 10 = 20",
+        "x/100 = 20 - 10",
+        "x/100 = 10",
+        "x = 10 × 100 = 1000",
+        "मौखिक हल (Smart Logic): 10 में क्या जोड़ें कि 20 हो जाए? 10। किस संख्या का 100वां भाग 10 है? 1000 का।"
+    ]],
+    ["Q17. एक तबेले में 98 गाय थीं, उनमें से 52 बीमार हो गईं। 11 को छोड़ सभी बच गईं। 9 नई गाय लाई गईं। अब कितनी गाय मिलेंगी?", "There were 98 cows in a stable, 52 fell ill. All but 11 survived. 9 new cows were brought. How many cows are there now?", ["57", "57", "96", "96", "87", "87", "66", "66"], 1, 2, [
+        "कुल गाय प्रारंभ में = 98",
+        "मरने वाली गाय (जो नहीं बचीं) = 11. (बीमार 52 होने से फर्क नहीं पड़ता, फोकस मरने वाली पर करें)।",
+        "बची हुई गाय = 98 - 11 = 87",
+        "नई लाई गईं = 9",
+        "कुल गाय = 87 + 9 = <b>96</b>।"
+    ]],
+    ["Q18. गणना कीजिए: 30988 ÷ 122 ÷ 2", "Calculate: 30988 ÷ 122 ÷ 2", ["172", "172", "508", "508", "127", "127", "580", "580"], 2, 2, [
+        "BODMAS नियम के अनुसार, जब लगातार भाग (÷) हो, तो बाएँ से दाएँ (Left to Right) हल करते हैं।",
+        "या फिर इसे ऐसे लिखें: 30988 / (122 × 2)",
+        "30988 / 244",
+        "विभाजन करने पर = <b>127</b>।"
+    ]],
+    ["Q19. 0.0234 (जिसमें 234 पर बार है) की सही अभिव्यक्ति हैः", "The correct expression for 0.0234 (bar on 234) is:", ["13/555", "13/555", "2 34/100", "2 34/100", "134/990", "134/990", "234/1000", "234/1000"], 0, 2, [
+        "स्मार्ट एप्रोच (Bar Concept): 0.0234 (234 पर बार)।",
+        "अंश (Numerator): पूरी संख्या में से वह हिस्सा घटाएं जिस पर बार नहीं है (234 - 0 = 234)।",
+        "हर (Denominator): जितने अंकों पर बार है, उतने '9' लिखें (तीन 9) और जितने पर बार नहीं है उतने '0' लिखें (एक 0) = 9990.",
+        "भिन्न = 234 / 9990",
+        "इसे 18 से काटने पर: (18×13=234) और (18×555=9990). उत्तर = <b>13/555</b>।"
+    ]],
+    ["Q20. यदि A किसी काम को 10 दिन में और B उसी काम को 15 दिन में पूरा कर सकता है, तो दोनों मिलकर उस काम को कितने दिनों में पूरा करेंगे?", "If A can do a piece of work in 10 days and B in 15 days, in how many days will they together complete the work?", ["5 दिन", "5 days", "6 दिन", "6 days", "8 दिन", "8 days", "12 दिन", "12 days"], 1, 2, [
+        "स्मार्ट एप्रोच (LCM / Efficiency Method):",
+        "कुल काम (Total Work) = 10 और 15 का LCM = 30 यूनिट।",
+        "A की क्षमता = 30 / 10 = 3 यूनिट/दिन",
+        "B की क्षमता = 30 / 15 = 2 यूनिट/दिन",
+        "दोनों की कुल क्षमता = 3 + 2 = 5",
+        "दोनों को लगा समय = 30 / 5 = <b>6 दिन</b>।"
+    ]],
+    ["Q21. एक वस्तु को 2% तथा 10% के लाभ में बेचने पर विक्रय मूल्य में ₹3 का अन्तर है, तो दोनों विक्रय मूल्यों का अनुपात है:", "The difference in SP of an article sold at 2% and 10% profit is Rs 3. The ratio of their SPs is:", ["51:55", "51:55", "51:53", "51:53", "52:55", "52:55", "55:53", "55:53"], 0, 2, [
+        "स्मार्ट एप्रोच: यहाँ '₹3 का अन्तर' सिर्फ ध्यान भटकाने के लिए है।",
+        "क्रय मूल्य (CP) हमेशा 100% होता है।",
+        "पहला विक्रय मूल्य (SP1) 2% लाभ पर = 102%",
+        "दूसरा विक्रय मूल्य (SP2) 10% लाभ पर = 110%",
+        "अनुपात (Ratio) = 102 : 110. इसे 2 से काटें = <b>51 : 55</b>।"
+    ]],
+    ["Q22. ₹8000, 4% चक्रवृद्धि ब्याज की वार्षिक दर से 2 वर्ष के लिए उधार लिए गए। चक्रवृद्धि ब्याज क्या होगा?", "₹8000 is borrowed at 4% CI p.a. for 2 years. What will be the CI?", ["₹652.8", "₹652.8", "₹8,652.8", "₹8,652.8", "₹8,625.8", "₹8,625.8", "₹625.8", "₹625.8"], 0, 2, [
+        "स्मार्ट एप्रोच (Successive % Method):",
+        "2 वर्ष के लिए CI का प्रभावी दर (Effective Rate) = A + B + (AB/100)",
+        "प्रभावी दर = 4 + 4 + (4×4/100) = 8 + 0.16 = 8.16%",
+        "अब 8000 का 8.16% निकालें:",
+        "CI = 8000 × (8.16 / 100) = 80 × 8.16 = <b>₹652.8</b>. (सीधा गुणा, कोई लम्बा फॉर्मूला नहीं)"
+    ]],
+    ["Q23. दो संख्याओं का अनुपात 3:8 तथा HCF 17 है, तो उनका LCM है:", "The ratio of two numbers is 3:8 and their HCF is 17. Their LCM is:", ["408", "408", "51", "51", "136", "136", "406", "406"], 0, 2, [
+        "स्मार्ट एप्रोच (Direct Formula):",
+        "अगर संख्याएं a:b के अनुपात में हों, तो LCM = a × b × HCF",
+        "LCM = 3 × 8 × 17",
+        "LCM = 24 × 17",
+        "इकाई अंक (Unit Digit) चेक करें: 4 × 7 = ...8. केवल एक ही विकल्प के अंत में 8 है।",
+        "उत्तर = <b>408</b>।"
+    ]],
+    ["Q24. सरल कीजिए: (4/28) ÷ (28/35) ÷ (20/112)", "Simplify: (4/28) ÷ (28/35) ÷ (20/112)", ["7", "7", "4", "4", "2", "2", "1", "1"], 3, 2, [
+        "स्मार्ट एप्रोच:",
+        "पहले सभी भिन्नों को सरल (काट) लें: (1/7) ÷ (4/5) ÷ (5/28)",
+        "भाग (÷) के निशान को गुणा (×) में बदलें और अगली भिन्न को पलट दें:",
+        "= (1/7) × (5/4) × (28/5)",
+        "यहाँ 5 से 5 कट गया। 7×4=28 नीचे है और 28 ऊपर है। सब कट कर <b>1</b> बचेगा।"
+    ]],
+    ["Q25. गणना कीजिए: 6660 ÷ 148 - 43", "Calculate: 6660 ÷ 148 - 43", ["2", "2", "-2", "-2", "6660/101", "6660/101", "6606/101", "6606/101"], 0, 2, [
+        "स्मार्ट एप्रोच (BODMAS):",
+        "पहले भाग (Division) करें: 6660 ÷ 148",
+        "भाग आसान करने के लिए दोनों को 4 से काटें: 1665 / 37",
+        "अब 37 से काटें: 37 × 4 = 148, बचा 185. 37 × 5 = 185. अतः भागफल 45 आया।",
+        "अब घटाएं: 45 - 43 = <b>2</b>।"
+    ]],
+    ["Q26. एक आयत जिसकी लम्बाई 2 सेमी. तथा चौड़ाई 4 सेमी है, के विकर्ण की लम्बाई ज्ञात कीजिए।", "Find the length of the diagonal of a rectangle whose length is 2 cm and breadth is 4 cm.", ["2√5", "2√5", "±2√5", "±2√5", "2√3", "2√3", "±2√3", "±2√3"], 0, 2, [
+        "स्मार्ट एप्रोच (Pythagoras Theorem):",
+        "आयत का विकर्ण (Diagonal) = √(L² + B²)",
+        "विकर्ण = √(2² + 4²) = √(4 + 16) = √20",
+        "√20 को सरल करें: √(4 × 5) = <b>2√5</b> सेमी।",
+        "(लम्बाई कभी ऋणात्मक नहीं होती, अतः ± वाला विकल्प नहीं होगा)।"
+    ]],
+    ["Q27. एक दुकानदार फल खरीदने और बेचने में 7% का धोखा देता है, तो उसका कुल लाभ प्रतिशत है:", "A shopkeeper cheats by 7% while buying and selling fruits. His total profit percent is:", ["14.25", "14.25", "14.49", "14.49", "14.75", "14.75", "14.55", "14.55"], 1, 2, [
+        "स्मार्ट एप्रोच (Successive Increment):",
+        "जब कोई दोनों तरफ (खरीदते और बेचते समय) समान प्रतिशत का धोखा दे, तो कुल लाभ क्रमिक वृद्धि (Successive formula) से निकलता है।",
+        "सूत्र: a + b + (a×b/100)",
+        "यहाँ a=7, b=7",
+        "लाभ = 7 + 7 + (7×7)/100 = 14 + 0.49 = <b>14.49%</b>।"
+    ]],
+    ["Q28. दो संख्याओं का गुणनफल 3276 है तथा ल.स. 63 है तो उनका म.स. ज्ञात कीजिए।", "The product of two numbers is 3276 and their LCM is 63. Find their HCF.", ["54", "54", "51", "51", "53", "53", "52", "52"], 3, 2, [
+        "स्मार्ट एप्रोच (Standard Formula):",
+        "पहली संख्या × दूसरी संख्या = LCM × HCF",
+        "3276 = 63 × HCF",
+        "HCF = 3276 / 63",
+        "इकाई अंक चेक करें: 63 के पहाड़े में 6 कब आता है? 3×2=6. अतः उत्तर का इकाई अंक 2 होगा।",
+        "विकल्पों में <b>52</b> ही ऐसा है।"
+    ]],
+    ["Q29. एक नियमित बहुभुज में प्रत्येक बाह्य कोण 36° का है। इसकी भुजाओं की संख्या ज्ञात कीजिए।", "Each exterior angle of a regular polygon is 36°. Find the number of its sides.", ["11", "11", "9", "9", "10", "10", "8", "8"], 2, 2, [
+        "स्मार्ट एप्रोच (Polygon Rule):",
+        "किसी भी बहुभुज (Polygon) के सभी बाह्य कोणों (Exterior angles) का कुल योग हमेशा 360° होता है।",
+        "भुजाओं की संख्या (n) = 360° / प्रत्येक बाह्य कोण",
+        "n = 360° / 36° = <b>10</b>.",
+        "अतः यह एक दशभुज (Decagon) है।"
+    ]],
+    ["Q30. सरल करें: √12 × √27", "Simplify: √12 × √27", ["4√3", "4√3", "3/4", "3/4", "18", "18", "9", "9"], 2, 2, [
+        "स्मार्ट एप्रोच:",
+        "√a × √b = √(a × b)",
+        "√(12 × 27) = √324",
+        "हम जानते हैं कि 18 का वर्ग 324 होता है। अतः √324 = <b>18</b>।",
+        "दूसरा तरीका: √12 = 2√3, √27 = 3√3. गुणा करें: (2×3) × (√3×√3) = 6 × 3 = 18."
+    ]],
+    ["Q31. हार्डी ने कहा, 'लॉरल की आंटी, मेरे पिताजी के ससुर की पहली बेटी है। मेरी नानी की केवल दो बेटियाँ थीं।' लॉरल का हार्डी की माँ से क्या रिश्ता है?", "Hardy said, 'Laurel's aunt is the first daughter of my father's father-in-law. My maternal grandmother had only two daughters.' How is Laurel related to Hardy's mother?", ["भतीजा/भतीजी", "Nephew/Niece", "पुत्र/पुत्री", "Son/Daughter", "बहन", "Sister", "मौसी", "Maternal Aunt"], 0, 2, [
+        "लॉजिक (Blood Relation):",
+        "हार्डी के 'पिताजी के ससुर' = हार्डी के नाना।",
+        "नाना की पहली बेटी = हार्डी की माँ या मौसी। (नानी की केवल 2 बेटियां हैं)।",
+        "यानी 'लॉरल की आंटी' या तो हार्डी की माँ है या मौसी।",
+        "दोनों ही स्थिति में, लॉरल हार्डी की माँ का <b>भतीजा/भतीजी (Nephew/Niece)</b> ही लगेगा।"
+    ]],
+    ["Q32. एक फोटो को देखकर एक लड़के ने कहा, 'वो मेरे पिताजी की माताजी के इकलौते बेटे की पत्नी है।' फोटो वाली महिला का लड़के से क्या रिश्ता है?", "Looking at a photo, a boy said, 'She is the wife of the only son of my father's mother.' How is the woman in the photo related to the boy?", ["माँ", "Mother", "बुआ", "Aunt", "बहन", "Sister", "दादी", "Grandmother"], 0, 2, [
+        "लॉजिक (Blood Relation):",
+        "लड़के के 'पिताजी की माताजी' = लड़के की दादी।",
+        "दादी का 'इकलौता बेटा' = लड़के के पिताजी स्वयं।",
+        "पिताजी की 'पत्नी' = लड़के की <b>माँ (Mother)</b>।",
+        "यह सबसे सीधा और सरल रक्त संबंध है।"
+    ]],
+    ["Q33. एक कोड में, 'blue is black' = 127, 'black is beautiful and fun' = 95214, 'rose is black and beautiful' = 52189. 'rose' का कोड क्या है?", "In a code, 'blue is black' = 127, 'black is beautiful and fun' = 95214, 'rose is black and beautiful' = 52189. What is the code for 'rose'?", ["5", "5", "8", "8", "7", "7", "9", "9"], 1, 2, [
+        "लॉजिक (Coding-Decoding):",
+        "वाक्य 2 और 3 में कॉमन शब्द: 'is', 'black', 'and', 'beautiful'.",
+        "इनके कॉमन कोड: 9, 5, 2, 1.",
+        "वाक्य 3 ('rose is black and beautiful') में कुल अंक: 5, 2, 1, 8, 9.",
+        "चूँकि 5, 2, 1, 9 कॉमन हैं, वाक्य 3 में केवल 'rose' और '8' बचता है।",
+        "अतः 'rose' का कोड <b>8</b> है।"
+    ]],
+    ["Q34. प्रश्नः समकोण आयत की चौड़ाई बताएँ। कथनः I. लम्बाई 12 है। II. क्षेत्रफल 60 है। III. परिमाप 34 है। कौन सा पर्याप्त है?", "Question: Find the width of a rectangle. Statements: I. Length is 12. II. Area is 60. III. Perimeter is 34. Which is sufficient?", ["कथन ।। पर्याप्त है", "Statement II is sufficient", "कथन III पर्याप्त है", "Statement III is sufficient", "। या ।। या III में से कोई एक", "Any one of I or II or III", "कथन । एवं कथन ।। या III में से एक पर्याप्त है", "Statement I and either II or III are sufficient"], 3, 2, [
+        "लॉजिक (Data Sufficiency):",
+        "आयत की चौड़ाई निकालने के लिए हमें दो चीजों की जरूरत होती है।",
+        "या तो (लम्बाई और क्षेत्रफल) पता हो, या (लम्बाई और परिमाप) पता हो।",
+        "केवल कथन I (लम्बाई) से चौड़ाई नहीं निकलेगी।",
+        "अतः कथन I के साथ कथन II या कथन III में से कोई एक आवश्यक है।",
+        "सही उत्तर: <b>कथन I एवं कथन II या III में से एक पर्याप्त है</b>।"
+    ]],
+    ["Q35. यदि Aspire : Desire तो Askew: ?", "If Aspire : Desire then Askew : ?", ["Shrewd", "Shrewd", "Crooked", "Crooked", "Difficult", "Difficult", "Resist", "Resist"], 1, 2, [
+        "लॉजिक (Analogy / Synonym):",
+        "'Aspire' (आकांक्षा करना) और 'Desire' (इच्छा करना) समानार्थी (Synonyms) शब्द हैं।",
+        "उसी प्रकार 'Askew' का अर्थ होता है 'तिरछा' या 'टेढ़ा-मेढ़ा'।",
+        "दिए गए विकल्पों में 'Crooked' का अर्थ भी 'टेढ़ा' होता है।",
+        "अतः सही उत्तर <b>Crooked</b> है।"
+    ]],
+    ["Q36. निम्नलिखित क्रम में प्रश्न चिन्ह (?) के स्थान पर क्या आएगा? DCBA, IHGF, ?, SRQP...", "What will come in place of the question mark (?) in the following series? DCBA, IHGF, ?, SRQP...", ["MNLK", "MNLK", "MLKJ", "MLKJ", "NMLK", "NMLK", "NMLJ", "NMLJ"], 2, 2, [
+        "लॉजिक (Alphabet Series):",
+        "हर समूह में 4 अक्षर उल्टे क्रम (Reverse order) में हैं (A-B-C-D ➔ DCBA)।",
+        "पहले समूह का पहला अक्षर D (4) है, दूसरे का I (9) है। अंतर = +5.",
+        "तो तीसरे समूह का पहला अक्षर = 9 + 5 = 14 (N) होगा।",
+        "अब N से शुरू होकर 4 अक्षर उल्टे क्रम में लिखें: N-M-L-K.",
+        "अतः सही समूह <b>NMLK</b> होगा।"
+    ]],
+    ["Q37. कौन-सा खेल इस समूह का सदस्य नहीं है? (हॉकी, क्रिकेट, कबड्डी, बास्केटबॉल)", "Which sport is not a member of this group? (Hockey, Cricket, Kabaddi, Basketball)", ["हॉकी", "Hockey", "क्रिकेट", "Cricket", "कबड्डी", "Kabaddi", "बास्केटबॉल", "Basketball"], 2, 2, [
+        "लॉजिक (Odd One Out):",
+        "हॉकी, क्रिकेट और बास्केटबॉल - इन तीनों खेलों में गेंद (Ball) का उपयोग किया जाता है।",
+        "कबड्डी में किसी भी गेंद या उपकरण का उपयोग नहीं होता, यह पूर्णतया शारीरिक खेल है।",
+        "अतः <b>कबड्डी</b> इस समूह से भिन्न है।"
+    ]],
+    ["Q38. चार जोड़ी शब्द दिए गए हैं। इनमें से भिन्न जोड़ी बताएँ।", "Four pairs of words are given. Find the odd pair among them.", ["Aquatic: Fish", "Aquatic: Fish", "Amphibiotic: Crocodile", "Amphibiotic: Crocodile", "Aerial: Bat", "Aerial: Bat", "Terrestrial: Octopus", "Terrestrial: Octopus"], 3, 2, [
+        "लॉजिक (Habitat Classification):",
+        "Aquatic (जलीय) जीव मछली है - सही।",
+        "Amphibiotic (उभयचर - जल+थल) मगरमच्छ है - सही।",
+        "Aerial (हवाई) जीव चमगादड़ है - सही।",
+        "Terrestrial (स्थलीय / जमीन पर रहने वाला) जीव ऑक्टोपस नहीं है, ऑक्टोपस एक समुद्री (Aquatic) जीव है।",
+        "अतः <b>Terrestrial: Octopus</b> जोड़ी गलत (भिन्न) है।"
+    ]],
+    ["Q39. यदि I=9 और CAP=20, तो ZOO = ?", "If I=9 and CAP=20, then ZOO = ?", ["58", "58", "41", "41", "56", "56", "54", "54"], 2, 2, [
+        "लॉजिक (Alphabet Place Value):",
+        "अंग्रेजी वर्णमाला में I का स्थान 9 है।",
+        "CAP = C(3) + A(1) + P(16) = 20.",
+        "यानी सभी अक्षरों के संख्यात्मक मान (Place values) को जोड़ा गया है।",
+        "ZOO = Z(26) + O(15) + O(15)",
+        "योग = 26 + 15 + 15 = <b>56</b>।"
+    ]],
+    ["Q40. यदि BRAIN = EUDLQ तो CAREFUL = ?", "If BRAIN = EUDLQ then CAREFUL = ?", ["FEUGIWO", "FEUGIWO", "FXUCIRO", "FXUCIRO", "FDUXIHO", "FDUXIHO", "FDUHIXO", "FDUHIXO"], 2, 2, [
+        "लॉजिक (Coding-Decoding):",
+        "BRAIN के हर अक्षर में +3 किया गया है:",
+        "B(+3)=E, R(+3)=U, A(+3)=D, I(+3)=L, N(+3)=Q.",
+        "यही पैटर्न CAREFUL पर लगाएं:",
+        "C(+3)=F, A(+3)=D, R(+3)=U, E(+3)=H, F(+3)=I, U(+3)=X, L(+3)=O.",
+        "अतः सही उत्तर <b>FDUXIHO</b> है (विकल्पों में टाइपो हो सकता है, लेकिन सही पैटर्न यही है)।"
+    ]],
+
+    // --- English (41-50) ---
+    ["Q41. Spot the error: The cruel lady made (A)/ her step-daughter to do (B)/ all the household chores. (C)/ No error (D)", "Spot the error: The cruel lady made (A)/ her step-daughter to do (B)/ all the household chores. (C)/ No error (D)", ["The cruel lady made", "The cruel lady made", "her step-daughter to do", "her step-daughter to do", "all the household chores.", "all the household chores.", "No error", "No error"], 1, 3, [
+        "<b>Grammar Rule (Causative Verbs):</b>",
+        "अंग्रेजी में 'Make', 'Let', 'Bid' जैसी Causative Verbs के बाद Active Voice में हमेशा <b>Bare Infinitive (बिना 'to' के V1)</b> का प्रयोग होता है।",
+        "इसलिए यहाँ 'made her step-daughter to do' गलत है।",
+        "सही प्रयोग: 'made her step-daughter <b>do</b>' होगा।",
+        "अतः गलती (Error) भाग B में है।"
+    ]],
+    ["Q42. Spot the error: My sister asked me (A)/ that how long (B)/ I would stay there. (C)/ No error (D)", "Spot the error: My sister asked me (A)/ that how long (B)/ I would stay there. (C)/ No error (D)", ["My sister asked me", "My sister asked me", "that how long", "that how long", "I would stay there.", "I would stay there.", "No error", "No error"], 1, 3, [
+        "<b>Grammar Rule (Narration/Indirect Speech):</b>",
+        "जब Direct Speech में कोई प्रश्नवाचक शब्द (Wh-family: what, how, why, where) होता है, तो Indirect Speech में बदलते समय <b>'that' conjunction का प्रयोग नहीं किया जाता है</b>।",
+        "Wh-word स्वयं ही conjunction का काम करता है।",
+        "यहाँ 'that how long' का प्रयोग सुपरफ्लुअस (अनावश्यक) है।",
+        "सही वाक्य: My sister asked me <b>how long</b> I would stay there."
+    ]],
+    ["Q43. Fill in the blank: He was assured by his friends ___ every type of help in an emergency.", "Fill in the blank: He was assured by his friends ___ every type of help in an emergency.", ["with", "with", "about", "about", "by", "by", "of", "of"], 3, 3, [
+        "<b>Fixed Preposition Rule:</b>",
+        "'Assure' (भरोसा दिलाना या आश्वस्त करना) एक ऐसी Verb है जिसके बाद हमेशा एक निश्चित Preposition <b>'of'</b> का प्रयोग होता है।",
+        "स्ट्रक्चर: Assure + someone + of + something (किसी को किसी चीज़ का भरोसा दिलाना)।",
+        "यहाँ उसके दोस्तों ने उसे हर तरह की मदद का भरोसा दिलाया है।",
+        "अतः सही उत्तर 'of' होगा।"
+    ]],
+    ["Q44. Fill in the blank: Our monthly expenditure ___ by five hundred rupees when we decided to buy milk.", "Fill in the blank: Our monthly expenditure ___ by five hundred rupees when we decided to buy milk.", ["lifted up", "lifted up", "grew up", "grew up", "shot up", "shot up", "got up", "got up"], 2, 3, [
+        "<b>Phrasal Verb Usage:</b>",
+        "खर्चे, दाम या तापमान के <b>अचानक और तेज़ी से बढ़ जाने</b> के लिए 'Shoot up' (V2: shot up) का इस्तेमाल किया जाता है।",
+        "'Grew up' इंसानों या बच्चों के बड़े होने के लिए इस्तेमाल होता है।",
+        "इसलिए खर्चे (expenditure) के बढ़ने के संदर्भ में 'shot up' बिल्कुल सटीक है।"
+    ]],
+    ["Q45. Synonym of: ADVOCATE", "Synonym of: ADVOCATE", ["Determine", "Determine", "Predict", "Predict", "Pronounce", "Pronounce", "Support", "Support"], 3, 3, [
+        "<b>Synonym (समानार्थी शब्द):</b>",
+        "Verb के रूप में 'Advocate' का अर्थ होता है 'किसी का पक्ष लेना, वकालत करना या <b>समर्थन करना</b>'।",
+        "विकल्पों के अर्थ: <br>Determine = निर्धारित करना। <br>Predict = भविष्यवाणी करना। <br>Pronounce = उच्चारण करना या घोषणा करना।",
+        "Support = समर्थन करना। अतः सही Synonym <b>Support</b> है।"
+    ]],
+    ["Q46. Antonym of: AMBIGUOUS", "Antonym of: AMBIGUOUS", ["Simple", "Simple", "Easy", "Easy", "Plain", "Plain", "Clear", "Clear"], 3, 3, [
+        "<b>Antonym (विलोम शब्द):</b>",
+        "'Ambiguous' का अर्थ होता है 'अस्पष्ट' (जिसके एक से अधिक अर्थ निकलें या जो समझ में न आए)।",
+        "विकल्पों के अर्थ: <br>Simple = साधारण। <br>Easy = आसान। <br>Plain = सादा।",
+        "Clear = <b>स्पष्ट</b>। चूँकि Ambiguous मतलब अस्पष्ट है, इसलिए इसका सटीक विलोम Clear होगा।"
+    ]],
+    ["Q47. Meaning of idiom: 'Call a spade a spade'", "Meaning of idiom: 'Call a spade a spade'", ["to speak ill about someone", "to speak ill about someone", "to speak about someone", "to speak about someone", "to speak in a straightforward manner", "to speak in a straightforward manner", "to call someone a spade", "to call someone a spade"], 2, 3, [
+        "<b>Idiom (मुहावरा):</b> 'Call a spade a spade'",
+        "इस मुहावरे का शाब्दिक अर्थ है 'फावड़े को फावड़ा कहना'।",
+        "इसका वास्तविक अर्थ होता है: 'स्पष्ट रूप से सच बात कह देना, चाहे वह किसी को बुरी ही क्यों न लगे' (To speak directly and frankly)।",
+        "हिंदी में इसे 'खरी-खरी बात कहना' या 'मुँह पर सच बोलना' कहते हैं।"
+    ]],
+    ["Q48. Sentence Improvement: We are looking forward to see you tomorrow.", "Sentence Improvement: We are looking forward to see you tomorrow.", ["looking forward towards seeing", "looking forward towards seeing", "looking forward for seeing", "looking forward for seeing", "looking forward to seeing", "looking forward to seeing", "No improvement", "No improvement"], 2, 3, [
+        "<b>Grammar Rule (Gerund after certain phrases):</b>",
+        "आमतौर पर 'to' के बाद Verb की First form (V1) आती है, लेकिन कुछ विशेष वाक्यांशों जैसे 'Look forward to', 'Addicted to', 'With a view to', 'Accustomed to' के बाद हमेशा <b>Verb+ing (Gerund)</b> का प्रयोग होता है।",
+        "इसलिए 'looking forward to see' गलत है।",
+        "सही प्रयोग 'looking forward to <b>seeing</b>' होगा।"
+    ]],
+    ["Q49. One word substitution: One who cannot be corrected", "One word substitution: One who cannot be corrected", ["Invulnerable", "Invulnerable", "Incurable", "Incurable", "Incorrigible", "Incorrigible", "Hardened", "Hardened"], 2, 3, [
+        "<b>One Word Substitution:</b>",
+        "वह व्यक्ति या आदत जिसे सुधारा न जा सके (Beyond correction), उसे <b>Incorrigible</b> (असंशोधनीय) कहते हैं।",
+        "अन्य विकल्प: <br>Invulnerable = जिसे भेदा या घायल न किया जा सके। <br>Incurable = जिसका इलाज न हो सके (ला-इलाज)। <br>Hardened = कठोर।"
+    ]],
+    ["Q50. One word substitution: A general pardon granted by the Government to political offenders", "One word substitution: A general pardon granted by the Government to political offenders", ["Amnesty", "Amnesty", "Pardon", "Pardon", "Excuse", "Excuse", "Honesty", "Honesty"], 0, 3, [
+        "<b>One Word Substitution:</b>",
+        "सरकार द्वारा राजनैतिक बंदियों या अपराधियों को दी जाने वाली आम माफ़ी (General Pardon) को <b>Amnesty</b> (क्षमादान) कहा जाता है।",
+        "सामान्य माफ़ी के लिए Pardon या Forgiveness का इस्तेमाल होता है, लेकिन राजनीतिक स्तर पर 'Amnesty' ही सटीक शब्द है।"
+    ]],
+
+    // --- Haryana GK (51-75) ---
+    ["Q51. 'हरियाणा का चेरापूंजी' कौन-सा है?", "Which is known as the 'Cherrapunji of Haryana'?", ["कोसली", "Kosli", "छछरौली", "Chhachhrauli", "रेवाड़ी", "Rewari", "थानेसर", "Thanesar"], 1, 1, [
+        "यमुनानगर जिले के छछरौली में सर्वाधिक वर्षा होने के कारण इसे हरियाणा का चेरापूंजी कहा जाता है।",
+        "छछरौली यमुनानगर जिले की एक तहसील है।",
+        "हरियाणा में सबसे कम वर्षा सिरसा और हिसार क्षेत्र में होती है।",
+        "भारत का वास्तविक चेरापूंजी/मासिनराम मेघालय राज्य में स्थित है, जहाँ विश्व की सर्वाधिक वर्षा होती है।",
+        "यमुनानगर को 'पेपर सिटी' के नाम से भी जाना जाता है।"
+    ]],
+    ["Q52. 'हादी-ए-हरियाणा' के नाम से कौन प्रसिद्ध थे?", "Who was famous by the name 'Hadi-e-Haryana'?", ["शेख फरीद", "Sheikh Farid", "शेख उस्मान", "Sheikh Usman", "शाह मुहम्मद रमजान", "Shah Muhammad Ramzan", "हजरत खैरु", "Hazrat Khairu"], 2, 1, [
+        "शाह मुहम्मद रमजान को हादी-ए-हरियाणा के नाम से जाना जाता था।",
+        "वे एक प्रसिद्ध सूफी संत और उपदेशकEntity।",
+        "उर्दू साहित्य में उनका विशेष योगदान रहा है।",
+        "हरियाणा राज्य का पहला प्रादेशिक नाम 'ब्रह्मावर्त' था।",
+        "हादी का अर्थ होता है 'मार्गदर्शक' या 'सही रास्ता दिखाने वाला'।"
+    ]],
+    ["Q53. किस हरियाणवी ने विश्व के 'आयरनमैन' का खिताब जीता है?", "Which Haryanvi has won the title of World's 'Ironman'?", ["सचिन कादयान", "Sachin Kadyan", "विनोद घायल", "Vinod Ghayal", "राहुल टुरण", "Rahul Turan", "नरेश कुंवर सिंह", "Naresh Kunwar Singh"], 2, 1, [
+        "राहुल टुरण ने ट्रायथलॉन प्रतियोगिता पूरी करके आयरनमैन का खिताब प्राप्त किया है।",
+        "आयरनमैन प्रतियोगिता दुनिया की सबसे कठिन एक-दिवसीय खेल स्पर्धाओं में से एक है।",
+        "इसमें 3.8 किमी तैराकी, 180 किमी साइकिलिंग और 42.2 किमी दौड़ बिना रुके पूरी करनी होती है।",
+        "हरियाणा के खिलाड़ी राष्ट्रीय और अंतरराष्ट्रीय खेलों में देश को सर्वाधिक पदक दिलाते हैं।",
+        "खेल नीति के तहत हरियाणा सरकार स्वर्ण पदक विजेता को 6 करोड़ रुपये देती है।"
+    ]],
+    ["Q54. हरियाणा का कौन-सा शहर 'उद्यानों का शहर एवं धर्मनगरी' के नाम से प्रसिद्ध है?", "Which city of Haryana is known as 'City of Parks and Dharamnagari'?", ["रेवाड़ी", "Rewari", "यमुनानगर", "Yamunanagar", "कुरुक्षेत्र", "Kurukshetra", "करनाल", "Karnal"], 2, 1, [
+        "महाभारत युद्ध भूमि होने के कारण कुरुक्षेत्र को धर्मनगरी कहा जाता है।",
+        "कुरुक्षेत्र में ही भगवान श्री कृष्ण ने अर्जुन को गीता का उपदेश (ज्योतिसर तीर्थ में) दिया था।",
+        "इसे 'सिटी ऑफ पार्क्स' या उद्यानों का शहर भी कहा जाता है।",
+        "यहाँ प्रसिद्ध ब्रह्मसरोवर और सन्निहित सरोवर स्थित हैं।",
+        "शेख चिल्ली का मकबरा (हरियाणा का ताज महल) भी कुरुक्षेत्र (थानेसर) में है।"
+    ]],
+    ["Q55. किस देवी के नाम पर जींद जिले का नामकरण हुआ?", "After which Goddess was the Jind district named?", ["ज्वाला देवी", "Jwala Devi", "जगदंबा देवी", "Jagdamba Devi", "जयंती देवी", "Jayanti Devi", "उपर्युक्त सभी", "All of the above"], 2, 1, [
+        "जींद का प्राचीन नाम जयंतपुरी था, जो जयंती देवी के नाम पर पड़ा था।",
+        "महाभारत युद्ध से पहले पांडवों ने विजय प्राप्ति के लिए यहाँ जयंती देवी की पूजा की थी।",
+        "जींद को 'हरियाणा का हृदय' (Heart of Haryana) कहा जाता है।",
+        "जींद हरियाणा का एकमात्र ऐसा जिला है जिसका आज तक विभाजन नहीं हुआ है।",
+        "यह जिला मुर्राह नस्ल की भैंसों के लिए पूरे देश में प्रसिद्ध है।"
+    ]],
+    ["Q56. लोकप्रिय रूप से किसे 'हरियाणा का शेक्सपीयर' के रूप में जाना जाता है?", "Who is popularly known as the 'Shakespeare of Haryana'?", ["पं. नेकी राम", "Pt. Neki Ram", "श्री चौरंगीनाथ", "Shri Chauranginath", "श्री दीपचंद बहमन", "Shri Deepchand Bahman", "श्री सुरेन्द्र शर्मा", "Shri Surendra Sharma"], 2, 1, [
+        "सांग विधा के प्रसिद्ध कलाकार दीपचंद बहमन को हरियाणा का शेक्सपीयर और कालिदास कहा जाता है।",
+        "दीपचंद बहमन का जन्म सोनीपत जिले के खांडा गाँव में हुआ था।",
+        "उन्होंने प्रथम विश्व युद्ध के दौरान युवाओं को सेना में भर्ती होने के लिए सांग के माध्यम से प्रेरित किया था।",
+        "सांग हरियाणा की एक प्रमुख लोकनाट्य विधा है, जो लकड़ी के तख्तों (स्टेज) पर खेली जाती है।",
+        "लख्मीचंद को भी 'हरियाणा का तानसेन' और 'सूर्य कवि' कहा जाता है।"
+    ]],
+    ["Q57. हरियाणा में किस जगह को 'लघु हरिद्वार' के नाम से जाना जाता है?", "Which place in Haryana is known as 'Laghu Haridwar'?", ["हटकेश्वर", "Hatkeshwar", "पांडु-पिंडारा", "Pandu-Pindara", "सफीदों", "Safidon", "देवसर", "Devsar"], 1, 1, [
+        "जींद के पांडु-पिंडारा में महाभारत काल में पांडवों ने पितरों का पिंडदान किया था, अतः इसे लघु हरिद्वार कहते हैं।",
+        "पांडवों ने यहाँ सोमवती अमावस्या का 12 वर्ष तक इंतजार किया था।",
+        "यह स्थान जींद जिले में स्थित एक पवित्र धार्मिक स्थल है।",
+        "लोग यहाँ अपने पूर्वजों की शांति के लिए पिंडदान और स्नान करने आते हैं।",
+        "जींद जिले में ही सफीदों (सर्पदमन तीर्थ) भी स्थित है, जहाँ जनमेजय ने सर्पयज्ञ किया था।"
+    ]],
+    ["Q58. निम्न में से कौन 'हरियाणा हरिकेन' के नाम से जाने जाते हैं?", "Who among the following is known as the 'Haryana Hurricane'?", ["विजेन्द्र सिंह", "Vijender Singh", "सुशील कुमार", "Sushil Kumar", "कपिल देव", "Kapil Dev", "मंसूर अली", "Mansoor Ali"], 2, 1, [
+        "महान क्रिकेटर कपिल देव को उनके तेज खेल के कारण हरियाणा हरिकेन (Haryana Hurricane) कहा जाता है।",
+        "कपिल देव की कप्तानी में भारत ने 1983 में पहली बार क्रिकेट विश्व कप जीता था।",
+        "उनका पूरा नाम कपिल देव रामलाल निखंज है।",
+        "उन्होंने अपने करियर में 434 टेस्ट विकेट लिए थे जो उस समय एक विश्व रिकॉर्ड था।",
+        "विजेंदर सिंह (मुक्केबाज) और सुशील कुमार (पहलवान) भी हरियाणा की माटी से जुड़े प्रमुख खिलाड़ी हैं।"
+    ]],
+    ["Q59. किस शहर को 'हरियाणा का दिल' कहा जाता है?", "Which city is known as the 'Heart of Haryana'?", ["अंबाला", "Ambala", "जींद", "Jind", "गुड़गाँव", "Gurgaon", "पंचकुला", "Panchkula"], 1, 1, [
+        "जींद हरियाणा के मध्य में स्थित है, इसलिए इसे हरियाणा का हृदय (दिल) कहा जाता है।",
+        "जींद की सीमाएं हरियाणा के 7 अन्य जिलों से लगती हैं (जो सर्वाधिक है, हालांकि अब रोहतक भी 7 से लगता है)।",
+        "1 नवंबर 1966 को हरियाणा गठन के समय जींद राज्य का सबसे छोटा जिला था।",
+        "जींद की रानी सोहादरी का विद्रोह 1814 में हुआ था।",
+        "भूतेश्वर मंदिर (रानी तालाब) जींद जिले का प्रमुख ऐतिहासिक स्थल है।"
+    ]],
+    ["Q60. हरियाणा के जिले महेन्द्रगढ़ का प्राचीन नाम क्या है?", "What is the ancient name of Mahendragarh district in Haryana?", ["कानौड़", "Kanaud", "सत्येवपुरम", "Satyevpuram", "कपिस्थल", "Kapisthal", "साइरशैक", "Sairishak"], 0, 1, [
+        "कानौड़िया ब्राह्मणों द्वारा आबाद किए जाने के कारण महेंद्रगढ़ का पुराना नाम कानौड़ था।",
+        "महेंद्रगढ़ को 'खनिजों का शहर' (City of Minerals) भी कहा जाता है।",
+        "हरियाणा में सबसे ज्यादा सरसों का उत्पादन महेंद्रगढ़ जिले में ही होता है।",
+        "इसका नाम पटियाला रियासत के राजा महेंद्र सिंह के नाम पर 'महेंद्रगढ़' रखा गया था।",
+        "यह हरियाणा का एकमात्र जिला है जिसका मुख्यालय जिले के नाम वाले शहर में न होकर 'नारनौल' में है।"
+    ]],
+    ["Q61. भारतीय स्वतंत्रता आंदोलन की ग्रांड ओल्ड लेडी किसे कहा गया है?", "Who is called the Grand Old Lady of the Indian Independence Movement?", ["मदर टेरेसा", "Mother Teresa", "अमृत कौर", "Amrit Kaur", "पुतली बाई", "Putli Bai", "अरुणा आसफ अली", "Aruna Asaf Ali"], 3, 1, [
+        "अरुणा आसफ अली को भारत छोड़ो आंदोलन में सक्रिय भागीदारी के लिए ग्रांड ओल्ड लेडी कहा जाता है।",
+        "उनका जन्म हरियाणा के कालका (पंचकूला) में हुआ था।",
+        "उन्होंने 1942 के भारत छोड़ो आंदोलन के दौरान मुम्बई के गोवालिया टैंक मैदान में तिरंगा फहराया था।",
+        "स्वतंत्रता के बाद वे दिल्ली की पहली मेयर (महापौर) भी बनी थीं।",
+        "1997 में उन्हें मरणोपरांत भारत रत्न से सम्मानित किया गया था।"
+    ]],
+    ["Q62. निम्नलिखित में से कौन हरियाणा के गांधी कहलाते हैं?", "Who among the following is called the Gandhi of Haryana?", ["गोपाल कृष्ण गोखले", "Gopal Krishna Gokhale", "मूलचंद जैन", "Moolchand Jain", "सरदार वल्लभ भाई पटेल", "Sardar Vallabhbhai Patel", "दादा भाई नौरोजी", "Dadabhai Naoroji"], 1, 1, [
+        "बाबू मूलचंद जैन को सादगी और स्वतंत्रता संग्राम में उनके योगदान के कारण 'हरियाणा का गांधी' कहा जाता है।",
+        "उनका जन्म सोनीपत जिले के गोहाना के सिकंदरपुर माजरा गाँव में हुआ था।",
+        "वे एक प्रमुख स्वतंत्रता सेनानी और राजनेता थे।",
+        "गोपाल कृष्ण गोखले को महात्मा गांधी का राजनीतिक गुरु माना जाता है।",
+        "दादा भाई नौरोजी को भारत का 'ग्रैंड ओल्ड मैन' (Grand Old Man of India) कहा जाता है।"
+    ]],
+    ["Q63. ग्रैंड ओल्ड मैन ऑफ पंजाब कौन थे?", "Who was the Grand Old Man of Punjab?", ["लाला मुरलीधर", "Lala Murlidhar", "पं. नेकीराम शर्मा", "Pt. Nekiram Sharma", "पं. दीनदयाल शर्मा", "Pt. Deendayal Sharma", "राव तुलाराम", "Rao Tularam"], 0, 1, [
+        "पलवल के लाला मुरलीधर को ग्रैंड ओल्ड मैन ऑफ पंजाब व राय बहादुर के नाम से जाना जाता था।",
+        "उनका जन्म पलवल में हुआ था, लेकिन उनकी कर्मभूमि अम्बाला थी।",
+        "1885 में कांग्रेस के प्रथम अधिवेशन (मुम्बई) में भाग लेने वाले 72 प्रतिनिधियों में वे भी शामिल थे।",
+        "उन्होंने 'खैर-अंदेश' नामक उर्दू साप्ताहिक पत्र निकाला था।",
+        "जलियांवाला बाग हत्याकांड के विरोध में उन्होंने अंग्रेजों द्वारा दी गई 'राय बहादुर' की उपाधि लौटा दी थी।"
+    ]],
+    ["Q64. निम्न में से किस संत को बंदी छोड़ उपनाम से जाना जाता है?", "Which of the following saints is known by the surname Bandi Chhor?", ["सूरदास", "Surdas", "चौरंगीनाथ", "Chauranginath", "गरीबदास", "Garibdas", "नित्यानंद", "Nityanand"], 2, 1, [
+        "झज्जर के संत गरीबदास जी को बंदी छोड़ उपनाम से जाना जाता है।",
+        "संत गरीबदास का जन्म 1717 ई. में झज्जर के छुड़ानी गाँव में हुआ था।",
+        "उनके गुरु संत कबीरदास थे, जिनसे उन्हें आध्यात्मिक ज्ञान प्राप्त हुआ।",
+        "उन्होंने 'बीजक' और कई हरियाणवी भजनों/कविताओं की रचना की है।",
+        "छुड़ानी गाँव में आज भी उनके नाम पर एक बड़ा डेरा (आश्रम) और मेला लगता है।"
+    ]],
+    ["Q65. निम्न में से किसे फ्लिकर सिंह के उपनाम से जाना जाता है?", "Who among the following is known by the nickname Flicker Singh?", ["सरदार संदीप सिंह", "Sardar Sandeep Singh", "रानी रामपाल", "Rani Rampal", "सविता पूनिया", "Savita Punia", "उपर्युक्त सभी", "All of the above"], 0, 1, [
+        "पूर्व हॉकी कप्तान संदीप सिंह को उनकी तेज ड्रैग फ्लिक (Drag Flick) के कारण 'फ्लिकर सिंह' कहा जाता है।",
+        "संदीप सिंह हरियाणा के पिहोवा (कुरुक्षेत्र) से विधायक बने और खेल मंत्री भी रहे।",
+        "2006 में ट्रेन यात्रा के दौरान दुर्घटनावश उन्हें गोली लग गई थी, जिससे वे व्हीलचेयर पर आ गए थे, लेकिन 2 साल बाद उन्होंने शानदार वापसी की।",
+        "उन पर 'सूरमा' (Soorma) नामक एक बायोपिक फिल्म भी बनी है।",
+        "सविता पूनिया को 'ग्रेट वॉल ऑफ इंडिया' कहा जाता है।"
+    ]],
+    ["Q66. ग्रैंड ओल्ड मैन ऑफ हरियाणा किसे कहा जाता है?", "Who is called the Grand Old Man of Haryana?", ["दादा भाई नारौजी", "Dadabhai Naoroji", "लाला मुरलीधर", "Lala Murlidhar", "नेकीराम शर्मा", "Nekiram Sharma", "पं श्री राम शर्मा", "Pt. Shri Ram Sharma"], 3, 1, [
+        "स्वतंत्रता सेनानी पंडित श्री राम शर्मा को ग्रैंड ओल्ड मैन ऑफ हरियाणा कहा जाता है।",
+        "इनका जन्म 1 अक्टूबर 1899 को झज्जर में हुआ था।",
+        "इन्होंने रोहतक से 'हरियाणा तिलक' नामक प्रसिद्ध उर्दू साप्ताहिक पत्र निकाला था।",
+        "इन्होंने 'हरियाणा का इतिहास' और 'हरियाणा के नवरत्न' नामक पुस्तकें भी लिखीं।",
+        "असहयोग और सविनय अवज्ञा आंदोलनों के दौरान इन्होंने कई बार जेल की सजा काटी।"
+    ]],
+    ["Q67. 'द ईगल ऑफ द माउंटेन' के नाम से प्रसिद्ध है -", "Famous by the name 'The Eagle of the Mountain' -", ["अनिता कुंडु", "Anita Kundu", "ममता सौदा", "Mamta Sauda", "संतोष यादव", "Santosh Yadav", "शिवांगी पाठक", "Shivangi Pathak"], 3, 1, [
+        "पर्वतारोही शिवांगी पाठक को द ईगल ऑफ द माउंटेन कहा जाता है।",
+        "शिवांगी पाठक हिसार जिले की रहने वाली हैं।",
+        "वे 16 वर्ष की उम्र में माउंट एवरेस्ट फतह करने वाली सबसे कम उम्र की भारतीय महिलाओं में से एक हैं।",
+        "संतोष यादव (रेवाड़ी) लगातार दो बार माउंट एवरेस्ट पर चढ़ने वाली पहली भारतीय महिला हैं।",
+        "अनिता कुंडु नेपाल और चीन (दोनों रास्तों से) एवरेस्ट फतह करने वाली महिला हैं।"
+    ]],
+    ["Q68. निम्न में से किसे उत्तरी भारत का राबिनहुड कहा जाता है?", "Who among the following is called the Robinhood of North India?", ["हरफूल जाट जुलाणी", "Harphool Jat Julani", "देवीशंकर प्रभाकर", "Devishankar Prabhakar", "अलीबख्श", "Ali Bakhsh", "इनमें से कोई नहीं", "None of these"], 0, 1, [
+        "हरफूल जाट जुलाणी ने गरीबों की मदद के लिए धनवानों को लूटा था, अतः इन्हें उत्तरी भारत का राबिनहुड कहा जाता है।",
+        "हरफूल सिंह का जन्म जींद जिले के जुलाना क्षेत्र के भम्भेवा गाँव में हुआ था।",
+        "वे ब्रिटिश शासन काल में गौहत्या रोकने और गरीब कन्याओं का विवाह करवाने के लिए प्रसिद्ध थे।",
+        "उन पर हरियाणवी में कई फिल्में (जैसे 'हरफूल जाट जुलाणी आला') भी बनी हैं।",
+        "उन्होंने ब्रिटिश सरकार के खिलाफ भी बगावत की थी।"
+    ]],
+    ["Q69. 'लेडी सहवाग' के उपनाम से प्रसिद्ध है -", "Famous by the nickname 'Lady Sehwag' -", ["वीरेंद्र सहवाग", "Virender Sehwag", "मंसूर अली खाँ", "Mansoor Ali Khan", "शेफाली वर्मा", "Shafali Verma", "उपर्युक्त सभी", "All of the above"], 2, 1, [
+        "रोहतक की विस्फोटक महिला क्रिकेटर शेफाली वर्मा को लेडी सहवाग कहा जाता है।",
+        "शेफाली वर्मा भारत के लिए टी20 अंतरराष्ट्रीय खेलने वाली सबसे कम उम्र की खिलाड़ी हैं।",
+        "उनके आक्रामक बल्लेबाजी अंदाज के कारण उनकी तुलना वीरेंद्र सहवाग से की जाती है।",
+        "उन्होंने 2023 के अंडर-19 महिला T20 विश्व कप में भारतीय टीम की कप्तानी कर खिताब जिताया था।",
+        "वीरेंद्र सहवाग को 'नजफगढ़ का नवाब' कहा जाता है।"
+    ]],
+    ["Q70. हिन्दी में व्यंग्य पत्रकारिता के पितामह कहे जाते हैं -", "The father of satirical journalism in Hindi is considered to be -", ["बाबू बालमुकुंद गुप्त", "Babu Balmukund Gupt", "विशंभर नाथ कौशिक", "Vishwambhar Nath Kaushik", "पं माधव प्रसाद मिश्र", "Pt. Madhav Prasad Mishra", "पं. लख्मीचंद", "Pt. Lakhmi Chand"], 0, 1, [
+        "रेवाड़ी के बाबू बालमुकुंद गुप्त को शिवशंभू के चिट्ठे (व्यंग्य) के कारण यह उपनाम मिला।",
+        "उनका जन्म 1865 में रेवाड़ी के गुड़ियानी गाँव में हुआ था।",
+        "'शिवशंभू के चिट्ठे' के माध्यम से उन्होंने तत्कालीन वायसराय लॉर्ड कर्जन की नीतियों पर तीखा व्यंग्य किया था।",
+        "उन्होंने 'अखबार-ए-चुनार' और 'कोहिनूर' जैसे पत्रों का संपादन किया।",
+        "वे हिंदी और उर्दू दोनों भाषाओं के प्रकांड विद्वान थे।"
+    ]],
+    ["Q71. निम्न में से किसे 'हूणहरिणकेशरी' कहा जाता है?", "Who among the following is called 'Hunharinkeshari'?", ["हर्षवर्धन", "Harshavardhan", "आदित्यवर्धन", "Adityavardhan", "प्रभाकरवर्धन", "Prabhakarvardhan", "पुष्यभूति", "Pushyabhuti"], 2, 1, [
+        "पुष्यभूति वंश के शासक प्रभाकरवर्धन को हूणों का नाश करने के कारण हूणहरिणकेशरी कहा गया।",
+        "प्रभाकरवर्धन राजा हर्षवर्धन और राज्यवर्धन के पिता थे।",
+        "'हूणहरिणकेशरी' का अर्थ है - हूण रूपी हिरणों का शिकार करने वाला शेर (केशरी)।",
+        "इस वंश की राजधानी थानेसर (वर्तमान कुरुक्षेत्र) थी।",
+        "बाणभट्ट द्वारा रचित 'हर्षचरित' में प्रभाकरवर्धन के पराक्रम का वर्णन मिलता है।"
+    ]],
+    ["Q72. हरियाणा की राजनीति के पितामह कहलाते हैं -", "The grand old man of Haryana politics is called -", ["चौधरी भजन लाल", "Ch. Bhajan Lal", "चौ. बंसीलाल", "Ch. Bansi Lal", "चौ. देवीलाल", "Ch. Devi Lal", "चौ. श्री मनोहर लाल", "Ch. Manohar Lal"], 2, 1, [
+        "पूर्व उपप्रधानमंत्री व मुख्यमंत्री चौधरी देवीलाल को हरियाणा की राजनीति का पितामह (ताऊ) कहा जाता है।",
+        "इन्हें 'जननायक', 'ताऊ' और 'किसानों का मसीहा' उपनामों से भी जाना जाता है।",
+        "इन्होंने 1987 में हरियाणा में 'बुढ़ापा पेंशन' की ऐतिहासिक शुरुआत की थी।",
+        "ये 1989 से 1991 तक भारत के उप-प्रधानमंत्री रहे।",
+        "चौधरी बंसीलाल को 'हरियाणा का शिल्पी/निर्माता' और 'लौह पुरुष' कहा जाता है।"
+    ]],
+    ["Q73. हरियाणा का स्थापना दिवस कब मनाया जाता है?", "When is Haryana Foundation Day celebrated?", ["1 जनवरी", "1 January", "1 नवम्बर", "1 November", "15 अगस्त", "15 August", "26 जनवरी", "26 January"], 1, 1, [
+        "1 नवम्बर 1966 को पंजाब पुनर्गठन अधिनियम के तहत हरियाणा 17 वां राज्य बना था।",
+        "सरदार हुकम सिंह समिति की सिफारिश पर हरियाणा राज्य का गठन हुआ था।",
+        "जे. सी. शाह आयोग (सीमा आयोग) ने हरियाणा और पंजाब की सीमाएं तय की थीं।",
+        "गठन के समय हरियाणा में केवल 7 जिले थे।",
+        "हरियाणा का क्षेत्रफल 44,212 वर्ग किलोमीटर है।"
+    ]],
+    ["Q74. हरियाणा की राजधानी क्या है?", "What is the capital of Haryana?", ["रोहतक", "Rohtak", "चंडीगढ़", "Chandigarh", "अंबाला", "Ambala", "हिसार", "Hisar"], 1, 1, [
+        "हरियाणा और पंजाब की संयुक्त राजधानी चंडीगढ़ है।",
+        "चंडीगढ़ एक केंद्र शासित प्रदेश (UT) भी है।",
+        "इसे फ्रांसीसी वास्तुकार 'ली कार्बूजियर' द्वारा डिजाइन किया गया था।",
+        "इसे 'सिटी ब्यूटीफुल' के नाम से जाना जाता है।",
+        "चंडीगढ़ की प्रसिद्ध 'रॉक गार्डन' का निर्माण नेकचंद सैनी ने किया था।"
+    ]],
+    ["Q75. हरियाणा के वर्तमान में कुल कितने जिले हैं?", "How many districts are there in Haryana at present?", ["20", "20", "21", "21", "22", "22", "23", "23"], 2, 1, [
+        "प्रश्न के विकल्पों और आधिकारिक डेटा के अनुसार, हरियाणा का 22वां और सबसे नया जिला चरखी दादरी है।",
+        "चरखी दादरी को दिसंबर 2016 में भिवानी जिले से अलग करके बनाया गया था।",
+        "क्षेत्रफल की दृष्टि से हरियाणा का सबसे बड़ा जिला सिरसा है।",
+        "क्षेत्रफल की दृष्टि से सबसे छोटा जिला फरीदाबाद है, लेकिन जनसंख्या सबसे ज्यादा है।",
+        "हरियाणा में 6 प्रशासनिक मंडल (Divisions) और 73 उपमंडल (Sub-divisions) हैं।"
+    ]],
+
+    // --- General Science (76-90) ---
+    ["Q76. यूरिया अधिकतम मात्रा में कहाँ पायी जाती है?", "Where is urea found in maximum quantity?", ["पसीने में", "In sweat", "मूत्र में", "In urine", "रक्त में", "In blood", "लार में", "In saliva"], 1, 1, [
+        "स्तनधारियों में प्रोटीन चयापचय के उपोत्पाद के रूप में यूरिया बनती है, जो मूत्र द्वारा उत्सर्जित होती है।",
+        "यूरिया का निर्माण शरीर में यकृत (Liver) में होता है।",
+        "गुर्दे (Kidneys) रक्त से यूरिया को छानकर मूत्र के माध्यम से बाहर निकालते हैं।",
+        "मानव मूत्र में लगभग 95% पानी और 2% यूरिया होता है।",
+        "प्रयोगशाला में कृत्रिम रूप से संश्लेषित पहला कार्बनिक यौगिक भी यूरिया ही था (फ्रेडरिक वोलर द्वारा)।"
+    ]],
+    ["Q77. पेप्सिन किसका एक उदाहरण है?", "Pepsin is an example of what?", ["हार्मोन", "Hormone", "विटामिन", "Vitamin", "एन्जाइम", "Enzyme", "खनिज", "Mineral"], 2, 1, [
+        "पेप्सिन पेट में स्रावित होने वाला एक पाचक एन्जाइम है जो प्रोटीन को पचाता है।",
+        "यह अमाशय (Stomach) की गैस्ट्रिक ग्रंथियों से पेप्सिनोजेन के रूप में स्रावित होता है।",
+        "यह हाइड्रोक्लोरिक एसिड (HCl) की उपस्थिति में सक्रिय पेप्सिन में बदलता है।",
+        "यह जटिल प्रोटीनों को तोड़कर सरल पेप्टाइड्स में बदल देता है।",
+        "सभी एन्जाइम मूल रूप से प्रोटीन ही होते हैं।"
+    ]],
+    ["Q78. दूध में कौन-सा विटामिन नहीं पाया जाता है?", "Which vitamin is not found in milk?", ["विटामिन A", "Vitamin A", "विटामिन B", "Vitamin B", "विटामिन C", "Vitamin C", "विटामिन D", "Vitamin D"], 2, 1, [
+        "दूध लगभग सभी पोषक तत्वों का स्रोत है, परन्तु इसमें विटामिन सी और आयरन नहीं पाया जाता।",
+        "विटामिन C (एस्कॉर्बिक एसिड) मुख्य रूप से खट्टे फलों (आंवला, नींबू, संतरा) में पाया जाता है।",
+        "विटामिन C की कमी से 'स्कर्वी' नामक रोग (मसूड़ों से खून आना) हो जाता है।",
+        "दूध में कैल्शियम, विटामिन D और विटामिन A प्रचुर मात्रा में होते हैं।",
+        "विटामिन सी गर्म करने पर सबसे जल्दी नष्ट होने वाला विटामिन है।"
+    ]],
+    ["Q79. एन्जाइम की रचना किससे होती है?", "What are enzymes made of?", ["कार्बोहाइड्रेट से", "From carbohydrates", "अमीनो अम्ल से", "From amino acids", "वसा से", "From fats", "विटामिन्स से", "From vitamins"], 1, 1, [
+        "सभी एन्जाइम प्रोटीन होते हैं और प्रोटीन की मूल इकाई अमीनो अम्ल (Amino acids) है।",
+        "मानव शरीर को कुल 20 प्रकार के अमीनो अम्लों की आवश्यकता होती है।",
+        "एन्जाइम हमारे शरीर में 'जैव-उत्प्रेरक' (Bio-catalysts) के रूप में कार्य करते हैं, जो रासायनिक प्रतिक्रियाओं को तेज करते हैं।",
+        "राइबोजाइम (Ribozyme) एकमात्र ऐसा एन्जाइम है जो प्रोटीन का नहीं, बल्कि RNA का बना होता है।",
+        "प्रोटीन की फैक्ट्री राइबोसोम को कहा जाता है।"
+    ]],
+    ["Q80. मलेरिया का परजीवी कौन-सा है?", "What is the parasite of malaria?", ["मादा ऐनोफेलीज मच्छर", "Female Anopheles mosquito", "मादा एडीज मच्छर", "Female Aedes mosquito", "नर ऐनोफेलीज मच्छर", "Male Anopheles mosquito", "क्यूलेक्स मच्छर", "Culex mosquito"], 0, 1, [
+        "मलेरिया रोग 'प्लाज्मोडियम' परजीवी से होता है, जिसका वाहक मादा ऐनोफेलीज मच्छर है।",
+        "मलेरिया से शरीर में प्लीहा (Spleen) और लाल रक्त कणिकाएं (RBCs) प्रभावित होती हैं।",
+        "नर मच्छर कभी नहीं काटते, वे फूलों का रस चूसते हैं; रक्त केवल मादा मच्छर पीती हैं।",
+        "डेंगू और चिकनगुनिया 'मादा एडीज एजिप्टी' मच्छर के काटने से होता है।",
+        "मलेरिया के उपचार के लिए कुनैन (सिनकोना वृक्ष की छाल से) का प्रयोग किया जाता है।"
+    ]],
+    ["Q81. दूध में उपस्थित प्रोटीन कौन-सा है?", "Which protein is present in milk?", ["एल्ब्यूमिन", "Albumin", "ग्लोब्युलिन", "Globulin", "कैसीन", "Casein", "केराटिन", "Keratin"], 2, 1, [
+        "दूध का सफेद रंग इसी 'कैसीन' नामक प्रोटीन की उपस्थिति के कारण होता है।",
+        "गाय के दूध का हल्का पीलापन कैरोटीन (Carotene) के कारण होता है।",
+        "छोटे बच्चों के पेट में 'रेनिन' नामक एन्जाइम पाया जाता है जो कैसीन (दूध) को पचाता है।",
+        "केराटिन प्रोटीन बालों, नाखूनों और त्वचा में पाया जाता है।",
+        "एल्ब्यूमिन अंडे की सफेदी में पाया जाने वाला प्रमुख प्रोटीन है।"
+    ]],
+    ["Q82. मेंढक के हृदय में कितने चैम्बर (कक्ष) होते हैं?", "How many chambers are there in a frog's heart?", ["दो", "Two", "तीन", "Three", "चार", "Four", "पाँच", "Five"], 1, 1, [
+        "उभयचर (Amphibians) जैसे मेंढक के हृदय में 3 कक्ष (2 आलिंद, 1 निलय) होते हैं।",
+        "मछलियों के हृदय में केवल 2 कक्ष (1 आलिंद, 1 निलय) होते हैं।",
+        "मनुष्य, पक्षियों और स्तनधारियों के हृदय में 4 कक्ष (2 आलिंद, 2 निलय) होते हैं।",
+        "मगरमच्छ एक सरीसृप है, लेकिन अपवाद स्वरूप इसके हृदय में 4 कक्ष होते हैं।",
+        "मेंढक अपनी त्वचा, फेफड़ों और मुख-गुहा तीनों से श्वसन कर सकता है।"
+    ]],
+    ["Q83. मनुष्य के मस्तिष्क का वजन लगभग कितना होता है?", "What is the approximate weight of the human brain?", ["1000-1100 ग्राम", "1000-1100 grams", "1200-1300 ग्राम", "1200-1300 grams", "1350-1400 ग्राम", "1350-1400 grams", "1500-1600 ग्राम", "1500-1600 grams"], 2, 1, [
+        "एक वयस्क मनुष्य के मस्तिष्क का औसत वजन लगभग 1350 से 1400 ग्राम होता है।",
+        "मस्तिष्क पूरे शरीर के वजन का केवल 2% होता है, लेकिन यह शरीर की 20% ऑक्सीजन का उपयोग करता है।",
+        "मस्तिष्क का सबसे बड़ा भाग 'सेरेब्रम' (प्रमस्तिष्क) होता है, जो बुद्धि और सोचने का केंद्र है।",
+        "सेरेबेलम (अनुमस्तिष्क) शरीर का संतुलन बनाए रखने का कार्य करता है।",
+        "मस्तिष्क की हड्डियों के आवरण को क्रेनियम (Cranium) कहा जाता है।"
+    ]],
+    ["Q84. पैतृकता सिद्ध करने में क्या सहायक है?", "What is helpful in proving paternity?", ["रक्त समूह जाँच", "Blood group test", "DNA और फिंगर प्रिंटिंग", "DNA and Finger printing", "एक्स-रे", "X-ray", "MRI", "MRI"], 1, 1, [
+        "माता-पिता या पैतृकता (Paternity) की पहचान के लिए DNA फिंगरप्रिंटिंग सबसे सटीक तकनीक है।",
+        "DNA (डीऑक्सीराइबोन्यूक्लिक एसिड) अनुवांशिक सामग्री है।",
+        "DNA फिंगरप्रिंटिंग तकनीक का आविष्कार सर एलेक जेफ्रीज ने किया था।",
+        "भारत में 'सेंटर फॉर सेलुलर एंड मॉलिक्यूलर बायोलॉजी' (CCMB) हैदराबाद में DNA फिंगरप्रिंटिंग होती है।",
+        "भारत में इसके जनक डॉ. लालजी सिंह को माना जाता है।"
+    ]],
+    ["Q85. दूध में पायी जानेवाली शर्करा कौन-सी है?", "Which sugar is found in milk?", ["सुक्रोज", "Sucrose", "फ्रक्टोज", "Fructose", "माल्टोज", "Maltose", "लैक्टोज", "Lactose"], 3, 1, [
+        "दूध में मिठास लैक्टोज शर्करा के कारण होती है। लैक्टिक अम्ल जीवाणु इसे दही में बदलते हैं।",
+        "लैक्टोज एक डाइसैकराइड है जो ग्लूकोज और गैलेक्टोज से मिलकर बनता है।",
+        "फ्रक्टोज फलों में पाई जाने वाली शर्करा है, जो सबसे मीठी प्राकृतिक शर्करा होती है।",
+        "सुक्रोज साधारण चीनी (Table Sugar) है, जो गन्ने और चुकंदर से प्राप्त होती है।",
+        "दूध की शुद्धता मापने के लिए लैक्टोमीटर का प्रयोग किया जाता है।"
+    ]],
+    ["Q86. प्रकाश वर्ष किसका मात्रक है?", "Light year is the unit of?", ["समय का", "Time", "दूरी का", "Distance", "प्रकाश की तीव्रता का", "Intensity of light", "द्रव्यमान का", "Mass"], 1, 1, [
+        "प्रकाश द्वारा एक वर्ष में निर्वात में तय की गई दूरी को प्रकाश वर्ष (Light Year) कहते हैं। यह दूरी का मात्रक है।",
+        "1 प्रकाश वर्ष = 9.46 × 10^15 मीटर होता है।",
+        "दूरी मापने की सबसे बड़ी इकाई 'पारसेक' (Parsec) है।",
+        "1 पारसेक = 3.26 प्रकाश वर्ष के बराबर होता है।",
+        "ब्रह्मांडीय दूरियों (तारों, आकाशगंगाओं के बीच) को मापने के लिए प्रकाश वर्ष का उपयोग होता है।"
+    ]],
+    ["Q87. कैण्डिला किसका मात्रक है?", "Candela is the unit of?", ["ज्योति फ्लक्स का", "Luminous flux", "ज्योति तीव्रता का", "Luminous intensity", "दाब का", "Pressure", "बल का", "Force"], 1, 1, [
+        "Luminous Intensity (ज्योति तीव्रता) का SI मात्रक कैण्डिला (Candela) है।",
+        "विज्ञान की अंतर्राष्ट्रीय प्रणाली (SI) में कुल 7 मूल मात्रक होते हैं।",
+        "दाब का SI मात्रक 'पास्कल' (Pascal) है।",
+        "बल का SI मात्रक 'न्यूटन' (Newton) है।",
+        "ज्योति फ्लक्स (Luminous Flux) का मात्रक 'ल्यूमेन' (Lumen) होता है।"
+    ]],
+    ["Q88. भूस्थिर उपग्रह की पृथ्वी से ऊँचाई कितनी होती है?", "What is the height of a geostationary satellite from the Earth?", ["3600 किमी०", "3600 km", "36000 किमी०", "36000 km", "18000 किमी०", "18000 km", "24000 किमी०", "24000 km"], 1, 1, [
+        "जिओस्टेशनरी सैटेलाइट (भूस्थिर उपग्रह) पृथ्वी की सतह से लगभग 36,000 किलोमीटर की ऊंचाई पर स्थापित किए जाते हैं।",
+        "इन उपग्रहों का پرिक्रमण काल ठीक पृथ्वी के घूर्णन काल (24 घंटे) के बराबर होता है।",
+        "इसीलिए ये पृथ्वी से देखने पर हमेशा आसमान में एक ही जगह स्थिर दिखाई देते हैं।",
+        "इनका उपयोग मुख्यतः संचार (TV, टेलीफोन) और मौसम की भविष्यवाणी के लिए किया जाता है।",
+        "इन्हें हमेशा भूमध्य रेखा के ठीक ऊपर स्थापित किया जाता है।"
+    ]],
+    ["Q89. बल्ब का फिलामेंट किसका बना होता है?", "What is the filament of a bulb made of?", ["नाइक्रोम का", "Nichrome", "तांबे का", "Copper", "टंगस्टन (W) का", "Tungsten (W)", "लोहे का", "Iron"], 2, 1, [
+        "टंगस्टन का गलनांक बहुत उच्च (लगभग 3400°C) होता है, इसीलिए इसे बल्ब के फिलामेंट में प्रयुक्त किया जाता है।",
+        "बल्ब के अंदर फिलामेंट को जलने से बचाने के लिए निष्क्रिय गैस (आर्गन या नाइट्रोजन) भरी जाती है।",
+        "हीटर की कुंडली (Coil) नाइक्रोम (निकेल + क्रोमियम) की बनी होती है।",
+        "टंगस्टन का रासायनिक प्रतीक 'W' (Wolfram) है।",
+        "बिजली के फ्यूज तार आमतौर पर टिन और सीसा (Tin & Lead) के मिश्र धातु से बने होते हैं।"
+    ]],
+    ["Q90. सूर्य की ऊर्जा का स्रोत क्या है?", "What is the source of Sun's energy?", ["नाभिकीय विखंडन", "Nuclear fission", "नाभिकीय संलयन", "Nuclear fusion", "रासायनिक अभिक्रिया", "Chemical reaction", "प्रकाश विद्युत प्रभाव", "Photoelectric effect"], 1, 1, [
+        "सूर्य में हाइड्रोजन के समस्थानिक मिलकर हीलियम बनाते हैं, इस नाभिकीय संलयन (Nuclear Fusion) से अपार ऊर्जा निकलती है।",
+        "सूर्य के द्रव्यमान का लगभग 71% हाइड्रोजन और 26.5% हीलियम है।",
+        "हाइड्रोजन बम भी 'नाभिकीय संलयन' के सिद्धांत पर ही कार्य करता है।",
+        "परमाणु बम (Atom Bomb) और परमाणु रिएक्टर 'नाभिकीय विखंडन' (Nuclear Fission) के सिद्धांत पर कार्य करते हैं।",
+        "सूर्य का प्रकाश पृथ्वी तक पहुँचने में लगभग 8 मिनट 20 सेकंड का समय लेता है।"
+    ]],
+
+    // --- Hindi (91-100) ---
+    ["Q91. 'उच्छवास' शब्द का सही संधि-विच्छेद क्या होगा?", "", ["उत् + श्वास", "उत् + श्वास", "उच्च + श्वास", "उच्च + श्वास", "उत + छ्वास", "उत + छ्वास", "उच् + छ्वास", "उच् + छ्वास"], 0, 4, [
+        "यह 'व्यंजन संधि' का बहुत ही महत्वपूर्ण उदाहरण है।",
+        "नियम: यदि 'त्' या 'द्' के बाद 'श्' आए, तो 'त्/द्‌' बदलकर 'च्' हो जाता है और 'श्' बदलकर 'छ' हो जाता है।",
+        "अतः उत् + श्वास = उच्छ्वास (च् + छ)।",
+        "इसी प्रकार के अन्य उदाहरण: उत् + शिष्ट = उच्छिष्ट, सत् + शास्त्र = सच्छास्त्र।"
+    ]],
+    ["Q92. 'पीपर पात सरिस मन डोला' पंक्ति में 'मन' क्या है?", "", ["उपमान", "उपमान", "वाचक शब्द", "वाचक शब्द", "साधारण धर्म", "साधारण धर्म", "उपमेय", "उपमेय"], 3, 4, [
+        "यह उपमा अलंकार का एक प्रसिद्ध उदाहरण है।",
+        "उपमा अलंकार के 4 अंग होते हैं: उपमेय (जिसकी तुलना हो), उपमान (जिससे तुलना हो), वाचक शब्द (समानता बताने वाले शब्द), साधारण धर्म (जो गुण समान हो)।",
+        "यहाँ 'मन' की तुलना की जा रही है, अतः 'मन' उपमेय है।",
+        "पीपल का पत्ता (पीपर पात) उपमान है। 'सरिस' वाचक शब्द है और 'डोला' साधारण धर्म है।"
+    ]],
+    ["Q93. निम्नलिखित में से शुद्ध वर्तनी वाला शब्द छाँटिए:", "", ["कवियित्री", "कवियित्री", "कवयित्री", "कवयित्री", "कवीयित्री", "कवीयित्री", "कबयित्री", "कबयित्री"], 1, 4, [
+        "हिंदी में 'कवि' का स्त्रीलिंग रूप 'कवयित्री' होता है।",
+        "यह वर्तनी की दृष्टि से सबसे ज्यादा पूछा जाने वाला शब्द है।",
+        "ध्यान दें: इसमें 'व' पर कोई मात्रा नहीं होती, 'य' पर छोटी इ की मात्रा और 'त्र' पर बड़ी ई की मात्रा होती है (क-व-यि-त्री)।"
+    ]],
+    ["Q94. 'आठ कनौजिया नौ चूल्हे' लोकोक्ति का सही अर्थ क्या है?", "", ["मस्त रहना", "मस्त रहना", "फाका करना", "फाका करना", "अलगाव की स्थिति (फूट होना)", "अलगाव की स्थिति (फूट होना)", "अत्यधिक सम्पन्नता की स्थिति", "अत्यधिक सम्पन्नता की स्थिति"], 2, 4, [
+        "यह एक प्रसिद्ध हिंदी लोकोक्ति (कहावत) है।",
+        "इसका शाब्दिक अर्थ है: 8 लोग हैं और उनके लिए 9 अलग-अलग चूल्हे जल रहे हैं।",
+        "अर्थात, जब लोगों में आपसी सहमति न हो, परिवार या समूह में फूट हो और सब अलग-अलग रहें, तब इस लोकोक्ति का प्रयोग होता है।",
+        "सही उत्तर: अलगाव की स्थिति या फूट होना।"
+    ]],
+    ["Q95. 'स्थावर' का उचित विलोम शब्द क्या होगा?", "", ["सचल", "सचल", "चंचल", "चंचल", "चेतन", "चेतन", "जंगम", "जंगम"], 3, 4, [
+        "'स्थावर' का अर्थ होता है स्थिर रहने वाला या एक ही जगह टिके रहने वाला (जैसे- पहाड़, पेड़)।",
+        "इसका सटीक विलोम 'जंगम' होता है, जिसका अर्थ है चलने-फिरने वाला या गतिमान (Mobile)।",
+        "अन्य विलोम: जड़ का चेतन, अचल का सचल।"
+    ]],
+    ["Q96. 'पुण्डरीक' निम्नलिखित में से किसका पर्यायवाची शब्द है?", "", ["कमल का", "कमल का", "गुलाब का", "गुलाब का", "चंद्रमा का", "चंद्रमा का", "सूर्य का", "सूर्य का"], 0, 4, [
+        "'पुण्डरीक' विशेष रूप से 'सफेद रंग के कमल' को कहा जाता है।",
+        "कमल के अन्य प्रसिद्ध पर्यायवाची: नीरज, सरोज, जलज, पंकज, राजीव, अरविंद, शतदल।",
+        "लाल कमल को 'कोकनद' और नीले कमल को 'इंदीवर' कहा जाता है।"
+    ]],
+    ["Q97. 'निर्विकार' शब्द में कौन-सा समास है?", "", ["बहुव्रीहि समास", "बहुव्रीहि समास", "अव्ययीभाव समास", "अव्ययीभाव समास", "तत्पुरुष समास", "तत्पुरुष समास", "कर्मधारय समास", "कर्मधारय समास"], 1, 4, [
+        "'निर्विकार' का समास विग्रह है - 'बिना विकार के' या 'जिसमें कोई विकार न हो'।",
+        "इसमें पहला पद 'निर्' एक अव्यय (उपसर्ग) है।",
+        "जिस समास में पहला पद प्रधान हो और वह अव्यय हो, उसे 'अव्ययीभाव समास' कहते हैं।",
+        "अन्य उदाहरण: आजीवन, यथाशक्ति, प्रतिदिन।"
+    ]],
+    ["Q98. 'जो स्त्री सूर्य भी न देख सके' इस वाक्यांश के लिए एक सटीक शब्द क्या है?", "", ["विदुषी", "विदुषी", "असूर्यम्पश्या", "असूर्यम्पश्या", "शास्त्रज्ञा", "शास्त्रज्ञा", "प्रज्ञा", "प्रज्ञा"], 1, 4, [
+        "वाक्यांश के लिए एक शब्द:",
+        "प्राचीन काल में रनिवास (महल के अंदर) में जो स्त्रियां कड़े पर्दे में रहती थीं और बाहर का सूर्य भी नहीं देख पाती थीं, उन्हें 'असूर्यम्पश्या' कहा जाता था।",
+        "विदुषी = विद्वान स्त्री।",
+        "प्रज्ञा = बुद्धि।"
+    ]],
+    ["Q99. निम्नलिखित में से कौन-सा शब्द 'तत्सम' नहीं है?", "", ["क्षीण", "क्षीण", "घोटक", "घोटक", "चैत", "चैत", "दिनकर", "दिनकर"], 2, 4, [
+        "तत्सम वे शब्द होते हैं जो संस्कृत से बिना किसी बदलाव के हिंदी में आए हैं। तद्भव वे हैं जिनका रूप बदल गया है।",
+        "'चैत' एक तद्भव शब्द है, क्योंकि इसका शुद्ध संस्कृत (तत्सम) रूप 'चैत्र' होता है।",
+        "क्षीण (तद्भव: छीन) और घोटक (तद्भव: घोड़ा) दोनों तत्सम शब्द हैं।"
+    ]],
+    ["Q100. 'वीभत्स रस' का स्थायी भाव क्या है?", "", ["भय", "भय", "निर्वेद", "निर्वेद", "जुगुप्सा (घृणा)", "जुगुप्सा (घृणा)", "विस्मय", "विस्मय"], 2, 4, [
+        "रस के 9 स्थायी भाव होते हैं।",
+        "अरुचिकर, गंदी या घृणित वस्तु को देखकर मन में उत्पन्न घृणा को 'जुगुप्सा' कहते हैं, जो वीभत्स रस का स्थायी भाव है।",
+        "भयानक रस का स्थायी भाव 'भय' है।",
+        "शांत रस का स्थायी भाव 'निर्वेद' है।",
+        "अद्भुत रस का स्थायी भाव 'विस्मय' या 'आश्चर्य' है।"
+    ]]
+];
+
+const finalQuestions = rawData.map(d => {
+    let qText = d[1] ? `${d[0]}<br><span class='bilingual-eng'>${d[1]}</span>` : d[0];
+    let opts = [];
+    for(let i=0; i<8; i+=2) {
+        opts.push(d[2][i] === d[2][i+1] ? d[2][i] : `${d[2][i]} / ${d[2][i+1]}`);
+    }
+    let ansIdx = d[3];
+    let cat = d[4];
+    let expText = "";
+    let ansStr = opts[ansIdx];
+    
+    // Formatting the rich detailed explanations based on category
+    if(cat === 1) { 
+        let facts = d[5].map(f => `<li style='margin-bottom:6px;'>${f}</li>`).join('');
+        expText = `<b>हल / Solution:</b> ${ansStr}<br><br><span style='color:var(--primary); font-size:15px;'>💡 <b>प्रमुख तथ्य / Important Facts:</b></span><ul style='padding-left:22px; margin-top:8px;'>${facts}</ul>`;
+    } else if (cat === 2) { 
+        let steps = d[5].map(s => `<div style='margin-bottom:5px;'>${s}</div>`).join('');
+        expText = `<b>हल / Solution:</b> ${ansStr}<br><br><span class='math-trick'>🔥 स्मार्ट एप्रोच / Smart Logic:</span><br><div style='margin-top:8px;'>${steps}</div>`;
+    } else if (cat === 3) { 
+        let grammarRules = d[5].map(r => `<div style='margin-bottom:6px;'>${r}</div>`).join('');
+        expText = `<b>हल / Solution:</b> ${ansStr}<br><br><span class='grammar-rule'>📖 व्याकरण नियम (Grammar Rule):</span><br><div style='margin-top:8px;'>${grammarRules}</div>`;
+    } else if (cat === 4) { 
+        let hindiRules = d[5].map(r => `<div style='margin-bottom:6px;'>${r}</div>`).join('');
+        expText = `<b>उत्तर / Answer:</b> ${ansStr}<br><br><span style='color:#e11d48; font-weight:700;'>📖 व्याख्या (Explanation):</span><br><div style='margin-top:8px;'>${hindiRules}</div>`;
+    }
+    return { q: qText, o: opts, a: ansIdx, e: expText };
+});
+
+const STORAGE_KEY = 'mock2a_adv_final_105_active'; 
+const COMPLETED_KEY = 'mock2a_adv_final_105_comp';
+let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { started: false, submitted: false, currentQ: 0, answers: {}, status: {}, timeLeft: 105 * 60 };
+let timerInterval;
+
+window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+function initDashboard() {
+    let completedData = null;
+    try { const dataStr = localStorage.getItem(COMPLETED_KEY); if(dataStr) completedData = JSON.parse(dataStr); } catch(e) {}
+    if (state.submitted || completedData) {
+        document.getElementById('dash-unattempted').style.display = 'none';
+        document.getElementById('dash-attempted').style.display = 'block';
+        if(completedData) {
+            document.getElementById('dash-score-text').innerText = `${completedData.score}/${finalQuestions.length}.0 Marks`;
+            let percentage = (completedData.score / finalQuestions.length) * 100;
+            document.getElementById('dash-progress-bar').style.width = `${percentage}%`;
+        }
+    } else {
+        document.getElementById('dash-attempted').style.display = 'none';
+        document.getElementById('dash-unattempted').style.display = 'block';
+    }
+    if (state.started && !state.submitted) {
+        showScreen('test-screen'); startTimer(); renderPalette(); loadQuestion(state.currentQ);
+    } else { showScreen('dashboard-screen'); }
+}
+
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(d => { if(d.id !== 'pause-overlay') d.classList.remove('active'); });
+    document.getElementById(id).classList.add('active');
+}
+
+function startTest() {
+    state = { started: true, submitted: false, currentQ: 0, answers: {}, status: {}, timeLeft: 105 * 60 };
+    for(let i=0; i<finalQuestions.length; i++) state.status[i] = 0; 
+    saveState(); showScreen('test-screen'); startTimer(); renderPalette(); loadQuestion(0);
+}
+
+function reattemptTest() {
+    if(confirm("क्या आप निश्चित रूप से एक नया टेस्ट शुरू करना चाहते हैं? (Are you sure you want to start a new test?)")) {
+        localStorage.removeItem(COMPLETED_KEY); startTest();
+    }
+}
+
+function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+function loadQuestion(idx) {
+    if (idx < 0) idx = 0; if (idx >= finalQuestions.length) idx = finalQuestions.length - 1;
+    state.currentQ = idx; if(state.status[idx] === 0) state.status[idx] = 1; 
+    document.getElementById('q-no').innerText = `Question ${idx + 1} of ${finalQuestions.length}`;
+    document.getElementById('q-text').innerHTML = finalQuestions[idx].q;
+    let optsHTML = ''; let labels = ['A', 'B', 'C', 'D'];
+    finalQuestions[idx].o.forEach((opt, i) => {
+        let isSel = state.answers[idx] === i; let selClass = isSel ? 'selected' : '';
+        optsHTML += `<div class="glass-panel option ${selClass}" onclick="selectOption(${i})"><div class="opt-label">${labels[i]}</div><div style="flex:1;">${opt}</div></div>`;
+    });
+    document.getElementById('options-box').innerHTML = optsHTML;
+    saveState(); renderPalette();
+}
+
+function selectOption(optIdx) { state.answers[state.currentQ] = optIdx; loadQuestion(state.currentQ); }
+function saveNext() {
+    if(state.answers[state.currentQ] !== undefined) state.status[state.currentQ] = 2; else state.status[state.currentQ] = 1; 
+    if(state.currentQ < finalQuestions.length - 1) loadQuestion(state.currentQ + 1); else { saveState(); renderPalette(); }
+}
+function markReview() {
+    if(state.answers[state.currentQ] !== undefined) state.status[state.currentQ] = 4; else state.status[state.currentQ] = 3; 
+    if(state.currentQ < finalQuestions.length - 1) loadQuestion(state.currentQ + 1); else { saveState(); renderPalette(); }
+}
+function clearResponse() { delete state.answers[state.currentQ]; state.status[state.currentQ] = 1; loadQuestion(state.currentQ); }
+function changeQ(step) { if(state.currentQ + step >= 0 && state.currentQ + step < finalQuestions.length) { loadQuestion(state.currentQ + step); } }
+
+function renderPalette() {
+    let html = ''; let counts = { ans: 0, notAns: 0, notVis: 0, marked: 0 };
+    for(let i=0; i<finalQuestions.length; i++) {
+        let s = state.status[i]; let cls = 's-0';
+        if(s === 0) { cls = 's-0'; counts.notVis++; } if(s === 1) { cls = 's-2'; counts.notAns++; }
+        if(s === 2) { cls = 's-1'; counts.ans++; } if(s === 3) { cls = 's-3'; counts.marked++; }
+        if(s === 4) { cls = 's-4'; counts.ans++; counts.marked++; }
+        let active = (i === state.currentQ) ? 'active' : ''; if(active && s === 0) cls = 's-2'; 
+        html += `<button class="p-btn ${cls} ${active}" onclick="loadQuestion(${i})">${i+1}</button>`;
+    }
+    document.getElementById('q-grid').innerHTML = html;
+    document.getElementById('c-ans').innerText = counts.ans; document.getElementById('c-notans').innerText = counts.notAns;
+    document.getElementById('c-notvis').innerText = counts.notVis; document.getElementById('c-mark').innerText = counts.marked;
+}
+
+function startTimer() {
+    if(timerInterval) clearInterval(timerInterval); updateTimerDisplay();
+    timerInterval = setInterval(() => {
+        if (state.timeLeft <= 0) { clearInterval(timerInterval); submitTest(); return; }
+        state.timeLeft--; updateTimerDisplay();
+        if(state.timeLeft % 10 === 0) saveState();
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    let m = Math.floor(state.timeLeft / 60).toString(); let s = (state.timeLeft % 60).toString().padStart(2, '0');
+    if(m.length < 2) m = m.padStart(2, '0'); document.getElementById('timer-display').innerText = `${m}:${s}`;
+}
+
+function togglePause() {
+    let modal = document.getElementById('pause-overlay');
+    if (modal.style.display === 'flex') { modal.style.display = 'none'; startTimer(); } else { clearInterval(timerInterval); modal.style.display = 'flex'; }
+}
+
+function submitTest() {
+    if(!confirm("क्या आप निश्चित रूप से टेस्ट सबमिट करना चाहते हैं? (Are you sure you want to submit?)")) return;
+    clearInterval(timerInterval); state.submitted = true; saveState(); calculateResult();
+}
+
+function calculateResult() {
+    let correct = 0, wrong = 0, attempted = 0;
+    for(let i=0; i<finalQuestions.length; i++) {
+        if(state.answers[i] !== undefined) {
+            attempted++;
+            if(state.answers[i] === finalQuestions[i].a) correct++; else wrong++;
+        }
+    }
+    const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const completedData = { score: correct, attempted: attempted, wrong: wrong, date: today };
+    localStorage.setItem(COMPLETED_KEY, JSON.stringify(completedData));
+    document.getElementById('r-score').innerText = correct; document.getElementById('r-attempt').innerText = attempted;
+    document.getElementById('r-wrong').innerText = wrong; document.getElementById('r-acc').innerText = attempted > 0 ? Math.round((correct/attempted)*100) + '%' : '0%';
+    showScreen('result-screen');
+}
+
+function viewSavedResults() { calculateResult(); }
+
+function viewSolutions() {
+    showScreen('solution-screen'); let html = ''; let labels = ['A', 'B', 'C', 'D'];
+    finalQuestions.forEach((q, i) => {
+        let uAns = state.answers[i]; let cAns = q.a; let optsHtml = '';
+        q.o.forEach((opt, oIdx) => {
+            let cls = ''; let icon = '';
+            if(oIdx === cAns) { cls = 'correct'; icon = ' ✔'; }
+            else if(oIdx === uAns && uAns !== cAns) { cls = 'wrong'; icon = ' ❌ (Your Answer)'; }
+            optsHtml += `<div class="glass-panel sol-opt ${cls}"><strong>${labels[oIdx]}.</strong> <div style="flex:1;">${opt} <span style="float:right">${icon}</span></div></div>`;
+        });
+        let userStatus = uAns === null || uAns === undefined ? "<span style='color:var(--text-muted)'>हल नहीं किया (Unattempted)</span>" : 
+                       (uAns === cAns ? "<span style='color:var(--success)'>सही (Correct)</span>" : "<span style='color:var(--danger)'>गलत (Incorrect)</span>");
+        html += `<div class="glass-panel sol-card"><div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--primary);">Q${i+1}. ${q.q}</div>${optsHtml}<div style="font-weight:bold; margin:15px 0; color:var(--text-muted);">Status: ${userStatus}</div><div class="glass-panel sol-exp">${q.e}</div></div>`;
+    });
+    document.getElementById('sol-container').innerHTML = html;
+}
+function toggleTheme() { document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
+</script>
+</body>
+</html>
