@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Computer Set Number 9</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Beautiful Moving Gradient & Glassmorphism Theme */
+        :root {
+            --bg-grad-1: #4facfe; --bg-grad-2: #00f2fe; --bg-grad-3: #a18cd1; --bg-grad-4: #fbc2eb;
+            --glass-bg: rgba(255, 255, 255, 0.9); --glass-border: rgba(255, 255, 255, 0.6); --glass-shadow: rgba(31, 38, 135, 0.15);
+            --text-main: #1f2937; --text-muted: #64748b;
+            --primary: #2563eb; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --purple: #8b5cf6;
+            --option-bg: rgba(243, 244, 246, 0.8); --option-selected: rgba(219, 234, 254, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+        [data-theme="dark"] {
+            --bg-grad-1: #0f2027; --bg-grad-2: #203a43; --bg-grad-3: #2c5364; --bg-grad-4: #141e30;
+            --glass-bg: rgba(17, 25, 40, 0.85); --glass-border: rgba(255, 255, 255, 0.15); --glass-shadow: rgba(0, 0, 0, 0.5);
+            --text-main: #f9fafb; --text-muted: #94a3b8;
+            --primary: #3b82f6; 
+            --option-bg: rgba(55, 65, 81, 0.7); --option-selected: rgba(30, 58, 138, 0.8);
+            --card-bg: rgba(31, 41, 55, 0.95);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; touch-action: manipulation;}
+        
+        body { 
+            height: 100vh; height: 100dvh; 
+            background: linear-gradient(45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3), var(--bg-grad-4)); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+            color: var(--text-main); 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 var(--glass-shadow); border-radius: 12px; }
+        
+        .btn { font-family: 'Poppins', sans-serif; background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;}
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-warning { background: var(--warning); color: #fff;}
+        .btn-clear { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-mark { background: var(--purple); color: white; }
+        .btn-prev { background: var(--text-muted); color: white; }
+
+        /* Screens */
+        .screen { display: none; flex-direction: column; height: 100%; width: 100vw; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; }
+
+        /* --- DASHBOARD UI --- */
+        #dashboard-screen { overflow-y: auto; background: var(--card-bg); align-items: center; padding-bottom: 30px;}
+        
+        .dash-header-top { background: #1e293b; color: white; width: 100%; padding: 15px 20px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 15px; position: sticky; top:0; z-index: 100;}
+        
+        .dash-content { width: 100%; max-width: 800px; padding: 20px; }
+        .section-title { font-weight: 600; color: var(--primary); margin: 15px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 15px; }
+        
+        .dash-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--glass-border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .test-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text-main);}
+        .test-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        
+        .progress-container { width: 100%; height: 6px; background: var(--glass-border); border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #fbc02d; width: 0%; transition: width 0.5s ease;}
+        
+        .dash-actions { display: flex; gap: 12px; margin-top: 15px; }
+        .dash-actions .btn { flex: 1; padding: 10px; font-size: 14px; border-radius: 8px;}
+        
+        .syllabus-footer { display: flex; justify-content: space-between; font-size: 12px; color: var(--primary); border-top: 1px solid var(--glass-border); padding-top: 12px; margin-top: 15px; }
+
+        /* --- TEST SCREEN UI --- */
+        header.test-head { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-bottom: 10px; margin-inline: 10px; }
+        .header-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: 700; background: var(--card-bg); border: 1px solid var(--glass-border); color: var(--danger); padding: 5px 12px; border-radius: 20px; }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 0 10px 10px 10px; }
+        .question-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        .q-header { padding: 10px 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
+        .q-body { flex: 1; padding: 15px; overflow-y: auto; font-size: 16px; line-height: 1.6; }
+        
+        .options-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;}
+        .option { padding: 12px; border: 2px solid var(--glass-border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--option-bg); font-weight: 500; font-size: 15px;}
+        .option.selected { border-color: var(--primary); background: var(--option-selected); color: var(--primary); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--glass-border); display: flex; justify-content: center; align-items: center; font-weight: bold; }
+        .option.selected .opt-label { background: var(--primary); color: white; border-color: var(--primary);}
+        
+        .q-footer { padding: 10px; border-top: 1px solid var(--glass-border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-radius: 0 0 12px 12px; }
+
+        /* --- PALETTE UI --- */
+        .palette-section { width: 320px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .palette-header { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; font-weight: bold; font-size: 15px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; font-size: 12px; border-bottom: 1px solid var(--glass-border); font-weight: 500;}
+        .stat-item { display: flex; align-items: center; gap: 6px;}
+        .badge { width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 10px; font-weight: bold;}
+        .s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);} 
+        .s-1 { background: var(--success); } .s-2 { background: var(--danger); } .s-3 { background: var(--purple); } 
+        .s-4 { background: var(--primary); position: relative; }
+        .s-4::after { content: '✔'; position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; background: white; color: var(--primary); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 8px; }
+        
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .p-btn.s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);}
+        .p-btn.active { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.1);}
+        .submit-area { padding: 10px; border-top: 1px solid var(--glass-border); border-radius: 0 0 12px 12px;}
+
+        /* --- RESULTS & SOLUTIONS UI --- */
+        #result-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        #solution-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        .sol-card { padding: 20px; margin-bottom: 15px; width: 100%; max-width: 800px; }
+        .sol-opt { padding: 10px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; gap: 10px; align-items: center; font-size: 15px; background: var(--card-bg);}
+        .sol-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); text-decoration: line-through;}
+        .sol-exp { margin-top: 15px; padding: 15px; background: rgba(37, 99, 235, 0.05); border: 1px solid var(--glass-border); border-left: 4px solid var(--primary); border-radius: 8px; font-size: 14.5px; line-height: 1.6; }
+        .sol-exp ul { padding-left: 20px; margin-top: 8px; }
+        .sol-exp li { margin-bottom: 6px; }
+
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+
+        @media (max-width: 992px) {
+            .main-area { flex-direction: column; overflow-y: auto;}
+            .question-section { flex: none; min-height: 450px;}
+            .palette-section { width: 100%; flex: none; min-height: 350px;}
+            .q-footer .btn { padding: 10px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="dashboard-screen" class="screen active">
+        <div class="dash-header-top">
+            <a href="#" style="color: white; text-decoration: none; font-size: 20px; margin-right: 10px;">&#8592;</a>
+            Mock Tests
+        </div>
+
+        <div class="dash-content">
+            <div id="dash-unattempted" style="display: none;">
+                <div class="section-title">Suggested Next Test</div>
+                <div class="dash-card">
+                    <div class="test-title">Computer Set Number 9 (Simplified)</div>
+                    <div class="test-meta">
+                        <span>25 Qs • 25 mins • 25.0 Marks</span>
+                    </div>
+                    <div class="test-meta" style="justify-content: flex-end;">
+                        <button class="btn btn-outline" style="padding: 6px 20px; border-radius: 20px;" onclick="startTest()">Start Test 🚀</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span>Syllabus: Programming, Linux & OS Fundamentals</span>
+                        <span style="color:var(--success);">🔗 Share</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dash-attempted" style="display: none;">
+                <div class="dash-card">
+                    <div class="test-title">Computer Set Number 9 (Simplified)</div>
+                    <div class="test-meta" style="margin-bottom: 5px;">
+                        <span id="dash-score-text" style="font-size: 15px; color: var(--text-muted);">0/25.0 Marks</span>
+                    </div>
+                    
+                    <div class="progress-container"><div class="progress-fill" id="dash-progress-bar"></div></div>
+
+                    <div class="dash-actions">
+                        <button class="btn btn-outline" onclick="viewSavedResults()">View Results</button>
+                        <button class="btn btn-outline" onclick="reattemptTest()">Reattempt &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAUSE OVERLAY -->
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px; font-size: 2rem;">Test Paused ⏸️</h2>
+        <button class="btn btn-primary" style="font-size: 1.2rem; padding: 10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+    </div>
+
+    <!-- TEST SCREEN -->
+    <div id="test-screen" class="screen">
+        <header class="glass-panel test-head">
+            <div class="header-title">Computer Set Number 9</div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="toggleTheme()">🌓 Theme</button>
+                <button class="btn btn-warning" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="togglePause()">⏸ Pause</button>
+                <div class="timer-box">⏱ <span id="timer-display">25:00</span></div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="glass-panel question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--success); font-weight:bold;">+1 <span style="color: var(--text-muted); font-weight:normal;">|</span> <span style="color: var(--danger);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <button class="btn btn-mark" onclick="markReview()">Mark & Next</button>
+                    <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                    <button class="btn btn-prev" onclick="changeQ(-1)">Previous</button>
+                    <button class="btn btn-primary" onclick="saveNext()">Save & Next</button>
+                </div>
+            </div>
+
+            <div class="glass-panel palette-section">
+                <div class="palette-header">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">25</div> Not Visit</div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn btn-primary" style="width: 100%; background: var(--success); font-size: 15px; padding: 10px;" onclick="submitTest()">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen" class="screen">
+        <div style="width: 100%; max-width: 800px; margin-bottom: 15px;"><button class="btn btn-clear" onclick="showDashboard()">&#8592; Back to Dashboard</button></div>
+        <div class="glass-panel" style="max-width: 800px; width: 100%; padding: 25px;">
+            <h1 style="color: var(--primary); text-align: center;">Test Submitted Successfully! 🎉</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 25px 0;">
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-score" style="color: var(--primary); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Score</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-attempt" style="color: var(--success); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Attempted</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-wrong" style="color: var(--danger); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Wrong</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-acc" style="color: var(--purple); font-size: 1.8rem;">0%</h2><p style="color: var(--text-muted); font-size:12px;">Accuracy</p></div>
+            </div>
+            <button class="btn btn-primary" style="width:100%; font-size: 15px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+        </div>
+    </div>
+
+    <!-- SOLUTION SCREEN -->
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%; margin:0 auto;">
+            <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 12px 15px; position: sticky; top: 5px; z-index: 10;">
+                <h3 style="color: var(--primary);">Detailed Solutions</h3>
+                <button class="btn btn-clear" style="padding: 5px 10px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+            </div>
+            <div id="sol-container"></div>
+        </div>
+    </div>
+
+<script>
+    const MEMORY_STORE = {};
+    function safeGetItem(key) { try { return localStorage.getItem(key) || MEMORY_STORE[key] || null; } catch(e) { return MEMORY_STORE[key] || null; } }
+    function safeSetItem(key, value) { try { localStorage.setItem(key, value); } catch(e) {} MEMORY_STORE[key] = value; }
+    function safeRemoveItem(key) { try { localStorage.removeItem(key); } catch(e) {} delete MEMORY_STORE[key]; }
+
+    const STORAGE_KEY = 'comp_set9_simp_active'; 
+    const COMPLETED_KEY = 'comp_set9_simp_comp';
+
+    const finalQuestions = [
+        {
+            "q": "एक अनुवादक जो किसी उच्च-स्तरीय भाषा में लिखे गये प्रोग्राम को पढ़ता है तथा उसको मशीनी भाषा में बदलता है, होता है-",
+            "o": ["असेम्बलर", "ट्रान्सलेटर", "कम्पाइलर", "सिस्टम सॉफ्टवेयर"],
+            "a": 2,
+            "e": "<b>हल:</b> (C) कम्पाइलर।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>कम्पाइलर एक ऐसा प्रोग्राम है जो हमारी (इंसानों की) भाषा में लिखे कोड को मशीन (0, 1) की भाषा में बदलता है।</li><li>यह पूरे प्रोग्राम को एक ही बार में पढ़ लेता है और अनुवाद कर देता है।</li><li>इंटरप्रेटर भी यही काम करता है लेकिन वह लाइन-दर-लाइन (एक-एक करके) पढ़ता है।</li><li>कम्पाइलर कोड में हुई गलतियों (Errors) को एक साथ बता देता है।</li><li>C और C++ जैसी भाषाओं में कोड को चलाने के लिए कम्पाइलर का ही इस्तेमाल होता है।</li></ul>"
+        },
+        {
+            "q": "निम्न में से कौन-सी प्रोग्रामिंग भाषा ऑब्जेक्ट ओरिएंटिड है?",
+            "o": ["JAVA", "C", "Pascal", "LISP"],
+            "a": 0,
+            "e": "<b>हल:</b> (A) JAVA।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>जावा (JAVA) एक ऑब्जेक्ट-ओरिएंटेड प्रोग्रामिंग भाषा है, जिसका मतलब है कि इसमें 'ऑब्जेक्ट्स' बनाकर काम किया जाता है।</li><li>इसका सबसे बड़ा फायदा है 'एक बार लिखो, कहीं भी चलाओ' (Write Once, Run Anywhere)।</li><li>C भाषा और पास्कल (Pascal) में ऑब्जेक्ट्स का इस्तेमाल नहीं होता, वो पुराने तरीके से काम करती हैं।</li><li>LISP नाम की भाषा का इस्तेमाल ज्यादातर आर्टिफिशियल इंटेलिजेंस (AI) में होता है।</li><li>जावा को साल 1995 में बनाया गया था और यह इंटरनेट के लिए बहुत सुरक्षित मानी जाती है।</li></ul>"
+        },
+        {
+            "q": "Linux सिस्टम के लिए निम्न में से कौन-सा कमाण्ड किसी फाइल में से पैटर्न को खोजने के लिए होता है?",
+            "o": ["find", "grep", "lookup", "उपर्युक्त में से कोई नहीं"],
+            "a": 1,
+            "e": "<b>हल:</b> (B) grep।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>grep कमांड का इस्तेमाल लिनक्स में किसी फाइल के अंदर कोई खास शब्द या लाइन खोजने के लिए किया जाता है।</li><li>find कमांड से हम कंप्यूटर में फाइलों को खोजते हैं, जबकि grep से फाइल के अंदर का टेक्स्ट खोजते हैं।</li><li>यह बहुत ही ताकतवर सर्च टूल है जो काम को सेकंडों में कर देता है।</li><li>डिफ़ॉल्ट रूप से यह छोटे और बड़े अक्षरों (a और A) में फर्क करता है (Case-sensitive)।</li><li>इसका पूरा नाम 'Global Regular Expression Print' है।</li></ul>"
+        },
+        {
+            "q": "Linux सिस्टम में बाइनरी क्रियान्वयन फाइल जो कि सिस्टम के प्रशासन में प्रयोग की जाती है, साधारणतः...... डायरेक्टरी में रखी जाती है।",
+            "o": ["usr", "bin", "dev", "etc"],
+            "a": 1,
+            "e": "<b>हल:</b> (B) bin।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>लिनक्स में /bin नाम के फोल्डर (डायरेक्टरी) में वो सारे मुख्य प्रोग्राम रखे जाते हैं जो कंप्यूटर चलाने के लिए जरूरी होते हैं (जैसे फाइल कॉपी या डिलीट करना)।</li><li>'bin' का मतलब बाइनरी (Binary) होता है, यानी वो फाइलें जिन्हें सीधे चलाया (Run किया) जा सकता है।</li><li>/dev फोल्डर में माउस, कीबोर्ड जैसे हार्डवेयर की जानकारी होती है।</li><li>/etc फोल्डर में सिस्टम की सेटिंग्स वाली फाइलें सेव रहती हैं।</li><li>/usr फोल्डर में यूज़र (हमारे) काम आने वाले प्रोग्राम और डेटा होते हैं।</li></ul>"
+        },
+        {
+            "q": "Linux सिस्टम में किस कमाण्ड के द्वारा हम किसी भी फाइल या फाइलों से उसके अन्दर की पंक्तियों, शब्दों व अक्षरों की गणना कर सकते हैं?",
+            "o": ["dd", "lp", "cat", "wc"],
+            "a": 3,
+            "e": "<b>हल:</b> (D) wc।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>'wc' का मतलब 'Word Count' (शब्द गिनना) होता है।</li><li>इस कमांड से हम आसानी से पता लगा सकते हैं कि किसी फाइल में कुल कितनी लाइनें, कितने शब्द और कितने अक्षर हैं।</li><li>अगर हमें सिर्फ लाइनें गिननी हों तो हम 'wc -l' लिखते हैं।</li><li>अगर सिर्फ शब्द गिनने हों तो 'wc -w' का इस्तेमाल किया जाता है।</li><li>'cat' कमांड का इस्तेमाल फाइल के अंदर लिखा हुआ मैटर स्क्रीन पर पढ़ने के लिए होता है।</li></ul>"
+        },
+        {
+            "q": "'C' भाषा में किसी भी चर के नाम की अधिकतम सीमा होती है",
+            "o": ["6 अक्षर", "8 अक्षर", "10 अक्षर", "उपर्युक्त में से कोई नहीं"],
+            "a": 1,
+            "e": "<b>हल:</b> (B) 8 अक्षर।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>बहुत पुराने C कम्पाइलर्स (जैसे Turbo C) में किसी वेरिएबल (जैसे a, b, sum) के नाम के केवल शुरुआती 8 अक्षर ही पढ़े जाते थे।</li><li>हालाँकि, आजकल के नए कम्पाइलर में यह नाम 31 अक्षरों तक का भी हो सकता है, लेकिन पुरानी किताबों में उत्तर 8 ही माना जाता है।</li><li>वेरिएबल का नाम हमेशा किसी अक्षर (A-Z, a-z) से ही शुरू होना चाहिए, किसी नंबर से नहीं।</li><li>नाम के बीच में आप खाली जगह (Space) नहीं छोड़ सकते।</li><li>C भाषा में छोटे (a) और बड़े (A) अक्षरों को अलग-अलग माना जाता है (Case-sensitive)।</li></ul>"
+        },
+        {
+            "q": "'C' भाषा के लिए नीचे दिये गये कथनों में से विषम कथन को चयनित करें।",
+            "o": ["a = a + 1", "a += 1", "a ++", "a =+ 1"],
+            "a": 3,
+            "e": "<b>हल:</b> (D) a =+ 1।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>विकल्प A, B, और C तीनों का काम 'a' की वैल्यू को 1 से बढ़ाना है (Increment करना)।</li><li>लेकिन विकल्प D (a =+ 1) का मतलब है 'a को +1 के बराबर कर दो', यह वैल्यू को बढ़ाता नहीं है बल्कि सीधा 1 सेट कर देता है।</li><li>'a += 1' को लिखने का छोटा तरीका (Shorthand) कहते हैं, जो कोडिंग को तेज़ बनाता है।</li><li>'a++' का इस्तेमाल अक्सर लूप (जैसे for, while) में एक कदम आगे बढ़ने के लिए बहुत ज्यादा होता है।</li><li>चूंकि विकल्प D बाकी तीनों से बिल्कुल अलग काम कर रहा है, इसलिए यही सही जवाब है।</li></ul>"
+        },
+        {
+            "q": "एक 'स्विच' कथन किस लिए प्रयोग में लाया जाता है?",
+            "o": ["एक प्रोग्राम के अन्दर यूजर द्वारा बनाये गये फंक्शनों के बीच स्विच करने के लिए", "एक चर से दूसरे पर स्विच करने के लिए", "किसी प्रोग्राम में एक स्थान से दूसरे स्थान पर जम्प करने के लिए", "उपर्युक्त में से कोई नहीं"],
+            "a": 2,
+            "e": "<b>हल:</b> (C) किसी प्रोग्राम में एक स्थान से दूसरे स्थान पर जम्प करने के लिए।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>'switch' का इस्तेमाल तब होता है जब हमारे पास बहुत सारे विकल्प हों और हमें किसी एक विकल्प पर सीधे जाना (जम्प करना) हो।</li><li>यह 'if-else' की तरह ही फैसले लेने का काम करता है, लेकिन इसे पढ़ना और समझना ज्यादा आसान होता है।</li><li>इसमें हम सिर्फ पूर्णांक (जैसे 1, 2, 3) या अक्षर (जैसे 'A', 'B') ही चेक कर सकते हैं, दशमलव वाले नंबर नहीं।</li><li>हर हिस्से (case) के बाद 'break' लगाना पड़ता है ताकि काम होने के बाद प्रोग्राम बाहर आ सके।</li><li>अगर कोई भी शर्त सही न हो तो सबसे आखिर में 'default' वाला हिस्सा अपने-आप चल जाता है।</li></ul>"
+        },
+        {
+            "q": "यदि string, जिनकी तुलना की गई, एकसमान है, तो फंक्शन 'strcmp' द्वारा निम्न में से क्या मान प्राप्त होगा?",
+            "o": ["0", "1", "2", "सत्य"],
+            "a": 0,
+            "e": "<b>हल:</b> (A) 0।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>strcmp का मतलब 'String Compare' है, यानी दो शब्दों या वाक्यों (Strings) की तुलना करना।</li><li>अगर दोनों शब्द बिल्कुल एक जैसे (समान) हैं, तो यह फंक्शन हमेशा 0 (शून्य) जवाब देता है।</li><li>यह फंक्शन C भाषा के &lt;string.h&gt; नाम के टूलबॉक्स (हेडर फाइल) में पहले से बना हुआ मिलता है।</li><li>यह अक्षरों को उनके नंबर (ASCII वैल्यू) से मिलाता है (जैसे 'A' का 65 और 'a' का 97)।</li><li>अगर पहला शब्द बड़ा हो तो यह 0 से बड़ा नंबर (Positive) देता है, और छोटा हो तो 0 से छोटा नंबर (Negative) देता है।</li></ul>"
+        },
+        {
+            "q": "एक pointer चर (C भाषा में)",
+            "o": ["फंक्शन में आर्ग्यूमेंट की तरह प्रयोग में आ सकता है", "का मान फंक्शन में बदला जा सकता है", "का मान एक फंक्शन रिटर्न कर सकता है", "उपर्युक्त सभी"],
+            "a": 3,
+            "e": "<b>हल:</b> (D) उपर्युक्त सभी।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>पॉइंटर (Pointer) एक खास तरह का वेरिएबल है जो डेटा की जगह, डेटा का 'पता' (Memory Address) याद रखता है।</li><li>हम पॉइंटर को किसी फंक्शन के अंदर डेटा भेजने (Argument) के लिए इस्तेमाल कर सकते हैं।</li><li>पॉइंटर की मदद से हम किसी भी फंक्शन के अंदर से बाहरी डेटा को सीधे बदल (Change) सकते हैं।</li><li>कोई फंक्शन अपना काम खत्म करने के बाद एक पॉइंटर वापस (Return) भी कर सकता है।</li><li>पॉइंटर बनाने के लिए हमेशा तारे (*) के निशान का इस्तेमाल होता है (जैसे int *ptr;)।</li></ul>"
+        },
+        {
+            "q": "'C' प्रोग्रामिंग भाषा के लिए कौन-सा 'कीवर्ड' मान्य नहीं है?",
+            "o": ["struct", "int", "union", "real"],
+            "a": 3,
+            "e": "<b>हल:</b> (D) real।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>C भाषा में 'real' नाम का कोई भी रिज़र्व शब्द (Keyword) नहीं होता है, यह गलत है।</li><li>दशमलव वाले नंबर (जैसे 2.5 या 3.14) लिखने के लिए C में 'float' या 'double' का इस्तेमाल होता है।</li><li>C भाषा में कुल 32 ऐसे शब्द हैं जिनका अर्थ कंप्यूटर को पहले से पता होता है (जैसे int, if, else)।</li><li>'struct' और 'union' दोनों एकदम सही शब्द हैं, जिनसे हम अपना खुद का डेटा टाइप बना सकते हैं।</li><li>हम इन 32 रिज़र्व शब्दों का इस्तेमाल अपने किसी वेरिएबल का नाम रखने के लिए नहीं कर सकते।</li></ul>"
+        },
+        {
+            "q": "फंक्शन आर्ग्यूमेन्ट हो सकता है",
+            "o": ["एक structure सदस्य", "एक pointer चर", "एक पूर्ण structure", "उपर्युक्त सभी"],
+            "a": 3,
+            "e": "<b>हल:</b> (D) उपर्युक्त सभी।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>जब हम किसी फंक्शन को कोई काम करने के लिए बुलाते हैं, तो उसे जो जानकारी या डेटा देते हैं, उसे आर्ग्यूमेंट (Argument) कहते हैं।</li><li>हम किसी बड़े स्ट्रक्चर (Structure) का एक छोटा सा हिस्सा भी फंक्शन को दे सकते हैं।</li><li>अगर जरूरत पड़े तो हम पूरा का पूरा स्ट्रक्चर भी एक साथ फंक्शन के अंदर भेज सकते हैं।</li><li>पॉइंटर (एड्रेस) देना सबसे अच्छा रहता है क्योंकि इससे कंप्यूटर की मेमोरी और समय दोनों बचते हैं।</li><li>बिना आर्ग्यूमेंट के भी फंक्शन बन सकते हैं, लेकिन आर्ग्यूमेंट देने से फंक्शन को बाहर की जानकारी मिल जाती है।</li></ul>"
+        },
+        {
+            "q": "'C' भाषा में malloc( ) फंक्शन किसके साथ सम्बन्धित है?",
+            "o": ["स्टोरेज मैनेजमेंट", "array", "typedef", "फंक्शन की परिभाषा"],
+            "a": 0,
+            "e": "<b>हल:</b> (A) स्टोरेज मैनेजमेंट।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>malloc() का मतलब 'Memory Allocation' (मेमोरी मांगना) होता है।</li><li>जब प्रोग्राम चल रहा हो और हमें अचानक और मेमोरी (RAM) की जरूरत पड़ जाए, तब इसका इस्तेमाल होता है (डायनामिक मेमोरी)।</li><li>यह C भाषा की &lt;stdlib.h&gt; फाइल के अंदर मिलता है।</li><li>सफल होने पर यह मांगी गई मेमोरी का शुरुआती एड्रेस (पॉइंटर) हमें दे देता है।</li><li>जो मेमोरी हम malloc से लेते हैं, काम खत्म होने के बाद उसे 'free()' लिखकर वापस भी करना पड़ता है, वर्ना कंप्यूटर हैंग हो सकता है।</li></ul>"
+        },
+        {
+            "q": "C++ में एक फंक्शन, जो कि एक क्लास के अन्दर रहता है, को कहते हैं",
+            "o": ["मेम्बर फंक्शन", "ऑपरेटर", "क्लास फंक्शन", "मेथड"],
+            "a": 0,
+            "e": "<b>हल:</b> (A) मेम्बर फंक्शन।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>C++ में जब हम किसी क्लास (Class) के अंदर कोई फंक्शन बनाते हैं, तो उसे 'मेम्बर फंक्शन' (Member Function) कहा जाता है।</li><li>जावा (Java) जैसी कुछ अन्य भाषाओं में इसे अक्सर 'मेथड' (Method) नाम से पुकारा जाता है।</li><li>यह फंक्शन अपनी क्लास के छुपे हुए डेटा (Private Variables) को बहुत आसानी से इस्तेमाल कर सकता है।</li><li>क्लास के बाहर से इसे बुलाने के लिए हमें ऑब्जेक्ट बनाकर डॉट (.) ऑपरेटर लगाना पड़ता है।</li><li>हम चाहें तो इसे क्लास के अंदर या क्लास के बाहर, दोनों जगह लिख सकते हैं।</li></ul>"
+        },
+        {
+            "q": "निम्न में से कौनसा ग्लोबल स्कोप रिजोल्यूशन ऑपरेटर है?",
+            "o": ["::", ";", "%", "||"],
+            "a": 0,
+            "e": "<b>हल:</b> (A) :: (डबल कोलन)।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>'::' (डबल कोलन) के इस निशान को स्कोप रिजोल्यूशन ऑपरेटर कहते हैं।</li><li>इसका मुख्य काम किसी ग्लोबल वेरिएबल (जो सबके लिए हो) को इस्तेमाल करना है, खासकर तब जब किसी लोकल वेरिएबल का नाम भी बिल्कुल वैसा ही हो।</li><li>इसके जरिए हम क्लास के फंक्शन को क्लास की बॉडी के बाहर भी आसानी से लिख सकते हैं।</li><li>यह ऑपरेटर सिर्फ C++ में होता है, यह पुरानी C भाषा में मौजूद नहीं था।</li><li>यह क्लास के स्टैटिक (Static) मेम्बर्स तक पहुँचने में भी बहुत काम आता है।</li></ul>"
+        },
+        {
+            "q": "कॉपी कॉन्स्ट्रक्टर को बुलाया (इन्वोक) किया जाता है, जब",
+            "o": ["एक फंक्शन, वैल्यू के द्वारा रिटर्न होता है", "एक आर्ग्यूमेन्ट, वैल्यू के द्वारा पास किया जाता है", "(A) तथा (B) दोनों", "उपर्युक्त में से कोई नहीं"],
+            "a": 2,
+            "e": "<b>हल:</b> (C) (A) तथा (B) दोनों।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>कॉपी कॉन्स्ट्रक्टर (Copy Constructor) C++ का एक खास तरीका है जिससे हम एक पहले से बने हुए ऑब्जेक्ट की टू-कॉपी (Photocopy) बनाकर नया ऑब्जेक्ट तैयार करते हैं।</li><li>जब हम किसी फंक्शन को कोई ऑब्जेक्ट (वैल्यू के रूप में) देते हैं, तब यह अपने-आप (ऑटोमैटिक) चल जाता है।</li><li>जब कोई फंक्शन अपना काम खत्म करके किसी ऑब्जेक्ट को वापस (Return) करता है, तब भी यह चलता है।</li><li>अगर हम अपने कोड में इसे नहीं बनाते, तो C++ खुद से एक अदृश्य कॉपी कॉन्स्ट्रक्टर बना देता है।</li><li>इसका इस्तेमाल डेटा को सुरक्षित रूप से एक जगह से दूसरी जगह ले जाने के लिए होता है।</li></ul>"
+        },
+        {
+            "q": "प्वाइंटर टू प्वाइंटर को परिभाषित करने का सही सिंटैक्स निम्न में से कौन-सा है ?",
+            "o": ["**ptr", "*ptr", "ptr", "***ptr to ptr"],
+            "a": 0,
+            "e": "<b>हल:</b> (A) **ptr।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>पॉइंटर टू पॉइंटर का मतलब है 'पते का पता' (Address of Address)।</li><li>यह एक ऐसा पॉइंटर है जो डेटा के बजाय किसी दूसरे पॉइंटर का एड्रेस (पता) याद रखता है।</li><li>इसे बनाने (डिक्लेयर करने) के लिए दो बार तारे का निशान (**) लगाना पड़ता है (जैसे int **ptr;)।</li><li>इसका इस्तेमाल C/C++ में 2D ऐरे (टेबल जैसा डेटा) बनाने में किया जाता है।</li><li>अगर 'p' एक साधारण पॉइंटर है तो '*p' उसकी वैल्यू देगा, और '**ptr' उससे भी एक लेवल अंदर की वैल्यू निकाल कर लाएगा।</li></ul>"
+        },
+        {
+            "q": "निम्न में से किस एक का उपयोग करके एक ऐरे एलिमेन्ट को एक्सेस किया जाता है ?",
+            "o": ["फर्स्ट-इन-फर्स्ट-आउट अप्रोच", "डॉट ऑपरेटर", "मेम्बर नेम", "इंडेक्स नम्बर"],
+            "a": 3,
+            "e": "<b>हल:</b> (D) इंडेक्स नम्बर।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>ऐरे (Array) में रखे गए किसी खास आइटम को निकालने या देखने के लिए उसके 'इंडेक्स नंबर' (Index Number) का इस्तेमाल होता है।</li><li>C और C++ में यह गिनती हमेशा 1 की बजाय 0 (शून्य) से शुरू होती है।</li><li>अगर किसी ऐरे में 10 आइटम हैं, तो पहले आइटम का नंबर 0 होगा और आखिरी आइटम का नंबर 9 होगा।</li><li>अगर ऐरे का नाम 'arr' है, तो पहले आइटम को प्रोग्राम में arr[0] लिखा जाता है।</li><li>ऐरे के सारे आइटम कंप्यूटर की मेमोरी में एक साथ, एक के बाद एक (लाइन से) रखे होते हैं।</li></ul>"
+        },
+        {
+            "q": "ओवरलोडेड फंक्शन",
+            "o": ["फंक्शनों का एक ग्रुप होता है, जिसका नाम एक ही होता है", "में आर्ग्यूमेंटों की संख्या एवं प्रकार एक ही होता है", "स्ट्रेस की वजह से फेल हो सकते हैं", "उपर्युक्त में से कोई नहीं"],
+            "a": 0,
+            "e": "<b>हल:</b> (A) फंक्शनों का एक ग्रुप होता है, जिसका नाम एक ही होता है।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>ओवरलोडेड फंक्शन (Overloaded Function) का मतलब है एक ही नाम के कई सारे अलग-अलग फंक्शन बनाना (जैसे add() नाम के 3 फंक्शन)।</li><li>बस शर्त यह है कि उनको दिए जाने वाले इनपुट (Arguments) अलग-अलग होने चाहिए।</li><li>इनपुट अलग होने का मतलब है कि या तो उनकी गिनती अलग हो (2 इनपुट या 3 इनपुट), या उनका प्रकार (जैसे int, float) अलग हो।</li><li>प्रोग्राम चलते समय कंप्यूटर खुद समझ जाता है कि आपने कौन से इनपुट दिए हैं और उसी हिसाब से सही वाले फंक्शन को चला देता है।</li><li>इससे कोड को पढ़ना और याद रखना बहुत आसान हो जाता है, क्योंकि हमें अलग-अलग कामों के लिए अलग नाम नहीं सोचने पड़ते।</li></ul>"
+        },
+        {
+            "q": "ऑपरेटर ओवरलोडिंग निम्न में से किसको व्यक्त करता है ?",
+            "o": ["नये C++ ऑपरेटर बनाना", "विद्यमान C++ ऑपरेटरों को नई अर्थ प्रदान करना", "(A) तथा (B) दोनों", "उपर्युक्त में से कोई नहीं"],
+            "a": 1,
+            "e": "<b>हल:</b> (B) विद्यमान C++ ऑपरेटरों को नई अर्थ प्रदान करना।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>ऑपरेटर ओवरलोडिंग (Operator Overloading) का मतलब है पहले से मौजूद निशानों (जैसे +, -, *) को कोई नया काम सिखाना।</li><li>हम C++ में कोई बिल्कुल नया निशान नहीं बना सकते, बस पुराने निशानों को नया मतलब दे सकते हैं।</li><li>इससे हम अपनी बनाई हुई क्लास (Objects) को सीधे '+' का निशान लगाकर जोड़ सकते हैं, जैसे हम साधारण नंबरों को जोड़ते हैं।</li><li>C++ में कुछ निशानों (जैसे :: या डॉट ऑपरेटर) को नया काम नहीं सिखाया जा सकता, वो फिक्स होते हैं।</li><li>इसे लागू करने के लिए प्रोग्राम में 'operator' नाम का एक खास कीवर्ड इस्तेमाल किया जाता है।</li></ul>"
+        },
+        {
+            "q": "निम्न में से कौन-सा इनहेरिटेंस का प्रकार नहीं है ?",
+            "o": ["हायरार्किकल", "डिराइव्ड", "मल्टीपाथ", "मल्टीलेवल"],
+            "a": 1,
+            "e": "<b>हल:</b> (B) डिराइव्ड।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>डिराइव्ड (Derived) इनहेरिटेंस का प्रकार नहीं है, बल्कि यह उस नई क्लास का नाम है जो पुरानी क्लास से गुण उधार लेती है।</li><li>C++ में इनहेरिटेंस (विरासत/وراثت) मुख्य रूप से 5 तरह का होता है: Single, Multiple, Hierarchical, Multilevel और Hybrid।</li><li>इसका सबसे बड़ा फायदा यह है कि हमें एक ही कोड को बार-बार नहीं लिखना पड़ता, हम पुराने कोड का फिर से इस्तेमाल (Reuse) कर लेते हैं।</li><li>जिस पुरानी क्लास से गुण लिए जाते हैं उसे बेस क्लास (Base Class) या सुपर क्लास कहते हैं।</li><li>मल्टीलेवल में एक क्लास से दूसरी और दूसरी से तीसरी क्लास बनती है (जैसे दादा-पिता-बच्चा)।</li></ul>"
+        },
+        {
+            "q": "वर्चुअल फंक्शन निम्न में से किसे कहेंगे ?",
+            "o": ["एक फंक्शन, जो कि भौतिक रूप से विद्यमान नहीं होता है", "एक मेम्बर फंक्शन, जिसे रन टाइम पर बदला जा सकता है", "एक फंक्शन, जिसका नाम वर्चुअल है", "उपर्युक्त में से कोई नहीं"],
+            "a": 0,
+            "e": "<b>हल:</b> (A) एक फंक्शन, जो कि भौतिक रूप से विद्यमान नहीं होता है।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>वर्चुअल फंक्शन (Virtual Function) वह फंक्शन है जो पुरानी (Base) क्लास में सिर्फ बनाया जाता है, लेकिन नई (Derived) क्लास में उसका असली काम लिखा जाता है।</li><li>यह एक तरह से वहां बस दिखावे (भौतिक रूप से काम नहीं करता) के लिए होता है, असली काम बाद में तय होता है।</li><li>इसे बनाने के लिए 'virtual' शब्द का इस्तेमाल होता है।</li><li>यह प्रोग्राम चलते समय (Run-time) सही फैसला लेने (पॉलीमॉर्फिज़्म) का सबसे अच्छा तरीका है।</li><li>अगर हम इसके आगे '= 0' लगा दें, तो इसे 'प्योर वर्चुअल फंक्शन' कहते हैं, यानी यह बिल्कुल खाली ढांचा है।</li></ul>"
+        },
+        {
+            "q": "स्ट्रीम, जो कि फंक्शन main() के पहले अपने-आप ओपन हो जाता है, है",
+            "o": ["cin", "cout", "clog", "उपर्युक्त सभी"],
+            "a": 3,
+            "e": "<b>हल:</b> (D) उपर्युक्त सभी।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>C++ का प्रोग्राम शुरू होते ही (main फंक्शन चलते ही) जानकारी के आदान-प्रदान के लिए कुछ रास्ते (Streams) अपने-आप खुल जाते हैं: cin, cout, cerr और clog।</li><li>'cin' का काम कीबोर्ड से डेटा लेना है (Input)।</li><li>'cout' का काम मॉनिटर (स्क्रीन) पर आपका रिजल्ट या टेक्स्ट दिखाना है (Output)।</li><li>'clog' और 'cerr' का काम प्रोग्राम में होने वाली गलतियों (Errors) के मैसेज को दिखाना है।</li><li>ये सब C++ की &lt;iostream&gt; नाम की फाइल के अंदर पहले से सेट होते हैं।</li></ul>"
+        },
+        {
+            "q": "किस शेड्यूलिंग एल्गोरिथम को खास तौर पर टाइम शेयरिंग सिस्टम के लिए बनाया गया है ?",
+            "o": ["FCFS (फर्स्ट कम फर्स्ट सर्व) शेड्यूलिंग", "SJF (शॉर्टेस्ट जॉब फर्स्ट) शेड्यूलिंग", "प्राइऑरिटि शेड्यूलिंग", "राउण्ड-रॉबिन शेड्यूलिंग"],
+            "a": 3,
+            "e": "<b>हल:</b> (D) राउण्ड-रॉबिन शेड्यूलिंग।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>राउण्ड-रॉबिन (Round Robin) सिस्टम में ऑपरेटिंग सिस्टम हर काम (Process) को थोड़ा-थोड़ा बराबर समय (जैसे 2 सेकंड) देता है।</li><li>यह टाइम-शेयरिंग सिस्टम के लिए सबसे अच्छा है, जहाँ कई यूज़र एक साथ काम करते हैं, ताकि सबको लगे कि कंप्यूटर सिर्फ उन्हीं का काम कर रहा है।</li><li>इससे किसी भी एक काम को पूरा होने के लिए बहुत लंबा इंतज़ार नहीं करना पड़ता।</li><li>इसमें सारे काम एक गोल घेरे (Circular Queue) में लगे रहते हैं, जिसका नंबर आता है, वह थोड़ा काम करके वापस लाइन के पीछे लग जाता है।</li><li>FCFS का मतलब है जो पहले आया वो पहले काम खत्म करेगा (जैसे टिकट की लाइन)।</li></ul>"
+        },
+        {
+            "q": "एक एड्रेस, जो कि सी.पी.यू. के द्वारा पैदा होता है, सामान्यतः कहलाता है-",
+            "o": ["फिजिकल एड्रेस", "लॉजिकल एड्रेस", "प्रोसेसर एड्रेस", "उपर्युक्त में से कोई नहीं"],
+            "a": 1,
+            "e": "<b>हल:</b> (B) लॉजिकल एड्रेस।<br><br>💡 <b>आसान भाषा में 5 तथ्य:</b><ul><li>कंप्यूटर का दिमाग यानी CPU (प्रोसेसर) प्रोग्राम को चलाते समय जो एड्रेस खुद बनाता है, उसे लॉजिकल एड्रेस (Logical Address) कहा जाता है।</li><li>इसे कभी-कभी 'वर्चुअल एड्रेस' (Virtual Address) भी कहते हैं।</li><li>लेकिन कंप्यूटर की असली मेमोरी (RAM) में डेटा जहाँ सेव होता है, उसे फिजिकल एड्रेस (Physical Address) कहा जाता है।</li><li>ऑपरेटिंग सिस्टम प्रोग्रामर (हमें) फिजिकल एड्रेस से बिल्कुल दूर रखता है, हम सिर्फ लॉजिकल एड्रेस देख सकते हैं।</li><li>लॉजिकल एड्रेस को फिजिकल एड्रेस में बदलने का काम एक खास हार्डवेयर (MMU) करता है।</li></ul>"
+        }
+    ];
+
+    let state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+    let timerInterval = null;
+    let isPaused = false;
+
+    window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+    function initDashboard() {
+        showScreen('dashboard-screen');
+        let completedData = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) completedData = JSON.parse(dataStr);
+        } catch(e) {}
+
+        if (completedData) {
+            document.getElementById('dash-unattempted').style.display = 'none';
+            document.getElementById('dash-attempted').style.display = 'block';
+            document.getElementById('dash-score-text').innerText = `${completedData.score}/25.0 Marks`;
+            document.getElementById('dash-progress-bar').style.width = `${(completedData.score / 25) * 100}%`;
+        } else {
+            document.getElementById('dash-attempted').style.display = 'none';
+            document.getElementById('dash-unattempted').style.display = 'block';
+        }
+    }
+
+    function startTest() {
+        let saved = null;
+        try {
+            const savedStr = safeGetItem(STORAGE_KEY);
+            if(savedStr) saved = JSON.parse(savedStr);
+        } catch(e){}
+
+        if (saved && !saved.submitted) {
+            state = saved;
+        } else {
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+        }
+        initTestEnv();
+    }
+
+    function reattemptTest() {
+        if(confirm("क्या आप वाकई नया टेस्ट शुरू करना चाहते हैं? आपकी वर्तमान प्रगति डिलीट हो जाएगी।")) {
+            safeRemoveItem(STORAGE_KEY);
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+            initTestEnv();
+        }
+    }
+
+    function initTestEnv() {
+        showScreen('test-screen');
+        renderQuestion();
+        renderPalette();
+        updateStats();
+        
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+        setInterval(() => { if(!state.submitted) safeSetItem(STORAGE_KEY, JSON.stringify(state)); }, 2000);
+    }
+
+    function viewSavedResults() {
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(data) renderResultUI(data);
+    }
+
+    function showDashboard() { initDashboard(); }
+
+    function showScreen(id) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+    }
+
+    function updateTimer() {
+        if(isPaused || state.submitted) return;
+        if(state.time <= 0) { submitTest(); return; }
+        state.time--;
+        const m = Math.floor(state.time / 60), s = state.time % 60;
+        document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+    }
+
+    function toggleTheme() {
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    function renderQuestion() {
+        state.visited[state.currentQ] = true;
+        const q = finalQuestions[state.currentQ];
+        document.getElementById('q-no').innerText = `Question ${state.currentQ + 1}`;
+        document.getElementById('q-text').innerHTML = q.q;
+        let opts = '';
+        q.o.forEach((opt, i) => {
+            const isSel = state.answers[state.currentQ] === i;
+            const selClass = isSel ? 'selected' : '';
+            const charLabel = String.fromCharCode(65 + i);
+            opts += `<div class="glass-panel option ${selClass}" onclick="selectOption(${i})"><div class="opt-label">${charLabel}</div><div style="flex:1;">${opt}</div></div>`;
+        });
+        document.getElementById('options-box').innerHTML = opts;
+        renderPalette();
+        updateStats();
+    }
+
+    function selectOption(index) { state.answers[state.currentQ] = index; renderQuestion(); }
+    function clearResponse() { delete state.answers[state.currentQ]; delete state.marked[state.currentQ]; renderQuestion(); }
+    function markReview() { state.marked[state.currentQ] = true; changeQ(1); }
+    function saveNext() { delete state.marked[state.currentQ]; changeQ(1); }
+
+    function changeQ(step) {
+        const next = state.currentQ + step;
+        if(next >= 0 && next < finalQuestions.length) { state.currentQ = next; renderQuestion(); }
+    }
+
+    function renderPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        finalQuestions.forEach((_, i) => {
+            let cls = 's-0';
+            if(state.visited[i]) {
+                if(state.answers[i] !== undefined && state.marked[i]) cls = 's-4';
+                else if(state.marked[i]) cls = 's-3';
+                else if(state.answers[i] !== undefined) cls = 's-1';
+                else cls = 's-2';
+            }
+            const active = i === state.currentQ ? 'active' : '';
+            grid.innerHTML += `<button class="p-btn ${cls} ${active}" onclick="state.currentQ = ${i}; renderQuestion();">${i + 1}</button>`;
+        });
+    }
+
+    function updateStats() {
+        let ans=0, notans=0, notvis=0, mark=0;
+        finalQuestions.forEach((_, i) => {
+            if(!state.visited[i]) notvis++;
+            else if(state.marked[i]) mark++;
+            else if(state.answers[i] !== undefined) ans++;
+            else notans++;
+        });
+        document.getElementById('c-ans').innerText = ans; document.getElementById('c-notans').innerText = notans;
+        document.getElementById('c-notvis').innerText = notvis; document.getElementById('c-mark').innerText = mark;
+    }
+
+    function submitTest() {
+        if(!confirm("क्या आप वाकई टेस्ट सबमिट करना चाहते हैं?")) return;
+        state.submitted = true; clearInterval(timerInterval);
+        let score=0, attempt=0, wrong=0;
+        finalQuestions.forEach((q, i) => {
+            if(state.answers[i] !== undefined) {
+                attempt++;
+                if(state.answers[i] === q.a) score++; else wrong++;
+            }
+        });
+        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const completedData = { score: score, attempted: attempt, wrong: wrong, time: state.time, date: today, userAnswers: state.answers };
+        
+        safeSetItem(COMPLETED_KEY, JSON.stringify(completedData));
+        safeRemoveItem(STORAGE_KEY);
+        
+        renderResultUI(completedData);
+    }
+
+    function renderResultUI(data) {
+        showScreen('result-screen');
+        const acc = data.attempted > 0 ? ((data.score / data.attempted) * 100).toFixed(1) : 0;
+        document.getElementById('r-score').innerText = `${data.score}`;
+        document.getElementById('r-attempt').innerText = data.attempted;
+        document.getElementById('r-wrong').innerText = data.wrong;
+        document.getElementById('r-acc').innerText = `${acc}%`;
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(!data) return;
+
+        let html = '';
+        finalQuestions.forEach((q, i) => {
+            const uAns = data.userAnswers[i];
+            let optHtml = '';
+            q.o.forEach((opt, oIdx) => {
+                let cls = '', checkMark = '';
+                if(oIdx === q.a) { cls = 'correct'; checkMark = ' ✔'; }
+                else if(oIdx === uAns && uAns !== q.a) { cls = 'wrong'; checkMark = ' ❌ (Your Answer)'; }
+                optHtml += `<div class="glass-panel sol-opt ${cls}"><strong>${String.fromCharCode(65 + oIdx)}.</strong> <div style="flex:1;">${opt} ${checkMark}</div></div>`;
+            });
+            let statusText = uAns !== undefined ? (uAns === q.a ? "हल किया (Correct)" : "हल किया (Incorrect)") : "हल नहीं किया (Unattempted)";
+            html += `<div class="glass-panel sol-card"><div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--primary);">प्र ${i+1}. ${q.q}</div>${optHtml}<div style="font-weight:bold; margin:15px 0; color:var(--text-muted);">Status: ${statusText}</div><div class="glass-panel sol-exp">${q.e}</div></div>`;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+</script>
+</body>
+</html>
