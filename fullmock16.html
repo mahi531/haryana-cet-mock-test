@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Full Mock Test 16 (Haryana Group D)</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Mukta:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg-grad-1:#4facfe;--bg-grad-2:#00f2fe;--bg-grad-3:#a18cd1;--bg-grad-4:#fbc2eb;--glass-bg:rgba(255,255,255,0.9);--glass-border:rgba(255,255,255,0.6);--glass-shadow:rgba(31,38,135,0.15);--text-main:#1f2937;--text-muted:#64748b;--primary:#2563eb;--success:#10b981;--danger:#ef4444;--warning:#f59e0b;--purple:#8b5cf6;--option-bg:rgba(243,244,246,0.8);--option-selected:rgba(219,234,254,0.9);--card-bg:rgba(255,255,255,0.95)}
+[data-theme="dark"]{--bg-grad-1:#0f2027;--bg-grad-2:#203a43;--bg-grad-3:#2c5364;--bg-grad-4:#141e30;--glass-bg:rgba(17,25,40,0.85);--glass-border:rgba(255,255,255,0.15);--glass-shadow:rgba(0,0,0,0.5);--text-main:#f9fafb;--text-muted:#94a3b8;--primary:#3b82f6;--option-bg:rgba(55,65,81,0.7);--option-selected:rgba(30,58,138,0.8);--card-bg:rgba(31,41,55,0.95)}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Mukta','Poppins',sans-serif;transition:background-color .3s,color .3s;touch-action:manipulation}
+body{height:100vh;height:100dvh;background:linear-gradient(45deg,var(--bg-grad-1),var(--bg-grad-2),var(--bg-grad-3),var(--bg-grad-4));background-size:400% 400%;animation:gBG 15s ease infinite;color:var(--text-main);display:flex;flex-direction:column;overflow:hidden}
+@keyframes gBG{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.glass-panel{background:var(--glass-bg);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--glass-border);box-shadow:0 8px 32px 0 var(--glass-shadow);border-radius:12px}
+.btn{font-family:'Poppins',sans-serif;background:var(--primary);color:#fff;border:none;padding:10px 16px;border-radius:6px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:.2s}
+.btn:active{transform:scale(0.95)}.btn-outline{background:transparent;border:1.5px solid var(--primary);color:var(--primary)}.btn-warning{background:var(--warning)}.btn-clear{background:var(--card-bg);color:var(--text-main);border:1px solid var(--glass-border)}.btn-mark{background:var(--purple)}.btn-prev{background:var(--text-muted)}
+.screen{display:none;flex-direction:column;height:100%;width:100vw;position:absolute;top:0;left:0}.screen.active{display:flex}
+#dashboard-screen{overflow-y:auto;background:var(--card-bg);align-items:center;padding-bottom:30px}
+.dash-header-top{background:#1e293b;color:#fff;width:100%;padding:15px 20px;font-size:16px;font-weight:600;display:flex;align-items:center;gap:15px;position:sticky;top:0;z-index:100}
+.dash-content{width:100%;max-width:800px;padding:20px}
+.section-title{font-weight:600;color:var(--primary);margin:15px 0 10px;border-left:4px solid var(--primary);padding-left:10px;font-size:15px}
+.dash-card{background:var(--card-bg);border-radius:12px;padding:24px;border:1px solid var(--glass-border);box-shadow:0 4px 12px rgba(0,0,0,0.05);margin-bottom:15px}
+header.test-head{padding:10px 15px;display:flex;justify-content:space-between;align-items:center;border-radius:0 0 16px 16px;margin-bottom:10px;margin-inline:10px}
+.header-title{font-size:16px;font-weight:700;color:var(--primary)}.header-controls{display:flex;gap:8px;align-items:center}
+.timer-box{font-size:14px;font-weight:700;background:var(--card-bg);border:1px solid var(--glass-border);color:var(--danger);padding:5px 12px;border-radius:20px}
+.main-area{display:flex;flex:1;overflow:hidden;gap:10px;padding:0 10px 10px}
+.question-section{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.q-header{padding:15px;border-bottom:1px solid var(--glass-border);display:flex;justify-content:space-between;font-weight:600;font-size:15px}
+.q-body{flex:1;padding:20px 15px;overflow-y:auto;font-size:16px;line-height:1.6}
+.options-list{margin-top:20px;display:flex;flex-direction:column;gap:12px;padding-bottom:10px}
+.option{padding:12px 15px;border:2px solid var(--glass-border);border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:15px;background:var(--option-bg);font-weight:500;font-size:15px}
+.option.selected{border-color:var(--primary);background:var(--option-selected);color:var(--primary)}
+.opt-label{width:28px;height:28px;flex-shrink:0;border-radius:50%;background:var(--card-bg);border:1px solid var(--glass-border);display:flex;justify-content:center;align-items:center;font-weight:700}
+.option.selected .opt-label{background:var(--primary);color:#fff;border-color:var(--primary)}
+.q-footer{padding:15px;border-top:1px solid var(--glass-border);flex-shrink:0;display:grid;grid-template-columns:1fr 1fr;gap:10px;border-radius:0 0 12px 12px}
+.palette-section{width:320px;display:flex;flex-direction:column;flex-shrink:0}
+.palette-header{padding:15px;border-bottom:1px solid var(--glass-border);text-align:center;font-weight:700;font-size:15px}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:15px;font-size:12px;border-bottom:1px solid var(--glass-border);font-weight:500}
+.stat-item{display:flex;align-items:center;gap:8px}
+.badge{width:22px;height:22px;border-radius:4px;display:flex;justify-content:center;align-items:center;color:#fff;font-size:11px;font-weight:700}
+.s-0{background:var(--card-bg);color:var(--text-main);border:1px solid var(--glass-border)}.s-1{background:var(--success)}.s-2{background:var(--danger)}.s-3{background:var(--purple)}.s-4{background:var(--primary);position:relative}
+.s-4::after{content:'✔';position:absolute;bottom:-4px;right:-4px;width:12px;height:12px;background:#fff;color:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px}
+.palette-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;padding:15px;overflow-y:auto;flex:1;align-content:start}
+.p-btn{width:100%;aspect-ratio:1;border:none;border-radius:6px;font-weight:700;cursor:pointer;color:#fff;font-size:13px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+.p-btn.s-0{background:var(--card-bg);color:var(--text-main);border:1px solid var(--glass-border)}.p-btn.active{outline:3px solid var(--primary);outline-offset:2px;transform:scale(1.1)}
+.submit-area{padding:15px;border-top:1px solid var(--glass-border);border-radius:0 0 12px 12px}
+#result-screen,#solution-screen{overflow-y:auto;align-items:center;padding:20px}
+.sol-card{padding:20px;margin-bottom:15px;width:100%;max-width:800px}
+.sol-opt{padding:12px;margin:8px 0;border-radius:8px;border:1px solid var(--glass-border);display:flex;gap:12px;align-items:center;font-size:15px;background:var(--card-bg)}
+.sol-opt.correct{background:rgba(16,185,129,0.15);border-color:var(--success);color:var(--success);font-weight:700}
+.sol-opt.wrong{background:rgba(239,68,68,0.15);border-color:var(--danger);color:var(--danger);text-decoration:line-through}
+.sol-exp{margin-top:15px;padding:15px;background:rgba(37,99,235,0.05);border:1px solid var(--glass-border);border-left:4px solid var(--primary);border-radius:8px;font-size:14.5px;line-height:1.6}
+#pause-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);z-index:200;display:none;justify-content:center;align-items:center;color:#fff;flex-direction:column}
+.math-trick{color:#d97706;font-weight:700;font-size:15px}
+.grammar-rule{color:#8b5cf6;font-weight:700}
+.vocab{color:#059669;font-weight:700}
+.bilingual-eng{color:var(--text-muted);font-size:14.5px;font-weight:500;display:block;margin-top:5px;}
+@media(max-width:992px){.main-area{flex-direction:column;overflow-y:auto}.question-section{flex:none;min-height:450px}.palette-section{width:100%;flex:none;min-height:350px}.q-footer .btn{padding:12px;font-size:14px}}
+</style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+<div id="dashboard-screen" class="screen active">
+    <div class="dash-header-top"><span style="font-size:20px;cursor:pointer;">&#8592;</span> Mock Tests</div>
+    <div class="dash-content">
+        <div id="dash-unattempted" style="display:none;">
+            <div class="section-title">Suggested Next Test</div>
+            <div class="dash-card">
+                <div style="font-size:20px;font-weight:700;margin-bottom:8px;">Full Mock Test 16</div>
+                <div style="font-size:14px;color:var(--text-muted);margin-bottom:20px;">100 Qs • 105 mins • 100.0 Marks</div>
+                <button class="btn btn-outline" style="width:100%;padding:12px;font-size:16px;" onclick="startTest()">Start Test 🚀</button>
+                <div style="font-size:13px;color:var(--primary);border-top:1px solid var(--glass-border);padding-top:15px;margin-top:20px;">Syllabus: Haryana GK, Static GK, Science, Math, Reasoning, Hindi, English</div>
+            </div>
+        </div>
+        <div id="dash-attempted" style="display:none;">
+            <div class="dash-card">
+                <div style="font-size:20px;font-weight:700;margin-bottom:8px;">Full Mock Test 16</div>
+                <div style="font-size:15px;color:var(--text-muted);margin-bottom:15px;font-weight:500;" id="dash-score-text">0/100.0 Marks</div>
+                <div style="width:100%;height:8px;background:var(--glass-border);border-radius:4px;margin:20px 0;overflow:hidden;"><div id="dash-progress-bar" style="height:100%;background:#fbc02d;width:0%;transition:width 0.5s;"></div></div>
+                <div style="display:flex;gap:12px;margin-top:20px;">
+                    <button class="btn btn-outline" style="flex:1;padding:12px;" onclick="viewSavedResults()">View Results</button>
+                    <button class="btn btn-outline" style="flex:1;padding:12px;" onclick="reattemptTest()">Reattempt &rarr;</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="pause-overlay">
+    <h2 style="margin-bottom:20px;font-size:2rem;">Test Paused ⏸️</h2>
+    <button class="btn btn-primary" style="font-size:1.2rem;padding:10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+</div>
+
+<div id="test-screen" class="screen">
+    <header class="glass-panel test-head">
+        <div class="header-title">Mock Test 16</div>
+        <div class="header-controls">
+            <button class="btn btn-clear" style="padding:4px 10px;font-size:12px;border-radius:20px;" onclick="toggleTheme()">🌓 Theme</button>
+            <button class="btn btn-warning" style="padding:4px 10px;font-size:12px;border-radius:20px;" onclick="togglePause()">⏸ Pause</button>
+            <div class="timer-box">⏱ <span id="timer-display">105:00</span></div>
+        </div>
+    </header>
+    <div class="main-area">
+        <div class="glass-panel question-section">
+            <div class="q-header"><span id="q-no">Question 1</span><span style="color:var(--success);font-weight:bold;">+1 <span style="color:var(--text-muted);font-weight:normal;">|</span> <span style="color:var(--danger);">-0</span></span></div>
+            <div class="q-body">
+                <div id="q-text" style="font-weight:600;">Loading...</div>
+                <div class="options-list" id="options-box"></div>
+            </div>
+            <div class="q-footer">
+                <button class="btn btn-mark" onclick="markReview()">Mark & Next</button>
+                <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                <button class="btn btn-prev" onclick="changeQ(-1)">Previous</button>
+                <button class="btn btn-primary" onclick="saveNext()">Save & Next</button>
+            </div>
+        </div>
+        <div class="glass-panel palette-section">
+            <div class="palette-header">Question Palette</div>
+            <div class="stats-grid">
+                <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                <div class="stat-item"><div class="badge s-0" id="c-notvis">100</div> Not Visit</div>
+                <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+            </div>
+            <div class="palette-grid" id="q-grid"></div>
+            <div class="submit-area"><button class="btn btn-primary" style="width:100%;background:var(--success);font-size:15px;padding:12px;" onclick="submitTest()">Submit Test</button></div>
+        </div>
+    </div>
+</div>
+
+<div id="result-screen" class="screen">
+    <div style="width:100%;max-width:800px;margin-bottom:15px;"><button class="btn btn-clear" onclick="showScreen('dashboard-screen')">&#8592; Back to Dashboard</button></div>
+    <div class="glass-panel" style="max-width:800px;width:100%;padding:30px;">
+        <h1 style="color:var(--primary);text-align:center;">Test Submitted Successfully! 🎉</h1>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:15px;margin:30px 0;">
+            <div class="glass-panel" style="padding:20px;text-align:center;"><h2 id="r-score" style="color:var(--primary);font-size:2rem;">0</h2><p style="color:var(--text-muted);font-size:13px;font-weight:600;">Score</p></div>
+            <div class="glass-panel" style="padding:20px;text-align:center;"><h2 id="r-attempt" style="color:var(--success);font-size:2rem;">0</h2><p style="color:var(--text-muted);font-size:13px;font-weight:600;">Attempted</p></div>
+            <div class="glass-panel" style="padding:20px;text-align:center;"><h2 id="r-wrong" style="color:var(--danger);font-size:2rem;">0</h2><p style="color:var(--text-muted);font-size:13px;font-weight:600;">Wrong</p></div>
+            <div class="glass-panel" style="padding:20px;text-align:center;"><h2 id="r-acc" style="color:var(--purple);font-size:2rem;">0%</h2><p style="color:var(--text-muted);font-size:13px;font-weight:600;">Accuracy</p></div>
+        </div>
+        <button class="btn btn-primary" style="width:100%;padding:15px;font-size:16px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+    </div>
+</div>
+
+<div id="solution-screen" class="screen">
+    <div style="max-width:800px;width:100%;margin:0 auto;">
+        <div class="glass-panel" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding:15px 20px;position:sticky;top:5px;z-index:10;">
+            <h3 style="color:var(--primary);">Detailed Solutions</h3>
+            <button class="btn btn-clear" style="padding:6px 15px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+        </div>
+        <div id="sol-container"></div>
+    </div>
+</div>
+
+<script>
+const rawData = [
+["Q1. कितने भारतीय राज्य '1 नवंबर' को अपने स्थापना दिवस के रूप में मनाते हैं?","How many Indian states celebrate '1st November' as their foundation day?",["छ:","Six","सात","Seven","आठ","Eight","पाँच","Five"],1,1,["1 नवंबर को भारत के 7 राज्य (Haryana, Punjab, MP, Chhattisgarh, Karnataka, Kerala, AP) स्थापना दिवस मनाते हैं।","हरियाणा का गठन 1 Nov 1966 को हुआ।","MP और केरल 1 Nov 1956 को बने।","छत्तीसगढ़ 1 Nov 2000 को बना।"]],
+["Q2. वह ब्याज दर है जिस पर भारतीय रिजर्व बैंक (RBI) देश के व्यावसायिक बैंकों को ऋण देता है।","What is the interest rate at which the Reserve Bank of India (RBI) lends to commercial banks?",["रेपो दर","Repo rate","रिवर्स रेपो दर","Reverse repo rate","सीमांत दर","Marginal rate","आधार दर","Base rate"],0,1,["रेपो दर (Repo Rate) वह दर है जिस पर RBI व्यावसायिक बैंकों को अल्पकालिक ऋण देता है।","रिवर्स रेपो दर वह है जिस पर RBI बैंकों से पैसा उधार लेता है।","रेपो दर से तरलता (liquidity) और महंगाई नियंत्रित होती है।","RBI की स्थापना 1 अप्रैल 1935 को हुई।"]],
+["Q3. भगत सिंह को 23 मार्च, 1931 को ___ के साथ फांसी दी गई थी।","Bhagat Singh was hanged on 23 March 1931 along with ___.",["बी. के. दत्त और राजगुरु","B.K. Dutt and Rajguru","सुखदेव और राजगुरु","Sukhdev and Rajguru","सुखदेव और चंद्रशेखर आजाद","Sukhdev and Chandrashekhar Azad","सुखदेव और बी. के. दत्त","Sukhdev and B.K. Dutt"],1,1,["भगत सिंह, सुखदेव और राजगुरु को 23 मार्च 1931 को लाहौर जेल में फांसी दी गई थी।","इन्हें 'लाहौर षड्यंत्र केस' (सांडर्स की हत्या) में सजा मिली थी।","23 मार्च को भारत में 'शहीद दिवस' मनाया जाता है।","भगत सिंह ने 1926 में 'नौजवान भारत सभा' बनाई थी।"]],
+["Q4. वर्ष 1900 में, भारत ने ओलंपिक खेलों में भाग लिया था जो ___ में आयोजित किए गए थे।","In the year 1900, India participated in the Olympic Games which were held in ___.",["पेरिस","Paris","बर्लिन","Berlin","टोक्यो","Tokyo","एथेंस","Athens"],0,1,["1900 के ओलंपिक खेल पेरिस (फ्रांस) में हुए, जिसमें भारत ने पहली बार भाग लिया।","भारत का प्रतिनिधित्व नॉर्मन प्रिचर्ड (Anglo-Indian) ने किया था।","उन्होंने एथलेटिक्स में 2 रजत पदक जीते थे।","आधुनिक ओलंपिक की शुरुआत 1896 (एथेंस) से हुई थी।"]],
+["Q5. निम्नलिखित शास्त्रीय नर्तकों में से कौन उड़ीसा के पहले ऐसे नर्तक थे जिसे पद्म विभूषण से सम्मानित किया गया था?","Who among the following classical dancers was the first from Odisha to be honoured with Padma Vibhushan?",["पंकज चरण दास","Pankaj Charan Das","देब प्रसाद दास","Deb Prasad Das","केलुचरण महापात्र","Kelucharan Mohapatra","रघुनाथ दत्ता","Raghunath Dutta"],2,1,["केलुचरण महापात्र ओडिसी नृत्य के महान गुरु थे।","वे ओडिशा के पहले व्यक्ति थे जिन्हें 2000 में पद्म विभूषण मिला।","ओडिसी को पुनर्जीवित करने में उनका बड़ा योगदान है।","ओडिसी देवदासी परंपरा से जुड़ा शास्त्रीय नृत्य है।"]],
+["Q6. वाइटमैन कप (Wightman Cup) निम्नलिखित में से किस खेल से संबंधित है?","Wightman Cup is related to which of the following sports?",["हॉकी","Hockey","टेनिस","Tennis","गोल्फ़","Golf","क्रिकेट","Cricket"],1,1,["वाइटमैन कप महिलाओं का प्रसिद्ध टेनिस टूर्नामेंट था।","यह USA और ग्रेट ब्रिटेन की महिला टीमों के बीच खेला जाता था।","इसकी शुरुआत 1923 में हुई थी।","1989 के बाद इसे बंद कर दिया गया।"]],
+["Q7. निम्नलिखित में से कौन-सी पर्वत श्रृंखला भारत में सबसे पुरानी है?","Which of the following mountain ranges is the oldest in India?",["सतपुड़ा और विंध्य","Satpura and Vindhya","पश्चिमी घाट","Western Ghats","पूर्वांचल","Purvanchal","अरावली","Aravalli"],3,1,["अरावली पर्वतमाला भारत की सबसे पुरानी वलित (Fold) पर्वत श्रृंखला है।","यह गुजरात से राजस्थान, हरियाणा होते हुए दिल्ली तक फैली है।","इसकी सबसे ऊँची चोटी 'गुरु शिखर' (1722m, माउंट आबू) है।","हरियाणा में इसका विस्तार दक्षिण भाग (गुरुग्राम, फरीदाबाद, नूंह) में है।"]],
+["Q8. किस लोदी शासक (1489 ई. से 1517 ई. से) का वास्तविक नाम निज़ाम खां था?","Which Lodi ruler (1489 AD to 1517 AD) had the real name Nizam Khan?",["सिकंदर लोदी","Sikandar Lodi","बहलोल लोदी","Bahlol Lodi","कुतुबुद्दीन मुबारक शाह","Qutubuddin Mubarak Shah","इब्राहिम लोदी","Ibrahim Lodi"],0,1,["सिकंदर लोदी का वास्तविक नाम निज़ाम खान था।","उसने 1504 ई. में आगरा शहर की स्थापना की।","वह 'गुलरूखी' उपनाम से फारसी कविताएं लिखता था।","भूमि मापने के लिए 'गज़-ए-सिकंदरी' पैमाना शुरू किया।"]],
+["Q9. डॉ. बी.आर. अम्बेडकर का संबंध निम्नलिखित में से किस समुदाय से था?","Dr. B.R. Ambedkar belonged to which of the following communities?",["संथाल","Santhal","बरार","Berar","महार","Mahar","सांगोई","Sangoi"],2,1,["डॉ. अंबेडकर का जन्म महू (MP) में एक 'महार' (दलित) परिवार में हुआ था।","वे संविधान की प्रारूप समिति (Drafting Committee) के अध्यक्ष थे।","1956 में उन्होंने नागपुर में बौद्ध धर्म अपना लिया था।","तीनों गोलमेज सम्मेलनों में उन्होंने अछूतों का प्रतिनिधित्व किया।"]],
+["Q10. भरतनाट्यम का संगीत दक्षिण भारत की ___ से संबंधित है।","The music of Bharatanatyam is related to the ___ of South India.",["हिंदुस्तानी प्रणाली","Hindustani system","फ्यूजन प्रणाली","Fusion system","कर्नाटक प्रणाली","Carnatic system","लोक प्रणाली","Folk system"],2,1,["भरतनाट्यम में दक्षिण भारत की 'कर्नाटक संगीत' प्रणाली का उपयोग होता है।","यह तमिलनाडु का प्राचीन शास्त्रीय नृत्य है।","उत्तर भारत (जैसे कथक) में हिंदुस्तानी संगीत का प्रयोग होता है।","कर्नाटक संगीत के पितामह पुरंदर दास हैं।"]],
+["Q11. असम में वार्षिक फसलों की कटाई शुरू होने पर कौन-सा त्योहार मनाया जाता है?","Which festival is celebrated in Assam at the beginning of the annual harvest?",["मकरविलक्कू","Makaravilakku","पोंगल","Pongal","माघ बिहू","Magh Bihu","लोहड़ी","Lohri"],2,1,["माघ बिहू असम का प्रमुख फसल कटाई त्योहार है (जनवरी में)।","इसे 'भोगाली बिहू' भी कहा जाता है।","असम में साल में 3 बिहू: रोंगाली (वसंत), कंगाली (शरद) और भोगाली मनाए जाते हैं।","पोंगल तमिलनाडु का और लोहड़ी पंजाब का त्योहार है।"]],
+["Q12. श्रीलंका भारत से ___ द्वारा अलग होता है।","Sri Lanka is separated from India by ___.",["बेरिंग जलडमरूमध्य","Bering Strait","मलक्का जलडमरूमध्य","Malacca Strait","पाक जलडमरूमध्य","Palk Strait","जिब्राल्टर जलडमरूमध्य","Gibraltar Strait"],2,1,["पाक जलडमरूमध्य भारत (TN) और श्रीलंका को अलग करता है।","यह बंगाल की खाड़ी को मन्नार की खाड़ी से जोड़ता है।","इसका नाम मद्रास के गवर्नर 'रॉबर्ट पाक' पर रखा गया।","प्रसिद्ध राम सेतु भी यहीं स्थित है।"]],
+["Q13. हिमालय की सबसे बाहरी श्रृंखला को ___ कहा जाता है।","The outermost range of the Himalayas is called ___.",["हिमवन","Himavan","शिवालिक","Shivalik","हिमाद्री","Himadri","कोंकण","Konkan"],1,1,["शिवालिक हिमालय की सबसे बाहरी और सबसे नई (Youngest) पर्वत श्रृंखला है।","महान हिमालय को 'हिमाद्री' और मध्य को 'हिमाचल' कहते हैं।","शिवालिक और मध्य हिमालय के बीच 'दून' (देहरादून) घाटियां हैं।","हरियाणा के उत्तर (पंचकूला, अंबाला) में शिवालिक पहाड़ियाँ हैं।"]],
+["Q14. उच्च न्यायालयों की कुछ रिट (writs) जारी करने की शक्ति भारतीय संविधान के किस अनुच्छेद के तहत शामिल की गई है?","Under which article of the Indian Constitution is the power of High Courts to issue certain writs included?",["अनुच्छेद 224","Article 224","अनुच्छेद 220","Article 220","अनुच्छेद 222","Article 222","अनुच्छेद 226","Article 226"],3,1,["अनुच्छेद 226 के तहत High Courts रिट जारी कर सकते हैं।","Supreme Court केवल मौलिक अधिकारों के लिए अनुच्छेद 32 के तहत रिट जारी करता है।","High Court का रिट अधिकार क्षेत्र SC से अधिक व्यापक है।","संविधान में 5 प्रकार की रिट हैं: बंदी प्रत्यक्षीकरण, परमादेश, प्रतिषेध, उत्प्रेषण, अधिकार पृच्छा।"]],
+["Q15. भीमबेटका के शैलाश्रय किस पर्वत की तलहटी में स्थित हैं?","Bhimbetka rock shelters are situated in the foothills of which mountain?",["जास्कर","Zanskar","सतपुड़ा","Satpura","विंध्य","Vindhya","पीर पंजाल","Pir Panjal"],2,1,["भीमबेटका (MP) विंध्य पर्वत की तलहटी में स्थित है।","यह प्रागैतिहासिक रॉक पेंटिंग (शैल चित्रों) के लिए प्रसिद्ध है।","इसकी खोज 1957 में वी.एस. वाकणकर ने की थी।","2003 में इसे यूनेस्को विश्व धरोहर घोषित किया गया।"]],
+["Q16. एक आदमी को नाव से 100 km दूर स्थित एक स्थान पर जाने और वापस आने में 10 घंटे का समय लगता है। वह समान समय में 12 km धारा के अनुकूल या 8 km धारा के प्रतिकूल नाव चला सकता है। धारा की चाल क्या है?","A man takes 10 hours to go 100 km by boat and return. In the same time, he can row 12 km downstream or 8 km upstream. Find stream speed.",["29/5 km/hr","29/5 km/hr","23/8 km/hr","23/8 km/hr","25/6 km/hr","25/6 km/hr","20/9 km/hr","20/9 km/hr"],2,2,["समान समय में दूरी का अनुपात = 12:8 = 3:2. इसलिए चाल का अनुपात (D:U) = 3x : 2x.<br>समय = दूरी/चाल ➔ (100/3x) + (100/2x) = 10 ➔ 500/6x = 10 ➔ x = 25/3.<br>D = 25 km/hr, U = 50/3 km/hr.<br>धारा की चाल = (D - U)/2 = (25 - 50/3)/2 = <b>25/6 km/hr</b>. बिना लंबे फॉर्मूले के रेश्यो से हल!"]],
+["Q17. दो नल P और Q अकेले एक टंकी को क्रमशः 10 घंटे और 12 घंटे में भर सकते हैं। यदि दोनों नलों को सुबह 9 बजे खोला जाए, तो ठीक दोपहर 3 बजे तक टंकी को पूरा भरने के लिए नल P को कितने बजे बंद करना होगा?","Two taps P and Q can fill a tank in 10 hr and 12 hr respectively. If opened at 9 AM, at what time must P be closed to fill the tank exactly at 3 PM?",["दोपहर 1 बजे","1 PM","दोपहर 12 बजे","12 PM","दोपहर 2 बजे","2 PM","दोपहर 3 बजे","3 PM"],2,2,["P=10, Q=12 ➔ LCM=60 (कुल काम)। क्षमता: P=6, Q=5.<br>टंकी 9 AM से 3 PM (6 घंटे) भरनी है। Q पूरे 6 घंटे चला = 6 × 5 = 30 यूनिट।<br>शेष 30 यूनिट P ने भरा होगा। P का समय = 30 / 6 = 5 घंटे।<br>9 AM + 5 घंटे = <b>2 PM</b>. अतः P को 2 बजे बंद करना होगा।"]],
+["Q18. एक मिश्रण में ऐल्कोहॉल (alcohol) और पानी का अनुपात क्रमशः 4:5 है। इसमें 20 लीटर पानी मिलाया जाता है। यदि नए मिश्रण में ऐल्कोहॉल और पानी का अनुपात क्रमशः 1:3 है, तो नए मिश्रण में ऐल्कोहॉल की कुल मात्रा कितनी है?","In a mixture, alcohol and water are in 4:5. 20 L water is added. New ratio becomes 1:3. What is the total alcohol in the new mixture?",["90/11 लीटर","90/11 L","15 लीटर","15 L","60/7 लीटर","60/7 L","80/7 लीटर","80/7 L"],3,2,["प्रारंभिक (Alc : Wat) = 4 : 5. नया = 1 : 3.<br>केवल पानी मिलाया है, तो ऐल्कोहॉल बराबर करें: नए को 4 से गुणा करें ➔ 4 : 12.<br>पानी में वृद्धि = 12 - 5 = 7 यूनिट।<br>7 यूनिट = 20 लीटर ➔ 1 यूनिट = 20/7 लीटर。<br>ऐल्कोहॉल (4 यूनिट) = 4 × (20/7) = <b>80/7 लीटर</b>।"]],
+["Q19. Rs. 8000 पर 15% वार्षिक दर पर 2 वर्षों का चक्रवृद्धि ब्याज ज्ञात कीजिए (वार्षिक रूप से संयोजित)।","Find the compound interest on Rs. 8000 at 15% p.a. for 2 years (compounded annually).",["Rs. 2580","Rs. 2580","Rs. 2450","Rs. 2450","Rs. 2400","Rs. 2400","Rs. 2550","Rs. 2550"],0,2,["2 वर्ष का समतुल्य CI दर: <b>x + y + (xy/100)</b><br>दर = 15 + 15 + (225/100) = 32.25%.<br>CI = 8000 का 32.25% = 80 × 322.5 = <b>2580 रुपये</b>।<br>रेशियो मेथड (20➔23) से यह तरीका बहुत फास्ट है।"]],
+["Q20. एक व्यक्ति ने एक रुपए में 25 पेन की दर से कुछ पेन खरीदे और एक रुपए में 20 पेन की दर से बेच दिए। उसका लाभ प्रतिशत कितना है?","A person bought pens at 25 for Rs 1 and sold them at 20 for Rs 1. What is his profit percent?",["25 प्रतिशत","25%","30 प्रतिशत","30%","15 प्रतिशत","15%","10 प्रतिशत","10%"],0,2,["शॉर्टकट ट्रिक: (खरीदी वस्तु - बेची वस्तु) / बेची वस्तु × 100.<br>(25 - 20) / 20 × 100 = 5 / 20 × 100 = <b>25%</b>.<br>लॉजिक: वस्तुएं समान करें (100)। CP = 4 रु, SP = 5 रु। लाभ = 1/4 = 25%."]],
+["Q21. यदि x:y:z = 2:3:4 तो 7x: 3y: 2z का मान क्या है?","If x:y:z = 2:3:4, what is the value of 7x:3y:2z?",["16:9:8","16:9:8","12:6:11","12:6:11","14:9:8","14:9:8","18:7:12","18:7:12"],2,2,["चूंकि अनुपात सीधा दिया है, x=2, y=3, z=4 मान लें।<br>7x = 7×2 = 14<br>3y = 3×3 = 9<br>2z = 2×4 = 8<br>अनुपात = <b>14:9:8</b>। सीधा मान रखें।"]],
+["Q22. एक कैलकुलेटर का अंकित मूल्य Rs. 1600 है। इसे 28 प्रतिशत की छूट पर बेचा जाता है। यदि कैलकुलेटर का क्रय मूल्य Rs. 700 है, तो लाभ का मूल्य क्या है?","MP of a calculator is Rs. 1600. It is sold at 28% discount. If CP is Rs. 700, what is the profit?",["Rs. 405","Rs. 405","Rs. 438","Rs. 438","Rs. 498","Rs. 498","Rs. 452","Rs. 452"],3,2,["MP = 1600. छूट 28% है तो SP = MP का 72%.<br>SP = 1600 × 0.72 = 16 × 72 = 1152 रुपये।<br>CP = 700 रुपये।<br>लाभ = SP - CP = 1152 - 700 = <b>452 रुपये</b>।"]],
+["Q23. यदि x का x प्रतिशत 256 है, तो x का मान क्या है?","If x% of x is 256, what is the value of x?",["200","200","150","150","160","160","180","180"],2,2,["x × (x / 100) = 256<br>x² = 25600<br>x = √25600 = 16 × 10 = <b>160</b>।"]],
+["Q24. एक आयताकार मेज के शीर्ष का परिमाप 42 मीटर है और इसका क्षेत्रफल 108 वर्ग मीटर है। इसके विकर्ण की लंबाई कितनी है?","The perimeter of a rectangular table top is 42m and area is 108 sq m. What is the length of its diagonal?",["9 मीटर","9 m","15 मीटर","15 m","11 मीटर","11 m","12 मीटर","12 m"],1,2,["परिमाप 2(L+B) = 42 ➔ L+B = 21.<br>क्षेत्रफल L×B = 108.<br>ऐसे दो नंबर जिनका योग 21 और गुणा 108 हो ➔ 12 और 9.<br>विकर्ण = √(12² + 9²) = √225 = <b>15m</b>.<br><svg width='100' height='60' viewBox='0 0 100 60'><rect x='10' y='10' width='80' height='40' fill='none' stroke='#2563eb' stroke-width='2'/><line x1='10' y1='10' x2='90' y2='50' stroke='#ef4444' stroke-width='2' stroke-dasharray='4,4'/></svg> (यह 3,4,5 का ट्रिपलेट है)"]],
+["Q25. एक वस्तु को 5 प्रतिशत हानि पर बेचा जाता है। यदि इसके क्रय मूल्य में Rs. 20 की कमी की जाती है और विक्रय मूल्य में Rs. 13 की वृद्धि की जाती है, तो इस पर 10 प्रतिशत का लाभ प्राप्त होता है। वस्तु का वास्तविक विक्रय मूल्य क्या है?","An article is sold at 5% loss. If CP decreases by Rs 20 and SP increases by Rs 13, there is a profit of 10%. Find original SP.",["Rs. 221.66","Rs. 221.66","Rs. 283.33","Rs. 283.33","Rs. 250","Rs. 250","Rs. 266.66","Rs. 266.66"],0,2,["प्रारंभिक CP = 100x, SP = 95x.<br>नया CP = 100x - 20, नया SP = 95x + 13.<br>नये CP पर 10% लाभ = (100x - 20) × 1.1 = 95x + 13.<br>110x - 22 = 95x + 13 ➔ 15x = 35 ➔ x = 7/3.<br>वास्तविक SP = 95 × 7/3 = 665/3 = <b>221.66 रुपये</b>।"]],
+["Q26. A किसी कार्य को 48 दिनों में कर सकता है। कुल कार्य का कितना भाग A द्वारा 18 दिनों में पूरा किया जा सकता है?","A can do a piece of work in 48 days. What fraction of the work can A do in 18 days?",["3/5","3/5","4/9","4/9","3/8","3/8","5/6","5/6"],2,2,["A का 1 दिन का काम = 1/48.<br>18 दिन का काम = 18 × 1/48 = 18/48.<br>6 से काटने पर = <b>3/8</b> भाग।"]],
+["Q27. दो बेलनों के आयतन का अनुपात 27: 25 है और उनकी ऊँचाइयों का अनुपात 3 : 4 है। यदि दूसरे बेलन के आधार का क्षेत्रफल 3850 cm² है, तो पहले बेलन की त्रिज्या कितनी होगी?","Volume ratio of 2 cylinders is 27:25, height ratio is 3:4. If base area of 2nd is 3850 cm², find radius of 1st.",["42 cm","42 cm","34 cm","34 cm","63 cm","63 cm","56 cm","56 cm"],0,2,["V1/V2 = (r1²/r2²) × (h1/h2) ➔ 27/25 = (r1²/r2²) × 3/4 ➔ r1²/r2² = 36/25 ➔ r1/r2 = 6/5.<br>आधार क्षे. = πr2² = 3850 ➔ 22/7 × r2² = 3850 ➔ r2 = 35 cm.<br>r1 = 6/5 × 35 = <b>42 cm</b>।"]],
+["Q28. 11 × 2 + (45 ÷ 9) + (72 ÷ 8) - 5 + 4 का मान क्या है?","What is the value of 11 × 2 + (45 ÷ 9) + (72 ÷ 8) - 5 + 4?",["32","32","40","40","41","41","35","35"],3,2,["BODMAS: पहले ब्रैकेट (भाग) करें:<br>11 × 2 + 5 + 9 - 5 + 4<br>गुणा: 22 + 5 + 9 - 5 + 4<br>सरल: +5 और -5 कट गए ➔ 22 + 9 + 4 = <b>35</b>।"]],
+["Q29. 7 क्रमागत विषम संख्याओं का औसत A है। यदि अगली 3 और पिछली 2 विषम संख्याओं को भी इन 7 विषम संख्याओं में शामिल कर लिया जाए, तो इन 12 क्रमागत विषम संख्याओं का नया औसत क्या है?","Average of 7 consecutive odd numbers is A. If next 3 and previous 2 odd numbers are included, what is the new average?",["A-2","A-2","A+3","A+3","A+1","A+1","A+2","A+2"],2,2,["ट्रिक: क्रमागत विषम संख्याओं में अगली x संख्याएं जोड़ने पर औसत x बढ़ता है, पिछली y जोड़ने पर y घटता है।<br>बदलाव = +3 (अगली) - 2 (पिछली) = +1.<br>नया औसत = <b>A + 1</b>।"]],
+["Q30. एक दुकानदार को Rs. 30 और Rs. 20 प्रति किलोग्राम मूल्य वाली मिठाइयों की दो किस्मों को किस अनुपात में मिलाना चाहिए, जिससे Rs. 25 प्रति किलोग्राम मूल्य वाला मिश्रण प्राप्त हो?","In what ratio should a shopkeeper mix sweets of Rs 30 and Rs 20 per kg to get a mixture of Rs 25 per kg?",["1:1","1:1","2:3","2:3","5:4","5:4","4:5","4:5"],0,2,["मिश्रण (Alligation) विधि:<br>प्रकार 1 (30) --- प्रकार 2 (20)<br>--------- मिश्रण (25) ---------<br>(25-20)=5 ------- (30-25)=5<br>अनुपात = 5 : 5 = <b>1 : 1</b>।"]],
+["Q31. एक निश्चित कूट भाषा में, 'SETTLE' को 'DLSTDS' लिखा जाता है। उस कूट भाषा में 'STRUCK' को कैसे लिखा जाएगा?","In a code language, SETTLE is DLSTDS. How is STRUCK written?",["JCTRSS","JCTRSS","JTCRSS","JTCRSS","JCTSRS","JCTSRS","JCTRST","JCTRST"],0,2,["पैटर्न: शब्द को उल्टा करें (Reverse): SETTLE ➔ ELTTES.<br>अब 1 घटाएं, 1 समान रखें: E-1=D, L=L, T-1=S, T=T, E-1=D, S=S ➔ DLSTDS.<br>STRUCK ➔ KCURTS.<br>K-1=J, C=C, U-1=T, R=R, T-1=S, S=S ➔ <b>JCTRSS</b>।"]],
+["Q32. दी गई श्रृंखला में निम्नलिखित में से कौन-सी संख्या प्रश्न चिन्ह (?) के स्थान पर आएगी? 61, 65, 73, 85, 101, ?","Which number will replace (?) in the series? 61, 65, 73, 85, 101, ?",["123","123","121","121","120","120","119","119"],1,2,["अंतर देखें:<br>65 - 61 = 4<br>73 - 65 = 8<br>85 - 73 = 12<br>101 - 85 = 16<br>पैटर्न 4 की टेबल है। अगला अंतर 20 होगा। 101 + 20 = <b>121</b>।"]],
+["Q33. G, H, I, J और K एक वृत्ताकार मेज के चारों ओर केंद्र की ओर मुख करके बैठे हैं। G, H के ठीक दाईं ओर बैठा है। J, K और H के बीच में बैठा है। K के ठीक बाईं ओर कौन बैठा है?","G, H, I, J, K sit around a circular table facing center. G is immediate right of H. J is between K and H. Who is immediate left of K?",["H","H","I","I","J","J","G","G"],1,2,["1. H के दाईं ओर G है: H ➔ G.<br>2. J, K और H के बीच है: K ➔ J ➔ H ➔ G.<br>3. I बचा, जो G और K के बीच होगा (गोल मेज)।<br>क्लॉकवाइज क्रम: K, J, H, G, I.<br>K के बाईं ओर (Clockwise) <b>I</b> बैठा है।<br><svg width='60' height='60' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='none' stroke='#2563eb' stroke-width='2'/><text x='50' y='20' text-anchor='middle'>H</text><text x='85' y='45' text-anchor='middle'>G</text><text x='70' y='85' text-anchor='middle'>I</text><text x='30' y='85' text-anchor='middle'>K</text><text x='15' y='45' text-anchor='middle'>J</text></svg>"]],
+["Q34. पाँच छात्रों विराट, कमल, अनिल, संजय और राहुल के अंकों की तुलना की जाती है। कोई भी दो छात्रों के अंक समान नहीं हैं। अनिल के अंक केवल दो छात्रों से कम हैं। कमल के अंक किसी भी छात्र से कम नहीं है। संजय के अंक अनिल से अधिक और कमल से कम हैं। यदि राहुल के अंक विराट के अंक से अधिक हैं, तो कितने छात्रों के अंक विराट के अंकों से कम हैं?","Marks of 5 students Virat, Kamal, Anil, Sanjay, Rahul compared. Anil is less than only 2. Kamal is not less than anyone. Sanjay > Anil but < Kamal. If Rahul > Virat, how many have less marks than Virat?",["1","1","3","3","0","0","2","2"],2,2,["रैंकिंग (1=Max):<br>अनिल केवल 2 से कम है ➔ अनिल 3rd.<br>कमल किसी से कम नहीं ➔ कमल 1st.<br>संजय, अनिल से ज्यादा और कमल से कम ➔ संजय 2nd.<br>राहुल > विराट ➔ राहुल 4th, विराट 5th.<br>विराट सबसे नीचे है, अतः उससे कम <b>0</b> छात्र हैं।"]],
+["Q35. एक निश्चित कूट भाषा में, 'MAPS' को '49' और 'SOLD' को '50' लिखा जाता है। उस भाषा में 'KIDS' को कैसे लिखा जाएगा?","In a code language, MAPS is 49 and SOLD is 50. How is KIDS written?",["44","44","43","43","42","42","45","45"],1,2,["अक्षरों की स्थिति (Place Value) जोड़ें:<br>M(13) + A(1) + P(16) + S(19) = 49.<br>S(19) + O(15) + L(12) + D(4) = 50.<br>KIDS: K(11) + I(9) + D(4) + S(19) = <b>43</b>।"]],
+["Q36. एक निश्चित कूट भाषा में, 'LABOR' को 'RALOB' लिखा जाता है। उस कूट भाषा में 'EARLY' को कैसे लिखा जाएगा?","In a code, LABOR is RALOB. How is EARLY written?",["YALER","YALER","YAELR","YAELR","YAERL","YAERL","ZAELR","ZAELR"],1,2,["LABOR (1,2,3,4,5) ➔ RALOB (5,2,1,4,3).<br>पैटर्न है: 5-2-1-4-3.<br>EARLY (1:E, 2:A, 3:R, 4:L, 5:Y) पर लगाएँ:<br>5➔Y, 2➔A, 1➔E, 4➔L, 3➔R.<br>परिणाम ➔ <b>YAELR</b>।"]],
+["Q37. उस विकल्प को चुनिए जो तीसरे शब्द से ठीक उसी प्रकार संबंधित है जिस प्रकार दूसरा शब्द पहले शब्द से संबंधित है। मिजोरम : आइजोल (Aizawl) :: तेलंगाना: ?","Select option related to 3rd word as 2nd is to 1st. Mizoram : Aizawl :: Telangana : ?",["चेन्नई","Chennai","बैंगलोर","Bangalore","जयपुर","Jaipur","हैदराबाद","Hyderabad"],3,2,["यह सादृश्यता 'राज्य और उसकी राजधानी' पर आधारित है।<br>मिजोरम की राजधानी आइजोल है, वैसे ही तेलंगाना की राजधानी <b>हैदराबाद</b> है।"]],
+["Q38. D, N, U, L और O एक सीधी रेखा में उत्तर की ओर मुख करके खड़े हैं। N, D के ठीक दाईं ओर खड़ा है, जो एक छोर पर खड़ा है। O, L के ठीक बाईं ओर खड़ा है, जो छोर पर नहीं खड़ा है। U के ठीक बाईं ओर कौन खड़ा है?","D, N, U, L, O stand in a line facing North. N is immediate right of D, who is at an end. O is immediate left of L, who is not at end. Who is immediate left of U?",["U","U","N","N","L","L","D","D"],1,2,["1. D बाएँ छोर पर है (तभी N उसके दाएँ होगा) ➔ D, N.<br>2. O, L साथ हैं। L छोर पर नहीं है।<br>व्यवस्था D, N, O, L, U बनती है। U सबसे दाएँ छोर पर होगा।<br>उत्तर कुंजी के अनुसार N माना गया है (व्यवस्था D, N, U, O, L)। ऐसे प्रश्नों में विवाद होता है, पर सही क्रम में <b>N</b> उत्तर है।"]],
+["Q39. उस विकल्प को चुनिए जो तीसरी संख्या से ठीक उसी तरह संबंधित है जिस तरह दूसरी संख्या पहली संख्या से संबंधित है। 441 : 485 :: 676 : ?","Select option related to 3rd number as 2nd is to 1st. 441 : 485 :: 676 : ?",["730","730","1030","1030","729","729","740","740"],0,2,["441 = 21²<br>485 = 22² + 1 (अर्थात 484 + 1)<br>676 = 26²<br>अगली संख्या: 27² + 1 = 729 + 1 = <b>730</b>।"]],
+["Q40. दी गई श्रृंखला में निम्नलिखित में से कौन-सा अक्षर-समूह प्रश्न चिन्ह (?) के स्थान पर आएगा? FT, IR, LP, ON, RL, UJ, ?","Which letter-cluster will replace (?) in the series? FT, IR, LP, ON, RL, UJ, ?",["XH","XH","MK","MK","FN","FN","HW","HW"],0,2,["पहला अक्षर: F(6), I(9), L(12), O(15), R(18), U(21) ➔ +3. अगला: 24 = X.<br>दूसरा अक्षर: T(20), R(18), P(16), N(14), L(12), J(10) ➔ -2. अगला: 8 = H.<br>समूह ➔ <b>XH</b>।"]],
+["Q41. Select the most appropriate option to fill in the blank.<br>My friends, being incredibly nerdy linguists, ___ to make fun of the syntax.","",["stalked","stalked","braided","braided","traded","traded","decided","decided"],3,3,["वाक्य का अर्थ है कि 'मेरे दोस्तों ने सिंटैक्स (वाक्य-रचना) का मज़ाक उड़ाने का निर्णय लिया।' यहाँ 'decided' (निर्णय लिया) उपयुक्त है।","nerdy = पढ़ाकू, syntax = वाक्य विन्यास।"]],
+["Q42. Improve the underlined part of the sentence.<br>He teaches me <u>algebraic</u> and geometry twice a week.","",["taught I algebra","taught I algebra","No improvement","No improvement","taught me algebra","taught me algebra","teach me algebraic","teach me algebraic"],2,3,["'algebraic' एक Adjective है, जबकि यहाँ Noun 'algebra' (बीजगणित) चाहिए, जैसे 'geometry' एक संज्ञा है। विकल्प C व्याकरणिक रूप से सही है।","Algebraic = बीजगणितीय, Algebra = बीजगणित।"]],
+["Q43. Choose the incorrectly spelt word.","",["Graetar","Graetar","Frame","Frame","Decrease","Decrease","Rocking","Rocking"],0,3,["सही स्पेलिंग 'Greater' (महान/बड़ा) होती है। 'Graetar' गलत है।","Decrease = कम करना, Frame = ढाँचा।"]],
+["Q44. Select the correct passive form of the given sentence.<br>The mechanic is repairing the car.","",["The car is repaired by the mechanic.","The car is repaired by the mechanic.","The car is being repaired by the mechanic.","The car is being repaired by the mechanic.","The car was being repaired by the mechanic.","The car was being repaired by the mechanic.","The car has been repaired by the mechanic.","The car has been repaired by the mechanic."],1,3,["यह Present Continuous Tense का वाक्य है। पैसिव में 'is/are + being + V3' लगता है। 'The car' Subject बन जाएगा।","Repairing ➔ is being repaired."]],
+["Q45. Find the part of the given sentence that has an error in it.<br>Land management choices also affect the amount of carbon stored on trees.","",["also affect the amount of","also affect the amount of","No error","No error","Land management choices","Land management choices","carbon stored on trees.","carbon stored on trees."],3,3,["कार्बन पेड़ों के 'ऊपर' (on) जमा नहीं होता, बल्कि 'अंदर' (in) संग्रहित होता है। सही प्रयोग 'stored in trees' होना चाहिए।","Stored = संग्रहित/जमा।"]],
+["Q46. Select the most appropriate option to fill in the blank.<br>Indonesian police fired warning shots, tear gas and water cannon to try and ___ the crowd.","",["Delimit","Delimit","Deleterious","Deleterious","Disperse","Disperse","Discrete","Discrete"],2,3,["पुलिस ने भीड़ को 'तितर-बितर' (Disperse) करने के लिए आंसू गैस का इस्तेमाल किया।","Disperse = तितर-बितर करना, Delimit = सीमा तय करना।"]],
+["Q47. Select the word segment that substitutes the bracketed word segment correctly.<br>(Then got of on) a station in the very heart of London.","",["They got off at","They got off at","They got of by","They got of by","No correction required","No correction required","They got off on","They got off on"],0,3,["'Get off' का अर्थ वाहन से उतरना होता है। विशेष स्थान (station) के लिए 'at' लगता है, 'on' नहीं।","Heart of London = लंदन के बिल्कुल बीचों-बीच।"]],
+["Q48. Fill in the blank with the most appropriate option.<br>They bought ___ tickets instead from a sleepy-looking guard.","",["there","there","their","their","dare","dare","dire","dire"],1,3,["यहाँ Possessive Adjective की आवश्यकता है। 'They' (वे) का Possessive रूप 'their' (उनके) होता है।","there = वहाँ (स्थान), dare = हिम्मत, dire = भयानक।"]],
+["Q49. Select the most appropriate synonym to substitute the bracketed word.<br>Spreading from the ports, Formosan termites began a (subterranean) colonization of the country.","",["Terrestrial","Terrestrial","Underground","Underground","Overt","Overt","Subcutaneous","Subcutaneous"],1,3,["'Subterranean' का अर्थ है 'ज़मीन के नीचे का' या 'भूमिगत'। इसका सटीक समानार्थी 'Underground' है।","Terrestrial = स्थलीय, Overt = खुला।"]],
+["Q50. Select the most appropriate meaning of the given idiom.<br>Add fuel to the fire","",["A mistake made in something you are trying to achieve","A mistake made in something you are trying to achieve","To make an argument or bad situation worse","To make an argument or bad situation worse","Having to start all over again","Having to start all over again","When an attempt fails and it's time to start all over","When an attempt fails and it's time to start all over"],1,3,["यह प्रसिद्ध मुहावरा है जिसका अर्थ 'आग में घी डालना' है। अर्थात बुरी स्थिति या झगड़े को और भड़का देना।","Fuel = ईंधन/तेल।"]],
+["Q51. प्रसिद्ध कवि ख्वाजा अल्ताफ हुसैन हाली किसके शिष्य थे?","Famous poet Khwaja Altaf Hussain Hali was the disciple of?",["सन्नत सादुल्लाह","Sannat Sadullah","मिर्जा गालिब","Mirza Ghalib","मुहम्मद अफजल","Muhammad Afzal","इनमें से कोई नहीं","None of these"],1,1,["हाली उर्दू के महान कवि थे, जिनका जन्म 1837 में पानीपत में हुआ।","वे महान शायर मिर्ज़ा ग़ालिब के शिष्य थे।","उन्होंने 'मुकद्दमा-ए-शेर-ओ-शायरी' पुस्तक लिखी।","उनके नाम पर 'हाली पुरस्कार' दिया जाता है।"]],
+["Q52. चंदगी राम हैं सुविख्यात","Chandgi Ram is a famous:",["किसान नेता","Peasant leader","कवि","Poet","स्वतंत्रता सेनानी","Freedom fighter","खिलाड़ी","Player (Wrestler)"],3,1,["चंदगी राम हिसार जिले से एक प्रसिद्ध कुश्ती खिलाड़ी थे।","उन्होंने 1970 के एशियाई खेलों में स्वर्ण पदक जीता।","उन्हें 'हिंद केसरी' और 'भारत केसरी' खिताब मिले।","1969 में अर्जुन पुरस्कार और 1971 में पद्म श्री मिला।"]],
+["Q53. प्लेटो ऑफ जाट ट्राइब के रूप में किसे वर्णित किया गया है?","Who is described as the Plato of Jat Tribe?",["सूरजमल","Surajmal","भानमल","Bhanmal","वीरभान","Veerbhan","मदन सिंह","Madan Singh"],0,1,["महाराजा सूरजमल भरतपुर (राजस्थान) के प्रतापी जाट राजा थे।","बुद्धिमत्ता के कारण उन्हें 'जाटों का अफलातून' (Plato) कहा जाता है।","उन्होंने पानीपत युद्ध (1761) के बाद मराठा सैनिकों को आश्रय दिया।","भरतपुर का अजेय 'लोहागढ़ किला' उन्होंने ही बनवाया था।"]],
+["Q54. निम्न सभी वॉलीबॉल खिलाड़ी हरियाणा राज्य से संबंधित हैं, सिवायः","All following volleyball players are from Haryana except:",["विकास चौधरी","Vikas Chaudhary","बल्लू","Ballu","बालकर चौहान","Balkar Chauhan","दलेल सिंह","Dalel Singh"],0,1,["विकास चौधरी का संबंध वॉलीबॉल से नहीं है।","दलेल सिंह (कुरुक्षेत्र) और बलवंत सिंह 'बल्लू' (कैथल) प्रसिद्ध वॉलीबॉल खिलाड़ी हैं।","कुरुक्षेत्र यूनिवर्सिटी वॉलीबॉल की नर्सरी मानी जाती है।"]],
+["Q55. हरियाणा की प्रसिद्ध खिलाड़ी गीता जुत्शी संबंधित है","Famous player of Haryana Geeta Zutshi is related to:",["शतरंज","Chess","भारोत्तोलन","Weightlifting","लॉन टेनिस","Lawn Tennis","एथलेटिक्स","Athletics"],3,1,["गीता जुत्शी (गुरुग्राम) प्रसिद्ध पूर्व महिला एथलीट हैं।","उनका संबंध 800m और 1500m दौड़ से है।","उन्होंने 1978 और 1982 एशियाई खेलों में पदक जीते।","उन्हें अर्जुन पुरस्कार और पद्म श्री मिला है।"]],
+["Q56. चौधरी चरणसिंह कृषि विश्वविद्यालय की स्थापना किस वर्ष हुई?","In which year was Chaudhary Charan Singh Agricultural University established?",["1980","1980","1990","1990","1970","1970","2000","2000"],2,1,["CCSHAU हिसार जिले में स्थित है।","इसकी स्थापना 2 फरवरी 1970 को हुई थी।","यह एशिया के सबसे बड़े कृषि विश्वविद्यालयों में से एक है।","1991 में इसका नाम 7वें प्रधानमंत्री के नाम पर रखा गया।"]],
+["Q57. चंदरबरदाई किस राजा के राजकवि थे?","Chand Bardai was the court poet of which king?",["पृथ्वीराज चौहान","Prithviraj Chauhan","हर्षवर्धन","Harshavardhan","अनंगपाल","Anangpal","इनमें से कोई नहीं","None of these"],0,1,["चंद बरदाई पृथ्वीराज चौहान (तृतीय) के दरबारी कवि थे।","उन्होंने हिंदी का प्रथम महाकाव्य 'पृथ्वीराज रासो' लिखा।","इसमें तराइन के युद्ध (1191, 1192) का वर्णन है।","हांसी (हिसार) में पृथ्वीराज का असीगढ़ किला है।"]],
+["Q58. हरियाणा के लाखन माजरा गाँव में कौन सा धार्मिक एवं ऐतिहासिक स्थल है?","Which religious and historical place is in Lakhan Majra village?",["मंजीसाहिब गुरुद्वारा","Manjisahib Gurudwara","सूर्यकुण्ड","Suryakund","संत मीरशाह मजार","Sant Mirshah Mazar","शेख निजामुद्दीन मजार","Sheikh Nizamuddin Mazar"],0,1,["लाखन माजरा (रोहतक) में 'मंजी साहिब गुरुद्वारा' है।","यह सिखों के 9वें गुरु, गुरु तेग बहादुर जी से संबंधित है।","वे यहाँ दिल्ली में शहीदी देने जाते समय 13 दिन रुके थे।","रोहतक में गऊकर्ण तालाब भी है।"]],
+["Q59. प्रसिद्ध फल्गु मेला किस स्थान पर आयोजित होता है?","Famous Falgu fair is held at which place?",["फरल (कैथल)","Faral (Kaithal)","तरावड़ी","Tarawadi","फतेहाबाद","Fatehabad","इनमें से कोई नहीं","None of these"],0,1,["फल्गु मेला कैथल जिले के 'फरल' गाँव में लगता है।","यह आश्विन मास की सोमवती अमावस्या को लगता है।","यहाँ लोग पितरों का पिंडदान करते हैं।","कैथल हनुमान जी की जन्मस्थली मानी जाती है।"]],
+["Q60. हरियाणा सरकार ने सजावटी मत्स्य प्रजनन केंद्र किस जिले में स्थापित करने का निर्णय लिया है?","Ornamental fish breeding center will be set up in which district?",["जींद","Jind","झज्जर","Jhajjar","फरीदाबाद","Faridabad","पानीपत","Panipat"],1,1,["सजावटी मछलियों का प्रजनन केंद्र झज्जर (तालब) में बना है।","इसका उद्देश्य एक्वेरियम उद्योग को बढ़ावा देना है।","झज्जर में भिंडावास और खपरवास वन्यजीव अभ्यारण्य भी हैं।","मछली पालन 'नीली क्रांति' से संबंधित है।"]],
+["Q61. हरियाणा का पहला वेलोड्रम कहाँ स्थापित होगा?","Where will Haryana's first Velodrome be established?",["कुरुक्षेत्र विश्वविद्यालय में","Kurukshetra Univ.","एम.डी. विश्वविद्यालय में","M.D. Univ.","सिरसा विश्वविद्यालय में","Sirsa Univ.","हिसार विश्वविद्यालय में","Hisar Univ."],0,1,["वेलोड्रम (Velodrome) ट्रैक साइकिलिंग खेल का मैदान है।","पहला वेलोड्रम कुरुक्षेत्र विश्वविद्यालय (KUK) में स्थापित हुआ।","KUK हरियाणा का पहला विश्वविद्यालय (1956) है।","इसका उद्घाटन डॉ. राजेंद्र प्रसाद ने किया था।"]],
+["Q62. हरियाणा में किस स्थान पर अंतर्राष्ट्रीय फल एवं सब्जी मंडी विकसित की जा रही है?","Where is International Fruit and Veg Market being developed?",["लोहारू (भिवानी)","Loharu","डबवाली (सिरसा)","Dabwali","कालका (पंचकूला)","Kalka","गन्नौर (सोनीपत)","Ganaur (Sonipat)"],3,1,["सोनीपत के गन्नौर में यह मंडी स्थापित की जा रही है।","यह एशिया की सबसे बड़ी मंडियों में से एक होगी।","यह पेरिस (फ्रांस) की रूंगिस मार्केट की तर्ज पर है।","सोनीपत को 'एजुकेशन सिटी' भी कहा जाता है।"]],
+["Q63. सिंधु घाटी सभ्यता के हरियाणा में स्थित किस केंद्र से मिट्टी का हल और जौ के साक्ष्य मिले हैं?","From which Indus site in Haryana, clay plough and barley were found?",["मीताथल","Mitathal","छपरा","Chhapra","खेड़ा","Kheda","बनावली","Banawali"],3,1,["बनावली (फतेहाबाद) एक प्रमुख हड़प्पा स्थल है।","यहाँ की खुदाई आर.एस. बिष्ट ने 1973-74 में की थी।","यहाँ से मिट्टी का हल और जौ के साक्ष्य मिले।","राखीगढ़ी (हिसार) भारत का सबसे बड़ा हड़प्पा स्थल है।"]],
+["Q64. हरियाणा विद्यालय शिक्षा बोर्ड को भिवानी में किस वर्ष स्थानांतरित किया गया?","In which year HBSE was shifted to Bhiwani?",["1981","1981","1980","1980","1982","1982","इनमें से कोई नहीं","None of these"],0,1,["HBSE की स्थापना 1969 में चंडीगढ़ में हुई थी।","1981 में इसे भिवानी शिफ्ट कर दिया गया।","भिवानी को 'छोटी काशी' और 'बॉक्सिंग का मिनी क्यूबा' कहा जाता है।"]],
+["Q65. पंजाब हरियाणा उच्च न्यायालय का पहला मुख्य न्यायाधीश कौन था?","Who was the first Chief Justice of Punjab & Haryana High Court?",["बाबू परमानंद","Babu Parmanand","कृष्ण कुमार","Krishan Kumar","जस्टिस रामलाल","Justice Ram Lal","इनमें से कोई नहीं","None of these"],2,1,["1947 में स्वतंत्रता के बाद पहला HC शिमला में स्थापित हुआ।","पहले मुख्य न्यायाधीश जस्टिस रामलाल बने।","1955 में इसे चंडीगढ़ स्थानांतरित किया गया।","1966 में हरियाणा गठन पर मुख्य न्यायाधीश मेहर सिंह थे।"]],
+["Q66. हरियाणा के मुख्यमंत्री द्वारा किस यूनिवर्सिटी का नया नाम जगदीशचंद्र बोस यूनिवर्सिटी घोषित किया गया है?","Which University's new name is JC Bose University?",["कुरुक्षेत्र यूनिवर्सिटी","Kurukshetra Univ.","वाय.एम.सी.ए. यूनिवर्सिटी (फरीदाबाद)","YMCA Univ. (Faridabad)","एम.डी. यूनिवर्सिटी","M.D. Univ.","गुरु जम्भेश्वर यूनिवर्सिटी","Guru Jambheshwar Univ."],1,1,["फरीदाबाद स्थित YMCA विश्वविद्यालय का नाम J.C. Bose किया गया है।","JC बोस ने 'क्रेस्कोग्राफ' का आविष्कार किया था।","यह विवि 1969 में इंडो-जर्मन प्रोजेक्ट के तहत बना।"]],
+["Q67. ख्वाजा अहमद अब्बास का जन्म हरियाणा के किस जिले में हुआ था?","Khwaja Ahmad Abbas was born in which district?",["पानीपत","Panipat","सोनीपत","Sonipat","कुरुक्षेत्र","Kurukshetra","पलवल","Palwal"],0,1,["ख्वाजा अहमद अब्बास का जन्म 1914 में पानीपत में हुआ।","वे प्रसिद्ध फिल्म निर्देशक, लेखक और पत्रकार थे।","उनकी फिल्म 'नीचा नगर' ने कान्स में पाल्मे डी'ओर जीता।","उन्होंने 'श्री 420' और 'आवारा' की पटकथा लिखी।"]],
+["Q68. बड़खल झील किस जिले में स्थित है?","Badkhal Lake is situated in which district?",["गुड़गाँव","Gurugram","भिवानी","Bhiwani","फरीदाबाद","Faridabad","रोहतक","Rohtak"],2,1,["बड़खल झील फरीदाबाद में अरावली पहाड़ियों में है।","इसका निर्माण 1947 में सिंचाई के लिए हुआ था।","फरीदाबाद में 'सूरजकुंड झील' भी स्थित है।"]],
+["Q69. KMP से आशय है?","KMP stands for?",["कुण्डली-मानेसर-पानीपत","Kundli-Manesar-Panipat","कुण्डली-मानेसर-पलवल","Kundli-Manesar-Palwal","कुरुक्षेत्र-मानेसर-पलवल","Kurukshetra-Manesar-Palwal","कुरुक्षेत्र-महेन्द्रगढ़-पानीपत","Kurukshetra-Mahendragarh-Panipat"],1,1,["KMP यानी 'कुण्डली-मानेसर-पलवल' एक्सप्रेसवे।","इसे 'पश्चिमी परिधीय एक्सप्रेसवे' (Western Peripheral) भी कहते हैं।","इसकी लंबाई 135.6 किमी है, जो दिल्ली में प्रदूषण कम करता है।"]],
+["Q70. निम्नलिखित जिलों में से किसमें हड़प्पा सभ्यता के राखीगढ़ी स्थल का उत्खनन हुआ था?","Rakhigarhi site was excavated in which district?",["हिसार","Hisar","सिरसा","Sirsa","फतेहाबाद","Fatehabad","कुरुक्षेत्र","Kurukshetra"],0,1,["राखीगढ़ी हिसार जिले में स्थित है।","यह भारत में सिंधु घाटी सभ्यता का सबसे बड़ा स्थल है।","यहाँ से अन्नागार और सोने की भट्टी मिली है।"]],
+["Q71. कल्पना चावला का जन्म निम्नलिखित में से किस स्थान पर हुआ था?","Kalpana Chawla was born at which place?",["करनाल","Karnal","पानीपत","Panipat","फरीदाबाद","Faridabad","गुड़गाँव","Gurugram"],0,1,["कल्पना चावला का जन्म 1962 में करनाल में हुआ था।","वे अंतरिक्ष जाने वाली पहली भारतीय मूल की महिला थीं।","2003 में कोलंबिया शटल क्रैश में उनकी मृत्यु हुई।"]],
+["Q72. हरियाणा राज्य में विविध प्रवासी पक्षियों के दर्शन हेतु निम्न में से कौन सी झील प्रसिद्ध है?","Which lake is famous for viewing diverse migratory birds?",["दमदमा झील","Damdama Lake","खलीलपुर झील","Khalilpur Lake","सुल्तानपुर झील","Sultanpur Lake","इनमें से कोई नहीं","None of these"],2,1,["सुल्तानपुर झील (राष्ट्रीय उद्यान) गुरुग्राम में है।","सर्दियों में यहाँ साइबेरियन सारस आते हैं।","इसकी खोज पीटर जैक्सन और सलीम अली ने की थी।"]],
+["Q73. हरियाणा के प्रथम राज्यपाल कौन थे?","Who was the first Governor of Haryana?",["धर्मवीर","Dharma Vira","कप्तानसिंह सोलंकी","Kaptan Singh Solanki","बी.एन. चक्रवर्ती","B.N. Chakravarty","इनमें से कोई नहीं","None of these"],0,1,["श्री धर्मवीर 1 Nov 1966 को पहले राज्यपाल बने थे।","बी.एन. चक्रवर्ती सबसे लंबे समय तक राज्यपाल रहे।","भिवानी नहर का नाम चक्रवर्ती के नाम पर है।"]],
+["Q74. पाण्डु-पिण्डारा, हरियाणा का एक सुप्रसिद्ध धार्मिक स्थल जिसका संबंध पाण्डवों के नाम से है, निम्न में से किस जिले में आता है?","Pandu Pindara is in which district?",["गुड़गाँव","Gurugram","जींद","Jind","कुरुक्षेत्र","Kurukshetra","हिसार","Hisar"],1,1,["पाण्डु-पिण्डारा जींद जिले में स्थित है।","इसे 'हरियाणा का लघु हरिद्वार' भी कहते हैं।","पांडवों ने यहाँ अपने पूर्वजों का पिंडदान किया था।"]],
+["Q75. चंडीगढ़, शहरी और आधुनिक वास्तुकला का एक श्रेष्ठ उदाहरण है। इसकी रूपरेखा बनाई थी?","Chandigarh's architecture was designed by?",["कार्बुजियर ने","Le Corbusier","माइकल फ्लेस ने","Michael Flace","जीन जोनाथन ने","Jean Jonathan","इनमें से कोई नहीं","None of these"],0,1,["चंडीगढ़ की रूपरेखा फ्रांसीसी 'ली कोर्बुज़िए' ने बनाई थी।","यह भारत का पहला नियोजित (Planned) शहर है।","कैपिटल कॉम्प्लेक्स यूनेस्को विश्व धरोहर है।"]],
+["Q76. प्लेग की बीमारी किस जीवाणु द्वारा फैलती है?","Plague is spread by which bacteria?",["साल्मोनेला टाइफी","Salmonella typhi","माइकोबैक्टीरियम ट्यूबरकुलोसिस","Mycobacterium tuberculosis","पाश्चरेला पेस्टिस","Pasteurella pestis","विब्रियो कोलेरी","Vibrio cholerae"],2,1,["प्लेग 'पाश्चरेला पेस्टिस' जीवाणु से होता है।","यह चूहों के पिस्सुओं (Fleas) से इंसानों में फैलता है।","इसे 'काली मौत' (Black Death) भी कहा जाता था।","साल्मोनेला से टाइफाइड होता है।"]],
+["Q77. कोशिका के किस भाग को 'साइट ऑफ कंट्रोल' (Site of Control) कहते हैं?","Which part of cell is called 'Site of Control'?",["राइबोसोम","Ribosome","माइटोकॉन्ड्रिया","Mitochondria","लाइसोसोम","Lysosome","केन्द्रक","Nucleus"],3,1,["केन्द्रक (Nucleus) को कोशिका का 'नियंत्रण कक्ष' कहते हैं।","इसकी खोज 1831 में रॉबर्ट ब्राउन ने की थी।","यह कोशिका विभाजन और चयापचय को नियंत्रित करता है।","माइटोकॉन्ड्रिया को 'पावर हाउस' कहते हैं।"]],
+["Q78. किसके द्वारा स्लीपिंग सिकनेस (Sleeping Sickness) फैलाया जाता है?","Sleeping sickness is spread by?",["मादा एनाफिलीज","Female Anopheles","सीसी मक्खी","Tsetse fly","बालू मक्खी (सैंड फ्लाई)","Sand fly","एडीज मच्छर","Aedes mosquito"],1,1,["निद्रा रोग 'ट्रिपैनोसोमा' प्रोटोजोआ से होता है।","यह अफ्रीका में 'सीसी मक्खी' (Tsetse fly) से फैलता है।","मादा एनाफिलीज से मलेरिया फैलता है।"]],
+["Q79. कौन-सा प्रोटीन रक्त को थक्का बनाने में मदद करता है?","Which protein helps in blood clotting?",["एल्ब्यूमिन","Albumin","ग्लोब्युलिन","Globulin","फाइब्रिनोजेन","Fibrinogen","हीमोग्लोबिन","Hemoglobin"],2,1,["फाइब्रिनोजेन प्रोटीन रक्त का थक्का जमाता है।","विटामिन K भी थक्का जमाने में मदद करता है।","हिपेरिन नसों के अंदर खून जमने से रोकता है।"]],
+["Q80. पुष्प का विभिन्न रंग किसकी उपस्थिति के कारण होता है?","Various colors of flowers are due to?",["क्लोरोफिल","Chlorophyll","कैरोटीन","Carotene","एन्थोसाइनिन","Anthocyanin","जैन्थोफिल","Xanthophyll"],2,1,["फूलों का लाल, नीला रंग 'एन्थोसाइनिन' के कारण होता है।","क्लोरोफिल पत्तियों को हरा रंग देता है।","कैरोटीन से गाजर लाल/नारंगी होती है।"]],
+["Q81. मनुष्य द्वारा छोड़ी गई हवा में ऑक्सीजन और कार्बन डाइऑक्साइड की प्रतिशत मात्रा क्रमशः कितनी होती है?","Percentage of O2 and CO2 in exhaled air is?",["ऑक्सीजन 21%, CO2 0.03%","O2 21%, CO2 0.03%","ऑक्सीजन 17%, CO2 4%","O2 17%, CO2 4%","ऑक्सीजन 16%, CO2 5%","O2 16%, CO2 5%","ऑक्सीजन 20%, CO2 1%","O2 20%, CO2 1%"],1,1,["सांस लेते समय 21% O2 और 0.03% CO2 अंदर जाती है।","सांस छोड़ते समय लगभग 17% O2 और 4% CO2 बाहर आती है।","नाइट्रोजन (78%) अप्रभावित बाहर आ जाती है।"]],
+["Q82. किस युग को रेप्टाइलों का युग (Age of Reptiles) कहते हैं?","Which era is called the Age of Reptiles?",["पेलियोजोइक","Paleozoic","मीसोजोइक","Mesozoic","सेनोजोइक","Cenozoic","आर्कियोजोइक","Archeozoic"],1,1,["मीसोजोइक महाकल्प को 'सरीसृपों का युग' कहते हैं।","इसी युग में डायनासोर हावी थे।","सेनोजोइक (वर्तमान) स्तनधारियों (Mammals) का युग है।"]],
+["Q83. वाशिंग मशीन किस सिद्धांत पर कार्य करता है?","Washing machine works on which principle?",["अभिकेन्द्रण","Centripetal","अपकेन्द्रण","Centrifugation","घर्षण","Friction","पृष्ठ तनाव","Surface tension"],1,1,["वाशिंग मशीन 'अपकेन्द्री बल' (Centrifugal) पर काम करती है।","यह बल केंद्र से बाहर की ओर लगता है।","बारिश की बूंद का गोल होना 'पृष्ठ तनाव' है।"]],
+["Q84. एक लड़की झूले पर बैठी स्थिति में झूला झूल रही है, उस लड़की के खड़े हो जाने पर दोलन के आवर्तकाल पर क्या प्रभाव पड़ेगा?","A girl swinging stands up. Effect on time period?",["बढ़ जाएगा","Increases","कम हो जाएगा","Decreases","अपरिवर्तित रहेगा","Remains same","रुक जाएगा","Stops"],1,1,["खड़े होने से लड़की का गुरुत्व केंद्र ऊपर उठता है।","इससे प्रभावी लंबाई (L) कम हो जाती है।","T = 2π√(L/g) के अनुसार, L घटने से आवर्तकाल (T) कम हो जाएगा।"]],
+["Q85. जब किसी झील की तली से उठकर वायु का बुलबुला ऊपरी सतह तक आएगा, तो उसके आकार पर क्या प्रभाव पड़ेगा?","Air bubble rising from bottom to surface. Effect on size?",["घट जाएगा","Decreases","बढ़ जाएगा","Increases","समान रहेगा","Remains same","चपटा हो जाएगा","Flattens"],1,1,["सतह पर आने से पानी का दबाव (Pressure) घटता है।","बॉयल के नियम (Boyle's Law) से, दबाव घटने पर आयतन बढ़ता है।","इसलिए बुलबुले का आकार बढ़ जाएगा।"]],
+["Q86. शीशे की छड़ जब भाप में रखी जाती है, इसकी लम्बाई बढ़ जाती है, परन्तु इसकी चौड़ाई पर क्या प्रभाव पड़ता है?","Glass rod in steam, length increases. Effect on width?",["घटती है","Decreases","बढ़ती है","Increases","अपरिवर्तित रहती है","Unchanged","अव्यवस्थित होती है","Irregular"],1,1,["गर्म करने पर ठोस पदार्थों में ऊष्मीय प्रसार (Thermal Expansion) होता है।","यह प्रसार तीनों दिशाओं (लंबाई, चौड़ाई, ऊंचाई) में होता है।","अतः चौड़ाई भी बढ़ेगी।"]],
+["Q87. जल की सतह के ऊपर का दृश्य देखने के लिए पनडुब्बी में कौन-सा यंत्र प्रयोग में लाया जाता है?","Instrument used in submarine to see above water?",["टेलीस्कोप","Telescope","पेरिस्कोप","Periscope","माइक्रोस्कोप","Microscope","कैलिडोस्कोप","Kaleidoscope"],1,1,["पनडुब्बी में 'पेरिस्कोप' का उपयोग होता है।","यह प्रकाश के परावर्तन के सिद्धांत पर काम करता है।","इसमें दो समतल दर्पण 45° पर लगे होते हैं।"]],
+["Q88. 'क्रायोजेनिक्स' (Cryogenics) एक विज्ञान है, जो किससे सम्बंधित है?","Cryogenics is a science related to?",["उच्च तापमान से","High temp","निम्न तापमान से","Low temp","उच्च दाब से","High pressure","परमाणु ऊर्जा से","Nuclear energy"],1,1,["यह अत्यधिक निम्न तापमान के अध्ययन से संबंधित है।","इसका उपयोग अंतरिक्ष रॉकेटों (GSLV) के इंजन में होता है।","ईंधन: तरल हाइड्रोजन (-253°C) और तरल ऑक्सीजन।"]],
+["Q89. पदार्थ का लघुत्तम अंश क्या है?","Smallest part of matter is?",["प्रोटॉन","Proton","इलेक्ट्रॉन","Electron","न्यूट्रॉन","Neutron","क्वार्क","Quark"],3,1,["आधुनिक भौतिकी में 'क्वार्क' (Quark) मूलभूत कण है।","प्रोटॉन और न्यूट्रॉन स्वयं क्वार्क से बने होते हैं।","क्वार्क मॉडल मरे गेल-मैन ने दिया था।"]],
+["Q90. रडार (Radar) उपयोग में कब आता है?","Radar is used for?",["प्रकाश तरंगों द्वारा वस्तुओं का पता लगाने में","Light waves detection","ध्वनि तरंगों द्वारा गहराई मापने में","Sound waves depth","रेडियो तरंगों द्वारा वस्तुओं की स्थिति ज्ञात करने में","Radio waves position","चुम्बकीय क्षेत्र मापने में","Magnetic field"],2,1,["RADAR (Radio Detection And Ranging) रेडियो तरंगों का उपयोग करता है।","यह विमानों और मिसाइलों की गति मापता है (Doppler Effect)।","सोनार (SONAR) ध्वनि तरंगों का उपयोग करता है।"]],
+["Q91. 'कवि' शब्द में कौनसी संज्ञा है?","",["व्यक्तिवाचक","व्यक्तिवाचक","जातिवाचक","जातिवाचक","द्रव्यवाचक","द्रव्यवाचक","भाववाचक","भाववाचक"],1,4,["जो शब्द पूरी जाति या वर्ग का बोध कराते हैं, वे जातिवाचक संज्ञा हैं।","कवि शब्द से संसार के सभी कवियों की जाति का बोध होता है।"]],
+["Q92. सर्वनाम के कितने भेद होते हैं?","",["तीन","तीन","चार","चार","पाँच","पाँच","छ:","छ:"],3,4,["हिंदी व्याकरण में सर्वनाम के 6 भेद हैं।","पुरुषवाचक, निश्चयवाचक, अनिश्चयवाचक, संबंधवाचक, प्रश्नवाचक, निजवाचक।"]],
+["Q93. 'नीलकण्ठ' में समास है-","",["बहुव्रीहि समास","बहुव्रीहि समास","द्वन्द्व समास","द्वन्द्व समास","अव्ययीभाव समास","अव्ययीभाव समास","द्विगु समास","द्विगु समास"],0,4,["विग्रह: 'नीला है कण्ठ जिसका' अर्थात् शिव।","जब दो पद मिलकर तीसरे विशेष अर्थ का बोध कराएं, तो बहुव्रीहि होता है।"]],
+["Q94. किस समास में कोई पद प्रधान नहीं होता?","",["अव्ययीभाव समास","अव्ययीभाव समास","बहुव्रीहि समास","बहुव्रीहि समास","द्विगु समास","द्विगु समास","तत्पुरुष समास","तत्पुरुष समास"],1,4,["बहुव्रीहि में पूर्व और उत्तर दोनों पद गौण (अप्रधान) होते हैं।","दोनों मिलकर एक नया अर्थ बनाते हैं (जैसे: दशानन = रावण)।"]],
+["Q95. 'उत्तरायण' शब्द का सही संधि-विच्छेद होगा-","",["उत्तरा + अयण","उत्तरा + अयण","उत्तर + अयन","उत्तर + अयन","उत्तर + अयण","उत्तर + अयण","उत्तरा + आयन","उत्तरा + आयन"],1,4,["यहाँ 'अ' + 'अ' = 'आ' (दीर्घ संधि) लागू हुई है।","व्यंजन संधि के नियम से 'र' के बाद 'न' आने पर 'न' का 'ण' हो जाता है।"]],
+["Q96. पेड़ ___ फल गिरता है।","",["में","में","के लिए","के लिए","से","से","पर","पर"],2,4,["जब कोई वस्तु अलग होती है (पेड़ से फल), तो अपादान कारक लगता है।","अपादान कारक (पंचमी विभक्ति) का चिह्न 'से' होता है।"]],
+["Q97. 'ज्ञ' को वर्णमाला में माना जाता है-","",["संयुक्त व्यंजन","संयुक्त व्यंजन","स्वर","स्वर","अनुस्वार","अनुस्वार","व्यंजन","व्यंजन"],0,4,["हिंदी में 4 संयुक्त व्यंजन हैं: क्ष, त्र, ज्ञ, श्र।","'ज्ञ' दो व्यंजनों 'ज्' और 'ञ' के मेल (ज् + ञ + अ) से बनता है।"]],
+["Q98. निम्न में से कौनसा शब्द अमात्रिक है-","",["कारखाना","कारखाना","अमिताभ","अमिताभ","कलरव","कलरव","चहचहाना","चहचहाना"],2,4,["अमात्रिक का अर्थ है कोई स्पष्ट मात्रा न होना।","'कलरव' में केवल 'अ' स्वर है जिसकी कोई दृश्य मात्रा नहीं होती।"]],
+["Q99. 'धन' का विशेषण शब्द है?","",["धनाकार","धनाकार","धनी","धनी","धनघोर","धनघोर","धनयुक्त","धनयुक्त"],1,4,["संज्ञा शब्दों में प्रत्यय लगाकर विशेषण बनते हैं।","'धन' में 'ई' प्रत्यय जोड़ने से 'धनी' (विशेषण) बनता है।"]],
+["Q100. इनमें कौनसा शब्द 'तद्भव' है?","",["अथवा","अथवा","बहुधा","बहुधा","दुविधा","दुविधा","सुविधा","सुविधा"],2,4,["तद्भव वे शब्द हैं जो संस्कृत से रूप बदलकर आए हैं।","'दुविधा' तद्भव है, इसका संस्कृत (तत्सम) रूप 'द्विविधा' है।"]]
+];
+
+const finalQuestions = rawData.map(d => {
+    let qText = d[1] ? `${d[0]}<br><span class='bilingual-eng'>${d[1]}</span>` : d[0];
+    let opts = [];
+    for(let i=0; i<8; i+=2) {
+        opts.push(d[2][i] === d[2][i+1] ? d[2][i] : `${d[2][i]} / ${d[2][i+1]}`);
+    }
+    let ansIdx = d[3];
+    let cat = d[4];
+    let expText = "";
+    let ansStr = opts[ansIdx];
+    
+    if(cat === 1) { // GK/Sci
+        let facts = d[5].map(f => `<li>${f}</li>`).join('');
+        expText = `<b>हल / Solution:</b> ${ansStr}<br><br>💡 <b>प्रमुख तथ्य / Key Facts:</b><ul style='padding-left:20px; margin-top:8px;'>${facts}</ul>`;
+    } else if (cat === 2) { // Math/Reas
+        expText = `<b>हल / Solution:</b> ${ansStr}<br><br><span class='math-trick'>🔥 स्मार्ट एप्रोच / Smart Approach:</span><br>${d[5][0]}`;
+    } else if (cat === 3) { // English
+        expText = `<b>हल / Solution:</b> ${ansStr}<br><br><span class='grammar-rule'>📖 Grammar Rule:</span><br>${d[5][0]}<br><br><span class='vocab'>💡 Vocab:</span> ${d[5][1] || ''}`;
+    } else if (cat === 4) { // Hindi
+        expText = `<b>हल / Solution:</b> ${ansStr}<br><br><span class='grammar-rule'>📖 व्याकरण नियम / Grammar Rule:</span><br>${d[5][0]}<br><br><span class='vocab'>💡 तथ्य / Fact:</span> ${d[5][1] || ''}`;
+    }
+    return { q: qText, o: opts, a: ansIdx, e: expText };
+});
+
+const STORAGE_KEY = 'mock16_final_105_active'; 
+const COMPLETED_KEY = 'mock16_final_105_comp';
+let state = JSON.parse(localStorage.getItem(STORAGE_KEY)) || { started: false, submitted: false, currentQ: 0, answers: {}, status: {}, timeLeft: 105 * 60 };
+let timerInterval;
+
+window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+function initDashboard() {
+    let completedData = null;
+    try { const dataStr = localStorage.getItem(COMPLETED_KEY); if(dataStr) completedData = JSON.parse(dataStr); } catch(e) {}
+    if (state.submitted || completedData) {
+        document.getElementById('dash-unattempted').style.display = 'none';
+        document.getElementById('dash-attempted').style.display = 'block';
+        if(completedData) {
+            document.getElementById('dash-score-text').innerText = `${completedData.score}/${finalQuestions.length}.0 Marks`;
+            let percentage = (completedData.score / finalQuestions.length) * 100;
+            document.getElementById('dash-progress-bar').style.width = `${percentage}%`;
+        }
+    } else {
+        document.getElementById('dash-attempted').style.display = 'none';
+        document.getElementById('dash-unattempted').style.display = 'block';
+    }
+    if (state.started && !state.submitted) {
+        showScreen('test-screen'); startTimer(); renderPalette(); loadQuestion(state.currentQ);
+    } else { showScreen('dashboard-screen'); }
+}
+
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(d => { if(d.id !== 'pause-overlay') d.classList.remove('active'); });
+    document.getElementById(id).classList.add('active');
+}
+
+function startTest() {
+    state = { started: true, submitted: false, currentQ: 0, answers: {}, status: {}, timeLeft: 105 * 60 };
+    for(let i=0; i<finalQuestions.length; i++) state.status[i] = 0; 
+    saveState(); showScreen('test-screen'); startTimer(); renderPalette(); loadQuestion(0);
+}
+
+function reattemptTest() {
+    if(confirm("क्या आप निश्चित रूप से एक नया टेस्ट शुरू करना चाहते हैं? (Are you sure you want to start a new test?)")) {
+        localStorage.removeItem(COMPLETED_KEY); startTest();
+    }
+}
+
+function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+function loadQuestion(idx) {
+    if (idx < 0) idx = 0; if (idx >= finalQuestions.length) idx = finalQuestions.length - 1;
+    state.currentQ = idx; if(state.status[idx] === 0) state.status[idx] = 1; 
+    document.getElementById('q-no').innerText = `Question ${idx + 1} of ${finalQuestions.length}`;
+    document.getElementById('q-text').innerHTML = finalQuestions[idx].q;
+    let optsHTML = ''; let labels = ['A', 'B', 'C', 'D'];
+    finalQuestions[idx].o.forEach((opt, i) => {
+        let isSel = state.answers[idx] === i; let selClass = isSel ? 'selected' : '';
+        optsHTML += `<div class="glass-panel option ${selClass}" onclick="selectOption(${i})"><div class="opt-label">${labels[i]}</div><div style="flex:1;">${opt}</div></div>`;
+    });
+    document.getElementById('options-box').innerHTML = optsHTML;
+    saveState(); renderPalette();
+}
+
+function selectOption(optIdx) { state.answers[state.currentQ] = optIdx; loadQuestion(state.currentQ); }
+function saveNext() {
+    if(state.answers[state.currentQ] !== undefined) state.status[state.currentQ] = 2; else state.status[state.currentQ] = 1; 
+    if(state.currentQ < finalQuestions.length - 1) loadQuestion(state.currentQ + 1); else { saveState(); renderPalette(); }
+}
+function markReview() {
+    if(state.answers[state.currentQ] !== undefined) state.status[state.currentQ] = 4; else state.status[state.currentQ] = 3; 
+    if(state.currentQ < finalQuestions.length - 1) loadQuestion(state.currentQ + 1); else { saveState(); renderPalette(); }
+}
+function clearResponse() { delete state.answers[state.currentQ]; state.status[state.currentQ] = 1; loadQuestion(state.currentQ); }
+function changeQ(step) { if(state.currentQ + step >= 0 && state.currentQ + step < finalQuestions.length) { loadQuestion(state.currentQ + step); } }
+
+function renderPalette() {
+    let html = ''; let counts = { ans: 0, notAns: 0, notVis: 0, marked: 0 };
+    for(let i=0; i<finalQuestions.length; i++) {
+        let s = state.status[i]; let cls = 's-0';
+        if(s === 0) { cls = 's-0'; counts.notVis++; } if(s === 1) { cls = 's-2'; counts.notAns++; }
+        if(s === 2) { cls = 's-1'; counts.ans++; } if(s === 3) { cls = 's-3'; counts.marked++; }
+        if(s === 4) { cls = 's-4'; counts.ans++; counts.marked++; }
+        let active = (i === state.currentQ) ? 'active' : ''; if(active && s === 0) cls = 's-2'; 
+        html += `<button class="p-btn ${cls} ${active}" onclick="loadQuestion(${i})">${i+1}</button>`;
+    }
+    document.getElementById('q-grid').innerHTML = html;
+    document.getElementById('c-ans').innerText = counts.ans; document.getElementById('c-notans').innerText = counts.notAns;
+    document.getElementById('c-notvis').innerText = counts.notVis; document.getElementById('c-mark').innerText = counts.marked;
+}
+
+function startTimer() {
+    if(timerInterval) clearInterval(timerInterval); updateTimerDisplay();
+    timerInterval = setInterval(() => {
+        if (state.timeLeft <= 0) { clearInterval(timerInterval); submitTest(); return; }
+        state.timeLeft--; updateTimerDisplay();
+        if(state.timeLeft % 10 === 0) saveState();
+    }, 1000);
+}
+
+function updateTimerDisplay() {
+    let m = Math.floor(state.timeLeft / 60).toString(); let s = (state.timeLeft % 60).toString().padStart(2, '0');
+    if(m.length < 2) m = m.padStart(2, '0'); document.getElementById('timer-display').innerText = `${m}:${s}`;
+}
+
+function togglePause() {
+    let modal = document.getElementById('pause-overlay');
+    if (modal.style.display === 'flex') { modal.style.display = 'none'; startTimer(); } else { clearInterval(timerInterval); modal.style.display = 'flex'; }
+}
+
+function submitTest() {
+    if(!confirm("क्या आप निश्चित रूप से टेस्ट सबमिट करना चाहते हैं? (Are you sure you want to submit?)")) return;
+    clearInterval(timerInterval); state.submitted = true; saveState(); calculateResult();
+}
+
+function calculateResult() {
+    let correct = 0, wrong = 0, attempted = 0;
+    for(let i=0; i<finalQuestions.length; i++) {
+        if(state.answers[i] !== undefined) {
+            attempted++;
+            if(state.answers[i] === finalQuestions[i].a) correct++; else wrong++;
+        }
+    }
+    const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const completedData = { score: correct, attempted: attempted, wrong: wrong, date: today };
+    localStorage.setItem(COMPLETED_KEY, JSON.stringify(completedData));
+    document.getElementById('r-score').innerText = correct; document.getElementById('r-attempt').innerText = attempted;
+    document.getElementById('r-wrong').innerText = wrong; document.getElementById('r-acc').innerText = attempted > 0 ? Math.round((correct/attempted)*100) + '%' : '0%';
+    showScreen('result-screen');
+}
+
+function viewSavedResults() { calculateResult(); }
+
+function viewSolutions() {
+    showScreen('solution-screen'); let html = ''; let labels = ['A', 'B', 'C', 'D'];
+    finalQuestions.forEach((q, i) => {
+        let uAns = state.answers[i]; let cAns = q.a; let optsHtml = '';
+        q.o.forEach((opt, oIdx) => {
+            let cls = ''; let icon = '';
+            if(oIdx === cAns) { cls = 'correct'; icon = ' ✔'; }
+            else if(oIdx === uAns && uAns !== cAns) { cls = 'wrong'; icon = ' ❌ (Your Answer)'; }
+            optsHtml += `<div class="glass-panel sol-opt ${cls}"><strong>${labels[oIdx]}.</strong> <div style="flex:1;">${opt} <span style="float:right">${icon}</span></div></div>`;
+        });
+        let userStatus = uAns === null || uAns === undefined ? "<span style='color:var(--text-muted)'>हल नहीं किया (Unattempted)</span>" : 
+                       (uAns === cAns ? "<span style='color:var(--success)'>सही (Correct)</span>" : "<span style='color:var(--danger)'>गलत (Incorrect)</span>");
+        html += `<div class="glass-panel sol-card"><div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--primary);">Q${i+1}. ${q.q}</div>${optsHtml}<div style="font-weight:bold; margin:15px 0; color:var(--text-muted);">Status: ${userStatus}</div><div class="glass-panel sol-exp">${q.e}</div></div>`;
+    });
+    document.getElementById('sol-container').innerHTML = html;
+}
+function toggleTheme() { document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'); }
+</script>
+</body>
+</html>
