@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HSSC Group D GK Test (Top 25)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- html2pdf Library for PDF Download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        /* Beautiful Moving Gradient & Glassmorphism Theme */
+        :root {
+            --bg-grad-1: #4facfe; --bg-grad-2: #00f2fe; --bg-grad-3: #a18cd1; --bg-grad-4: #fbc2eb;
+            --glass-bg: rgba(255, 255, 255, 0.9); --glass-border: rgba(255, 255, 255, 0.6); --glass-shadow: rgba(31, 38, 135, 0.15);
+            --text-main: #1f2937; --text-muted: #64748b;
+            --primary: #2563eb; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --purple: #8b5cf6;
+            --option-bg: rgba(243, 244, 246, 0.8); --option-selected: rgba(219, 234, 254, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+        [data-theme="dark"] {
+            --bg-grad-1: #0f2027; --bg-grad-2: #203a43; --bg-grad-3: #2c5364; --bg-grad-4: #141e30;
+            --glass-bg: rgba(17, 25, 40, 0.85); --glass-border: rgba(255, 255, 255, 0.15); --glass-shadow: rgba(0, 0, 0, 0.5);
+            --text-main: #f9fafb; --text-muted: #94a3b8;
+            --primary: #3b82f6; 
+            --option-bg: rgba(55, 65, 81, 0.7); --option-selected: rgba(30, 58, 138, 0.8);
+            --card-bg: rgba(31, 41, 55, 0.95);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; touch-action: manipulation;}
+        
+        body { 
+            height: 100vh; height: 100dvh; 
+            background: linear-gradient(45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3), var(--bg-grad-4)); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+            color: var(--text-main); 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 var(--glass-shadow); border-radius: 12px; }
+        
+        .btn { font-family: 'Poppins', sans-serif; background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;}
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-warning { background: var(--warning); color: #fff;}
+        .btn-clear { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-mark { background: var(--purple); color: white; }
+        .btn-prev { background: var(--text-muted); color: white; }
+
+        /* Screens */
+        .screen { display: none; flex-direction: column; height: 100%; width: 100vw; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; }
+
+        /* --- DASHBOARD UI --- */
+        #dashboard-screen { overflow-y: auto; background: var(--card-bg); align-items: center; padding-bottom: 30px;}
+        
+        .dash-header-top { background: #1e293b; color: white; width: 100%; padding: 15px 20px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 15px; position: sticky; top:0; z-index: 100;}
+        
+        .dash-content { width: 100%; max-width: 800px; padding: 20px; }
+        .section-title { font-weight: 600; color: var(--primary); margin: 15px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 15px; }
+        
+        .dash-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--glass-border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .test-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text-main);}
+        .test-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        
+        .progress-container { width: 100%; height: 6px; background: var(--glass-border); border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #fbc02d; width: 0%; transition: width 0.5s ease;}
+        
+        .dash-actions { display: flex; gap: 12px; margin-top: 15px; }
+        .dash-actions .btn { flex: 1; padding: 10px; font-size: 14px; border-radius: 8px;}
+        
+        .syllabus-footer { display: flex; justify-content: space-between; font-size: 12px; color: var(--primary); border-top: 1px solid var(--glass-border); padding-top: 12px; margin-top: 15px; }
+
+        /* --- TEST SCREEN UI --- */
+        header.test-head { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-bottom: 10px; margin-inline: 10px; }
+        .header-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: 700; background: var(--card-bg); border: 1px solid var(--glass-border); color: var(--danger); padding: 5px 12px; border-radius: 20px; }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 0 10px 10px 10px; }
+        .question-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        .q-header { padding: 10px 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
+        .q-body { flex: 1; padding: 15px; overflow-y: auto; font-size: 16px; line-height: 1.6; }
+        
+        .options-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;}
+        .option { padding: 12px; border: 2px solid var(--glass-border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--option-bg); font-weight: 500; font-size: 15px;}
+        .option.selected { border-color: var(--primary); background: var(--option-selected); color: var(--primary); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--glass-border); display: flex; justify-content: center; align-items: center; font-weight: bold; }
+        .option.selected .opt-label { background: var(--primary); color: white; border-color: var(--primary);}
+        
+        .q-footer { padding: 10px; border-top: 1px solid var(--glass-border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-radius: 0 0 12px 12px; }
+
+        /* --- PALETTE UI --- */
+        .palette-section { width: 320px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .palette-header { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; font-weight: bold; font-size: 15px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; font-size: 12px; border-bottom: 1px solid var(--glass-border); font-weight: 500;}
+        .stat-item { display: flex; align-items: center; gap: 6px;}
+        .badge { width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 10px; font-weight: bold;}
+        .s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);} 
+        .s-1 { background: var(--success); } .s-2 { background: var(--danger); } .s-3 { background: var(--purple); } 
+        .s-4 { background: var(--primary); position: relative; }
+        .s-4::after { content: '✔'; position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; background: white; color: var(--primary); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 8px; }
+        
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .p-btn.s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);}
+        .p-btn.active { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.1);}
+        .submit-area { padding: 10px; border-top: 1px solid var(--glass-border); border-radius: 0 0 12px 12px;}
+
+        /* --- RESULTS & SOLUTIONS UI --- */
+        #result-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        #solution-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        .sol-card { padding: 20px; margin-bottom: 15px; width: 100%; max-width: 800px; page-break-inside: avoid;}
+        .sol-opt { padding: 10px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; gap: 10px; align-items: center; font-size: 15px; background: var(--card-bg);}
+        .sol-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); text-decoration: line-through;}
+        .sol-exp { margin-top: 15px; padding: 15px; background: rgba(37, 99, 235, 0.05); border: 1px solid var(--glass-border); border-left: 4px solid var(--primary); border-radius: 8px; font-size: 14.5px; line-height: 1.6; }
+        .sol-exp ul { padding-left: 20px; margin-top: 8px; }
+        .sol-exp li { margin-bottom: 6px; }
+
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+
+        @media (max-width: 992px) {
+            .main-area { flex-direction: column; overflow-y: auto;}
+            .question-section { flex: none; min-height: 450px;}
+            .palette-section { width: 100%; flex: none; min-height: 350px;}
+            .q-footer .btn { padding: 10px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="dashboard-screen" class="screen active">
+        <div class="dash-header-top">
+            <span style="cursor: pointer;" onclick="alert('Going Back')">&#8592;</span>
+            Testbook - Mock Tests
+        </div>
+
+        <div class="dash-content">
+            <!-- Unattempted State -->
+            <div id="dash-unattempted" style="display: none;">
+                <div class="section-title">Suggested Next Test</div>
+                <div class="dash-card">
+                    <div class="test-title">HSSC Group D GK Test (Top 25)</div>
+                    <div class="test-meta">
+                        <span>25 Qs • 25 mins • 25.0 Marks</span>
+                    </div>
+                    <div class="test-meta" style="justify-content: flex-end;">
+                        <button class="btn btn-outline" style="padding: 6px 20px; border-radius: 20px;" onclick="startTest()">Start Test 🚀</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span>Syllabus: History, Geography, Polity & Culture</span>
+                        <span style="color:var(--success);">🔗 Share</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attempted State -->
+            <div id="dash-attempted" style="display: none;">
+                <div class="dash-card">
+                    <div class="test-title">HSSC Group D GK Test (Top 25)</div>
+                    <div class="test-meta" style="margin-bottom: 5px;">
+                        <span id="dash-score-text" style="font-size: 15px; color: var(--text-muted);">0/25.0 Marks . 1.5K/2.9K Rank</span>
+                    </div>
+                    
+                    <div class="progress-container"><div class="progress-fill" id="dash-progress-bar"></div></div>
+
+                    <div class="dash-actions">
+                        <button class="btn btn-outline" onclick="viewSavedResults()">View Results</button>
+                        <button class="btn btn-outline" onclick="reattemptTest()">Reattempt &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAUSE OVERLAY -->
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px; font-size: 2rem;">Test Paused ⏸️</h2>
+        <button class="btn btn-primary" style="font-size: 1.2rem; padding: 10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+    </div>
+
+    <!-- TEST SCREEN -->
+    <div id="test-screen" class="screen">
+        <header class="glass-panel test-head">
+            <div class="header-title">Full GK Test</div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="toggleTheme()">🌓 Theme</button>
+                <button class="btn btn-warning" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="togglePause()">⏸ Pause</button>
+                <div class="timer-box">⏱ <span id="timer-display">25:00</span></div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="glass-panel question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--success); font-weight:bold;">+1 <span style="color: var(--text-muted); font-weight:normal;">|</span> <span style="color: var(--danger);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <button class="btn btn-mark" onclick="markReview()">Mark & Next</button>
+                    <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                    <button class="btn btn-prev" onclick="changeQ(-1)">Previous</button>
+                    <button class="btn btn-primary" onclick="saveNext()">Save & Next</button>
+                </div>
+            </div>
+
+            <div class="glass-panel palette-section">
+                <div class="palette-header">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">25</div> Not Visit</div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn btn-primary" style="width: 100%; background: var(--success); font-size: 15px; padding: 10px;" onclick="submitTest()">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen" class="screen">
+        <div style="width: 100%; max-width: 800px; margin-bottom: 15px;"><button class="btn btn-clear" onclick="showDashboard()">&#8592; Back to Dashboard</button></div>
+        <div class="glass-panel" style="max-width: 800px; width: 100%; padding: 25px;">
+            <h1 style="color: var(--primary); text-align: center;">Test Submitted Successfully! 🎉</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 25px 0;">
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-score" style="color: var(--primary); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Score</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-attempt" style="color: var(--success); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Attempted</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-wrong" style="color: var(--danger); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Wrong</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-acc" style="color: var(--purple); font-size: 1.8rem;">0%</h2><p style="color: var(--text-muted); font-size:12px;">Accuracy</p></div>
+            </div>
+            <button class="btn btn-primary" style="width:100%; font-size: 15px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+        </div>
+    </div>
+
+    <!-- SOLUTION SCREEN -->
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%; margin:0 auto;">
+            <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 12px 15px; position: sticky; top: 5px; z-index: 10;">
+                <h3 style="color: var(--primary);">Detailed Solutions</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" style="padding: 5px 12px; font-size: 13px; background: var(--success);" onclick="downloadPDF()">📥 Download PDF</button>
+                    <button class="btn btn-clear" style="padding: 5px 12px; font-size: 13px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+                </div>
+            </div>
+            
+            <!-- This container will be converted to PDF -->
+            <div id="sol-container"></div>
+            
+        </div>
+    </div>
+
+<script>
+    // Storage Keys
+    const MEMORY_STORE = {};
+    function safeGetItem(key) { try { return localStorage.getItem(key) || MEMORY_STORE[key] || null; } catch(e) { return MEMORY_STORE[key] || null; } }
+    function safeSetItem(key, value) { try { localStorage.setItem(key, value); } catch(e) {} MEMORY_STORE[key] = value; }
+    function safeRemoveItem(key) { try { localStorage.removeItem(key); } catch(e) {} delete MEMORY_STORE[key]; }
+
+    const STORAGE_KEY = 'hssc_gk_1_active'; 
+    const COMPLETED_KEY = 'hssc_gk_1_comp';
+
+    // 25 Questions extracted successfully with Backticks (`) to avoid JS syntax crash.
+    const finalQuestions = [
+        { q: "वैदिक युग में राजा अपनी जनता से जो कर वसूल करते थे, उसे क्या कहते थे ?", o: ["बलि", "विदथ", "वर्मन", "कर"], a: 0, e: `<b>हल:</b> वैदिक युग में राजा अपनी जनता से जो कर वसूलते थे, उसे 'बलि' कहा जाता था。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>वैदिक काल में राजा को 'गोप्ता' कहा जाता था।</li><li>शुरुआत में 'बलि' स्वेच्छा से दिया जाने वाला कर था, जो बाद में अनिवार्य हो गया।</li><li>कर वसूलने वाले अधिकारी को 'भागदुघ' कहा जाता था।</li><li>ऋग्वैदिक काल में समाज का मुख्य आधार परिवार होता था।</li><li>विदथ आर्यों की सबसे प्राचीन संस्था थी।</li></ul>` },
+        { q: "आर्य सभ्यता में मनुष्य के जीवन के आयु के आरोही क्रमानुसार निम्नलिखित चरणों में से कौन सा विकल्प सही है ?", o: ["ब्रह्मचर्य-गृहस्थ-वानप्रस्थ-संन्यास", "गृहस्थ-ब्रह्मचर्य-वानप्रस्थ-संन्यास", "ब्रह्मचर्य-वानप्रस्थ-संन्यास-गृहस्थ", "गृहस्थ-संन्यास-वानप्रस्थ-ब्रह्मचर्य"], a: 0, e: `<b>हल:</b> आयु का सही आरोही क्रम है: ब्रह्मचर्य, गृहस्थ, वानप्रस्थ, और अंत में संन्यास。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>आश्रम व्यवस्था का सर्वप्रथम उल्लेख जाबालोपनिषद में मिलता है।</li><li>मनुष्य की आयु 100 वर्ष मानकर 25-25 वर्ष के चार चरण बनाए गए थे।</li><li>गृहस्थ आश्रम को सभी आश्रमों में सर्वश्रेष्ठ माना गया है।</li><li>इसका मुख्य उद्देश्य धर्म, अर्थ, काम और मोक्ष (पुरुषार्थ) की प्राप्ति था।</li><li>उपनयन संस्कार के बाद ब्रह्मचर्य आश्रम शुरू होता था।</li></ul>` },
+        { q: "आरंभिक वैदिक काल में वर्ण व्यवस्था आधारित थी:", o: ["शिक्षा पर", "जन्म पर", "व्यवसाय पर", "प्रतिभा पर"], a: 2, e: `<b>हल:</b> आरंभिक (ऋग्वैदिक) काल में वर्ण व्यवस्था मुख्य रूप से व्यवसाय (कर्म) पर आधारित थी。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>ऋग्वेद के 10वें मंडल के 'पुरुष सूक्त' में चारों वर्णों का पहली बार उल्लेख है।</li><li>उस समय कोई भी व्यक्ति अपना व्यवसाय (वर्ण) बदल सकता था।</li><li>उत्तर वैदिक काल में आते-आते यह व्यवस्था 'जन्म' पर आधारित हो गई।</li><li>समाज में ब्राह्मण, क्षत्रिय, वैश्य और शूद्र वर्ण थे।</li><li>ऋग्वैदिक काल में छुआछूत या जाति प्रथा जैसी जटिलता मौजूद नहीं थी।</li></ul>` },
+        { q: "किस कारण से मोहम्मद बिन तुगलक असफल व्यक्ति था?", o: ["वह विक्षिप्त था", "वह व्यावहारिक राजनेता नहीं था", "उसने राजधानी दूसरे शहर को बनाया", "उसने चीन के साथ युद्ध किया"], a: 1, e: `<b>हल:</b> मोहम्मद बिन तुगलक एक आदर्शवादी था लेकिन वह एक व्यावहारिक राजनेता नहीं था。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>उसे दिल्ली सल्तनत का सबसे पढ़ा-लिखा लेकिन 'पागल सुल्तान' कहा गया।</li><li>उसकी 5 प्रमुख योजनाएं असफल रहीं, जिनमें दोआब में कर वृद्धि प्रमुख थी।</li><li>उसने देवगिरि का नाम दौलताबाद रखकर उसे नई राजधानी बनाया था।</li><li>उसने अर्थव्यवस्था सुधारने के लिए तांबे और पीतल के सांकेतिक (Token) सिक्के चलाए थे।</li><li>उसी के शासनकाल में मोरक्को का यात्री इब्न बतूता भारत आया था।</li></ul>` },
+        { q: "आगरा नगर की स्थापना निम्नलिखित में से किसके द्वारा की गई थी ?", o: ["फिरोज तुगलक", "मुहम्मद-बिन-तुगलक", "अलाउद्दीन खिलजी", "सिकन्दर लोदी"], a: 3, e: `<b>हल:</b> आगरा शहर की स्थापना 1504 ईस्वी में सिकंदर लोदी द्वारा की गई थी。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>1506 में उसने दिल्ली की जगह आगरा को अपनी नई राजधानी बनाया।</li><li>सिकंदर लोदी ने भूमि मापने के लिए 'गजे सिकंदरी' नामक पैमाना चलाया था।</li><li>वह 'गुलरूखी' उपनाम से फारसी भाषा में कविताएं लिखता था।</li><li>वह लोदी वंश (और दिल्ली सल्तनत) के महानतम शासकों में गिना जाता है।</li><li>मुगलों के समय में भी आगरा लंबे समय तक भारत की राजधानी रहा।</li></ul>` },
+        { q: "बहमनी राज्य की स्थापना निम्नलिखित में से किसके द्वारा की गई थी ?", o: ["अहमदशाह I", "अलाउद्दीन हसन", "महमूद गवान", "फिरोजशाह बहमनी"], a: 1, e: `<b>हल:</b> बहमनी राज्य की स्थापना 1347 ई. में अलाउद्दीन हसन (हसन गंगू या बहमन शाह) ने की थी。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>हसन गंगू ने 'अलाउद्दीन हसन बहमन शाह' की उपाधि धारण की थी।</li><li>इस साम्राज्य की पहली राजधानी गुलबर्गा (अहसानाबाद) थी।</li><li>यह दक्षिण भारत का पहला स्वतंत्र इस्लामिक राज्य था।</li><li>बहमनी साम्राज्य आगे चलकर 5 राज्यों (बीजापुर, गोलकुंडा, अहमदनगर, बीदर, बरार) में बंट गया।</li><li>इस राज्य की स्थापना दिल्ली सुल्तान मुहम्मद बिन तुगलक के शासनकाल में हुई थी।</li></ul>` },
+        { q: "भारतीय विश्वविद्यालयों की स्थापना सबसे पहले किसके समय में हुई थी?", o: ["मैकाले", "वारेन हेस्टिंग्स", "लॉर्ड कैनिंग", "लॉर्ड विलियम बेंटिक"], a: 2, e: `<b>हल:</b> भारत में पहले तीन आधुनिक विश्वविद्यालयों की स्थापना 1857 में लॉर्ड कैनिंग के समय में हुई थी。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>ये विश्वविद्यालय कलकत्ता, बंबई और मद्रास में स्थापित किए गए थे।</li><li>ये विश्वविद्यालय 'लंदन विश्वविद्यालय' के मॉडल पर बनाए गए थे।</li><li>इनकी स्थापना 1854 के 'वुड डिस्पैच' (Wood's Despatch) की सिफारिश पर हुई थी।</li><li>वुड डिस्पैच को भारतीय शिक्षा का 'मैग्ना कार्टा' (अधिकार पत्र) कहा जाता है।</li><li>लॉर्ड कैनिंग भारत के अंतिम गवर्नर जनरल और पहले वायसराय थे।</li></ul>` },
+        { q: "स्वामी दयानंद सरस्वती का मूल नाम था", o: ["अभि शंकर", "गौरी शंकर", "दया शंकर", "मूल शंकर"], a: 3, e: `<b>हल:</b> स्वामी दयानंद सरस्वती के बचपन का मूल नाम 'मूल शंकर' था。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>उनका जन्म 1824 में गुजरात के टंकारा में हुआ था।</li><li>उन्होंने 1875 में बंबई (मुंबई) में 'आर्य समाज' की स्थापना की थी।</li><li>उनका सबसे प्रसिद्ध नारा 'वेदों की ओर लौटो' था।</li><li>उनकी सबसे प्रसिद्ध और प्रमुख पुस्तक 'सत्यार्थ प्रकाश' है।</li><li>उन्होंने 'शुद्धि आंदोलन' चलाया था, जिसके तहत धर्म बदल चुके लोगों की हिंदू धर्म में वापसी कराई गई।</li></ul>` },
+        { q: "मनुस्मृति में जिस विषयवस्तु की चर्चा की गई है, वह संबंधित है", o: ["अर्थशास्त्र से", "राजनीति से", "कानून से", "कला से"], a: 2, e: `<b>हल:</b> मनुस्मृति हिंदू धर्म का एक प्राचीन ग्रंथ है जो मुख्य रूप से समाज व्यवस्था और कानून (विधि) से संबंधित है。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>इसे हिंदू धर्म का सबसे प्राचीन और प्रामाणिक स्मृति ग्रंथ (Law book) माना जाता है।</li><li>इसकी रचना शुंग काल (लगभग 200 ई.पू. से 200 ई.) के दौरान हुई मानी जाती है।</li><li>मनुस्मृति में 12 अध्याय और लगभग 2694 श्लोक शामिल हैं।</li><li>यह ग्रंथ वर्णाश्रम धर्म, राजा के कर्तव्य और सामाजिक नियमों की व्याख्या करता है।</li><li>विलियम जोंस ने 1776 में इसका पहला अंग्रेजी अनुवाद 'Institutes of Hindu Law' नाम से किया था।</li></ul>` },
+        { q: "भीलों के प्रसिद्ध लोक नाटक का नाम क्या है?", o: ["गवरी", "स्वांग", "तमाशा", "रम्मत"], a: 0, e: `<b>हल:</b> भील जनजाति के सबसे प्रसिद्ध लोक नाटक का नाम 'गवरी' है。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>गवरी राजस्थान के मेवाड़ क्षेत्र की भील जनजाति का पारंपरिक लोक नाटक है।</li><li>यह नाटक भगवान शिव (भैरव) और भस्मासुर की पौराणिक कथा पर आधारित है।</li><li>यह आयोजन रक्षाबंधन के दूसरे दिन से शुरू होकर लगातार सवा महीने (40 दिन) तक चलता है।</li><li>इसमें केवल पुरुष ही भाग लेते हैं, महिला पात्रों का अभिनय भी पुरुष ही करते हैं।</li><li>इसे राजस्थान का सबसे प्राचीन लोक नाट्य माना जाता है और इसे लोक नाट्यों का 'मेरुनाट्य' भी कहते हैं।</li></ul>` },
+        { q: "केरल के राजा रवि वर्मा प्रसिद्ध _____ थे।", o: ["नर्तक", "चित्रकार", "कवि", "गायक"], a: 1, e: `<b>हल:</b> केरल के त्रावणकोर राज्य के राजा रवि वर्मा एक विश्व प्रसिद्ध चित्रकार (Painter) थे。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>उन्हें आधुनिक भारतीय कला के महानतम चित्रकारों में गिना जाता है।</li><li>उन्होंने यूरोपीय यथार्थवाद (Realism) और भारतीय विषयों का बेहतरीन मिश्रण किया।</li><li>हिंदू देवी-देवताओं को मानवाकार रूप में कैनवास पर उकेरने का श्रेय सबसे पहले उन्हीं को जाता है।</li><li>भारत में लिथोग्राफी प्रेस की स्थापना सबसे पहले राजा रवि वर्मा ने ही की थी।</li><li>उनके प्रसिद्ध चित्रों में 'शकुंतला', 'दमयंती', और 'सरस्वती' बहुत लोकप्रिय हैं।</li></ul>` },
+        { q: "भारत के संविधान में शामिल 'राज्य नीति के निदेशक सिद्धांतों' की अवधारणा किसके संविधान से ली गई थी?", o: ["ऑस्ट्रेलिया", "यू.एस.ए.", "कनाडा", "आयरलैंड"], a: 3, e: `<b>हल:</b> राज्य के नीति निदेशक सिद्धांत (DPSP) आयरलैंड के संविधान से प्रेरित हैं。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>भारतीय संविधान के भाग 4 में (अनुच्छेद 36 से 51 तक) इनका वर्णन किया गया है।</li><li>इनका मुख्य उद्देश्य भारत में एक 'लोक कल्याणकारी राज्य' (Welfare State) की स्थापना करना है।</li><li>ये सिद्धांत न्यायालय द्वारा प्रवर्तनीय (Justiciable) नहीं हैं।</li><li>आयरलैंड ने स्वयं इस अवधारणा को स्पेन के संविधान से ग्रहण किया था।</li><li>डॉ. बी.आर. अंबेडकर ने निदेशक तत्वों को संविधान की 'अनोखी विशेषता' कहा था।</li></ul>` },
+        { q: "रिक्त स्थान की पूर्ति करें। 'अधिकार, कर्तव्यों _____' ", o: ["को बाधित करता है।", "को अनुदेशित करता है।", "में निहित है।", "का विरोध करता है।"], a: 1, e: `<b>हल:</b> अधिकार हमेशा कर्तव्यों को अनुदेशित (Instruct/Dictate) करते हैं, क्योंकि दोनों एक-दूसरे के पूरक हैं。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>अधिकार और कर्तव्य एक ही सिक्के के दो पहलू माने जाते हैं।</li><li>बिना कर्तव्यों का पालन किए नागरिक अधिकारों की कल्पना नहीं की जा सकती।</li><li>महात्मा गांधी ने कहा था, 'अधिकारों का सच्चा स्रोत कर्तव्य है।'</li><li>मूल कर्तव्य 1976 में 42वें संशोधन द्वारा संविधान (भाग 4A, अनुच्छेद 51A) में जोड़े गए।</li><li>सरदार स्वर्ण सिंह समिति की सिफारिश पर मूल कर्तव्यों को सोवियत संघ (रूस) के संविधान से लिया गया था।</li></ul>` },
+        { q: "प्रारंभ में कितने मौलिक अधिकार दिए गए थे?", o: ["छ:", "सात", "चार", "पांच"], a: 1, e: `<b>हल:</b> मूल संविधान के प्रारंभ में नागरिकों को 7 मौलिक अधिकार प्रदान किए गए थे。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>भारतीय संविधान के भाग 3 (अनुच्छेद 12-35) में मौलिक अधिकारों का विस्तृत वर्णन है।</li><li>संपत्ति के अधिकार (अनुच्छेद 31) को 44वें संशोधन (1978) द्वारा मौलिक अधिकारों की सूची से हटा दिया गया।</li><li>वर्तमान में भारतीय नागरिकों के पास कुल 6 मौलिक अधिकार हैं।</li><li>संपत्ति का अधिकार अब अनुच्छेद 300(A) के तहत केवल एक 'कानूनी अधिकार' है।</li><li>मौलिक अधिकारों का विचार अमेरिका (USA) के संविधान (Bill of Rights) से लिया गया है।</li></ul>` },
+        { q: "नक्शों पर क्षेत्रफल मापने के लिए प्रयुक्त यंत्र को कहते हैं :", o: ["प्लैनीमीटर", "आइडोग्राफ", "पैंटोग्राफ", "ओपिसोमीटर"], a: 0, e: `<b>हल:</b> 2D नक्शों या चित्रों पर अनियमित आकृतियों का क्षेत्रफल मापने के लिए 'प्लैनीमीटर' (Planimeter) का प्रयोग किया जाता है。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>प्लैनीमीटर का आविष्कार 1854 में स्विस गणितज्ञ जैकब एम्स्लर ने किया था।</li><li>आइडोग्राफ (Ideograph) का उपयोग भाषा और विचारों को प्रतीकों (Symbols) के रूप में दर्शाने के लिए होता है।</li><li>पैंटोग्राफ का उपयोग किसी चित्र या नक्शे को बड़ा या छोटा करने (Scaling) के लिए किया जाता है।</li><li>ओपिसोमीटर (जिसे कर्वीमीटर भी कहते हैं) का उपयोग नक्शे पर घुमावदार रेखाओं (सड़क, नदी) की लंबाई मापने के लिए होता है।</li><li>मानचित्र बनाने की कला को कार्टोग्राफी कहते हैं।</li></ul>` },
+        { q: "पृथ्वी से चाँद का एक ही पार्श्व दिखाई देता है, क्योंकि-", o: ["वह अपने अक्ष का घूर्णन नहीं करता है", "उसका घूर्णन तथा परिक्रमण एक-दूसरे के विपरीत है", "उसके घूर्णन और परिक्रमण की अवधि एक ही है", "उसके परिक्रमण की अपेक्षा घूर्णन अधिक तेज है"], a: 2, e: `<b>हल:</b> चंद्रमा को अपनी धुरी पर घूमने (घूर्णन) और पृथ्वी की परिक्रमा करने में लगभग समान समय लगता है。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>चंद्रमा को पृथ्वी का एक चक्कर लगाने और अपनी धुरी पर घूमने में लगभग 27.3 दिन लगते हैं।</li><li>खगोल विज्ञान में इस घटना को टाइडल लॉकिंग (Tidal Locking) या समकालिक घूर्णन कहा जाता है।</li><li>इसी समकालिक गति के कारण हम पृथ्वी से चंद्रमा का अधिकतम केवल 59% हिस्सा ही देख पाते हैं।</li><li>चंद्रमा का जो हिस्सा हमें कभी दिखाई नहीं देता, उसे 'डार्क साइड ऑफ द मून' (Dark side of the moon) कहते हैं।</li><li>चंद्रमा का प्रकाश पृथ्वी तक पहुँचने में मात्र 1.28 सेकंड का समय लगता है।</li></ul>` },
+        { q: "निम्नलिखित में से कौन-से बराबर वर्षा वाले स्थलों को जोड़ने वाली रेखाएँ दर्शाते हैं ?", o: ["आइसोहिप्स", "आइसोहेलाइन्स", "आइसोबार", "आइसोहाइट्स"], a: 3, e: `<b>हल:</b> मानचित्र पर समान वर्षा (Rainfall) वाले स्थानों को मिलाने वाली काल्पनिक रेखाओं को 'आइसोहाइट्स' (Isohyets) कहते हैं。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>आइसोबार (समदाब रेखा) समान वायुमंडलीय दबाव वाले स्थानों को मिलाती है।</li><li>आइसोथर्म (समताप रेखा) समान तापमान वाले स्थानों को मिलाने वाली रेखा है।</li><li>आइसोहेलाइन (Isohaline) समान लवणता (Salinity) वाले समुद्री स्थानों को मिलाती है।</li><li>कंटूर रेखाएँ (समुच्च रेखाएँ) समुद्र तल से समान ऊँचाई वाले स्थानों को मिलाती हैं।</li><li>आइसोहिप्स भी ऊँचाई दर्शाने वाली रेखाओं का ही एक प्रकार है।</li></ul>` },
+        { q: "मानचित्र बनाने की कला और विज्ञान को क्या कहा जाता है ?", o: ["सुदूर-सुग्राही", "मानचित्र कला", "फोटोग्राममिति", "मान-चित्रण"], a: 3, e: `<b>हल:</b> नक्शे (Map) बनाने की कला, विज्ञान और तकनीक को 'मान-चित्रण' या कार्टोग्राफी (Cartography) कहा जाता है。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>जो व्यक्ति नक्शे या ग्लोब बनाता है, उसे कार्टोग्राफर (Cartographer) कहते हैं।</li><li>प्राचीन यूनानी विद्वान एनेक्सीमेंडर को मानचित्र कला का जनक माना जाता है।</li><li>भारत का सबसे पहला सटीक नक्शा ब्रिटिश काल में जेम्स रेनेल ने बनाया था।</li><li>भारत का राष्ट्रीय एटलस और विषयगत मानचित्रण संगठन (NATMO) कोलकाता में स्थित है।</li><li>फोटोग्राममिति (Photogrammetry) तस्वीरों के माध्यम से मापन करने का विज्ञान है।</li></ul>` },
+        { q: "भारतीय मरुस्थल को कहते हैं :", o: ["गोबी", "सहारा", "थार", "अटाकामा"], a: 2, e: `<b>हल:</b> भारतीय मरुस्थल को 'थार मरुस्थल' (Thar Desert) या ग्रेट इंडियन डेजर्ट के नाम से जाना जाता है。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>थार मरुस्थल मुख्य रूप से भारत (राजस्थान) और पूर्वी पाकिस्तान के बीच फैला हुआ है।</li><li>यह विश्व का सबसे घनी आबादी वाला मरुस्थल (Highest population density) है।</li><li>भारत के कुल भौगोलिक क्षेत्रफल का लगभग 4.5% से 5% हिस्सा थार मरुस्थल के अंतर्गत आता है।</li><li>यह अरावली पर्वतमाला के पश्चिमी किनारे पर स्थित है, जहाँ बारिश बहुत कम होती है।</li><li>लूनी नदी थार मरुस्थल की एकमात्र बड़ी और महत्वपूर्ण नदी है।</li></ul>` },
+        { q: "साइलेंट वैली स्थित है :", o: ["असम में", "केरल में", "अफ्रीका में", "आंध्र प्रदेश में"], a: 1, e: `<b>हल:</b> साइलेंट वैली (शांत घाटी) राष्ट्रीय उद्यान केरल राज्य के पलक्कड़ जिले में नीलगिरि पहाड़ियों में स्थित है。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>यह स्थान अपने सदाबहार उष्णकटिबंधीय वनों (Tropical evergreen forests) और समृद्ध जैव विविधता के लिए प्रसिद्ध है।</li><li>यहाँ अत्यधिक दुर्लभ 'लायन-टेल्ड मकाक' (शेर जैसी पूंछ वाला बंदर) पाया जाता है।</li><li>प्रसिद्ध कुंतीपुझा नदी इसी शांत घाटी के बीच से होकर बहती है।</li><li>1973 में यहाँ एक जलविद्युत परियोजना के खिलाफ प्रसिद्ध पर्यावरण आंदोलन 'सेव साइलेंट वैली' चलाया गया था।</li><li>यह पश्चिमी घाट (Western Ghats) का एक बहुत ही महत्वपूर्ण पारिस्थितिक क्षेत्र है।</li></ul>` },
+        { q: "दीव एक द्वीप है :", o: ["दमन से हट कर", "गोवा से हट कर", "गुजरात से हट कर", "महाराष्ट्र से हट कर"], a: 2, e: `<b>हल:</b> दीव अरब सागर में गुजरात राज्य (काठियावाड़ प्रायद्वीप) के दक्षिणी तट से थोड़ा हटकर स्थित एक छोटा सा द्वीप है。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>यह द्वीप खंभात की खाड़ी के पास स्थित है और एक पुल द्वारा गुजरात से जुड़ा हुआ है।</li><li>दीव 1535 से लेकर 1961 तक पुर्तगाली साम्राज्य के शासन के अधीन था।</li><li>1961 में भारतीय सेना ने 'ऑपरेशन विजय' चलाकर इसे पुर्तगालियों से मुक्त कराया था।</li><li>वर्तमान में दमन और दीव, दादरा और नगर हवेली के साथ मिलकर भारत का एक ही केंद्र शासित प्रदेश बनाते हैं।</li><li>दीव का किला (Diu Fort) यहाँ का प्रमुख पर्यटन स्थल है जिसे पुर्तगालियों ने बनवाया था।</li></ul>` },
+        { q: "निम्न में से किसको 'भारत की श्रिम्प राजधानी' कहा जाता है?", o: ["मंगलूर", "नागपट्टनम", "कोची", "नेल्लूर"], a: 3, e: `<b>हल:</b> आंध्र प्रदेश के 'नेल्लोर' (Nellore) शहर को भारत की श्रिम्प (झींगा) राजधानी (Shrimp Capital of India) कहा जाता है。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>यह शहर पेनार नदी के तट पर स्थित है।</li><li>यहाँ एक्वाकल्चर और झींगा मछली का बहुत बड़े पैमाने पर उत्पादन और निर्यात होता है।</li><li>झींगा मछली के उत्पादन को 'गुलाबी क्रांति' (Pink Revolution) या नीली क्रांति से जोड़ा जाता है।</li><li>नेल्लोर अपने अभ्रक (Mica) के विशाल उत्पादन के लिए भी देश भर में जाना जाता है।</li><li>सतीश धवन अंतरिक्ष केंद्र (श्रीहरिकोटा) भी नेल्लोर जिले में ही स्थित है।</li></ul>` },
+        { q: "पृथ्वी पर सबसे अधिक तप्त (गर्म) स्थान कौन-सा है?", o: ["डैथ वैली-कैलीफोर्निया", "अल-अजीजिया-लीबिया", "जकोबाबाद - पाकिस्तान", "अटाकामा - पेरू"], a: 0, e: `<b>हल:</b> विश्व मौसम विज्ञान संगठन (WMO) के अनुसार पृथ्वी का सबसे गर्म स्थान 'डैथ वैली' (कैलिफोर्निया, अमेरिका) है。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>डैथ वैली (मृत घाटी) मोजावे रेगिस्तान में स्थित है, जो उत्तरी अमेरिका का सबसे शुष्क स्थान है।</li><li>10 जुलाई 1913 को यहाँ का तापमान 56.7°C (134°F) दर्ज किया गया था, जो अब तक का सर्वोच्च रिकॉर्ड है।</li><li>पहले लीबिया के 'अल-अजीजिया' को सबसे गर्म माना जाता था, लेकिन 2012 में WMO ने उस पुराने रिकॉर्ड को त्रुटिपूर्ण बताकर खारिज कर दिया।</li><li>डैथ वैली उत्तरी अमेरिका का सबसे निचला बिंदु (Badwater Basin) भी है, जो समुद्र तल से 86 मीटर नीचे है।</li><li>अटाकामा मरुस्थल (दक्षिण अमेरिका) दुनिया का सबसे शुष्क (Dry) मरुस्थल है।</li></ul>` },
+        { q: "उस चक्रवात को क्या नाम दिया गया था जिसके कारण बांग्लादेश उजड़ गया?", o: ["शेरी", "सिद्र", "वेंडी", "एरिन"], a: 1, e: `<b>हल:</b> नवंबर 2007 में बांग्लादेश में भयंकर तबाही मचाने वाले चक्रवात का नाम 'सिद्र' (Sidr) था。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>चक्रवात सिद्र बंगाल की खाड़ी में उत्पन्न हुआ एक श्रेणी 5 (Category 5) का अत्यंत भयंकर चक्रवात था।</li><li>इस चक्रवात का नाम 'ओमान' देश द्वारा दिया गया था।</li><li>अरबी भाषा में 'सिद्र' का अर्थ 'बेर का पेड़' (Sidr tree) होता है।</li><li>इसमें हवाओं की गति 260 किमी/घंटा तक पहुँच गई थी, जिससे हजारों लोगों की मृत्यु हुई।</li><li>हिंद महासागर क्षेत्र (बंगाल की खाड़ी और अरब सागर) में आने वाले तूफानों के नामकरण की व्यवस्था 2004 में शुरू हुई थी।</li></ul>` },
+        { q: "पृथ्वी की सबसे लंबी पर्वतमाला कौन-सी है?", o: ["ऐन्डीज पर्वत", "मध्य-अटलांटिक कटक", "पश्चिमी कॉर्डिलेरा", "हिमालय पर्वतमाला"], a: 0, e: `<b>हल:</b> ऐन्डीज (Andes) पर्वतमाला पृथ्वी (सतह) पर स्थित दुनिया की सबसे लंबी महाद्वीपीय पर्वतमाला है。<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>ऐन्डीज पर्वतमाला की कुल लंबाई लगभग 7,000 किलोमीटर है।</li><li>यह दक्षिण अमेरिका महाद्वीप के पश्चिमी तट के साथ-साथ उत्तर से दक्षिण तक फैली हुई है।</li><li>यह पर्वतमाला सात देशों—अर्जेंटीना, चिली, बोलीविया, पेरू, इक्वाडोर, कोलंबिया और वेनेजुएला से होकर गुजरती है।</li><li>ऐन्डीज की सबसे ऊँची चोटी माउंट एकंकागुआ (6,960 मीटर) है।</li><li>ऊंचाई के मामले में यह हिमालय के बाद दुनिया की दूसरी सबसे ऊँची पर्वतमाला है, और यह एक 'वलित पर्वत' (Fold mountain) का उदाहरण है।</li></ul>` }
+    ];
+
+    let state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+    let timerInterval = null;
+    let isPaused = false;
+
+    window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+    function initDashboard() {
+        showScreen('dashboard-screen');
+        let completedData = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) completedData = JSON.parse(dataStr);
+        } catch(e) {}
+
+        if (completedData) {
+            document.getElementById('dash-unattempted').style.display = 'none';
+            document.getElementById('dash-attempted').style.display = 'block';
+            document.getElementById('dash-score-text').innerText = `${completedData.score}/25.0 Marks . 1.5K/2.9K Rank`;
+            document.getElementById('dash-progress-bar').style.width = `${(completedData.score / 25) * 100}%`;
+        } else {
+            document.getElementById('dash-attempted').style.display = 'none';
+            document.getElementById('dash-unattempted').style.display = 'block';
+        }
+    }
+
+    function startTest() {
+        let saved = null;
+        try {
+            const savedStr = safeGetItem(STORAGE_KEY);
+            if(savedStr) saved = JSON.parse(savedStr);
+        } catch(e){}
+
+        if (saved && !saved.submitted) {
+            state = saved;
+        } else {
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+        }
+        initTestEnv();
+    }
+
+    function reattemptTest() {
+        if(confirm("Are you sure you want to start a fresh test? Your active progress will be lost.")) {
+            safeRemoveItem(STORAGE_KEY);
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+            initTestEnv();
+        }
+    }
+
+    function initTestEnv() {
+        showScreen('test-screen');
+        renderQuestion();
+        renderPalette();
+        updateStats();
+        
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+        setInterval(() => { if(!state.submitted) safeSetItem(STORAGE_KEY, JSON.stringify(state)); }, 2000);
+    }
+
+    function viewSavedResults() {
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(data) renderResultUI(data);
+    }
+
+    function showDashboard() { initDashboard(); }
+
+    function showScreen(id) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+    }
+
+    function updateTimer() {
+        if(isPaused || state.submitted) return;
+        if(state.time <= 0) { submitTest(); return; }
+        state.time--;
+        const m = Math.floor(state.time / 60), s = state.time % 60;
+        document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+    }
+
+    function toggleTheme() {
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    function renderQuestion() {
+        state.visited[state.currentQ] = true;
+        const q = finalQuestions[state.currentQ];
+        document.getElementById('q-no').innerText = `Question ${state.currentQ + 1}`;
+        document.getElementById('q-text').innerHTML = q.q;
+        let opts = '';
+        q.o.forEach((opt, i) => {
+            const isSel = state.answers[state.currentQ] === i;
+            const selClass = isSel ? 'selected' : '';
+            const charLabel = String.fromCharCode(65 + i);
+            opts += `<div class="glass-panel option ${selClass}" onclick="selectOption(${i})"><div class="opt-label">${charLabel}</div><div style="flex:1;">${opt}</div></div>`;
+        });
+        document.getElementById('options-box').innerHTML = opts;
+        renderPalette();
+        updateStats();
+    }
+
+    function selectOption(index) { state.answers[state.currentQ] = index; renderQuestion(); }
+    function clearResponse() { delete state.answers[state.currentQ]; delete state.marked[state.currentQ]; renderQuestion(); }
+    function markReview() { state.marked[state.currentQ] = true; changeQ(1); }
+    function saveNext() { delete state.marked[state.currentQ]; changeQ(1); }
+
+    function changeQ(step) {
+        const next = state.currentQ + step;
+        if(next >= 0 && next < finalQuestions.length) { state.currentQ = next; renderQuestion(); }
+    }
+
+    function renderPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        finalQuestions.forEach((_, i) => {
+            let cls = 's-0';
+            if(state.visited[i]) {
+                if(state.answers[i] !== undefined && state.marked[i]) cls = 's-4';
+                else if(state.marked[i]) cls = 's-3';
+                else if(state.answers[i] !== undefined) cls = 's-1';
+                else cls = 's-2';
+            }
+            const active = i === state.currentQ ? 'active' : '';
+            grid.innerHTML += `<button class="p-btn ${cls} ${active}" onclick="state.currentQ = ${i}; renderQuestion();">${i + 1}</button>`;
+        });
+    }
+
+    function updateStats() {
+        let ans=0, notans=0, notvis=0, mark=0;
+        finalQuestions.forEach((_, i) => {
+            if(!state.visited[i]) notvis++;
+            else if(state.marked[i]) mark++;
+            else if(state.answers[i] !== undefined) ans++;
+            else notans++;
+        });
+        document.getElementById('c-ans').innerText = ans; document.getElementById('c-notans').innerText = notans;
+        document.getElementById('c-notvis').innerText = notvis; document.getElementById('c-mark').innerText = mark;
+    }
+
+    function submitTest() {
+        if(!confirm("Are you sure you want to submit the test?")) return;
+        state.submitted = true; clearInterval(timerInterval);
+        let score=0, attempt=0, wrong=0;
+        finalQuestions.forEach((q, i) => {
+            if(state.answers[i] !== undefined) {
+                attempt++;
+                if(state.answers[i] === q.a) score++; else wrong++;
+            }
+        });
+        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const completedData = { score: score, attempted: attempt, wrong: wrong, time: state.time, date: today, userAnswers: state.answers };
+        
+        safeSetItem(COMPLETED_KEY, JSON.stringify(completedData));
+        safeRemoveItem(STORAGE_KEY);
+        
+        renderResultUI(completedData);
+    }
+
+    function renderResultUI(data) {
+        showScreen('result-screen');
+        const acc = data.attempted > 0 ? ((data.score / data.attempted) * 100).toFixed(1) : 0;
+        document.getElementById('r-score').innerText = `${data.score}`;
+        document.getElementById('r-attempt').innerText = data.attempted;
+        document.getElementById('r-wrong').innerText = data.wrong;
+        document.getElementById('r-acc').innerText = `${acc}%`;
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(!data) return;
+
+        let html = '';
+        finalQuestions.forEach((q, i) => {
+            const uAns = data.userAnswers[i];
+            let optHtml = '';
+            q.o.forEach((opt, oIdx) => {
+                let cls = '', checkMark = '';
+                if(oIdx === q.a) { cls = 'correct'; checkMark = ' ✔'; }
+                else if(oIdx === uAns && uAns !== q.a) { cls = 'wrong'; checkMark = ' ❌ (Your Answer)'; }
+                optHtml += `<div class="glass-panel sol-opt ${cls}"><strong>${String.fromCharCode(65 + oIdx)}.</strong> <div style="flex:1;">${opt} ${checkMark}</div></div>`;
+            });
+            let statusText = uAns !== undefined ? (uAns === q.a ? "हल किया (Correct)" : "हल किया (Incorrect)") : "हल नहीं किया (Unattempted)";
+            html += `<div class="glass-panel sol-card"><div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--primary);">प्र ${i+1}. ${q.q}</div>${optHtml}<div style="font-weight:bold; margin:15px 0; color:var(--text-muted);">Status: ${statusText}</div><div class="glass-panel sol-exp">${q.e}</div></div>`;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+
+    // New Function for PDF Download
+    function downloadPDF() {
+        const element = document.getElementById('sol-container');
+        const opt = {
+            margin:       10,
+            filename:     'HSSC_GK_Solutions.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        
+        // Disable dark mode temporarily for better PDF printing if it's on
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) document.documentElement.setAttribute('data-theme', 'light');
+        
+        html2pdf().set(opt).from(element).save().then(() => {
+            // Revert back to original theme after saving
+            if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
+        });
+    }
+</script>
+</body>
+</html>
