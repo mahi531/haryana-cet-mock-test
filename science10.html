@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HSSC Group D Science Test 10</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg-grad-1: #4facfe; --bg-grad-2: #00f2fe; --bg-grad-3: #a18cd1; --bg-grad-4: #fbc2eb;
+            --glass-bg: rgba(255, 255, 255, 0.9); --glass-border: rgba(255, 255, 255, 0.6); --glass-shadow: rgba(31, 38, 135, 0.15);
+            --text-main: #1f2937; --text-muted: #64748b;
+            --primary: #2563eb; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --purple: #8b5cf6;
+            --option-bg: rgba(243, 244, 246, 0.8); --option-selected: rgba(219, 234, 254, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+        [data-theme="dark"] {
+            --bg-grad-1: #0f2027; --bg-grad-2: #203a43; --bg-grad-3: #2c5364; --bg-grad-4: #141e30;
+            --glass-bg: rgba(17, 25, 40, 0.85); --glass-border: rgba(255, 255, 255, 0.15); --glass-shadow: rgba(0, 0, 0, 0.5);
+            --text-main: #f9fafb; --text-muted: #94a3b8;
+            --primary: #3b82f6; 
+            --option-bg: rgba(55, 65, 81, 0.7); --option-selected: rgba(30, 58, 138, 0.8);
+            --card-bg: rgba(31, 41, 55, 0.95);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; touch-action: manipulation;}
+        
+        body { 
+            height: 100vh; height: 100dvh; 
+            background: linear-gradient(45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3), var(--bg-grad-4)); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+            color: var(--text-main); 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 var(--glass-shadow); border-radius: 12px; }
+        
+        .btn { font-family: 'Poppins', sans-serif; background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;}
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-warning { background: var(--warning); color: #fff;}
+        .btn-clear { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-mark { background: var(--purple); color: white; }
+        .btn-prev { background: var(--text-muted); color: white; }
+
+        .screen { display: none; flex-direction: column; height: 100%; width: 100vw; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; }
+
+        #dashboard-screen { overflow-y: auto; background: var(--card-bg); align-items: center; padding-bottom: 30px;}
+        .dash-header-top { background: #1e293b; color: white; width: 100%; padding: 15px 20px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 15px; position: sticky; top:0; z-index: 100;}
+        .dash-content { width: 100%; max-width: 800px; padding: 20px; }
+        .section-title { font-weight: 600; color: var(--primary); margin: 15px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 15px; }
+        .dash-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--glass-border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .test-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text-main);}
+        .test-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        .progress-container { width: 100%; height: 6px; background: var(--glass-border); border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #fbc02d; width: 0%; transition: width 0.5s ease;}
+        .dash-actions { display: flex; gap: 12px; margin-top: 15px; }
+        .dash-actions .btn { flex: 1; padding: 10px; font-size: 14px; border-radius: 8px;}
+        .syllabus-footer { display: flex; justify-content: space-between; font-size: 12px; color: var(--primary); border-top: 1px solid var(--glass-border); padding-top: 12px; margin-top: 15px; }
+
+        header.test-head { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-bottom: 10px; margin-inline: 10px; }
+        .header-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: 700; background: var(--card-bg); border: 1px solid var(--glass-border); color: var(--danger); padding: 5px 12px; border-radius: 20px; }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 0 10px 10px 10px; }
+        .question-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .q-header { padding: 10px 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
+        .q-body { flex: 1; padding: 15px; overflow-y: auto; font-size: 16px; line-height: 1.6; }
+        
+        .options-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;}
+        .option { padding: 12px; border: 2px solid var(--glass-border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--option-bg); font-weight: 500; font-size: 15px;}
+        .option.selected { border-color: var(--primary); background: var(--option-selected); color: var(--primary); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--glass-border); display: flex; justify-content: center; align-items: center; font-weight: bold; }
+        .option.selected .opt-label { background: var(--primary); color: white; border-color: var(--primary);}
+        
+        .q-footer { padding: 10px; border-top: 1px solid var(--glass-border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-radius: 0 0 12px 12px; }
+
+        .palette-section { width: 320px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .palette-header { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; font-weight: bold; font-size: 15px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; font-size: 12px; border-bottom: 1px solid var(--glass-border); font-weight: 500;}
+        .stat-item { display: flex; align-items: center; gap: 6px;}
+        .badge { width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 10px; font-weight: bold;}
+        .s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);} 
+        .s-1 { background: var(--success); } .s-2 { background: var(--danger); } .s-3 { background: var(--purple); } 
+        .s-4 { background: var(--primary); position: relative; }
+        .s-4::after { content: '✔'; position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; background: white; color: var(--primary); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 8px; }
+        
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .p-btn.s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);}
+        .p-btn.active { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.1);}
+        .submit-area { padding: 10px; border-top: 1px solid var(--glass-border); border-radius: 0 0 12px 12px;}
+
+        #result-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        #solution-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        .sol-card { padding: 20px; margin-bottom: 15px; width: 100%; max-width: 800px; page-break-inside: avoid;}
+        .sol-opt { padding: 10px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; gap: 10px; align-items: center; font-size: 15px; background: var(--card-bg);}
+        .sol-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); text-decoration: line-through;}
+        .sol-exp { margin-top: 15px; padding: 15px; background: rgba(37, 99, 235, 0.05); border: 1px solid var(--glass-border); border-left: 4px solid var(--primary); border-radius: 8px; font-size: 14.5px; line-height: 1.6; }
+        .sol-exp ul { padding-left: 20px; margin-top: 8px; }
+        .sol-exp li { margin-bottom: 6px; }
+
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+
+        @media (max-width: 992px) {
+            .main-area { flex-direction: column; overflow-y: auto;}
+            .question-section { flex: none; min-height: 450px;}
+            .palette-section { width: 100%; flex: none; min-height: 350px;}
+            .q-footer .btn { padding: 10px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <div id="dashboard-screen" class="screen active">
+        <div class="dash-header-top">
+            <span style="cursor: pointer;" onclick="alert('Going Back')">&#8592;</span>
+            HSSC CET - Mock Tests
+        </div>
+
+        <div class="dash-content">
+            <div id="dash-unattempted" style="display: none;">
+                <div class="section-title">Suggested Next Test</div>
+                <div class="dash-card">
+                    <div class="test-title">Science Test Number 10 (Chemistry Special)</div>
+                    <div class="test-meta">
+                        <span>25 Qs • 25 mins • 25.0 Marks</span>
+                    </div>
+                    <div class="test-meta" style="justify-content: flex-end;">
+                        <button class="btn btn-outline" style="padding: 6px 20px; border-radius: 20px;" onclick="startTest()">Start Test 🚀</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span>Syllabus: HSSC Group D - Chemistry</span>
+                        <span style="color:var(--success);">🔗 Share</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dash-attempted" style="display: none;">
+                <div class="dash-card">
+                    <div class="test-title">Science Test Number 10 (Chemistry Special)</div>
+                    <div class="test-meta" style="margin-bottom: 5px;">
+                        <span id="dash-score-text" style="font-size: 15px; color: var(--text-muted);">0/25.0 Marks . 1.5K/2.9K Rank</span>
+                    </div>
+                    <div class="progress-container"><div class="progress-fill" id="dash-progress-bar"></div></div>
+                    <div class="dash-actions">
+                        <button class="btn btn-outline" onclick="viewSavedResults()">View Results</button>
+                        <button class="btn btn-outline" onclick="reattemptTest()">Reattempt &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px; font-size: 2rem;">Test Paused ⏸️</h2>
+        <button class="btn btn-primary" style="font-size: 1.2rem; padding: 10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+    </div>
+
+    <div id="test-screen" class="screen">
+        <header class="glass-panel test-head">
+            <div class="header-title">Science Test 10</div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="toggleTheme()">🌓 Theme</button>
+                <button class="btn btn-warning" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="togglePause()">⏸ Pause</button>
+                <div class="timer-box">⏱ <span id="timer-display">25:00</span></div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="glass-panel question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--success); font-weight:bold;">+1 <span style="color: var(--text-muted); font-weight:normal;">|</span> <span style="color: var(--danger);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <button class="btn btn-mark" onclick="markReview()">Mark & Next</button>
+                    <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                    <button class="btn btn-prev" onclick="changeQ(-1)">Previous</button>
+                    <button class="btn btn-primary" onclick="saveNext()">Save & Next</button>
+                </div>
+            </div>
+
+            <div class="glass-panel palette-section">
+                <div class="palette-header">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">25</div> Not Visit</div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn btn-primary" style="width: 100%; background: var(--success); font-size: 15px; padding: 10px;" onclick="submitTest()">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-screen" class="screen">
+        <div style="width: 100%; max-width: 800px; margin-bottom: 15px;"><button class="btn btn-clear" onclick="showDashboard()">&#8592; Back to Dashboard</button></div>
+        <div class="glass-panel" style="max-width: 800px; width: 100%; padding: 25px;">
+            <h1 style="color: var(--primary); text-align: center;">Test Submitted Successfully! 🎉</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 25px 0;">
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-score" style="color: var(--primary); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Score</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-attempt" style="color: var(--success); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Attempted</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-wrong" style="color: var(--danger); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Wrong</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-acc" style="color: var(--purple); font-size: 1.8rem;">0%</h2><p style="color: var(--text-muted); font-size:12px;">Accuracy</p></div>
+            </div>
+            <button class="btn btn-primary" style="width:100%; font-size: 15px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+        </div>
+    </div>
+
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%; margin:0 auto;">
+            <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 12px 15px; position: sticky; top: 5px; z-index: 10;">
+                <h3 style="color: var(--primary);">Detailed Solutions</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" style="padding: 5px 12px; font-size: 13px; background: var(--success);" onclick="downloadPDF()">📥 Download PDF</button>
+                    <button class="btn btn-clear" style="padding: 5px 12px; font-size: 13px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+                </div>
+            </div>
+            <div id="sol-container"></div>
+        </div>
+    </div>
+
+<script>
+    const MEMORY_STORE = {};
+    function safeGetItem(key) { try { return localStorage.getItem(key) || MEMORY_STORE[key] || null; } catch(e) { return MEMORY_STORE[key] || null; } }
+    function safeSetItem(key, value) { try { localStorage.setItem(key, value); } catch(e) {} MEMORY_STORE[key] = value; }
+    function safeRemoveItem(key) { try { localStorage.removeItem(key); } catch(e) {} delete MEMORY_STORE[key]; }
+
+    const STORAGE_KEY = 'hssc_sci_10_active'; 
+    const COMPLETED_KEY = 'hssc_sci_10_comp';
+
+    const finalQuestions = [
+        { q: "परमाणु के नाभिक में होते हैं:", o: ["प्रोटॉन", "न्यूट्रॉन", "प्रोटॉन और न्यूट्रॉन", "इलेक्ट्रॉन, प्रोटॉन और न्यूट्रॉन"], a: 2, e: `<b>हल:</b> परमाणु का नाभिक (Nucleus) मुख्य रूप से 'प्रोटॉन और न्यूट्रॉन' से मिलकर बना होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>परमाणु का नाभिक धनावेशित (Positively charged) होता है।</li><li>रदरफोर्ड ने सोने की पन्नी के प्रयोग से नाभिक की खोज की थी।</li><li>प्रोटॉन और न्यूट्रॉन को सामूहिक रूप से 'न्यूक्लिऑन' (Nucleon) कहते हैं।</li><li>इलेक्ट्रॉन नाभिक के चारो ओर अपनी कक्षाओं में चक्कर लगाते हैं।</li><li>प्रोटॉन पर धन आवेश (+) और न्यूट्रॉन उदासीन (No charge) होता है।</li></ul>` },
+        { q: "निम्नलिखित में से ऊर्जा का अनवीकरणीय (non-renewable) स्रोत कौन सा है?", o: ["बायोगैस", "सौर", "पवन", "कोयला"], a: 3, e: `<b>हल:</b> दी गई सूची में 'कोयला' (Coal) ऊर्जा का अनवीकरणीय स्रोत है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>अनवीकरणीय स्रोत वे हैं जो एक बार खत्म होने पर दोबारा जल्दी नहीं बनाए जा सकते (इन्हें बनने में लाखों वर्ष लगते हैं)।</li><li>कोयला, पेट्रोलियम और प्राकृतिक गैस (जीवाश्म ईंधन) इसके मुख्य उदाहरण हैं।</li><li>सौर, पवन और जल ऊर्जा नवीकरणीय (Renewable) स्रोत हैं जो कभी खत्म नहीं होंगे।</li><li>कोयला मुख्य रूप से कार्बन से बना होता है।</li><li>सबसे अच्छी गुणवत्ता वाला कोयला 'एंथ्रेसाइट' (Anthracite) होता है।</li></ul>` },
+        { q: "गैल्वेनाइज्ड लोहा बनाने के लिए लोहे पर किसका लेप किया जाता है?", o: ["जिंक का", "निकेल का", "क्रोमियम का", "सल्फर का"], a: 0, e: `<b>हल:</b> लोहे को जंग लगने से बचाने के लिए उस पर 'जिंक' (जस्ते) की पतली परत चढ़ाई जाती है, जिसे गैल्वेनाइज्ड लोहा कहते हैं।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>इस पूरी प्रक्रिया को गैल्वेनाइजेशन (Galvanization) या यशदीकरण कहा जाता है।</li><li>जस्ता (Zinc) लोहे से अधिक क्रियाशील (Reactive) होता है, इसलिए यह पहले ऑक्सीजन से क्रिया करके लोहे को सुरक्षित रखता है।</li><li>लोहे पर जंग लगना एक रासायनिक परिवर्तन और ऑक्सीकरण प्रक्रिया है।</li><li>जंग लगने पर लोहे का वजन हमेशा बढ़ जाता है (ऑक्सीजन जुड़ने के कारण)।</li><li>बर्तन और डिब्बे बनाने में टिन (Tin) की परत भी चढ़ाई जाती है।</li></ul>` },
+        { q: "ओजोन छिद्र सबसे अधिक किसके ऊपर बन रहा है?", o: ["अफ्रीका", "भारत", "अंटार्कटिका", "यूरोप"], a: 2, e: `<b>हल:</b> ओजोन परत में सबसे बड़ा छिद्र (Hole) दक्षिणी ध्रुव पर स्थित 'अंटार्कटिका' महाद्वीप के ऊपर देखा गया है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>ओजोन परत पृथ्वी के वायुमंडल के 'समताप मंडल' (Stratosphere) में पाई जाती है।</li><li>यह सूर्य से आने वाली खतरनाक पराबैंगनी (UV) किरणों को रोककर जीवन की रक्षा करती है।</li><li>ओजोन छिद्र का मुख्य कारण इंसानों द्वारा बनाए गए 'क्लोरोफ्लुओरोकार्बन' (CFC) रसायन हैं।</li><li>ओजोन गैस का रासायनिक सूत्र O3 होता है।</li><li>ओजोन परत की मोटाई को मापने के लिए 'डॉबसन' (Dobson) इकाई का प्रयोग किया जाता है।</li></ul>` },
+        { q: "निम्नलिखित में से कौन सी गैस फुटबाल के ब्लैडर से सबसे जल्दी बाहर निकलेगी?", o: ["He", "H2", "N2", "O2"], a: 1, e: `<b>हल:</b> फुटबाल के ब्लैडर से सबसे जल्दी 'हाइड्रोजन' (H2) गैस बाहर निकलेगी।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>यह थॉमस ग्राहम के 'गैसों के विसरण नियम' (Graham's Law of Effusion) पर आधारित है।</li><li>इस नियम के अनुसार, जिस गैस का घनत्व और द्रव्यमान जितना कम होगा, वह उतनी ही तेजी से बाहर निकलेगी (विसरित होगी)।</li><li>हाइड्रोजन (H2) पूरे ब्रह्मांड की सबसे हल्की गैस है।</li><li>हीलियम (He) दूसरी सबसे हल्की गैस है, जो गुब्बारों में भरी जाती है क्योंकि यह ज्वलनशील नहीं है।</li><li>नाइट्रोजन (N2) और ऑक्सीजन (O2) भारी गैसें हैं, इसलिए वे बहुत धीरे-धीरे निकलेंगी।</li></ul>` },
+        { q: "भूमंडलीय ताप (Global Warming) का मुख्य कारण किसकी वृद्धि है?", o: ["नाइट्रोजन के ऑक्साइड", "सल्फर के ऑक्साइड", "कार्बन डाइऑक्साइड", "कार्बन मोनोऑक्साइड"], a: 2, e: `<b>हल:</b> भूमंडलीय ताप या ग्लोबल वार्मिंग के लिए सबसे अधिक जिम्मेदार गैस 'कार्बन डाइऑक्साइड' (CO2) है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>कार्बन डाइऑक्साइड एक प्रमुख 'ग्रीनहाउस गैस' है।</li><li>यह पृथ्वी से टकराकर वापस अंतरिक्ष में लौटने वाली ऊष्मा (Infrared rays) को सोख लेती है, जिससे पृथ्वी का तापमान बढ़ रहा है।</li><li>मीथेन (CH4), नाइट्रस ऑक्साइड (N2O) और जल वाष्प भी ग्रीनहाउस गैसें हैं।</li><li>जीवाश्म ईंधनों (कोयला, पेट्रोलियम) को भारी मात्रा में जलाने से CO2 का स्तर वायुमंडल में तेजी से बढ़ा है।</li><li>ग्लोबल वार्मिंग के कारण ग्लेशियर पिघल रहे हैं और समुद्र का जलस्तर बढ़ रहा है।</li></ul>` },
+        { q: "गोबर गैस का प्रमुख घटक कौन सा है?", o: ["कार्बन डाइऑक्साइड", "मीथेन", "ऑक्सीजन", "हाइड्रोजन"], a: 1, e: `<b>हल:</b> गोबर गैस (Biogas) का सबसे प्रमुख घटक 'मीथेन' (CH4) गैस होती है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>गोबर गैस में लगभग 50% से 75% तक मीथेन गैस पाई जाती है।</li><li>यह एक उत्कृष्ट घरेलू ईंधन है जो जलने पर धुआं नहीं छोड़ता और अधिक ऊष्मा देता है।</li><li>मीथेन को 'मार्श गैस' (Marsh gas) भी कहा जाता है क्योंकि यह दलदली स्थानों से प्राकृतिक रूप से निकलती है।</li><li>गोबर गैस प्लांट में ऑक्सीजन की अनुपस्थिति (Anaerobic) में जीवाणुओं द्वारा गोबर को सड़ाया जाता है।</li><li>बायोगैस बनाने के बाद बचा हुआ अपशिष्ट (Slurry) खेतों के लिए बहुत अच्छी खाद (Fertilizer) का काम करता है।</li></ul>` },
+        { q: "पृथ्वी की संरचना में सबसे अधिक प्रतिशत किस तत्व का है?", o: ["सिलिकॉन", "ऑक्सीजन", "मैग्नीशियम", "आयरन"], a: 1, e: `<b>हल:</b> पृथ्वी की पपड़ी (Crust - बाहरी संरचना) में सबसे अधिक मात्रा में 'ऑक्सीजन' (Oxygen) तत्व पाया जाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>पृथ्वी की पपड़ी में ऑक्सीजन की मात्रा लगभग 46.6% होती है।</li><li>ऑक्सीजन के बाद दूसरा सबसे प्रचुर तत्व सिलिकॉन (लगभग 27.7%) है।</li><li>धातुओं में, 'एल्युमिनियम' पृथ्वी की पपड़ी में पाई जाने वाली सबसे प्रचुर धातु (लगभग 8%) है।</li><li>यदि संपूर्ण पृथ्वी (क्रस्ट, मेंटल, कोर सब मिलाकर) की बात की जाए, तो उसमें सबसे अधिक आयरन (लोहा) पाया जाता है।</li><li>यद्यपि ऑक्सीजन प्रकृति में एक गैस है, लेकिन चट्टानों और खनिजों में यह यौगिकों के रूप में ठोस अवस्था में फंसी रहती है।</li></ul>` },
+        { q: "'खाने का सोडा' (Baking Soda) का रासायनिक नाम क्या है?", o: ["सोडियम कार्बोनेट", "सोडियम बाइकार्बोनेट", "सोडियम नाइट्राइट", "सोडियम नाइट्रेट"], a: 1, e: `<b>हल:</b> खाने के सोडे का रासायनिक नाम 'सोडियम बाइकार्बोनेट' (Sodium Bicarbonate) है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>सोडियम बाइकार्बोनेट का रासायनिक सूत्र NaHCO3 होता है।</li><li>बेकिंग पाउडर बनाने में इसी का उपयोग किया जाता है (टार्टरिक अम्ल के साथ मिलाकर), जो केक और ब्रेड को फुलाता है।</li><li>यह प्रकृति में हल्का क्षारीय (Basic) होता है, इसलिए पेट की एसिडिटी दूर करने वाली दवाओं (एंटासिड) में इसका उपयोग होता है।</li><li>अग्निशामक यंत्रों (Fire extinguishers) में भी आग बुझाने के लिए इसका इस्तेमाल किया जाता है।</li><li>'सोडियम कार्बोनेट' (Na2CO3) को धावन सोडा (कपड़े धोने का सोडा) कहा जाता है।</li></ul>` },
+        { q: "पेयजल को शुद्ध करने के लिए पोटैशियम परमैंगनेट का प्रयोग किया जाता है, क्योंकि यह-", o: ["जल की अशुद्धियों को घोल देता है", "अनुर्बरीकारक है", "उपचायक (ऑक्सीकारक) है", "अपचायक है"], a: 2, e: `<b>हल:</b> पोटैशियम परमैंगनेट पानी पीने योग्य बनाने के लिए इस्तेमाल होता है क्योंकि यह एक बहुत मजबूत 'उपचायक' (Oxidizing agent / ऑक्सीकारक) है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>पोटैशियम परमैंगनेट (KMnO4) को आम भाषा में 'लाल दवा' भी कहा जाता है।</li><li>यह पानी में मौजूद हानिकारक कीटाणुओं और जीवाणुओं को ऑक्सीकृत करके नष्ट कर देता है।</li><li>कुओं और पानी की टंकियों को साफ करने के लिए इसका प्रयोग सदियों से होता आ रहा है।</li><li>पानी में मिलाने पर यह पानी को हल्का गुलाबी या बैंगनी रंग प्रदान करता है।</li><li>बड़े स्तर पर पानी को शुद्ध (डिसइंफेक्ट) करने के लिए आजकल 'क्लोरीन' (Cl2) गैस या ब्लीचिंग पाउडर का ज्यादा उपयोग होता है।</li></ul>` },
+        { q: "'आयोडीन नमक' मानव शरीर में निम्नलिखित में से कौन-सा काम करता है?", o: ["यह शरीर में कोलेस्ट्रॉल के स्तर को नियंत्रित करने में मदद करता है", "यह अवटु (थाइरॉइड) ग्रंथियों के काम को नियंत्रित करता है", "यह विषाणु (वायरल) रोगों से शरीर की रक्षा करता है", "यह शरीर में जरण प्रक्रिया (ageing process) को मंद करता है"], a: 1, e: `<b>हल:</b> आयोडीन युक्त नमक मानव शरीर में 'अवटु (थाइरॉइड) ग्रंथियों के काम को नियंत्रित करता है'।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>थाइरॉइड ग्रंथि हमारे गले में श्वास नली के सामने स्थित होती है, जिसका आकार तितली जैसा होता है।</li><li>यह ग्रंथि 'थायरॉक्सिन' (Thyroxine) नामक महत्वपूर्ण हार्मोन बनाती है, जिसके लिए आयोडीन अत्यंत आवश्यक है।</li><li>शरीर में आयोडीन की कमी होने पर थायरॉक्सिन नहीं बन पाता और ग्रंथि सूजकर बड़ी हो जाती है, इस बीमारी को 'घेंघा' (Goiter) कहते हैं।</li><li>समुद्री भोजन (जैसे मछलियां) और समुद्री खरपतवार (Kelp) आयोडीन के बहुत अच्छे प्राकृतिक स्रोत हैं।</li><li>घेंघा रोग से बचाने के लिए ही सरकार द्वारा साधारण नमक में आयोडीन मिलाना अनिवार्य किया गया है।</li></ul>` },
+        { q: "18 कैरेट स्वर्ण में शुद्ध स्वर्ण का अनुपात होता है—", o: ["60%", "75%", "80%", "90%"], a: 1, e: `<b>हल:</b> 18 कैरेट सोने में शुद्ध सोने का अनुपात '75%' होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>सोने की शुद्धता को 'कैरेट' (Carat) में मापा जाता है।</li><li>100% शुद्ध सोना हमेशा 24 कैरेट का होता है।</li><li>24 कैरेट सोना बहुत मुलायम होता है, इसलिए इसके मजबूत आभूषण नहीं बनाए जा सकते।</li><li>आभूषण बनाने के लिए सोने में तांबा (Copper) या चांदी जैसी धातुएं मिलाई जाती हैं।</li><li>18 कैरेट का मतलब है 24 में से 18 हिस्से शुद्ध सोना (18/24 x 100 = 75%) और बाकी 6 हिस्से अन्य धातु। भारत में अधिकतर आभूषण 22 कैरेट (91.6% शुद्धता) के बनते हैं।</li></ul>` },
+        { q: "हरे फलों को कृत्रिम रूप से पकाने के लिए प्रयुक्त गैस है—", o: ["एथिलीन", "एसीटिलीन", "ईथेन", "मीथेन"], a: 0, e: `<b>हल:</b> कच्चे और हरे फलों (जैसे केला, आम, पपीता) को कृत्रिम रूप से पकाने के लिए मुख्य रूप से 'एथिलीन' (Ethylene) गैस का उपयोग किया जाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>एथिलीन (C2H4) एकमात्र ऐसा प्राकृतिक पादप हार्मोन (Plant hormone) है जो गैसीय अवस्था में पाया जाता है।</li><li>पेड़ पर प्राकृतिक रूप से पकते हुए फल भी खुद एथिलीन गैस छोड़ते हैं।</li><li>एथिलीन फलों में मौजूद स्टार्च को शर्करा में बदल देती है, जिससे फल मीठे और मुलायम हो जाते हैं।</li><li>पहले फलों को पकाने के लिए कैल्शियम कार्बाइड का इस्तेमाल होता था, जो नमी पाकर 'एसीटिलीन' (Acetylene) गैस बनाता है, लेकिन स्वास्थ्य के लिए हानिकारक होने के कारण अब इस पर कई जगह प्रतिबंध है।</li><li>एथिलीन का उपयोग फलों को सुरक्षित और समान रूप से पकाने के लिए वैज्ञानिक तरीका माना जाता है।</li></ul>` },
+        { q: "निम्नलिखित में से कौन सा तंतु सबसे कम आग पकड़ता है?", o: ["नायलॉन", "सूत (कॉटन)", "रेयॉन", "टेरीकॉट"], a: 1, e: `<b>हल:</b> दी गई सूची में 'सूत' (Cotton / सूती कपड़ा) सबसे कम आग पकड़ता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>सूती कपड़े प्राकृतिक रेशों से बने होते हैं, जो पौधों के 'सेल्युलोज' (Cellulose) से प्राप्त होते हैं।</li><li>कृत्रिम या सिंथेटिक रेशे (जैसे नायलॉन, टेरीकॉट, पॉलिएस्टर) पेट्रोलियम रसायनों से बनते हैं और बहुत तेजी से आग पकड़ते हैं।</li><li>सिंथेटिक कपड़े आग लगने पर पिघल कर शरीर की त्वचा से बुरी तरह चिपक जाते हैं, जिससे गहरा घाव होता है।</li><li>यही कारण है कि रसोई में खाना बनाते समय या दिवाली पर पटाखे जलाते समय हमेशा सूती कपड़े पहनने की सलाह दी जाती है।</li><li>सूती कपड़े गर्मियों में पसीना भी अच्छी तरह सोखते हैं और शरीर को ठंडा रखते हैं।</li></ul>` },
+        { q: "चुंबक बनाने के लिए निम्नलिखित में से कौन सी मिश्रधातु (एलॉय) का प्रयोग किया जाता है?", o: ["डुरैलुमिन", "स्टेनलेस स्टील", "ऐल्निको", "मैग्नेलियम"], a: 2, e: `<b>हल:</b> शक्तिशाली और स्थायी चुंबक (Permanent magnet) बनाने के लिए 'ऐल्निको' (Alnico) नामक मिश्रधातु का प्रयोग किया जाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>ऐल्निको का नाम इसमें मौजूद धातुओं—एल्युमिनियम (Al), निकेल (Ni) और कोबाल्ट (Co) के प्रतीकों से मिलकर बना है।</li><li>इन धातुओं के साथ इसमें लोहा (Iron) भी मिलाया जाता है।</li><li>यह मिश्रधातु बहुत उच्च तापमान पर भी अपने चुंबकत्व को नहीं खोती है।</li><li>अस्थायी चुंबक या विद्युत चुंबक (Electromagnet - जो बिजली चालू होने पर ही चुंबक बनते हैं) बनाने के लिए नर्म लोहे (Soft iron) का प्रयोग किया जाता है।</li><li>कठोर इस्पात (Steel) का उपयोग भी स्थायी चुंबक बनाने में होता है क्योंकि यह लंबे समय तक चुंबकीय बना रहता है।</li></ul>` },
+        { q: "दूध का कुछ देर खुले में रखे जाने पर उसका स्वाद खट्टा हो जाता है। यह किसके बनने के कारण होता है?", o: ["लैक्टिक अम्ल", "नींबू का अम्ल", "एसीटिक अम्ल", "कार्बनिक अम्ल"], a: 0, e: `<b>हल:</b> दूध का स्वाद खट्टा होना उसमें 'लैक्टिक अम्ल' (Lactic acid) के बनने के कारण होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>दूध में प्राकृतिक रूप से 'लैक्टोज' (Lactose) नामक शर्करा पाई जाती है जो उसे हल्का मीठापन देती है।</li><li>हवा में मौजूद 'लैक्टोबैसिलस' (Lactobacillus) नामक जीवाणु दूध में पहुंचकर इस लैक्टोज शर्करा को खाकर लैक्टिक अम्ल में बदल देते हैं।</li><li>इसी लैक्टिक अम्ल के कारण दूध का pH कम हो जाता है, दूध खट्टा लगने लगता है और धीरे-धीरे दही बन जाता है।</li><li>नीबू और संतरे जैसे खट्टे फलों में 'साइट्रिक अम्ल' (Citric acid) होता है।</li><li>सिरके (Vinegar) में 'एसीटिक अम्ल' (Acetic acid) पाया जाता है।</li></ul>` },
+        { q: "वायुमंडल में ओजोन परत के ह्रास के लिए निम्नलिखित में से कौन सा रासायनिक द्रव्य उत्तरदायी है?", o: ["नाइट्रस ऑक्साइड", "कार्बन डाइऑक्साइड", "क्लोरोफ्लोरोकार्बन", "सल्फर डाइऑक्साइड"], a: 2, e: `<b>हल:</b> वायुमंडल में ओजोन परत के नष्ट होने (ह्रास) के लिए मुख्य रूप से 'क्लोरोफ्लोरोकार्बन' (CFCs) नामक रसायन उत्तरदायी हैं।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>CFCs मानव निर्मित गैसें हैं जिनका उपयोग दशकों तक रेफ्रिजरेटर (फ्रिज), एयर कंडीशनर और एरोसोल स्प्रे में 'शीतलक' (Coolant) के रूप में किया जाता था।</li><li>जब CFC गैसें समताप मंडल में पहुँचती हैं, तो UV किरणें उन्हें तोड़कर 'क्लोरीन' (Chlorine) परमाणु मुक्त करती हैं।</li><li>एक अकेला मुक्त क्लोरीन परमाणु लगभग एक लाख ओजोन (O3) अणुओं को तोड़कर ऑक्सीजन (O2) में बदल सकता है।</li><li>ओजोन परत को बचाने के लिए 1987 में पूरी दुनिया ने 'मॉन्ट्रियल प्रोटोकॉल' (Montreal Protocol) पर हस्ताक्षर किए थे, जिसके तहत CFC के उत्पादन पर प्रतिबंध लगा दिया गया।</li><li>वर्तमान में CFC की जगह कम हानिकारक हाइड्रोफ्लोरोकार्बन (HFC) का उपयोग किया जाता है।</li></ul>` },
+        { q: "एस्पिरिन है—", o: ["मेथॉक्सी बेन्जोइक एसिड", "मेथिल सैलिसिलेट", "ऐसीटिल सैलिसिलिक एसिड", "फेनिल सैलिसिलेट"], a: 2, e: `<b>हल:</b> एस्पिरिन (Aspirin) का रासायनिक नाम 'ऐसीटिल सैलिसिलिक एसिड' (Acetylsalicylic acid) है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>एस्पिरिन दुनिया भर में सबसे अधिक इस्तेमाल की जाने वाली दर्द निवारक (Painkiller/Analgesic) और बुखार कम करने वाली (Antipyretic) दवाओं में से एक है।</li><li>यह शरीर में उन रसायनों (Prostaglandins) के निर्माण को रोकती है जो दर्द और सूजन पैदा करते हैं।</li><li>एस्पिरिन का एक बहुत महत्वपूर्ण गुण यह भी है कि यह खून को पतला (Blood thinner) करती है और थक्के जमने से रोकती है।</li><li>इसी कारण हार्ट अटैक (हृदयाघात) और स्ट्रोक के खतरे को कम करने के लिए डॉक्टर अक्सर एस्पिरिन की छोटी खुराक नियमित लेने की सलाह देते हैं।</li><li>यह दवा मूल रूप से सफेद विलो (White Willow) पेड़ की छाल से प्राप्त प्राकृतिक रसायन से विकसित की गई थी।</li></ul>` },
+        { q: "लोहे का शुद्धतम रूप कौन-सा है?", o: ["स्टील", "ढलवाँ लोहा", "कच्चा लोहा", "पिटवाँ लोहा"], a: 3, e: `<b>हल:</b> व्यावसायिक रूप से उपलब्ध लोहे का सबसे शुद्ध रूप 'पिटवाँ लोहा' (Wrought iron) होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>लोहे की शुद्धता उसमें मौजूद कार्बन की मात्रा से तय होती है; कार्बन जितना कम होगा, लोहा उतना ही शुद्ध और लचीला होगा।</li><li>पिटवाँ लोहे में कार्बन की मात्रा सबसे कम (0.12% से 0.25% के बीच) होती है।</li><li>कार्बन कम होने के कारण यह बहुत मजबूत, आघातवर्ध्य (Malleable - जिसे पीटकर चादर बनाया जा सके) और जंग प्रतिरोधी (Rust-resistant) होता है।</li><li>'ढलवाँ लोहे' (Cast iron) में कार्बन की मात्रा बहुत अधिक (2% से 4%) होती है, इसलिए वह कठोर तो होता है लेकिन हथौड़ा मारने पर टूट जाता है (भुरभुरा/Brittle होता है)।</li><li>स्टील (Steel) एक मिश्रधातु है जिसमें कार्बन की मात्रा इन दोनों के बीच (0.25% से 1.5%) रखी जाती है।</li></ul>` },
+        { q: "निम्नलिखित में से कौन-सी धातु अन्य धातुओं के साथ अमलगम (amalgam) बनाती है?", o: ["सीसा", "राँगा", "जिंक", "पारद (पारा)"], a: 3, e: `<b>हल:</b> 'पारा' (Mercury / पारद) वह विशिष्ट धातु है जो अन्य धातुओं के साथ मिलकर जो मिश्रधातु बनाती है, उसे 'अमलगम' (Amalgam) कहा जाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>पारा (Hg) आवर्त सारणी की एकमात्र ऐसी धातु है जो कमरे के सामान्य तापमान पर तरल (Liquid) अवस्था में पाई जाती है।</li><li>जब पारा चांदी, टिन या जस्ते जैसी धातुओं के साथ मिलता है, तो अमलगम बनता है।</li><li>चांदी और टिन के अमलगम का उपयोग डेंटिस्ट (दांतों के डॉक्टर) दांतों के गड्ढे (Cavity) भरने के लिए करते हैं।</li><li>पारा 'लोहे' (Iron) और प्लेटिनम के साथ अमलगम नहीं बनाता है।</li><li>लोहे के साथ अभिक्रिया न करने के कारण ही पारे को सुरक्षित रखने के लिए लोहे के बर्तनों (फ्लास्क) का उपयोग किया जाता है।</li></ul>` },
+        { q: "कपड़ों और बर्तनों को साफ करने के लिए प्रयुक्त डिटर्जेंट में होते हैं:", o: ["नाइट्रेट", "बाइकार्बोनेट", "सल्फोनेट", "बिस्मथेट"], a: 2, e: `<b>हल:</b> कपड़ों और बर्तनों को साफ करने वाले आधुनिक सिंथेटिक डिटर्जेंट में मुख्य रूप से हाइड्रोकार्बन के 'सल्फोनेट' (Sulfonates) लवण होते हैं।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>साबुन और डिटर्जेंट दोनों कपड़ों से तेल और गंदगी निकालने का काम करते हैं, लेकिन दोनों की रासायनिक संरचना अलग होती है।</li><li>साबुन लंबी श्रृंखला वाले फैटी एसिड के 'सोडियम या पोटैशियम लवण' (Carboxylates) होते हैं।</li><li>डिटर्जेंट लंबी श्रृंखला वाले एल्काइल बेंजीन के 'सोडियम सल्फोनेट' लवण होते हैं।</li><li>साबुन कठोर जल (खारे पानी) में मौजूद कैल्शियम और मैग्नीशियम के साथ मिलकर फट जाते हैं (सफेद झाग/Scum बनाते हैं) और सफाई नहीं कर पाते।</li><li>डिटर्जेंट कठोर जल में भी बहुत आसानी से घुल जाते हैं और खूब झाग देते हैं, इसलिए वे सफाई के लिए अधिक बेहतर माने जाते हैं।</li></ul>` },
+        { q: "यूरेनियम के रेडियोएक्टिव विघटन के फलस्वरूप अंततः क्या बनता है?", o: ["रेडियम", "थोरियम", "पोलोनियम", "सीसा (लेड)"], a: 3, e: `<b>हल:</b> यूरेनियम जैसे भारी और रेडियोधर्मी तत्वों के लगातार विघटन के अंत में एक स्थायी तत्व 'सीसा' (Lead / Pb) बनता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>यूरेनियम (U-238) एक अत्यधिक रेडियोधर्मी तत्व है जिसका नाभिक अस्थिर होता है।</li><li>स्थिरता प्राप्त करने के लिए यह लगातार अपने अंदर से अल्फा, बीटा और गामा विकिरण छोड़ता रहता है।</li><li>इस लंबी क्षय श्रृंखला (Decay chain) में यूरेनियम पहले थोरियम, फिर रेडियम, पोलोनियम आदि तत्वों में बदलता है।</li><li>अंततः यह सीसा (Pb-206) के रूप में आकर रुक जाता है, क्योंकि सीसा एक गैर-रेडियोधर्मी और पूरी तरह स्थायी तत्व है।</li><li>भूवैज्ञानिक पुरानी चट्टानों और पृथ्वी की आयु का पता लगाने के लिए उनमें मौजूद 'यूरेनियम और सीसे के अनुपात' (Uranium-Lead dating) का अध्ययन करते हैं।</li></ul>` },
+        { q: "मिल्क ऑफ मैग्नीशिया एक निलम्बन (Suspension) है:", o: ["मैग्नीशियम सल्फेट का", "मैग्नीशियम कार्बोनेट का", "मैग्नीशियम हाइड्रॉक्साइड का", "मैग्नीशियम क्लोराइड का"], a: 2, e: `<b>हल:</b> 'मिल्क ऑफ मैग्नीशिया' मुख्य रूप से 'मैग्नीशियम हाइड्रॉक्साइड' का पानी में बना हुआ निलंबन (Suspension) है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>मैग्नीशियम हाइड्रॉक्साइड का रासायनिक सूत्र Mg(OH)2 होता है।</li><li>जब इसे पानी में घोला जाता है, तो यह दूध (Milk) जैसा सफेद और गाढ़ा दिखाई देता है, इसलिए इसे 'मिल्क ऑफ मैग्नीशिया' नाम दिया गया।</li><li>यह प्रकृति में एक दुर्बल क्षार (Mild base) है जिसका pH मान लगभग 10 होता है।</li><li>इसका सबसे ज्यादा उपयोग पेट की एसिडिटी (अम्लीयता) को खत्म करने के लिए 'एंटासिड' (Antacid) दवा के रूप में किया जाता है।</li><li>यह आंतों में पानी खींचकर कब्ज (Constipation) से राहत दिलाने में भी एक बेहतरीन लैक्सेटिव (Laxative) का काम करता है।</li></ul>` },
+        { q: "सैकरीन (Saccharin) का निर्माण किससे होता है?", o: ["टॉलुईन से", "फिनोल से", "प्रोपेन से", "ब्यूटेन से"], a: 0, e: `<b>हल:</b> कृत्रिम मिठास पैदा करने वाले रसायन 'सैकरीन' का निर्माण पेट्रोलियम उत्पाद 'टॉलुईन' (Toluene) से किया जाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>सैकरीन दुनिया का सबसे पुराना और पहला कृत्रिम मधुरक (Artificial sweetener) है, जिसकी खोज 1879 में हुई थी।</li><li>यह हमारी साधारण चीनी (सुक्रोज) की तुलना में लगभग 300 से 400 गुना ज्यादा मीठा होता है।</li><li>इसमें कोई खाद्य ऊर्जा (कैलोरी) नहीं होती, यानी शरीर इसे पचा नहीं पाता और यह पेशाब के रास्ते ज्यों का त्यों बाहर निकल जाता है।</li><li>कैलोरी न होने के कारण मधुमेह (Diabetes) के मरीज और वजन कम करने वाले लोग चीनी के विकल्प के रूप में इसका इस्तेमाल करते हैं।</li><li>यह बहुत मीठा होता है, लेकिन इसकी अधिक मात्रा मुँह में कड़वा (Bitter) स्वाद छोड़ देती है।</li></ul>` },
+        { q: "PVC किसके बहुलकन (Polymerization) द्वारा बनाया जाता है?", o: ["प्रोपेन", "विनायल क्लोराइड", "स्टाइरीन", "एसीटिलीन"], a: 1, e: `<b>हल:</b> PVC (पॉलीविनाइल क्लोराइड) प्लास्टिक का निर्माण 'विनायल क्लोराइड' (Vinyl chloride) के अणुओं के बहुलकन से होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>बहुलकन (Polymerization) वह प्रक्रिया है जिसमें कई छोटे अणु (Monomers) एक साथ जुड़कर एक बहुत लंबी और बड़ी चेन (Polymer) बनाते हैं।</li><li>PVC का पूरा नाम पॉलीविनाइल क्लोराइड है, जो दुनिया में सबसे ज्यादा इस्तेमाल होने वाले सिंथेटिक प्लास्टिकों में से एक है।</li><li>यह प्रकृति में बहुत मजबूत, टिकाऊ और पानी व रसायनों का रोधी होता है।</li><li>घरों में पानी की सप्लाई वाले सफेद प्लास्टिक पाइप, दरवाज़े, खिड़कियों के फ्रेम और केबल (बिजली के तारों) के ऊपर का कवर मुख्य रूप से PVC से ही बनते हैं।</li><li>रेनकोट और वाटरप्रूफ बैग बनाने में भी लचीले PVC का उपयोग किया जाता है।</li></ul>` }
+    ];
+
+    let state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+    let timerInterval = null;
+    let isPaused = false;
+
+    window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+    function initDashboard() {
+        showScreen('dashboard-screen');
+        let completedData = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) completedData = JSON.parse(dataStr);
+        } catch(e) {}
+
+        if (completedData) {
+            document.getElementById('dash-unattempted').style.display = 'none';
+            document.getElementById('dash-attempted').style.display = 'block';
+            document.getElementById('dash-score-text').innerText = `${completedData.score}/25.0 Marks . 1.5K/2.9K Rank`;
+            document.getElementById('dash-progress-bar').style.width = `${(completedData.score / 25) * 100}%`;
+        } else {
+            document.getElementById('dash-attempted').style.display = 'none';
+            document.getElementById('dash-unattempted').style.display = 'block';
+        }
+    }
+
+    function startTest() {
+        let saved = null;
+        try {
+            const savedStr = safeGetItem(STORAGE_KEY);
+            if(savedStr) saved = JSON.parse(savedStr);
+        } catch(e){}
+
+        if (saved && !saved.submitted) {
+            state = saved;
+        } else {
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+        }
+        initTestEnv();
+    }
+
+    function reattemptTest() {
+        if(confirm("Are you sure you want to start a fresh test? Your active progress will be lost.")) {
+            safeRemoveItem(STORAGE_KEY);
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+            initTestEnv();
+        }
+    }
+
+    function initTestEnv() {
+        showScreen('test-screen');
+        renderQuestion();
+        renderPalette();
+        updateStats();
+        
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+        setInterval(() => { if(!state.submitted) safeSetItem(STORAGE_KEY, JSON.stringify(state)); }, 2000);
+    }
+
+    function viewSavedResults() {
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(data) renderResultUI(data);
+    }
+
+    function showDashboard() { initDashboard(); }
+
+    function showScreen(id) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+    }
+
+    function updateTimer() {
+        if(isPaused || state.submitted) return;
+        if(state.time <= 0) { submitTest(); return; }
+        state.time--;
+        const m = Math.floor(state.time / 60), s = state.time % 60;
+        document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+    }
+
+    function toggleTheme() {
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    function renderQuestion() {
+        state.visited[state.currentQ] = true;
+        const q = finalQuestions[state.currentQ];
+        document.getElementById('q-no').innerText = `Question ${state.currentQ + 1}`;
+        document.getElementById('q-text').innerHTML = q.q;
+        let opts = '';
+        q.o.forEach((opt, i) => {
+            const isSel = state.answers[state.currentQ] === i;
+            const selClass = isSel ? 'selected' : '';
+            const charLabel = String.fromCharCode(65 + i);
+            opts += `<div class="glass-panel option ${selClass}" onclick="selectOption(${i})"><div class="opt-label">${charLabel}</div><div style="flex:1;">${opt}</div></div>`;
+        });
+        document.getElementById('options-box').innerHTML = opts;
+        
+        renderPalette();
+        updateStats();
+    }
+
+    function selectOption(index) { state.answers[state.currentQ] = index; renderQuestion(); }
+    function clearResponse() { delete state.answers[state.currentQ]; delete state.marked[state.currentQ]; renderQuestion(); }
+    function markReview() { state.marked[state.currentQ] = true; changeQ(1); }
+    function saveNext() { delete state.marked[state.currentQ]; changeQ(1); }
+
+    function changeQ(step) {
+        const next = state.currentQ + step;
+        if(next >= 0 && next < finalQuestions.length) { state.currentQ = next; renderQuestion(); }
+    }
+
+    function renderPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        finalQuestions.forEach((_, i) => {
+            let cls = 's-0';
+            if(state.visited[i]) {
+                if(state.answers[i] !== undefined && state.marked[i]) cls = 's-4';
+                else if(state.marked[i]) cls = 's-3';
+                else if(state.answers[i] !== undefined) cls = 's-1';
+                else cls = 's-2';
+            }
+            const active = i === state.currentQ ? 'active' : '';
+            grid.innerHTML += `<button class="p-btn ${cls} ${active}" onclick="state.currentQ = ${i}; renderQuestion();">${i + 1}</button>`;
+        });
+    }
+
+    function updateStats() {
+        let ans=0, notans=0, notvis=0, mark=0;
+        finalQuestions.forEach((_, i) => {
+            if(!state.visited[i]) notvis++;
+            else if(state.marked[i]) mark++;
+            else if(state.answers[i] !== undefined) ans++;
+            else notans++;
+        });
+        document.getElementById('c-ans').innerText = ans; document.getElementById('c-notans').innerText = notans;
+        document.getElementById('c-notvis').innerText = notvis; document.getElementById('c-mark').innerText = mark;
+    }
+
+    function submitTest() {
+        if(!confirm("Are you sure you want to submit the test?")) return;
+        state.submitted = true; clearInterval(timerInterval);
+        let score=0, attempt=0, wrong=0;
+        finalQuestions.forEach((q, i) => {
+            if(state.answers[i] !== undefined) {
+                attempt++;
+                if(state.answers[i] === q.a) score++; else wrong++;
+            }
+        });
+        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const completedData = { score: score, attempted: attempt, wrong: wrong, time: state.time, date: today, userAnswers: state.answers };
+        
+        safeSetItem(COMPLETED_KEY, JSON.stringify(completedData));
+        safeRemoveItem(STORAGE_KEY);
+        
+        renderResultUI(completedData);
+    }
+
+    function renderResultUI(data) {
+        showScreen('result-screen');
+        const acc = data.attempted > 0 ? ((data.score / data.attempted) * 100).toFixed(1) : 0;
+        document.getElementById('r-score').innerText = `${data.score}`;
+        document.getElementById('r-attempt').innerText = data.attempted;
+        document.getElementById('r-wrong').innerText = data.wrong;
+        document.getElementById('r-acc').innerText = `${acc}%`;
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(!data) return;
+
+        let html = '';
+        finalQuestions.forEach((q, i) => {
+            const uAns = data.userAnswers[i];
+            let optHtml = '';
+            q.o.forEach((opt, oIdx) => {
+                let cls = '', checkMark = '';
+                if(oIdx === q.a) { cls = 'correct'; checkMark = ' ✔'; }
+                else if(oIdx === uAns && uAns !== q.a) { cls = 'wrong'; checkMark = ' ❌ (Your Answer)'; }
+                optHtml += `<div class="glass-panel sol-opt ${cls}"><strong>${String.fromCharCode(65 + oIdx)}.</strong> <div style="flex:1;">${opt} ${checkMark}</div></div>`;
+            });
+            let statusText = uAns !== undefined ? (uAns === q.a ? "हल किया (Correct)" : "हल किया (Incorrect)") : "हल नहीं किया (Unattempted)";
+            html += `<div class="glass-panel sol-card"><div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--primary);">प्र ${i+1}. ${q.q}</div>${optHtml}<div style="font-weight:bold; margin:15px 0; color:var(--text-muted);">Status: ${statusText}</div><div class="glass-panel sol-exp">${q.e}</div></div>`;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+
+    function downloadPDF() {
+        const element = document.getElementById('sol-container');
+        
+        const actionButtons = element.previousElementSibling;
+        actionButtons.style.display = 'none';
+
+        const opt = {
+            margin:       10,
+            filename:     'Science_Test_10_Solutions.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) document.documentElement.setAttribute('data-theme', 'light');
+        
+        html2pdf().set(opt).from(element).save().then(() => {
+            if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
+            actionButtons.style.display = 'flex';
+        });
+    }
+</script>
+</body>
+</html>
