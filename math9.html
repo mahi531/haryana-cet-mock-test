@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HSSC Group D Math Test 9</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Beautiful Moving Gradient & Glassmorphism Theme */
+        :root {
+            --bg-grad-1: #4facfe; --bg-grad-2: #00f2fe; --bg-grad-3: #a18cd1; --bg-grad-4: #fbc2eb;
+            --glass-bg: rgba(255, 255, 255, 0.9); --glass-border: rgba(255, 255, 255, 0.6); --glass-shadow: rgba(31, 38, 135, 0.15);
+            --text-main: #1f2937; --text-muted: #64748b;
+            --primary: #2563eb; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --purple: #8b5cf6;
+            --option-bg: rgba(243, 244, 246, 0.8); --option-selected: rgba(219, 234, 254, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+        [data-theme="dark"] {
+            --bg-grad-1: #0f2027; --bg-grad-2: #203a43; --bg-grad-3: #2c5364; --bg-grad-4: #141e30;
+            --glass-bg: rgba(17, 25, 40, 0.85); --glass-border: rgba(255, 255, 255, 0.15); --glass-shadow: rgba(0, 0, 0, 0.5);
+            --text-main: #f9fafb; --text-muted: #94a3b8;
+            --primary: #3b82f6; 
+            --option-bg: rgba(55, 65, 81, 0.7); --option-selected: rgba(30, 58, 138, 0.8);
+            --card-bg: rgba(31, 41, 55, 0.95);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; touch-action: manipulation;}
+        
+        body { 
+            height: 100vh; height: 100dvh; 
+            background: linear-gradient(45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3), var(--bg-grad-4)); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+            color: var(--text-main); 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 var(--glass-shadow); border-radius: 12px; }
+        
+        .btn { font-family: 'Poppins', sans-serif; background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;}
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-warning { background: var(--warning); color: #fff;}
+        .btn-clear { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-mark { background: var(--purple); color: white; }
+        .btn-prev { background: var(--text-muted); color: white; }
+
+        /* Screens */
+        .screen { display: none; flex-direction: column; height: 100%; width: 100vw; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; }
+
+        /* --- DASHBOARD UI --- */
+        #dashboard-screen { overflow-y: auto; background: var(--card-bg); align-items: center; padding-bottom: 30px;}
+        
+        .dash-header-top { background: #1e293b; color: white; width: 100%; padding: 15px 20px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 15px; position: sticky; top:0; z-index: 100;}
+        
+        .dash-content { width: 100%; max-width: 800px; padding: 20px; }
+        .section-title { font-weight: 600; color: var(--primary); margin: 15px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 15px; }
+        
+        .dash-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--glass-border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .test-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text-main);}
+        .test-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        
+        .progress-container { width: 100%; height: 6px; background: var(--glass-border); border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #fbc02d; width: 0%; transition: width 0.5s ease;}
+        
+        .dash-actions { display: flex; gap: 12px; margin-top: 15px; }
+        .dash-actions .btn { flex: 1; padding: 10px; font-size: 14px; border-radius: 8px;}
+        
+        .syllabus-footer { display: flex; justify-content: space-between; font-size: 12px; color: var(--primary); border-top: 1px solid var(--glass-border); padding-top: 12px; margin-top: 15px; }
+
+        /* --- TEST SCREEN UI --- */
+        header.test-head { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-bottom: 10px; margin-inline: 10px; }
+        .header-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: 700; background: var(--card-bg); border: 1px solid var(--glass-border); color: var(--danger); padding: 5px 12px; border-radius: 20px; }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 0 10px 10px 10px; }
+        .question-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        .q-header { padding: 10px 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
+        .q-body { flex: 1; padding: 15px; overflow-y: auto; font-size: 16px; line-height: 1.6; }
+        
+        .options-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;}
+        .option { padding: 12px; border: 2px solid var(--glass-border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--option-bg); font-weight: 500; font-size: 15px;}
+        .option.selected { border-color: var(--primary); background: var(--option-selected); color: var(--primary); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--glass-border); display: flex; justify-content: center; align-items: center; font-weight: bold; }
+        .option.selected .opt-label { background: var(--primary); color: white; border-color: var(--primary);}
+        
+        .q-footer { padding: 10px; border-top: 1px solid var(--glass-border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-radius: 0 0 12px 12px; }
+
+        /* --- PALETTE UI --- */
+        .palette-section { width: 320px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .palette-header { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; font-weight: bold; font-size: 15px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; font-size: 12px; border-bottom: 1px solid var(--glass-border); font-weight: 500;}
+        .stat-item { display: flex; align-items: center; gap: 6px;}
+        .badge { width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 10px; font-weight: bold;}
+        .s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);} 
+        .s-1 { background: var(--success); } .s-2 { background: var(--danger); } .s-3 { background: var(--purple); } 
+        .s-4 { background: var(--primary); position: relative; }
+        .s-4::after { content: '✔'; position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; background: white; color: var(--primary); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 8px; }
+        
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .p-btn.s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);}
+        .p-btn.active { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.1);}
+        .submit-area { padding: 10px; border-top: 1px solid var(--glass-border); border-radius: 0 0 12px 12px;}
+
+        /* --- RESULTS & SOLUTIONS UI --- */
+        #result-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        #solution-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        .sol-card { padding: 20px; margin-bottom: 15px; width: 100%; max-width: 800px; }
+        .sol-opt { padding: 10px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; gap: 10px; align-items: center; font-size: 15px; background: var(--card-bg);}
+        .sol-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); text-decoration: line-through;}
+        .sol-exp { margin-top: 15px; padding: 15px; background: rgba(37, 99, 235, 0.05); border: 1px solid var(--glass-border); border-left: 4px solid var(--primary); border-radius: 8px; font-size: 14.5px; line-height: 1.6; }
+        .sol-exp ul { padding-left: 20px; margin-top: 8px; }
+        .sol-exp li { margin-bottom: 6px; }
+
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+
+        @media (max-width: 992px) {
+            .main-area { flex-direction: column; overflow-y: auto;}
+            .question-section { flex: none; min-height: 450px;}
+            .palette-section { width: 100%; flex: none; min-height: 350px;}
+            .q-footer .btn { padding: 10px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="dashboard-screen" class="screen active">
+        <div class="dash-header-top">
+            <span style="cursor: pointer;" onclick="alert('Going Back')">&#8592;</span>
+            Testbook - Mock Tests
+        </div>
+
+        <div class="dash-content">
+            <!-- Unattempted State -->
+            <div id="dash-unattempted" style="display: none;">
+                <div class="section-title">Suggested Next Test</div>
+                <div class="dash-card">
+                    <div class="test-title">HSSC Group D Math Test 9</div>
+                    <div class="test-meta">
+                        <span>25 Qs • 50 mins • 25.0 Marks</span>
+                    </div>
+                    <div class="test-meta" style="justify-content: flex-end;">
+                        <button class="btn btn-outline" style="padding: 6px 20px; border-radius: 20px;" onclick="startTest()">Start Test 🚀</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span>Syllabus: Quantitative Aptitude / Mathematics</span>
+                        <span style="color:var(--success);">🔗 Share</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attempted State -->
+            <div id="dash-attempted" style="display: none;">
+                <div class="dash-card">
+                    <div class="test-title">HSSC Group D Math Test 9</div>
+                    <div class="test-meta" style="margin-bottom: 5px;">
+                        <span id="dash-score-text" style="font-size: 15px; color: var(--text-muted);">0/25.0 Marks . 1.5K/2.9K Rank</span>
+                    </div>
+                    
+                    <!-- Progress Bar matching screenshot style -->
+                    <div class="progress-container"><div class="progress-fill" id="dash-progress-bar"></div></div>
+
+                    <div class="dash-actions">
+                        <button class="btn btn-outline" onclick="viewSavedResults()">View Results</button>
+                        <button class="btn btn-outline" onclick="reattemptTest()">Reattempt &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAUSE OVERLAY -->
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px; font-size: 2rem;">Test Paused ⏸️</h2>
+        <button class="btn btn-primary" style="font-size: 1.2rem; padding: 10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+    </div>
+
+    <!-- TEST SCREEN -->
+    <div id="test-screen" class="screen">
+        <header class="glass-panel test-head">
+            <div class="header-title">Math Test 9</div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="toggleTheme()">🌓 Theme</button>
+                <button class="btn btn-warning" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="togglePause()">⏸ Pause</button>
+                <div class="timer-box">⏱ <span id="timer-display">50:00</span></div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="glass-panel question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--success); font-weight:bold;">+1 <span style="color: var(--text-muted); font-weight:normal;">|</span> <span style="color: var(--danger);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <button class="btn btn-mark" onclick="markReview()">Mark & Next</button>
+                    <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                    <button class="btn btn-prev" onclick="changeQ(-1)">Previous</button>
+                    <button class="btn btn-primary" onclick="saveNext()">Save & Next</button>
+                </div>
+            </div>
+
+            <div class="glass-panel palette-section">
+                <div class="palette-header">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">25</div> Not Visit</div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn btn-primary" style="width: 100%; background: var(--success); font-size: 15px; padding: 10px;" onclick="submitTest()">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen" class="screen">
+        <div style="width: 100%; max-width: 800px; margin-bottom: 15px;"><button class="btn btn-clear" onclick="showDashboard()">&#8592; Back to Dashboard</button></div>
+        <div class="glass-panel" style="max-width: 800px; width: 100%; padding: 25px;">
+            <h1 style="color: var(--primary); text-align: center;">Test Submitted Successfully! 🎉</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 25px 0;">
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-score" style="color: var(--primary); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Score</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-attempt" style="color: var(--success); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Attempted</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-wrong" style="color: var(--danger); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Wrong</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-acc" style="color: var(--purple); font-size: 1.8rem;">0%</h2><p style="color: var(--text-muted); font-size:12px;">Accuracy</p></div>
+            </div>
+            <button class="btn btn-primary" style="width:100%; font-size: 15px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+        </div>
+    </div>
+
+    <!-- SOLUTION SCREEN -->
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%; margin:0 auto;">
+            <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 12px 15px; position: sticky; top: 5px; z-index: 10;">
+                <h3 style="color: var(--primary);">Detailed Solutions</h3>
+                <button class="btn btn-clear" style="padding: 5px 10px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+            </div>
+            <div id="sol-container"></div>
+        </div>
+    </div>
+
+<script>
+    const MEMORY_STORE = {};
+    function safeGetItem(key) { try { return localStorage.getItem(key) || MEMORY_STORE[key] || null; } catch(e) { return MEMORY_STORE[key] || null; } }
+    function safeSetItem(key, value) { try { localStorage.setItem(key, value); } catch(e) {} MEMORY_STORE[key] = value; }
+    function safeRemoveItem(key) { try { localStorage.removeItem(key); } catch(e) {} delete MEMORY_STORE[key]; }
+
+    const STORAGE_KEY = 'hssc_math_9_active'; 
+    const COMPLETED_KEY = 'hssc_math_9_comp';
+
+    const finalQuestions = [
+        { q: "एक पंखे के विक्रय मूल्य का 40 प्रतिशत, पंखे के क्रय मूल्य के 4/5 के बराबर है। लाभ प्रतिशत क्या है?", o: ["150 प्रतिशत", "125 प्रतिशत", "120 प्रतिशत", "100 प्रतिशत"], a: 3, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Fraction Method):</b><br>SP का 40% = CP का 4/5<br>(2/5) × SP = (4/5) × CP<br>SP / CP = 4 / 2 = 2 / 1<br>CP = 1, SP = 2 (लाभ = 1)<br>लाभ % = (1 / 1) × 100 = <b>100 प्रतिशत</b>" },
+        { q: "एक संख्या में 20% की वृद्धि की जाती है और फिर बढ़ी हुई संख्या में 20% की कमी की जाती है। निवल वृद्धि या कमी है:", o: ["वृद्धि 2%", "कमी 4%", "कमी 2%", "वृद्धि 4%"], a: 1, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Successive Method):</b><br>सूत्र: x + y + (xy/100)<br>+20 - 20 + [(20 × -20) / 100]<br>0 - 4 = -4%<br>ऋणात्मक चिह्न कमी को दर्शाता है। अतः <b>कमी 4%</b>" },
+        { q: "एक समचतुर्भुज का एक विकर्ण दूसरे विकर्ण का 70 प्रतिशत है। समचतुर्भुज के क्षेत्रफल और बड़े विकर्ण की लंबाई के वर्ग का अनुपात क्या है?", o: ["7:20", "25:17", "20:7", "6:19"], a: 0, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Ratio Method):</b><br>माना बड़ा विकर्ण (D1) = 100, तो छोटा विकर्ण (D2) = 70<br>समचतुर्भुज का क्षेत्रफल = (1/2) × D1 × D2 = (1/2) × 100 × 70 = 3500<br>बड़े विकर्ण का वर्ग (D1²) = 100² = 10000<br>अनुपात = 3500 : 10000 = 35 : 100 = <b>7:20</b>" },
+        { q: "वह सबसे छोटी पूर्ण वर्ग संख्या क्या है, जो 12, 84 और 24 में से प्रत्येक से पूर्णतः विभाज्य है?", o: ["7056", "1764", "11664", "2304"], a: 0, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (LCM & Pair Method):</b><br>LCM (12, 24, 84) निकालें:<br>12 = 2² × 3<br>24 = 2³ × 3<br>84 = 2² × 3 × 7<br>LCM = 2³ × 3 × 7 = 168<br>पूर्ण वर्ग बनाने के लिए सभी अभाज्य गुणनखंड जोड़े (pairs) में होने चाहिए: 2⁴ × 3² × 7²<br>= 16 × 9 × 49 = 144 × 49 = <b>7056</b>" },
+        { q: "Rs. 30 प्रति किलो मूल्य वाली चीनी को Rs. 40 प्रति किलो मूल्य वाली चीनी के साथ किस अनुपात में मिलाया जाना चाहिए ताकि प्राप्त मिश्रण का मूल्य Rs. 37 प्रति किलो हो जाए?", o: ["8:9", "4:3", "3:7", "9:5"], a: 2, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Alligation Method):</b><br>चीनी 1 (30) ............... चीनी 2 (40)<br>............... मिश्रण (37) ...............<br>(40 - 37) ............... (37 - 30)<br>3 ............................ 7<br>अभीष्ट अनुपात = <b>3:7</b>" },
+        { q: "0.25 और 1.25 का महत्तम समापवर्तक (HCF) क्या होगा?", o: ["0.5", "1.25", "0.75", "0.25"], a: 3, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Fraction Method):</b><br>0.25 = 25/100 = 1/4<br>1.25 = 125/100 = 5/4<br>भिन्नों का HCF = अंशों का HCF / हरों का LCM<br>HCF(1, 5) / LCM(4, 4) = 1 / 4 = <b>0.25</b>" },
+        { q: "एक धनराशि को A, B और C के बीच 3:2:5 के अनुपात में बाँटा जाता है। Rs.126 में से C को कितनी धनराशि मिलेगी?", o: ["Rs.66", "Rs.63", "Rs.62", "Rs.43"], a: 1, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Ratio Distribution):</b><br>A : B : C = 3 : 2 : 5<br>कुल अनुपात = 3 + 2 + 5 = 10 यूनिट<br>10 यूनिट = 126 Rs.<br>1 यूनिट = 12.6 Rs.<br>C का हिस्सा (5 यूनिट) = 5 × 12.6 = <b>Rs. 63</b>" },
+        { q: "एक धावक 10 km/hr की चाल से सुबह 5:00 बजे एक बिंदु से दौड़ना शुरू करता है। एक दूसरा धावक 15 km/hr की चाल से समान बिंदु से समान दिशा में सुबह 8:00 बजे दौड़ना शुरू करता है। दूसरा धावक उसी दिन के कितने बजे पहले धावक से आगे निकल जाएगा?", o: ["दोपहर 12:30 बजे", "दोपहर 12:00 बजे", "दोपहर 1:00 बजे", "दोपहर 2:00 बजे"], a: 3, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Relative Speed Concept):</b><br>पहला धावक 5:00 बजे से 8:00 बजे तक (3 घंटे) दौड़ता है।<br>तय की गई दूरी = 10 × 3 = 30 km<br>समान दिशा में सापेक्ष चाल = 15 - 10 = 5 km/hr<br>पकड़ने में लगा समय = 30 km / 5 km/hr = 6 घंटे<br>समय = 8:00 बजे + 6 घंटे = <b>दोपहर 2:00 बजे</b>" },
+        { q: "एक नगर की जनसंख्या में 20 प्रतिशत वार्षिक की दर से वृ‌द्धि होती है। यदि 2 वर्ष बाद नगर की जनसंख्या 69,120 होगी, तो नगर की वर्तमान जनसंख्या कितनी है?", o: ["40000", "36000", "48000", "42000"], a: 2, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Successive / Fraction Method):</b><br>20% = 1/5<br>पहला वर्ष: 5 → 6<br>दूसरा वर्ष: 5 → 6<br>कुल: 25 (वर्तमान) → 36 (2 वर्ष बाद)<br>36 यूनिट = 69,120<br>1 यूनिट = 69,120 / 36 = 1920<br>वर्तमान जनसंख्या (25 यूनिट) = 25 × 1920 = <b>48000</b>" },
+        { q: "एक बस पहले घंटे में 60 km, दूसरे घंटे में 40 km और तीसरे घंटे में 50 km की यात्रा करती है। बस की औसत चाल क्या है?", o: ["55 km/hr", "50 km/hr", "45 km/hr", "60 km/hr"], a: 1, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Average Speed Concept):</b><br>कुल दूरी = 60 + 40 + 50 = 150 km<br>कुल समय = 1 + 1 + 1 = 3 घंटे<br>औसत चाल = कुल दूरी / कुल समय<br>= 150 / 3 = <b>50 km/hr</b>" },
+        { q: "20 दिनों तक कार्य करने के बाद, शिखा को पता चलता है कि केवल 20 प्रतिशत कार्य ही पूरा हुआ है। वह टीना को नियुक्त करती है जो शिखा से 100 प्रतिशत अधिक कुशल है। टीना अकेले पूरे कार्य को कितने दिनों में पूरा कर सकती है?", o: ["30 दिन", "50 दिन", "40 दिन", "60 दिन"], a: 1, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Efficiency Method):</b><br>शिखा 20% कार्य 20 दिन में करती है, तो 100% कार्य 100 दिन में करेगी।<br>टीनी की क्षमता शिखा से 100% अधिक है (यानी दोगुनी क्षमता)।<br>अतः टीना को शिखा से आधा समय लगेगा।<br>समय = 100 / 2 = <b>50 दिन</b>" },
+        { q: "यदि किसी बेलन की त्रिज्या में 16 प्रतिशत की कमी कर दी जाए, तो उसकी ऊँचाई में कितने प्रतिशत की वृद्धि करनी होगी, ताकि बेलन का आयतन वही रहे?", o: ["41.72 प्रतिशत", "36.43 प्रतिशत", "32.96 प्रतिशत", "45.28 प्रतिशत"], a: 0, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Successive Method):</b><br>आयतन (V) = πr²h. r में 16% कमी (16% = 4/25) ⇒ r = 21/25<br>r² = (21/25)² = 441/625<br>आयतन समान रखने के लिए h को इसका व्युत्क्रमानुपाती होना चाहिए ⇒ h = 625/441<br>h में वृद्धि = 625 - 441 = 184<br>प्रतिशत वृद्धि = (184 / 441) × 100 ≈ <b>41.72 प्रतिशत</b>" },
+        { q: "एक कार का अंकित मूल्य Rs. 600000 है। राहुल उस कार को 30 प्रतिशत और 20 प्रतिशत की दो क्रमागत छूट पर खरीदता है। यदि कार का उपयोग करने के बाद, वह कार को Rs. 478000 में बेचता है, तो उसका लाभ प्रतिशत कितना है?", o: ["36.85 प्रतिशत", "39.87 प्रतिशत", "33.33 प्रतिशत", "42.26 प्रतिशत"], a: 3, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Successive Discount):</b><br>समतुल्य छूट = 30 + 20 - (30×20)/100 = 44%<br>CP = 600000 का (100-44)% = 600000 × 56% = Rs. 3,36,000<br>SP = Rs. 4,78,000<br>लाभ = 478000 - 336000 = 142000<br>लाभ % = (142000 / 336000) × 100 = 14200 / 336 ≈ <b>42.26 प्रतिशत</b>" },
+        { q: "यदि एक राशि का साधारण ब्याज पर निवेश किया जाता है, तो वह राशि 4 वर्ष में स्वयं की 3/2 हो जाती है। वार्षिक ब्याज दर क्या है?", o: ["6.5 प्रतिशत", "10 प्रतिशत", "12.5 प्रतिशत", "17.5 प्रतिशत"], a: 2, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Fraction Method):</b><br>राशि स्वयं की 3/2 हो जाती है। इसका अर्थ है: मूलधन(P) = 2, मिश्रधन(A) = 3<br>साधारण ब्याज (SI) = 3 - 2 = 1<br>दर (R) = (SI × 100) / (P × T)<br>= (1 × 100) / (2 × 4) = 100 / 8 = <b>12.5 प्रतिशत</b>" },
+        { q: "एक दुकानदार एक वस्तु को 20 प्रतिशत लाभ पर बेचता है। यदि उसने इसे 10 प्रतिशत कम मूल्य पर खरीदा होता और इसे Rs. 48 कम में बेचा होता, तो उसे 20 प्रतिशत का लाभ होता। वस्तु का क्रय मूल्य क्या है?", o: ["Rs. 340", "Rs. 460", "Rs. 520", "Rs. 400"], a: 3, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Unit Method):</b><br>माना CP = 100x. SP (20% लाभ) = 120x<br>नया CP (10% कम) = 90x<br>नए CP पर 20% लाभ = 90x × (120/100) = 108x<br>दोनों SP का अंतर = 120x - 108x = 12x<br>प्रश्नानुसार, 12x = Rs. 48 ⇒ x = 4<br>वास्तविक CP = 100x = 100 × 4 = <b>Rs. 400</b>" },
+        { q: "B और C अकेले एक कार्य को क्रमशः 10 दिन और 30 दिन में पूरा कर सकते हैं। उन्होंने साथ मिलकर कार्य शुरू किया लेकिन B ने कुछ दिनों के बाद कार्य छोड़ दिया और C ने शेष कार्य को 10 दिनों में पूरा किया। कार्य की शुरुआत से कितने दिनों के बाद B ने कार्य छोड़ा?", o: ["6 दिन", "4 दिन", "8 दिन", "5 दिन"], a: 3, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (LCM Method):</b><br>B(10) और C(30) का कुल कार्य (LCM) = 30 यूनिट<br>B की क्षमता = 3, C की क्षमता = 1<br>C ने अंतिम 10 दिन अकेले कार्य किया = 10 × 1 = 10 यूनिट<br>शेष कार्य = 30 - 10 = 20 यूनिट<br>यह 20 यूनिट B और C ने मिलकर किया: 20 / (3 + 1) = 20 / 4 = <b>5 दिन</b>" },
+        { q: "40 परिणामों का औसत 15 है। यदि प्रत्येक परिणाम में से 5 घटा दिया जाए, तो परिणामों का नया औसत क्या होगा?", o: ["11", "15", "12", "10"], a: 3, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Average Concept):</b><br>औसत का सीधा नियम है: यदि प्रत्येक संख्या में से 'x' घटाया जाए, तो नया औसत भी 'x' कम हो जाता है।<br>नया औसत = पुराना औसत - 5<br>= 15 - 5 = <b>10</b>" },
+        { q: "एक व्यक्ति 400 मीटर लंबी सड़क को 5 मिनट में पार करता है। उसकी चाल (किमी/घंटा में) क्या है?", o: ["4.8", "5.2", "3.6", "6.4"], a: 0, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Basic Conversion):</b><br>दूरी = 400 मीटर<br>समय = 5 मिनट = 5 × 60 = 300 सेकंड<br>चाल (m/s) = 400 / 300 = 4/3 m/s<br>किमी/घंटा में बदलने के लिए 18/5 से गुणा करें:<br>(4/3) × (18/5) = (4 × 6) / 5 = 24 / 5 = <b>4.8 किमी/घंटा</b>" },
+        { q: "यदि A:B = 3:4 और B:C = 8:9 है, तो A:C का मान क्या होगा?", o: ["1:2", "2:3", "3:4", "4:5"], a: 1, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Ratio Merging):</b><br>A/C = (A/B) × (B/C)<br>= (3/4) × (8/9)<br>= 24 / 36<br>सरल करने पर = 2/3 यानी <b>2:3</b>" },
+        { q: "15 आदमी एक काम को 20 दिनों में कर सकते हैं। उसी काम को 10 आदमी कितने दिनों में करेंगे?", o: ["25 दिन", "30 दिन", "35 दिन", "40 दिन"], a: 1, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (M1D1 Formula):</b><br>M1 × D1 = M2 × D2<br>15 × 20 = 10 × D2<br>300 = 10 × D2<br>D2 = <b>30 दिन</b>" },
+        { q: "एक आयत की लंबाई में 10% की वृ‌द्धि और चौड़ाई में 10% की कमी की जाती है। इसके क्षेत्रफल में प्रतिशत परिवर्तन क्या होगा?", o: ["1% की वृद्धि", "1% की कमी", "कोई परिवर्तन नहीं", "2% की कमी"], a: 1, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Successive / AB Rule):</b><br>क्षेत्रफल में परिवर्तन % = x + y + (xy/100)<br>= +10 - 10 + [(10 × -10) / 100]<br>= 0 - 1 = -1%<br>माइनस का अर्थ है <b>1% की कमी</b>" },
+        { q: "प्रथम 10 प्राकृत संख्याओं का औसत क्या है?", o: ["5", "5.5", "6", "6.5"], a: 1, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Formula Method):</b><br>प्रथम 'n' प्राकृत संख्याओं का औसत = (n + 1) / 2<br>यहाँ n = 10<br>औसत = (10 + 1) / 2 = 11 / 2 = <b>5.5</b>" },
+        { q: "500 रुपये की राशि पर 5% वार्षिक दर से 2 वर्ष का साधारण ब्याज कितना होगा?", o: ["40 रुपये", "45 रुपये", "50 रुपये", "55 रुपये"], a: 2, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Percentage Method):</b><br>1 वर्ष का ब्याज = 5%<br>2 वर्ष का ब्याज = 10%<br>साधारण ब्याज = 500 का 10%<br>= <b>50 रुपये</b>" },
+        { q: "एक रेलगाड़ी 72 किमी/घंटा की चाल से चल रही है। 15 सेकंड में वह कितनी दूरी (मीटर में) तय करेगी?", o: ["250 मीटर", "300 मीटर", "350 मीटर", "400 मीटर"], a: 1, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Unit Conversion):</b><br>चाल को m/s में बदलें: 72 × (5/18) = 20 m/s<br>दूरी = चाल × समय<br>= 20 × 15 = <b>300 मीटर</b>" },
+        { q: "किसी संख्या का 25%, 75 के बराबर है। वह संख्या क्या है?", o: ["250", "300", "350", "400"], a: 1, e: "<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Fraction Method):</b><br>25% का भिन्न मान = 1/4<br>संख्या का 1/4 = 75<br>संख्या = 75 × 4 = <b>300</b>" }
+    ];
+
+    let state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 50 * 60, submitted: false };
+    let timerInterval = null;
+    let isPaused = false;
+
+    window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+    function initDashboard() {
+        showScreen('dashboard-screen');
+        let completedData = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) completedData = JSON.parse(dataStr);
+        } catch(e) {}
+
+        if (completedData) {
+            document.getElementById('dash-unattempted').style.display = 'none';
+            document.getElementById('dash-attempted').style.display = 'block';
+            document.getElementById('dash-score-text').innerText = `${completedData.score}/25.0 Marks . 1.5K/2.9K Rank`;
+            document.getElementById('dash-progress-bar').style.width = `${(completedData.score / 25) * 100}%`;
+        } else {
+            document.getElementById('dash-attempted').style.display = 'none';
+            document.getElementById('dash-unattempted').style.display = 'block';
+        }
+    }
+
+    function startTest() {
+        let saved = null;
+        try {
+            const savedStr = safeGetItem(STORAGE_KEY);
+            if(savedStr) saved = JSON.parse(savedStr);
+        } catch(e){}
+
+        if (saved && !saved.submitted) {
+            state = saved;
+        } else {
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 50 * 60, submitted: false };
+        }
+        initTestEnv();
+    }
+
+    function reattemptTest() {
+        if(confirm("Are you sure you want to start a fresh test? Your active progress will be lost.")) {
+            safeRemoveItem(STORAGE_KEY);
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 50 * 60, submitted: false };
+            initTestEnv();
+        }
+    }
+
+    function initTestEnv() {
+        showScreen('test-screen');
+        renderQuestion();
+        renderPalette();
+        updateStats();
+        
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+        setInterval(() => { if(!state.submitted) safeSetItem(STORAGE_KEY, JSON.stringify(state)); }, 2000);
+    }
+
+    function viewSavedResults() {
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(data) renderResultUI(data);
+    }
+
+    function showDashboard() { initDashboard(); }
+
+    function showScreen(id) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+    }
+
+    function updateTimer() {
+        if(isPaused || state.submitted) return;
+        if(state.time <= 0) { submitTest(); return; }
+        state.time--;
+        const m = Math.floor(state.time / 60), s = state.time % 60;
+        document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+    }
+
+    function toggleTheme() {
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    function renderQuestion() {
+        state.visited[state.currentQ] = true;
+        const q = finalQuestions[state.currentQ];
+        document.getElementById('q-no').innerText = `Question ${state.currentQ + 1}`;
+        document.getElementById('q-text').innerHTML = q.q;
+        let opts = '';
+        q.o.forEach((opt, i) => {
+            const isSel = state.answers[state.currentQ] === i;
+            const selClass = isSel ? 'selected' : '';
+            const charLabel = String.fromCharCode(65 + i);
+            opts += `<div class="glass-panel option ${selClass}" onclick="selectOption(${i})"><div class="opt-label">${charLabel}</div><div style="flex:1;">${opt}</div></div>`;
+        });
+        document.getElementById('options-box').innerHTML = opts;
+        renderPalette();
+        updateStats();
+    }
+
+    function selectOption(index) { state.answers[state.currentQ] = index; renderQuestion(); }
+    function clearResponse() { delete state.answers[state.currentQ]; delete state.marked[state.currentQ]; renderQuestion(); }
+    function markReview() { state.marked[state.currentQ] = true; changeQ(1); }
+    function saveNext() { delete state.marked[state.currentQ]; changeQ(1); }
+
+    function changeQ(step) {
+        const next = state.currentQ + step;
+        if(next >= 0 && next < finalQuestions.length) { state.currentQ = next; renderQuestion(); }
+    }
+
+    function renderPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        finalQuestions.forEach((_, i) => {
+            let cls = 's-0';
+            if(state.visited[i]) {
+                if(state.answers[i] !== undefined && state.marked[i]) cls = 's-4';
+                else if(state.marked[i]) cls = 's-3';
+                else if(state.answers[i] !== undefined) cls = 's-1';
+                else cls = 's-2';
+            }
+            const active = i === state.currentQ ? 'active' : '';
+            grid.innerHTML += `<button class="p-btn ${cls} ${active}" onclick="state.currentQ = ${i}; renderQuestion();">${i + 1}</button>`;
+        });
+    }
+
+    function updateStats() {
+        let ans=0, notans=0, notvis=0, mark=0;
+        finalQuestions.forEach((_, i) => {
+            if(!state.visited[i]) notvis++;
+            else if(state.marked[i]) mark++;
+            else if(state.answers[i] !== undefined) ans++;
+            else notans++;
+        });
+        document.getElementById('c-ans').innerText = ans; document.getElementById('c-notans').innerText = notans;
+        document.getElementById('c-notvis').innerText = notvis; document.getElementById('c-mark').innerText = mark;
+    }
+
+    function submitTest() {
+        if(!confirm("Are you sure you want to submit the test?")) return;
+        state.submitted = true; clearInterval(timerInterval);
+        let score=0, attempt=0, wrong=0;
+        finalQuestions.forEach((q, i) => {
+            if(state.answers[i] !== undefined) {
+                attempt++;
+                if(state.answers[i] === q.a) score++; else wrong++;
+            }
+        });
+        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const completedData = { score: score, attempted: attempt, wrong: wrong, time: state.time, date: today, userAnswers: state.answers };
+        
+        safeSetItem(COMPLETED_KEY, JSON.stringify(completedData));
+        safeRemoveItem(STORAGE_KEY);
+        
+        renderResultUI(completedData);
+    }
+
+    function renderResultUI(data) {
+        showScreen('result-screen');
+        const acc = data.attempted > 0 ? ((data.score / data.attempted) * 100).toFixed(1) : 0;
+        document.getElementById('r-score').innerText = `${data.score}`;
+        document.getElementById('r-attempt').innerText = data.attempted;
+        document.getElementById('r-wrong').innerText = data.wrong;
+        document.getElementById('r-acc').innerText = `${acc}%`;
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(!data) return;
+
+        let html = '';
+        finalQuestions.forEach((q, i) => {
+            const uAns = data.userAnswers[i];
+            let optHtml = '';
+            q.o.forEach((opt, oIdx) => {
+                let cls = '', checkMark = '';
+                if(oIdx === q.a) { cls = 'correct'; checkMark = ' ✔'; }
+                else if(oIdx === uAns && uAns !== q.a) { cls = 'wrong'; checkMark = ' ❌ (Your Answer)'; }
+                optHtml += `<div class="glass-panel sol-opt ${cls}"><strong>${String.fromCharCode(65 + oIdx)}.</strong> <div style="flex:1;">${opt} ${checkMark}</div></div>`;
+            });
+            let statusText = uAns !== undefined ? (uAns === q.a ? "हल किया (Correct)" : "हल किया (Incorrect)") : "हल नहीं किया (Unattempted)";
+            html += `<div class="glass-panel sol-card"><div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--primary);">प्र ${i+1}. ${q.q}</div>${optHtml}<div style="font-weight:bold; margin:15px 0; color:var(--text-muted);">Status: ${statusText}</div><div class="glass-panel sol-exp">${q.e}</div></div>`;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+</script>
+</body>
+</html>
