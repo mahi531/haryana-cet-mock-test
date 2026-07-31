@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HSSC mock test wala - Reasoning Test 7</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- html2pdf Library for PDF Download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        /* Beautiful Moving Gradient & Glassmorphism Theme */
+        :root {
+            --bg-grad-1: #4facfe; --bg-grad-2: #00f2fe; --bg-grad-3: #a18cd1; --bg-grad-4: #fbc2eb;
+            --glass-bg: rgba(255, 255, 255, 0.9); --glass-border: rgba(255, 255, 255, 0.6); --glass-shadow: rgba(31, 38, 135, 0.15);
+            --text-main: #1f2937; --text-muted: #64748b;
+            --primary: #2563eb; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --purple: #8b5cf6;
+            --option-bg: rgba(243, 244, 246, 0.8); --option-selected: rgba(219, 234, 254, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+        [data-theme="dark"] {
+            --bg-grad-1: #0f2027; --bg-grad-2: #203a43; --bg-grad-3: #2c5364; --bg-grad-4: #141e30;
+            --glass-bg: rgba(17, 25, 40, 0.85); --glass-border: rgba(255, 255, 255, 0.15); --glass-shadow: rgba(0, 0, 0, 0.5);
+            --text-main: #f9fafb; --text-muted: #94a3b8;
+            --primary: #3b82f6; 
+            --option-bg: rgba(55, 65, 81, 0.7); --option-selected: rgba(30, 58, 138, 0.8);
+            --card-bg: rgba(31, 41, 55, 0.95);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; touch-action: manipulation;}
+        
+        body { 
+            height: 100vh; height: 100dvh; 
+            background: linear-gradient(45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3), var(--bg-grad-4)); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+            color: var(--text-main); 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 var(--glass-shadow); border-radius: 12px; }
+        
+        .btn { font-family: 'Poppins', sans-serif; background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;}
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-warning { background: var(--warning); color: #fff;}
+        .btn-clear { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-mark { background: var(--purple); color: white; }
+        .btn-prev { background: var(--text-muted); color: white; }
+
+        /* Screens */
+        .screen { display: none; flex-direction: column; height: 100%; width: 100vw; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; }
+
+        /* --- DASHBOARD UI --- */
+        #dashboard-screen { overflow-y: auto; background: var(--card-bg); align-items: center; padding-bottom: 30px;}
+        
+        .dash-header-top { background: #1e293b; color: white; width: 100%; padding: 15px 20px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 15px; position: sticky; top:0; z-index: 100;}
+        
+        .dash-content { width: 100%; max-width: 800px; padding: 20px; }
+        .section-title { font-weight: 600; color: var(--primary); margin: 15px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 15px; }
+        
+        .dash-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--glass-border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .test-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text-main);}
+        .test-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        
+        .progress-container { width: 100%; height: 6px; background: var(--glass-border); border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #fbc02d; width: 0%; transition: width 0.5s ease;}
+        
+        .dash-actions { display: flex; gap: 12px; margin-top: 15px; }
+        .dash-actions .btn { flex: 1; padding: 10px; font-size: 14px; border-radius: 8px;}
+        
+        .syllabus-footer { display: flex; justify-content: space-between; font-size: 12px; color: var(--primary); border-top: 1px solid var(--glass-border); padding-top: 12px; margin-top: 15px; }
+
+        /* --- TEST SCREEN UI --- */
+        header.test-head { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-bottom: 10px; margin-inline: 10px; }
+        .header-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: 700; background: var(--card-bg); border: 1px solid var(--glass-border); color: var(--danger); padding: 5px 12px; border-radius: 20px; }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 0 10px 10px 10px; }
+        .question-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        .q-header { padding: 10px 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
+        .q-body { flex: 1; padding: 15px; overflow-y: auto; font-size: 16px; line-height: 1.6; }
+        
+        .options-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;}
+        .option { padding: 12px; border: 2px solid var(--glass-border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--option-bg); font-weight: 500; font-size: 15px;}
+        .option.selected { border-color: var(--primary); background: var(--option-selected); color: var(--primary); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--glass-border); display: flex; justify-content: center; align-items: center; font-weight: bold; }
+        .option.selected .opt-label { background: var(--primary); color: white; border-color: var(--primary);}
+        
+        .q-footer { padding: 10px; border-top: 1px solid var(--glass-border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-radius: 0 0 12px 12px; }
+
+        /* --- PALETTE UI --- */
+        .palette-section { width: 320px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .palette-header { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; font-weight: bold; font-size: 15px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; font-size: 12px; border-bottom: 1px solid var(--glass-border); font-weight: 500;}
+        .stat-item { display: flex; align-items: center; gap: 6px;}
+        .badge { width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 10px; font-weight: bold;}
+        .s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);} 
+        .s-1 { background: var(--success); } .s-2 { background: var(--danger); } .s-3 { background: var(--purple); } 
+        .s-4 { background: var(--primary); position: relative; }
+        .s-4::after { content: '✔'; position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; background: white; color: var(--primary); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 8px; }
+        
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .p-btn.s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);}
+        .p-btn.active { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.1);}
+        .submit-area { padding: 10px; border-top: 1px solid var(--glass-border); border-radius: 0 0 12px 12px;}
+
+        /* --- RESULTS & SOLUTIONS UI --- */
+        #result-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        #solution-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        .sol-card { padding: 20px; margin-bottom: 15px; width: 100%; max-width: 800px; page-break-inside: avoid;}
+        .sol-opt { padding: 10px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; gap: 10px; align-items: center; font-size: 15px; background: var(--card-bg);}
+        .sol-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); text-decoration: line-through;}
+        .sol-exp { margin-top: 15px; padding: 15px; background: rgba(37, 99, 235, 0.05); border: 1px solid var(--glass-border); border-left: 4px solid var(--primary); border-radius: 8px; font-size: 14.5px; line-height: 1.6; }
+        .sol-exp ul { padding-left: 20px; margin-top: 8px; }
+        .sol-exp li { margin-bottom: 6px; }
+        .sol-exp svg { margin-top: 10px; max-width: 100%; height: auto; }
+
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+
+        @media (max-width: 992px) {
+            .main-area { flex-direction: column; overflow-y: auto;}
+            .question-section { flex: none; min-height: 450px;}
+            .palette-section { width: 100%; flex: none; min-height: 350px;}
+            .q-footer .btn { padding: 10px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="dashboard-screen" class="screen active">
+        <div class="dash-header-top">
+            <span style="cursor: pointer;" onclick="alert('Going Back')">&#8592;</span>
+            HSSC mock test wala
+        </div>
+
+        <div class="dash-content">
+            <!-- Unattempted State -->
+            <div id="dash-unattempted" style="display: none;">
+                <div class="section-title">Suggested Next Test</div>
+                <div class="dash-card">
+                    <div class="test-title">HSSC Group D Reasoning Test (Set 8)</div>
+                    <div class="test-meta">
+                        <span>25 Qs • 35 mins • 25.0 Marks</span>
+                    </div>
+                    <div class="test-meta" style="justify-content: flex-end;">
+                        <button class="btn btn-outline" style="padding: 6px 20px; border-radius: 20px;" onclick="startTest()">Start Test 🚀</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span>Syllabus: All 25 Unique Reasoning Types (Set )</span>
+                        <span style="color:var(--success);">🔗 Share</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attempted State -->
+            <div id="dash-attempted" style="display: none;">
+                <div class="dash-card">
+                    <div class="test-title">HSSC Group D Reasoning Test (Set 8)</div>
+                    <div class="test-meta" style="margin-bottom: 5px;">
+                        <span id="dash-score-text" style="font-size: 15px; color: var(--text-muted);">0/25.0 Marks . 1.5K/2.9K Rank</span>
+                    </div>
+                    
+                    <div class="progress-container"><div class="progress-fill" id="dash-progress-bar"></div></div>
+
+                    <div class="dash-actions">
+                        <button class="btn btn-outline" onclick="viewSavedResults()">View Results</button>
+                        <button class="btn btn-outline" onclick="reattemptTest()">Reattempt &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAUSE OVERLAY -->
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px; font-size: 2rem;">Test Paused ⏸️</h2>
+        <button class="btn btn-primary" style="font-size: 1.2rem; padding: 10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+    </div>
+
+    <!-- TEST SCREEN -->
+    <div id="test-screen" class="screen">
+        <header class="glass-panel test-head">
+            <div class="header-title">Reasoning Test (Set 8)</div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="toggleTheme()">🌓 Theme</button>
+                <button class="btn btn-warning" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="togglePause()">⏸ Pause</button>
+                <div class="timer-box">⏱ <span id="timer-display">35:00</span></div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="glass-panel question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--success); font-weight:bold;">+1 <span style="color: var(--text-muted); font-weight:normal;">|</span> <span style="color: var(--danger);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <button class="btn btn-mark" onclick="markReview()">Mark & Next</button>
+                    <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                    <button class="btn btn-prev" onclick="changeQ(-1)">Previous</button>
+                    <button class="btn btn-primary" onclick="saveNext()">Save & Next</button>
+                </div>
+            </div>
+
+            <div class="glass-panel palette-section">
+                <div class="palette-header">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">25</div> Not Visit</div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn btn-primary" style="width: 100%; background: var(--success); font-size: 15px; padding: 10px;" onclick="submitTest()">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen" class="screen">
+        <div style="width: 100%; max-width: 800px; margin-bottom: 15px;"><button class="btn btn-clear" onclick="showDashboard()">&#8592; Back to Dashboard</button></div>
+        <div class="glass-panel" style="max-width: 800px; width: 100%; padding: 25px;">
+            <h1 style="color: var(--primary); text-align: center;">Test Submitted Successfully! 🎉</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 25px 0;">
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-score" style="color: var(--primary); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Score</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-attempt" style="color: var(--success); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Attempted</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-wrong" style="color: var(--danger); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Wrong</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-acc" style="color: var(--purple); font-size: 1.8rem;">0%</h2><p style="color: var(--text-muted); font-size:12px;">Accuracy</p></div>
+            </div>
+            <button class="btn btn-primary" style="width:100%; font-size: 15px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+        </div>
+    </div>
+
+    <!-- SOLUTION SCREEN -->
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%; margin:0 auto;">
+            <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 12px 15px; position: sticky; top: 5px; z-index: 10;">
+                <h3 style="color: var(--primary);">Detailed Solutions</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" style="padding: 5px 12px; font-size: 13px; background: var(--success);" onclick="downloadPDF()">📥 Download PDF</button>
+                    <button class="btn btn-clear" style="padding: 5px 12px; font-size: 13px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+                </div>
+            </div>
+            <div id="sol-container"></div>
+        </div>
+    </div>
+
+<script>
+    const MEMORY_STORE = {};
+    function safeGetItem(key) { try { return localStorage.getItem(key) || MEMORY_STORE[key] || null; } catch(e) { return MEMORY_STORE[key] || null; } }
+    function safeSetItem(key, value) { try { localStorage.setItem(key, value); } catch(e) {} MEMORY_STORE[key] = value; }
+    function safeRemoveItem(key) { try { localStorage.removeItem(key); } catch(e) {} delete MEMORY_STORE[key]; }
+
+    const STORAGE_KEY = 'hssc_reasoning_7_unique_active'; 
+    const COMPLETED_KEY = 'hssc_reasoning_7_unique_comp';
+
+    // 25 UNIQUE QUESTION TYPES
+    const finalQuestions = [
+        { 
+            q: "उस विकल्प को चुनिए जिसमें संख्याओं का समुच्चय वही संबंध साझा करता है:<br>(100, 150, 125)<br>(500, 400, 450)", 
+            o: ["(10, 100, 10)", "(200, 400, 300)", "(14, 16, 28)", "(120, 100, 130)"], 
+            a: 1, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Average Pattern):</b><br>पहली और दूसरी संख्या का औसत तीसरी संख्या है।<br>(100 + 150) / 2 = 125<br>(500 + 400) / 2 = 450<br>विकल्प (200, 400, 300) में: (200 + 400) / 2 = <b>300</b>।` 
+        },
+        { 
+            q: "गैराज : मोटरबाइक :: एक्वेरियम (Aquarium) : ?", 
+            o: ["मछली (Fish)", "चूहा (Rat)", "खरगोश (Rabbit)", "गौरैया (Sparrow)"], 
+            a: 0, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Place of living/storage):</b><br>जिस प्रकार 'मोटरबाइक' को 'गैराज' में रखा जाता है, उसी प्रकार 'मछली' (Fish) को 'एक्वेरियम' (Aquarium) में रखा जाता है।` 
+        },
+        { 
+            q: "एक निश्चित कूट भाषा में, 'CORRECT' को '3Q1818G320' लिखा जाता है। उसी भाषा में 'WRONG' को कैसे लिखा जाएगा?", 
+            o: ["2318Q147", "2218P147", "2138Q741", "2314Q147"], 
+            a: 0, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Consonant-Vowel Logic):</b><br>व्यंजनों (Consonants) को उनके वर्णमाला के स्थानीय मान (Place value) में लिखा गया है और स्वरों (Vowels) में +2 करके अगला अक्षर लिखा गया है।<br>C(3), O(Vowel +2 = Q), R(18), R(18), E(Vowel +2 = G), C(3), T(20)<br>WRONG: W(23), R(18), O(+2 = Q), N(14), G(7) &rarr; <b>2318Q147</b>।` 
+        },
+        { 
+            q: "सात कर्मचारी राहुल, राम, रमेश, सोहन, साहिल, अनिल और सोनू एक वृत्ताकार मेज के चारों ओर केंद्र की ओर मुख करके बैठे हैं। अनिल, राम और सोनू दोनों का निकटतम पड़ोसी है। राम, साहिल के दाईं ओर से दूसरे स्थान पर है। राहुल, साहिल और सोहन दोनों का निकटतम पड़ोसी है। राहुल के बाईं ओर से दूसरे स्थान पर कौन है?", 
+            o: ["रमेश", "राम", "अनिल", "सोनू"], 
+            a: 0, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Circular Placement):</b><br>1. राम, साहिल के दाएँ दूसरा है।<br>2. राहुल, साहिल और सोहन का पड़ोसी है &rarr; सोहन - राहुल - साहिल।<br>3. अनिल, राम और सोनू का पड़ोसी है &rarr; राम - अनिल - सोनू।<br>बचा हुआ स्थान रमेश का होगा।<br><svg width="150" height="150" viewBox="0 0 150 150"><circle cx="75" cy="75" r="50" stroke="#2563eb" stroke-width="2" fill="none"/><text x="60" y="20" font-size="10">साहिल</text><text x="110" y="40" font-size="10">राहुल</text><text x="125" y="80" font-size="10">सोहन</text><text x="100" y="130" font-size="10">रमेश</text><text x="45" y="130" font-size="10">सोनू</text><text x="10" y="80" font-size="10">अनिल</text><text x="25" y="40" font-size="10">राम</text></svg><br>राहुल के बाईं ओर (घड़ी की दिशा में) पहला साहिल और दूसरा <b>रमेश</b> है।` 
+        },
+        { 
+            q: "FAR : HDT :: MAB : ? :: PQR : RTT", 
+            o: ["ODD", "NBB", "NAB", "MAC"], 
+            a: 0, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (+2, +3, +2 Shift):</b><br>F(+2)=H, A(+3)=D, R(+2)=T.<br>P(+2)=R, Q(+3)=T, R(+2)=T.<br>इसी प्रकार MAB के लिए: M(+2)=O, A(+3)=D, B(+2)=D &rarr; <b>ODD</b>।` 
+        },
+        { 
+            q: "दी गई श्रृंखला को पूरा करें:<br>PV, RZ, TD, ?, XL", 
+            o: ["VG", "UG", "VH", "UH"], 
+            a: 2, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Double Letter Series):</b><br>पहला अक्षर: P(+2)&rarr;R(+2)&rarr;T(+2)&rarr;<b>V</b>(+2)&rarr;X<br>दूसरा अक्षर: V(+4)&rarr;Z(+4)&rarr;D(+4)&rarr;<b>H</b>(+4)&rarr;L<br>अतः सही उत्तर <b>VH</b> है।` 
+        },
+        { 
+            q: "एक निश्चित कूट भाषा में, 'JUNO' को '1356' और 'HATE' को '8125' लिखा जाता है। उसी भाषा में 'TOWER' को कैसे लिखा जाएगा?", 
+            o: ["26559", "25659", "26569", "26659"], 
+            a: 0, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Sum of Digits of Place Value):</b><br>अक्षरों के स्थानीय मान के अंकों को जोड़ा गया है।<br>J(10&rarr;1+0=1), U(21&rarr;2+1=3), N(14&rarr;1+4=5), O(15&rarr;1+5=6).<br>TOWER: T(20&rarr;2+0=2), O(15&rarr;1+5=6), W(23&rarr;2+3=5), E(5), R(18&rarr;1+8=9) &rarr; <b>26559</b>।` 
+        },
+        { 
+            q: "कथन:<br>I. कोई चूहा, गाय नहीं है。<br>II. कुछ जानवर, चूहे हैं。<br>निष्कर्ष:<br>I. कुछ जानवर, गाय हैं。<br>II. कुछ जानवर, गाय नहीं हैं。<br>III. सभी चूहे, जानवर हैं。", 
+            o: ["केवल निष्कर्ष II अनुसरण करता है", "निष्कर्ष I और III अनुसरण करते हैं", "कोई भी अनुसरण नहीं करता", "सभी अनुसरण करते हैं"], 
+            a: 0, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Syllogism Analysis):</b><br>चूहे और गाय अलग-अलग हैं। कुछ जानवर चूहे हैं।<br>निष्कर्ष I: जानवर और गाय में कोई सीधा संबंध नहीं, अतः गलत।<br>निष्कर्ष II: चूँकि जानवरों का जो हिस्सा चूहा है, वह कभी गाय नहीं हो सकता, इसलिए 'कुछ जानवर गाय नहीं हैं' पूर्णतः सत्य है।<br>निष्कर्ष III: कथन 'कुछ जानवर चूहे हैं' से 'सभी चूहे जानवर हैं' नहीं निकाला जा सकता।<br>अतः <b>केवल निष्कर्ष II</b> सही है।` 
+        },
+        { 
+            q: "दिए गए समीकरण को सही करने के लिए किन दो संख्याओं को आपस में बदला जाना चाहिए?<br>7 - 3 ÷ 9 × 2 + 4 = 5", 
+            o: ["7 और 4", "3 और 9", "4 और 9", "2 और 9"], 
+            a: 1, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (BODMAS Test):</b><br>विकल्प (3 और 9) को आपस में बदलें:<br>7 - 9 ÷ 3 × 2 + 4<br>भाग: 9 ÷ 3 = 3<br>गुणा: 3 × 2 = 6<br>समीकरण: 7 - 6 + 4 = 1 + 4 = <b>5</b> (समीकरण संतुष्ट)।` 
+        },
+        { 
+            q: "पाँच पार्किंग क्षेत्रों S1, S2, S3, S4 और S5 में ट्रकों की संख्या की तुलना की जाती है। S3 में ट्रकों की संख्या केवल S2 से अधिक है। S5 में ट्रकों की संख्या केवल S1 से कम है। यदि S3 में 1200 ट्रक हैं, तो S1 में कितने ट्रक हो सकते हैं?", 
+            o: ["1197", "1154", "1184", "1346"], 
+            a: 3, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Order Arrangement):</b><br>1. S3 केवल S2 से बड़ा है &rarr; S3 नीचे से दूसरा है और S2 सबसे छोटा है।<br>2. S5 केवल S1 से छोटा है &rarr; S1 सबसे बड़ा है और S5 दूसरा सबसे बड़ा है।<br>क्रम: S1 > S5 > S4 > S3 > S2.<br>चूँकि S3 में 1200 ट्रक हैं, S1 सबसे बड़ा होने के कारण 1200 से बहुत अधिक होगा। विकल्पों में 1200 से बड़ी एकमात्र संख्या <b>1346</b> है।` 
+        },
+        { 
+            q: "राम उत्तर की ओर 15 किमी चलता है, फिर दाईं ओर मुड़ता है और 20 किमी चलता है। वह फिर से दाईं ओर मुड़ता है और 15 किमी चलता है। अंत में वह बाईं ओर मुड़ता है और 10 किमी चलता है। वह अपने प्रारंभिक बिंदु से कितनी दूर और किस दिशा में है?", 
+            o: ["30 किमी, पूर्व", "20 किमी, पश्चिम", "15 किमी, उत्तर", "35 किमी, पूर्व"], 
+            a: 0, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Vector Addition):</b><br>उत्तर 15 &rarr; पूर्व 20 &rarr; दक्षिण 15 &rarr; पूर्व 10.<br>उत्तर 15 और दक्षिण 15 एक दूसरे को निरस्त (cancel) कर देंगे।<br>बची हुई दिशा: पूर्व 20 + पूर्व 10 = <b>30 किमी, पूर्व</b> दिशा।<br><svg width="200" height="100" viewBox="0 0 200 100"><path d="M20,80 L20,30 L100,30 L100,80 L140,80" fill="none" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow)"/><circle cx="20" cy="80" r="3" fill="blue"/><text x="5" y="90" font-size="10">Start</text><text x="145" y="90" font-size="10">End</text></svg>` 
+        },
+        { 
+            q: "एक लड़की की ओर इशारा करते हुए एक आदमी ने कहा, 'वह मेरे दादाजी के इकलौते बेटे की बेटी है।' वह लड़की उस आदमी से किस प्रकार संबंधित है?", 
+            o: ["बहन", "चाची", "चचेरी बहन", "माँ"], 
+            a: 0, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Family Tree Method):</b><br>आदमी के दादाजी का इकलौता बेटा = आदमी का पिता।<br>आदमी के पिता की बेटी = आदमी की <b>बहन</b>।` 
+        },
+        { 
+            q: "यदि 15 अगस्त 2013 को गुरुवार था, तो 15 अगस्त 2017 को सप्ताह का कौन सा दिन था?", 
+            o: ["सोमवार", "मंगलवार", "बुधवार", "रविवार"], 
+            a: 1, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Odd Days Calculation):</b><br>2013 से 2017 तक कुल 4 वर्ष हैं।<br>इन 4 वर्षों में 1 लीप वर्ष (2016) और 3 साधारण वर्ष हैं।<br>विषम दिन (Odd Days) = (1 × 2) + (3 × 1) = 5 दिन।<br>गुरुवार + 5 दिन = <b>मंगलवार</b>।` 
+        },
+        { 
+            q: "8 बजकर 20 मिनट (8:20) पर घड़ी की घंटे और मिनट की सुइयों के बीच का कोण क्या होगा?", 
+            o: ["130°", "120°", "110°", "100°"], 
+            a: 0, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Clock Formula):</b><br>कोण = | 30H - 5.5M |<br>H = 8, M = 20<br>कोण = | 30(8) - 5.5(20) |<br>कोण = | 240 - 110 | = <b>130°</b>।` 
+        },
+        { 
+            q: "यदि निम्नलिखित शब्दों को अंग्रेजी शब्दकोश के अनुसार व्यवस्थित किया जाए, तो कौन सा शब्द दूसरे स्थान पर आएगा?<br>1. Fraud 2. Frank 3. Frame 4. Frantic", 
+            o: ["Frame", "Frank", "Frantic", "Fraud"], 
+            a: 1, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Alphabetical Sorting):</b><br>सभी शब्द 'Fra' से शुरू होते हैं। चौथा अक्षर देखें:<br>Fra(m)e, Fra(n)k, Fra(n)tic, Fra(u)d.<br>'m' सबसे पहले आएगा (1. Frame)।<br>फिर 'Frank' और 'Frantic' में 'k' पहले आएगा 't' से।<br>अतः क्रम: 1. Frame, 2. Frank, 3. Frantic, 4. Fraud. दूसरे स्थान पर <b>Frank</b> है।` 
+        },
+        { 
+            q: "श्रृंखला में लुप्त संख्या ज्ञात करें:<br>12, 15, 21, 30, 42, ?", 
+            o: ["55", "57", "59", "60"], 
+            a: 1, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Difference of Differences):</b><br>15 - 12 = 3<br>21 - 15 = 6<br>30 - 21 = 9<br>42 - 30 = 12<br>अगला अंतर 15 होगा। 42 + 15 = <b>57</b>।` 
+        },
+        { 
+            q: "निम्नलिखित में से कौन सा वेन आरेख 'डॉक्टर, पुरुष, कलाकार' के बीच के संबंध को सबसे अच्छी तरह से दर्शाता है?", 
+            o: ["तीनों वृत्त एक-दूसरे को आंशिक रूप से काटते हैं", "एक बड़ा वृत्त और उसके अंदर दो अलग-अलग छोटे वृत्त", "तीन अलग-अलग वृत्त", "एक वृत्त के अंदर दूसरा और उसके अंदर तीसरा"], 
+            a: 0, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Intersection Logic):</b><br>एक पुरुष डॉक्टर भी हो सकता है और कलाकार भी। एक डॉक्टर कलाकार भी हो सकता है। अतः तीनों श्रेणियां एक-दूसरे से आंशिक रूप से जुड़ी हुई हैं। इसलिए <b>तीनों वृत्त एक-दूसरे को आंशिक रूप से काटते हैं (Intersecting circles)</b>।<br><svg width="100" height="100" viewBox="0 0 100 100"><circle cx="40" cy="40" r="25" fill="none" stroke="blue" stroke-width="2"/><circle cx="60" cy="40" r="25" fill="none" stroke="red" stroke-width="2"/><circle cx="50" cy="60" r="25" fill="none" stroke="green" stroke-width="2"/></svg>` 
+        },
+        { 
+            q: "निम्नलिखित शब्दों को तार्किक और अर्थपूर्ण क्रम में व्यवस्थित करें:<br>1. परीक्षा 2. साक्षात्कार 3. चयन 4. नियुक्ति 5. विज्ञापन", 
+            o: ["5, 1, 2, 3, 4", "5, 2, 1, 3, 4", "4, 3, 2, 1, 5", "5, 1, 3, 2, 4"], 
+            a: 0, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Chronological Process):</b><br>रोजगार की प्रक्रिया का सही क्रम: सबसे पहले विज्ञापन (5) निकलता है, फिर परीक्षा (1) होती है, उसके बाद साक्षात्कार (2) होता है, फिर चयन (3) किया जाता है और अंत में नियुक्ति (4) होती है।<br>सही क्रम: <b>5, 1, 2, 3, 4</b>।` 
+        },
+        { 
+            q: "निम्नलिखित चार शब्दों में से तीन एक निश्चित तरीके से समान हैं और एक भिन्न है। विषम (Odd one) को चुनें।", 
+            o: ["जून", "जुलाई", "अगस्त", "दिसंबर"], 
+            a: 0, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Days in a month):</b><br>जुलाई, अगस्त और दिसंबर सभी में 31 दिन होते हैं।<br>जबकि <b>जून</b> में केवल 30 दिन होते हैं। अतः यह भिन्न है।` 
+        },
+        { 
+            q: "निम्नलिखित चार संख्याओं में से तीन एक निश्चित पैटर्न का पालन करती हैं और एक भिन्न है। विषम संख्या ज्ञात करें।", 
+            o: ["121", "169", "225", "289"], 
+            a: 2, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Prime Squares):</b><br>121 (11²), 169 (13²) और 289 (17²) क्रमशः अभाज्य (Prime) संख्याओं के वर्ग हैं।<br>जबकि <b>225</b> (15²) एक भाज्य संख्या (Composite number) का वर्ग है।` 
+        },
+        { 
+            q: "निम्नलिखित चार अक्षर-समूहों में से तीन एक समान हैं और एक भिन्न है। विषम अक्षर-समूह का चयन करें।", 
+            o: ["BDF", "JLN", "CEH", "PRT"], 
+            a: 2, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Letter Gap Method):</b><br>B(+2)D(+2)F<br>J(+2)L(+2)N<br>P(+2)R(+2)T<br>C(+2)E(+3)H &rarr; यहाँ अंतर अलग (+2 और +3) है। अतः <b>CEH</b> विषम है।` 
+        },
+        { 
+            q: "दिए गए स्वरूप का ध्यानपूर्वक अध्ययन करें और लुप्त संख्या ज्ञात करें:<br>8, 3, 21<br>6, 5, 25<br>12, 2, ?", 
+            o: ["24", "22", "20", "26"], 
+            a: 1, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Row-wise Formula):</b><br>पैटर्न: (कॉलम 1 × कॉलम 2) - कॉलम 2 = कॉलम 3<br>पंक्ति 1: (8 × 3) - 3 = 24 - 3 = 21<br>पंक्ति 2: (6 × 5) - 5 = 30 - 5 = 25<br>पंक्ति 3: (12 × 2) - 2 = 24 - 2 = <b>22</b>।` 
+        },
+        { 
+            q: "दिए गए शब्द 'ENVIRONMENT' के अक्षरों का उपयोग करके कौन सा शब्द <b>नहीं</b> बनाया जा सकता है?", 
+            o: ["ENTER", "IRON", "METER", "RIVER"], 
+            a: 3, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Letter Counting):</b><br>शब्द 'RIVER' में दो बार 'R' का प्रयोग हुआ है, जबकि मूल शब्द 'ENVIRONMENT' में केवल एक 'R' मौजूद है। अतः <b>RIVER</b> नहीं बनाया जा सकता।` 
+        },
+        { 
+            q: "5 छात्र A, B, C, D और E एक पंक्ति में उत्तर की ओर मुख करके बैठे हैं। A, B के ठीक दाईं ओर है। E, B के ठीक बाईं ओर है, लेकिन C के ठीक दाईं ओर है। यदि D, A के ठीक दाईं ओर है, तो मध्य में कौन बैठा है?", 
+            o: ["B", "E", "A", "C"], 
+            a: 0, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Step-by-step Placement):</b><br>1. A, B के ठीक दाएँ है &rarr; B - A<br>2. E, B के ठीक बाएँ है &rarr; E - B - A<br>3. E, C के ठीक दाएँ है &rarr; C - E - B - A<br>4. D, A के ठीक दाएँ है &rarr; C - E - B - A - D<br>अतः ठीक बीच में <b>B</b> बैठा है।` 
+        },
+        { 
+            q: "पिता की आयु उसके पुत्र की आयु की तीन गुनी है। 5 वर्ष बाद, पिता की आयु पुत्र की आयु की 2.5 गुनी हो जाएगी। पुत्र की वर्तमान आयु क्या है?", 
+            o: ["10 वर्ष", "15 वर्ष", "20 वर्ष", "25 वर्ष"], 
+            a: 1, 
+            e: `<b>हल:</b><br><br>💡 <b>स्मार्ट एप्रोच (Ratio Method):</b><br>वर्तमान आयु: पिता = 3x, पुत्र = x<br>5 वर्ष बाद: (3x + 5) = 2.5(x + 5)<br>3x + 5 = 2.5x + 12.5<br>0.5x = 7.5 &rarr; x = 15<br>अतः पुत्र की वर्तमान आयु <b>15 वर्ष</b> है।` 
+        }
+    ];
+
+    let state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 35 * 60, submitted: false };
+    let timerInterval = null;
+    let isPaused = false;
+
+    window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+    function initDashboard() {
+        showScreen('dashboard-screen');
+        let completedData = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) completedData = JSON.parse(dataStr);
+        } catch(e) {}
+
+        if (completedData) {
+            document.getElementById('dash-unattempted').style.display = 'none';
+            document.getElementById('dash-attempted').style.display = 'block';
+            document.getElementById('dash-score-text').innerText = `${completedData.score}/25.0 Marks . 1.5K/2.9K Rank`;
+            document.getElementById('dash-progress-bar').style.width = `${(completedData.score / 25) * 100}%`;
+        } else {
+            document.getElementById('dash-attempted').style.display = 'none';
+            document.getElementById('dash-unattempted').style.display = 'block';
+        }
+    }
+
+    function startTest() {
+        let saved = null;
+        try {
+            const savedStr = safeGetItem(STORAGE_KEY);
+            if(savedStr) saved = JSON.parse(savedStr);
+        } catch(e){}
+
+        if (saved && !saved.submitted) {
+            state = saved;
+        } else {
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 35 * 60, submitted: false };
+        }
+        initTestEnv();
+    }
+
+    function reattemptTest() {
+        if(confirm("Are you sure you want to start a fresh test? Your active progress will be lost.")) {
+            safeRemoveItem(STORAGE_KEY);
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 35 * 60, submitted: false };
+            initTestEnv();
+        }
+    }
+
+    function initTestEnv() {
+        showScreen('test-screen');
+        renderQuestion();
+        renderPalette();
+        updateStats();
+        
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+        setInterval(() => { if(!state.submitted) safeSetItem(STORAGE_KEY, JSON.stringify(state)); }, 2000);
+    }
+
+    function viewSavedResults() {
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(data) renderResultUI(data);
+    }
+
+    function showDashboard() { initDashboard(); }
+
+    function showScreen(id) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+    }
+
+    function updateTimer() {
+        if(isPaused || state.submitted) return;
+        if(state.time <= 0) { submitTest(); return; }
+        state.time--;
+        const m = Math.floor(state.time / 60), s = state.time % 60;
+        document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+    }
+
+    function toggleTheme() {
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    function renderQuestion() {
+        state.visited[state.currentQ] = true;
+        const q = finalQuestions[state.currentQ];
+        document.getElementById('q-no').innerText = `Question ${state.currentQ + 1}`;
+        document.getElementById('q-text').innerHTML = q.q;
+        let opts = '';
+        q.o.forEach((opt, i) => {
+            const isSel = state.answers[state.currentQ] === i;
+            const selClass = isSel ? 'selected' : '';
+            const charLabel = String.fromCharCode(65 + i);
+            opts += `<div class="glass-panel option ${selClass}" onclick="selectOption(${i})"><div class="opt-label">${charLabel}</div><div style="flex:1;">${opt}</div></div>`;
+        });
+        document.getElementById('options-box').innerHTML = opts;
+        renderPalette();
+        updateStats();
+    }
+
+    function selectOption(index) { state.answers[state.currentQ] = index; renderQuestion(); }
+    function clearResponse() { delete state.answers[state.currentQ]; delete state.marked[state.currentQ]; renderQuestion(); }
+    function markReview() { state.marked[state.currentQ] = true; changeQ(1); }
+    function saveNext() { delete state.marked[state.currentQ]; changeQ(1); }
+
+    function changeQ(step) {
+        const next = state.currentQ + step;
+        if(next >= 0 && next < finalQuestions.length) { state.currentQ = next; renderQuestion(); }
+    }
+
+    function renderPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        finalQuestions.forEach((_, i) => {
+            let cls = 's-0';
+            if(state.visited[i]) {
+                if(state.answers[i] !== undefined && state.marked[i]) cls = 's-4';
+                else if(state.marked[i]) cls = 's-3';
+                else if(state.answers[i] !== undefined) cls = 's-1';
+                else cls = 's-2';
+            }
+            const active = i === state.currentQ ? 'active' : '';
+            grid.innerHTML += `<button class="p-btn ${cls} ${active}" onclick="state.currentQ = ${i}; renderQuestion();">${i + 1}</button>`;
+        });
+    }
+
+    function updateStats() {
+        let ans=0, notans=0, notvis=0, mark=0;
+        finalQuestions.forEach((_, i) => {
+            if(!state.visited[i]) notvis++;
+            else if(state.marked[i]) mark++;
+            else if(state.answers[i] !== undefined) ans++;
+            else notans++;
+        });
+        document.getElementById('c-ans').innerText = ans; document.getElementById('c-notans').innerText = notans;
+        document.getElementById('c-notvis').innerText = notvis; document.getElementById('c-mark').innerText = mark;
+    }
+
+    function submitTest() {
+        if(!confirm("Are you sure you want to submit the test?")) return;
+        state.submitted = true; clearInterval(timerInterval);
+        let score=0, attempt=0, wrong=0;
+        finalQuestions.forEach((q, i) => {
+            if(state.answers[i] !== undefined) {
+                attempt++;
+                if(state.answers[i] === q.a) score++; else wrong++;
+            }
+        });
+        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const completedData = { score: score, attempted: attempt, wrong: wrong, time: state.time, date: today, userAnswers: state.answers };
+        
+        safeSetItem(COMPLETED_KEY, JSON.stringify(completedData));
+        safeRemoveItem(STORAGE_KEY);
+        
+        renderResultUI(completedData);
+    }
+
+    function renderResultUI(data) {
+        showScreen('result-screen');
+        const acc = data.attempted > 0 ? ((data.score / data.attempted) * 100).toFixed(1) : 0;
+        document.getElementById('r-score').innerText = `${data.score}`;
+        document.getElementById('r-attempt').innerText = data.attempted;
+        document.getElementById('r-wrong').innerText = data.wrong;
+        document.getElementById('r-acc').innerText = `${acc}%`;
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(!data) return;
+
+        let html = '';
+        finalQuestions.forEach((q, i) => {
+            const uAns = data.userAnswers[i];
+            let optHtml = '';
+            q.o.forEach((opt, oIdx) => {
+                let cls = '', checkMark = '';
+                if(oIdx === q.a) { cls = 'correct'; checkMark = ' ✔'; }
+                else if(oIdx === uAns && uAns !== q.a) { cls = 'wrong'; checkMark = ' ❌ (Your Answer)'; }
+                optHtml += `<div class="glass-panel sol-opt ${cls}"><strong>${String.fromCharCode(65 + oIdx)}.</strong> <div style="flex:1;">${opt} ${checkMark}</div></div>`;
+            });
+            let statusText = uAns !== undefined ? (uAns === q.a ? "हल किया (Correct)" : "हल किया (Incorrect)") : "हल नहीं किया (Unattempted)";
+            html += `<div class="glass-panel sol-card"><div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--primary);">प्र ${i+1}. ${q.q}</div>${optHtml}<div style="font-weight:bold; margin:15px 0; color:var(--text-muted);">Status: ${statusText}</div><div class="glass-panel sol-exp">${q.e}</div></div>`;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+
+    function downloadPDF() {
+        const element = document.getElementById('sol-container');
+        
+        const actionButtons = element.previousElementSibling;
+        actionButtons.style.display = 'none';
+
+        const opt = {
+            margin:       10,
+            filename:     'HSSC_Reasoning_Set8_Solutions.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) document.documentElement.setAttribute('data-theme', 'light');
+        
+        html2pdf().set(opt).from(element).save().then(() => {
+            if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
+            actionButtons.style.display = 'flex';
+        });
+    }
+</script>
+</body>
+</html>
