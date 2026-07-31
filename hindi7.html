@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HSSC mock test wala - Hindi Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- html2pdf Library for PDF Download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        /* Beautiful Moving Gradient & Glassmorphism Theme */
+        :root {
+            --bg-grad-1: #4facfe; --bg-grad-2: #00f2fe; --bg-grad-3: #a18cd1; --bg-grad-4: #fbc2eb;
+            --glass-bg: rgba(255, 255, 255, 0.9); --glass-border: rgba(255, 255, 255, 0.6); --glass-shadow: rgba(31, 38, 135, 0.15);
+            --text-main: #1f2937; --text-muted: #64748b;
+            --primary: #2563eb; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --purple: #8b5cf6;
+            --option-bg: rgba(243, 244, 246, 0.8); --option-selected: rgba(219, 234, 254, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+        [data-theme="dark"] {
+            --bg-grad-1: #0f2027; --bg-grad-2: #203a43; --bg-grad-3: #2c5364; --bg-grad-4: #141e30;
+            --glass-bg: rgba(17, 25, 40, 0.85); --glass-border: rgba(255, 255, 255, 0.15); --glass-shadow: rgba(0, 0, 0, 0.5);
+            --text-main: #f9fafb; --text-muted: #94a3b8;
+            --primary: #3b82f6; 
+            --option-bg: rgba(55, 65, 81, 0.7); --option-selected: rgba(30, 58, 138, 0.8);
+            --card-bg: rgba(31, 41, 55, 0.95);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; touch-action: manipulation;}
+        
+        body { 
+            height: 100vh; height: 100dvh; 
+            background: linear-gradient(45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3), var(--bg-grad-4)); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+            color: var(--text-main); 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 var(--glass-shadow); border-radius: 12px; }
+        
+        .btn { font-family: 'Poppins', sans-serif; background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;}
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-warning { background: var(--warning); color: #fff;}
+        .btn-clear { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-mark { background: var(--purple); color: white; }
+        .btn-prev { background: var(--text-muted); color: white; }
+
+        /* Screens */
+        .screen { display: none; flex-direction: column; height: 100%; width: 100vw; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; }
+
+        /* --- DASHBOARD UI --- */
+        #dashboard-screen { overflow-y: auto; background: var(--card-bg); align-items: center; padding-bottom: 30px;}
+        
+        .dash-header-top { background: #1e293b; color: white; width: 100%; padding: 15px 20px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 15px; position: sticky; top:0; z-index: 100;}
+        
+        .dash-content { width: 100%; max-width: 800px; padding: 20px; }
+        .section-title { font-weight: 600; color: var(--primary); margin: 15px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 15px; }
+        
+        .dash-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--glass-border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .test-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text-main);}
+        .test-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        
+        .progress-container { width: 100%; height: 6px; background: var(--glass-border); border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #fbc02d; width: 0%; transition: width 0.5s ease;}
+        
+        .dash-actions { display: flex; gap: 12px; margin-top: 15px; }
+        .dash-actions .btn { flex: 1; padding: 10px; font-size: 14px; border-radius: 8px;}
+        
+        .syllabus-footer { display: flex; justify-content: space-between; font-size: 12px; color: var(--primary); border-top: 1px solid var(--glass-border); padding-top: 12px; margin-top: 15px; }
+
+        /* --- TEST SCREEN UI --- */
+        header.test-head { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-bottom: 10px; margin-inline: 10px; }
+        .header-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: 700; background: var(--card-bg); border: 1px solid var(--glass-border); color: var(--danger); padding: 5px 12px; border-radius: 20px; }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 0 10px 10px 10px; }
+        .question-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        .q-header { padding: 10px 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
+        .q-body { flex: 1; padding: 15px; overflow-y: auto; font-size: 16px; line-height: 1.6; }
+        
+        .options-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;}
+        .option { padding: 12px; border: 2px solid var(--glass-border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--option-bg); font-weight: 500; font-size: 15px;}
+        .option.selected { border-color: var(--primary); background: var(--option-selected); color: var(--primary); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--glass-border); display: flex; justify-content: center; align-items: center; font-weight: bold; }
+        .option.selected .opt-label { background: var(--primary); color: white; border-color: var(--primary);}
+        
+        .q-footer { padding: 10px; border-top: 1px solid var(--glass-border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-radius: 0 0 12px 12px; }
+
+        /* --- PALETTE UI --- */
+        .palette-section { width: 320px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .palette-header { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; font-weight: bold; font-size: 15px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; font-size: 12px; border-bottom: 1px solid var(--glass-border); font-weight: 500;}
+        .stat-item { display: flex; align-items: center; gap: 6px;}
+        .badge { width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 10px; font-weight: bold;}
+        .s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);} 
+        .s-1 { background: var(--success); } .s-2 { background: var(--danger); } .s-3 { background: var(--purple); } 
+        .s-4 { background: var(--primary); position: relative; }
+        .s-4::after { content: '✔'; position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; background: white; color: var(--primary); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 8px; }
+        
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .p-btn.s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);}
+        .p-btn.active { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.1);}
+        .submit-area { padding: 10px; border-top: 1px solid var(--glass-border); border-radius: 0 0 12px 12px;}
+
+        /* --- RESULTS & SOLUTIONS UI --- */
+        #result-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        #solution-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        .sol-card { padding: 20px; margin-bottom: 15px; width: 100%; max-width: 800px; page-break-inside: avoid;}
+        .sol-opt { padding: 10px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; gap: 10px; align-items: center; font-size: 15px; background: var(--card-bg);}
+        .sol-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); text-decoration: line-through;}
+        .sol-exp { margin-top: 15px; padding: 15px; background: rgba(37, 99, 235, 0.05); border: 1px solid var(--glass-border); border-left: 4px solid var(--primary); border-radius: 8px; font-size: 14.5px; line-height: 1.6; }
+        .sol-exp ul { padding-left: 20px; margin-top: 8px; }
+        .sol-exp li { margin-bottom: 6px; }
+
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+
+        @media (max-width: 992px) {
+            .main-area { flex-direction: column; overflow-y: auto;}
+            .question-section { flex: none; min-height: 450px;}
+            .palette-section { width: 100%; flex: none; min-height: 350px;}
+            .q-footer .btn { padding: 10px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="dashboard-screen" class="screen active">
+        <div class="dash-header-top">
+            <span style="cursor: pointer;" onclick="alert('Going Back')">&#8592;</span>
+            HSSC mock test wala
+        </div>
+
+        <div class="dash-content">
+            <!-- Unattempted State -->
+            <div id="dash-unattempted" style="display: none;">
+                <div class="section-title">Suggested Next Test</div>
+                <div class="dash-card">
+                    <div class="test-title">HSSC mock test wala - Hindi Test (प्रत्यय विशेष)</div>
+                    <div class="test-meta">
+                        <span>25 Qs • 25 mins • 25.0 Marks</span>
+                    </div>
+                    <div class="test-meta" style="justify-content: flex-end;">
+                        <button class="btn btn-outline" style="padding: 6px 20px; border-radius: 20px;" onclick="startTest()">Start Test 🚀</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span>Syllabus: हिंदी व्याकरण (उपसर्ग एवं प्रत्यय)</span>
+                        <span style="color:var(--success);">🔗 Share</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attempted State -->
+            <div id="dash-attempted" style="display: none;">
+                <div class="dash-card">
+                    <div class="test-title">HSSC mock test wala - Hindi Test (प्रत्यय विशेष)</div>
+                    <div class="test-meta" style="margin-bottom: 5px;">
+                        <span id="dash-score-text" style="font-size: 15px; color: var(--text-muted);">0/25.0 Marks . 1.5K/2.9K Rank</span>
+                    </div>
+                    
+                    <div class="progress-container"><div class="progress-fill" id="dash-progress-bar"></div></div>
+
+                    <div class="dash-actions">
+                        <button class="btn btn-outline" onclick="viewSavedResults()">View Results</button>
+                        <button class="btn btn-outline" onclick="reattemptTest()">Reattempt &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAUSE OVERLAY -->
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px; font-size: 2rem;">Test Paused ⏸️</h2>
+        <button class="btn btn-primary" style="font-size: 1.2rem; padding: 10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+    </div>
+
+    <!-- TEST SCREEN -->
+    <div id="test-screen" class="screen">
+        <header class="glass-panel test-head">
+            <div class="header-title">Hindi Grammar Test</div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="toggleTheme()">🌓 Theme</button>
+                <button class="btn btn-warning" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="togglePause()">⏸ Pause</button>
+                <div class="timer-box">⏱ <span id="timer-display">25:00</span></div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="glass-panel question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--success); font-weight:bold;">+1 <span style="color: var(--text-muted); font-weight:normal;">|</span> <span style="color: var(--danger);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <button class="btn btn-mark" onclick="markReview()">Mark & Next</button>
+                    <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                    <button class="btn btn-prev" onclick="changeQ(-1)">Previous</button>
+                    <button class="btn btn-primary" onclick="saveNext()">Save & Next</button>
+                </div>
+            </div>
+
+            <div class="glass-panel palette-section">
+                <div class="palette-header">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">25</div> Not Visit</div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn btn-primary" style="width: 100%; background: var(--success); font-size: 15px; padding: 10px;" onclick="submitTest()">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen" class="screen">
+        <div style="width: 100%; max-width: 800px; margin-bottom: 15px;"><button class="btn btn-clear" onclick="showDashboard()">&#8592; Back to Dashboard</button></div>
+        <div class="glass-panel" style="max-width: 800px; width: 100%; padding: 25px;">
+            <h1 style="color: var(--primary); text-align: center;">Test Submitted Successfully! 🎉</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 25px 0;">
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-score" style="color: var(--primary); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Score</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-attempt" style="color: var(--success); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Attempted</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-wrong" style="color: var(--danger); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Wrong</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-acc" style="color: var(--purple); font-size: 1.8rem;">0%</h2><p style="color: var(--text-muted); font-size:12px;">Accuracy</p></div>
+            </div>
+            <button class="btn btn-primary" style="width:100%; font-size: 15px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+        </div>
+    </div>
+
+    <!-- SOLUTION SCREEN -->
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%; margin:0 auto;">
+            <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 12px 15px; position: sticky; top: 5px; z-index: 10;">
+                <h3 style="color: var(--primary);">Detailed Solutions</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" style="padding: 5px 12px; font-size: 13px; background: var(--success);" onclick="downloadPDF()">📥 Download PDF</button>
+                    <button class="btn btn-clear" style="padding: 5px 12px; font-size: 13px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+                </div>
+            </div>
+            
+            <!-- This container will be converted to PDF -->
+            <div id="sol-container"></div>
+            
+        </div>
+    </div>
+
+<script>
+    // Storage Keys
+    const MEMORY_STORE = {};
+    function safeGetItem(key) { try { return localStorage.getItem(key) || MEMORY_STORE[key] || null; } catch(e) { return MEMORY_STORE[key] || null; } }
+    function safeSetItem(key, value) { try { localStorage.setItem(key, value); } catch(e) {} MEMORY_STORE[key] = value; }
+    function safeRemoveItem(key) { try { localStorage.removeItem(key); } catch(e) {} delete MEMORY_STORE[key]; }
+
+    const STORAGE_KEY = 'hssc_hindi_active'; 
+    const COMPLETED_KEY = 'hssc_hindi_comp';
+
+    // 25 Questions extracted and perfectly translated to JS object format
+    const finalQuestions = [
+        { q: "'आवट' प्रत्यय के योग से बना शब्द नहीं है?", o: ["मिलावट", "थकावट", "चिकनाहट", "सजावट"], a: 2, e: `<b>हल:</b> 'चिकनाहट' शब्द में 'आहट' प्रत्यय है, न कि 'आवट'। बाकी सभी में 'आवट' प्रत्यय (मिल+आवट, थक+आवट, सज+आवट) है।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>प्रत्यय वे शब्दांश हैं जो शब्द के अंत में जुड़कर उनके अर्थ में परिवर्तन लाते हैं।</li><li>HSSC परीक्षाओं में प्रत्यय-उपसर्ग से 1-2 प्रश्न निश्चित रूप से आते हैं।</li></ul>` },
+        { q: "किस शब्द में 'इक' प्रत्यय नहीं है?", o: ["शक्तिवर्धक", "लौकिक", "प्रासंगिक", "वैचारिक"], a: 0, e: `<b>हल:</b> 'शक्तिवर्धक' में 'इक' प्रत्यय नहीं है। लौकिक (लोक+इक), प्रासंगिक (प्रसंग+इक), वैचारिक (विचार+इक) सभी में 'इक' प्रत्यय लगा है।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>'इक' प्रत्यय जुड़ने पर शब्द का पहला स्वर अक्सर दीर्घ (बड़ा) हो जाता है (जैसे: लोक -> लौकिक)।</li><li>हिंदी व्याकरण में तद्धित और कृदंत दो प्रमुख प्रकार के प्रत्यय होते हैं।</li></ul>` },
+        { q: "'घबराहट' शब्द में कौनसा प्रत्यय है?", o: ["हट", "आहट", "राहट", "ट"], a: 1, e: `<b>हल:</b> 'घबराहट' शब्द 'घबराना' क्रिया में 'आहट' प्रत्यय जुड़ने से बना है।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>यह एक भाववाचक कृदंत शब्द का उदाहरण है (भाव को दर्शाने वाला)।</li><li>क्रिया (धातु) के अंत में लगने वाले प्रत्यय कृत् प्रत्यय कहलाते हैं।</li></ul>` },
+        { q: "इनमें से किस शब्द में 'गार' प्रत्यय नहीं है?", o: ["मददगार", "गुनहगार", "यादगार", "उद्गार"], a: 3, e: `<b>हल:</b> 'उद्गार' शब्द में 'गार' प्रत्यय नहीं है, बल्कि यह 'उत् + गार' (उपसर्ग + मूल शब्द) से बना है।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>मददगार, गुनहगार और यादगार में 'गार' विदेशी (उर्दू/फ़ारसी) प्रत्यय है।</li><li>ग्रुप D की परीक्षा में विदेशी भाषाओं के शब्दों और प्रत्ययों से भी प्रश्न पूछे जाते हैं।</li></ul>` },
+        { q: "'ल' प्रत्यय से निर्मित शब्द नहीं है?", o: ["कमल", "वत्सल", "श्यामल", "मंजुल"], a: 0, e: `<b>हल:</b> 'कमल' एक रूढ़ (मूल) शब्द है, इसमें कोई प्रत्यय नहीं है। जबकि वत्सल (वत्स+ल), श्यामल (श्याम+ल), मंजुल (मंजु+ल) में 'ल' प्रत्यय है।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>रूढ़ शब्द वे होते हैं जिनके टुकड़े करने पर कोई अर्थ content निकलता (जैसे- क+म+ल)।</li><li>'ल' एक तद्धित प्रत्यय है जो संज्ञा से विशेषण का निर्माण करता है।</li></ul>` },
+        { q: "'राघव' शब्द में प्रत्यय है?", o: ["अव", "अ", "आ", "व"], a: 1, e: `<b>हल:</b> 'राघव' शब्द 'रघु' मूल शब्द में 'अ' प्रत्यय जुड़ने से बना है (रघु + अ = राघव)।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>'अ' प्रत्यय जुड़ने से अंत के उ/ऊ स्वर का 'अव' हो जाता है और प्रथम स्वर दीर्घ हो जाता है।</li><li>यह अपत्यवाचक (संतान बोधक) तद्धित प्रत्यय का बहुत ही महत्वपूर्ण उदाहरण है।</li></ul>` },
+        { q: "किस शब्द में 'ईन' प्रत्यय नहीं है?", o: ["विलीन", "रंगीन", "शौकीन", "नमकीन"], a: 0, e: `<b>हल:</b> 'विलीन' शब्द में 'वि' उपसर्ग और 'लीन' मूल शब्द है। अतः इसमें 'ईन' प्रत्यय नहीं है।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>रंगीन (रंग+ईन), शौकीन (शौक+ईन) और नमकीन में 'ईन' तद्धित प्रत्यय है।</li><li>याद रखें, उपसर्ग हमेशा शब्द के आरंभ (शुरू) में जुड़ते हैं और प्रत्यय अंत में।</li></ul>` },
+        { q: "किस शब्द में 'इत' प्रत्यय नहीं है?", o: ["अमित", "फलित", "पुष्पित", "कंटकित"], a: 0, e: `<b>हल:</b> 'अमित' शब्द में 'अ' उपसर्ग और 'मित' मूल शब्द है (जिसकी कोई सीमा न हो)। बाकी सभी (फल+इत, पुष्प+इत, कंटक+इत) में 'इत' प्रत्यय है।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>'इत' प्रत्यय लगने से शब्द प्रायः विशेषण बन जाता है।</li><li>HSSC CET में शब्द संरचना (उपसर्ग-प्रत्यय की पहचान) का टॉपिक बहुत स्कोरिंग है।</li></ul>` },
+        { q: "किस शब्द में 'नाक' प्रत्यय नहीं है?", o: ["मैनाक", "दर्दनाक", "खतरनाक", "शर्मनाक"], a: 0, e: `<b>हल:</b> 'मैनाक' एक मूल संज्ञा शब्द (एक पर्वत का नाम) है, इसमें कोई प्रत्यय नहीं है। बाकी सभी में 'नाक' (फ़ारसी) प्रत्यय है।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>फ़ारसी प्रत्यय 'नाक' का अर्थ होता है 'युक्त' या 'भरा हुआ' (जैसे दर्द से भरा = दर्दनाक)।</li><li>हिंदी में विदेशी भाषाओं के प्रत्ययों का भी बहुतायत में प्रयोग होता है।</li></ul>` },
+        { q: "इनमें से किस शब्द में 'अ' प्रत्यय प्रयुक्त हुआ है?", o: ["वासुदेव", "मिठास", "बुद्धिमान", "अपमान"], a: 0, e: `<b>हल:</b> 'वासुदेव' शब्द 'वसुदेव' में 'अ' प्रत्यय लगने से बना है (वसुदेव + अ = वासुदेव)।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>यह भी संतानबोधक (अपत्यवाचक) प्रत्यय है, जिसका अर्थ है 'वसुदेव की संतान (श्री कृष्ण)'।</li><li>मिठास में 'आस' और बुद्धिमान में 'मान' प्रत्यय है।</li></ul>` },
+        { q: "इनमें से किस शब्द में उपसर्ग और प्रत्यय दोनों एक साथ प्रयुक्त हुए हैं?", o: ["वीरता", "मानवता", "कायरता", "अश्लीलता"], a: 3, e: `<b>हल:</b> 'अश्लीलता' शब्द में 'अ' उपसर्ग, 'श्लील' मूल शब्द और 'ता' प्रत्यय है (अ + श्लील + ता)।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>वीरता, मानवता और कायरता में केवल प्रत्यय (ता) लगा है, कोई उपसर्ग नहीं है।</li><li>ऐसे प्रश्न HSSC ग्रुप C और D दोनों में पूछे जाते हैं जहाँ अभ्यर्थी को गहराई से विश्लेषण करना होता है।</li></ul>` },
+        { q: "'गवैया' शब्द में कौनसा प्रत्यय है?", o: ["इया", "ऐया", "एया", "ईया"], a: 1, e: `<b>हल:</b> 'गवैया' शब्द 'गाना' (गा) धातु में 'ऐया' प्रत्यय जुड़ने से बना है।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>यह कर्तृवाचक कृदंत प्रत्यय है (अर्थात जो कर्ता या कार्य करने वाले का बोध कराए)।</li><li>इसी प्रकार खेना + ऐया = 'खिवैया' शब्द बनता है।</li></ul>` },
+        { q: "'बहाव' शब्द में प्रयुक्त प्रत्यय कौनसा है?", o: ["बह", "हाव", "आव", "अवा"], a: 2, e: `<b>हल:</b> 'बहाव' शब्द 'बहना' (बह) धातु में 'आव' प्रत्यय लगने से बना है (बह + आव = बहाव)।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>यह भाववाचक कृदंत प्रत्यय का एक बहुत ही सामान्य उदाहरण है।</li><li>इसी प्रत्यय (आव) से बचाव, लगाव, घुमाव जैसे शब्द बनते हैं।</li></ul>` },
+        { q: "इनमें से प्रत्यय रहित शब्द कौनसा है?", o: ["विवाद", "चलन", "लेखक", "बिटिया"], a: 0, e: `<b>हल:</b> 'विवाद' शब्द में 'वि' उपसर्ग और 'वाद' मूल शब्द है, अतः इसमें कोई प्रत्यय नहीं है।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>चलन में 'अन', लेखक में 'अक' और बिटिया में 'इया' प्रत्यय लगा है।</li><li>परीक्षा में मूल शब्द की पहचान करना, प्रत्यय ढूँढने की सबसे अच्छी और तेज़ ट्रिक है।</li></ul>` },
+        { q: "निम्नलिखित में से किस शब्द में 'इत' प्रत्यय प्रयुक्त नहीं हुआ है?", o: ["कलंकित", "आनंदित", "इंसानियत", "पुष्पित"], a: 2, e: `<b>हल:</b> 'इंसानियत' शब्द में 'इयत' प्रत्यय लगा है (इंसान + इयत), न कि 'इत'।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>अन्य सभी विकल्पों में कलंक+इत = कलंकित, आनंद+इत = आनंदित होते हैं।</li><li>'इयत' प्रत्यय अरबी-फ़ारसी प्रभाव वाले शब्दों में अक्सर देखा जाता है।</li></ul>` },
+        { q: "'निर्बलता' शब्द में उपसर्ग और प्रत्यय का सही विकल्प है-", o: ["निर् + बल + ता", "निर + बल + ता", "निर + बलत + आ", "निर् + बल + अता"], a: 0, e: `<b>हल:</b> 'निर्बलता' में 'निर्' (र में हलंत) उपसर्ग, 'बल' मूल शब्द और 'ता' प्रत्यय है।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>संस्कृत के 'निर्' उपसर्ग का प्रयोग यहाँ शुद्ध रूप में हुआ है।</li><li>'ता' भाववाचक तद्धित प्रत्यय है।</li></ul>` },
+        { q: "किस शब्द में 'नी' प्रत्यय प्रयुक्त हुआ है?", o: ["नानी", "जवानी", "मोरनी", "चीनी"], a: 2, e: `<b>हल:</b> 'मोरनी' शब्द में 'मोर' मूल शब्द और 'नी' प्रत्यय है।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>'नी' यहाँ स्त्रीवाचक तद्धित प्रत्यय के रूप में प्रयोग हुआ है जो पुल्लिंग शब्द को स्त्रीलिंग में बदलता है।</li><li>नानी और जवानी में 'नी' प्रत्यय नहीं है, बल्कि 'ई' प्रत्यय (जवान+ई) है।</li></ul>` },
+        { q: "किस शब्द में 'इंदा' प्रत्यय नहीं है?", o: ["गोविंदा", "परिन्दा", "शर्मिंदा", "बाशिन्दा"], a: 0, e: `<b>हल:</b> 'गोविंदा' एक मूल संज्ञा/नाम है, इसमें 'इंदा' प्रत्यय नहीं है।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>परिन्दा, शर्मिंदा और बाशिन्दा में फ़ारसी भाषा का प्रत्यय 'इंदा' लगा है।</li><li>'इंदा' प्रत्यय वाले शब्द अक्सर विशेषण या कर्तृवाचक होते हैं।</li></ul>` },
+        { q: "निम्नलिखित शब्दों में प्रत्यय रहित शब्द है?", o: ["सैंधव", "यादव", "किताब", "दैत्य"], a: 2, e: `<b>हल:</b> 'किताब' अरबी भाषा का मूल शब्द है, इसमें कोई भी प्रत्यय नहीं है।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>सैंधव (सिंधु+अ), यादव (यदु+अ), दैत्य (दिति+य) इन सभी में अपत्यवाचक प्रत्यय लगे हैं।</li><li>विदेशी मूल के शब्दों को पहचानना HSSC परीक्षाओं में लाभकारी होता है।</li></ul>` },
+        { q: "हिंदी में प्रमुख 'कृत' प्रत्ययों की संख्या कितनी है?", o: ["तीस", "अट्ठाइस", "पच्चास", "चालीस"], a: 1, e: `<b>हल:</b> प्रसिद्ध हिंदी वैयाकरणों (जैसे कामताप्रसाद गुरु) के अनुसार हिंदी में प्रमुख कृत प्रत्ययों की संख्या 28 मानी गई है।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>कृत प्रत्यय हमेशा क्रिया या धातु के अंत में लगते हैं।</li><li>इनसे बने शब्दों को कृदंत (कृत् + अंत) कहा जाता है।</li></ul>` },
+        { q: "'कौशल' शब्द में कौन सा प्रत्यय है?", o: ["शल", "ल", "अ", "अल"], a: 2, e: `<b>हल:</b> 'कौशल' शब्द 'कुशल' में 'अ' प्रत्यय जुड़ने से बना है (कुशल + अ = कौशल)।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>नियम के अनुसार, 'अ' प्रत्यय जुड़ने पर उ/ऊ स्वर 'औ' में बदल जाता है।</li><li>यह भाववाचक तद्धित प्रत्यय का एक बहुत ही बेहतरीन उदाहरण है।</li></ul>` },
+        { q: "'लौकिक' शब्द में प्रत्यय है?", o: ["लोईक", "क", "इक", "अक"], a: 2, e: `<b>हल:</b> 'लौकिक' शब्द 'लोक' में 'इक' प्रत्यय जुड़ने से बना है (लोक + इक = लौकिक)।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>'इक' प्रत्यय जुड़ने पर शब्द का प्रथम स्वर वृद्धि प्राप्त करता है (जैसे 'ओ' का 'औ' हो जाता है)।</li><li>यह एक बहुत ही सामान्य और महत्वपूर्ण प्रत्यय नियम है जिसे आपको याद रखना चाहिए।</li></ul>` },
+        { q: "'बुद्धिमान' शब्द में कौन सा प्रत्यय है?", o: ["मान", "आन", "न", "मति"], a: 0, e: `<b>हल:</b> 'बुद्धिमान' शब्द में 'बुद्धि' मूल शब्द और 'मान' प्रत्यय है।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>'मान' और 'वान' (जैसे गुणवान, धनवान) प्रत्यय 'वाला' या 'युक्त' के अर्थ में प्रयोग होते हैं।</li><li>यह विशेषण बनाने वाला एक तद्धित प्रत्यय है।</li></ul>` },
+        { q: "'पठित' शब्द में कौन सा प्रत्यय है?", o: ["त", "इत", "ठित", "अत"], a: 1, e: `<b>हल:</b> 'पठित' शब्द 'पठ्' धातु (क्रिया) में 'इत' प्रत्यय जुड़ने से बना है।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>यह संस्कृत का कृत् प्रत्यय है जो भूतकालिक क्रिया या विशेषण बनाता है।</li><li>इसी तरह लिखित, कथित आदि शब्द भी बनते हैं।</li></ul>` },
+        { q: "'पांडव' शब्द में कौन सा प्रत्यय है?", o: ["व", "अव", "अ", "आंडव"], a: 2, e: `<b>हल:</b> 'पांडव' शब्द 'पांडु' मूल शब्द में 'अ' प्रत्यय जुड़ने से बना है (पांडु + अ = पांडव)।<br><br>💡 <b>HSSC विशेष तथ्य:</b><ul><li>यह संतान या वंश का बोध कराता है (अर्थात पांडु के पुत्र)।</li><li>HSSC CET की दृष्टि से 'अ', 'इक' और 'य' प्रत्यय के नियम अत्यंत महत्वपूर्ण हैं, इन्हें अच्छे से समझ लें।</li></ul>` }
+    ];
+
+    let state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+    let timerInterval = null;
+    let isPaused = false;
+
+    window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+    function initDashboard() {
+        showScreen('dashboard-screen');
+        let completedData = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) completedData = JSON.parse(dataStr);
+        } catch(e) {}
+
+        if (completedData) {
+            document.getElementById('dash-unattempted').style.display = 'none';
+            document.getElementById('dash-attempted').style.display = 'block';
+            document.getElementById('dash-score-text').innerText = `${completedData.score}/25.0 Marks . 1.5K/2.9K Rank`;
+            document.getElementById('dash-progress-bar').style.width = `${(completedData.score / 25) * 100}%`;
+        } else {
+            document.getElementById('dash-attempted').style.display = 'none';
+            document.getElementById('dash-unattempted').style.display = 'block';
+        }
+    }
+
+    function startTest() {
+        let saved = null;
+        try {
+            const savedStr = safeGetItem(STORAGE_KEY);
+            if(savedStr) saved = JSON.parse(savedStr);
+        } catch(e){}
+
+        if (saved && !saved.submitted) {
+            state = saved;
+        } else {
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+        }
+        initTestEnv();
+    }
+
+    function reattemptTest() {
+        if(confirm("Are you sure you want to start a fresh test? Your active progress will be lost.")) {
+            safeRemoveItem(STORAGE_KEY);
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+            initTestEnv();
+        }
+    }
+
+    function initTestEnv() {
+        showScreen('test-screen');
+        renderQuestion();
+        renderPalette();
+        updateStats();
+        
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+        setInterval(() => { if(!state.submitted) safeSetItem(STORAGE_KEY, JSON.stringify(state)); }, 2000);
+    }
+
+    function viewSavedResults() {
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(data) renderResultUI(data);
+    }
+
+    function showDashboard() { initDashboard(); }
+
+    function showScreen(id) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+    }
+
+    function updateTimer() {
+        if(isPaused || state.submitted) return;
+        if(state.time <= 0) { submitTest(); return; }
+        state.time--;
+        const m = Math.floor(state.time / 60), s = state.time % 60;
+        document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+    }
+
+    function toggleTheme() {
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    function renderQuestion() {
+        state.visited[state.currentQ] = true;
+        const q = finalQuestions[state.currentQ];
+        document.getElementById('q-no').innerText = `Question ${state.currentQ + 1}`;
+        document.getElementById('q-text').innerHTML = q.q;
+        let opts = '';
+        q.o.forEach((opt, i) => {
+            const isSel = state.answers[state.currentQ] === i;
+            const selClass = isSel ? 'selected' : '';
+            const charLabel = String.fromCharCode(65 + i);
+            opts += `<div class="glass-panel option ${selClass}" onclick="selectOption(${i})"><div class="opt-label">${charLabel}</div><div style="flex:1;">${opt}</div></div>`;
+        });
+        document.getElementById('options-box').innerHTML = opts;
+        renderPalette();
+        updateStats();
+    }
+
+    function selectOption(index) { state.answers[state.currentQ] = index; renderQuestion(); }
+    function clearResponse() { delete state.answers[state.currentQ]; delete state.marked[state.currentQ]; renderQuestion(); }
+    function markReview() { state.marked[state.currentQ] = true; changeQ(1); }
+    function saveNext() { delete state.marked[state.currentQ]; changeQ(1); }
+
+    function changeQ(step) {
+        const next = state.currentQ + step;
+        if(next >= 0 && next < finalQuestions.length) { state.currentQ = next; renderQuestion(); }
+    }
+
+    function renderPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        finalQuestions.forEach((_, i) => {
+            let cls = 's-0';
+            if(state.visited[i]) {
+                if(state.answers[i] !== undefined && state.marked[i]) cls = 's-4';
+                else if(state.marked[i]) cls = 's-3';
+                else if(state.answers[i] !== undefined) cls = 's-1';
+                else cls = 's-2';
+            }
+            const active = i === state.currentQ ? 'active' : '';
+            grid.innerHTML += `<button class="p-btn ${cls} ${active}" onclick="state.currentQ = ${i}; renderQuestion();">${i + 1}</button>`;
+        });
+    }
+
+    function updateStats() {
+        let ans=0, notans=0, notvis=0, mark=0;
+        finalQuestions.forEach((_, i) => {
+            if(!state.visited[i]) notvis++;
+            else if(state.marked[i]) mark++;
+            else if(state.answers[i] !== undefined) ans++;
+            else notans++;
+        });
+        document.getElementById('c-ans').innerText = ans; document.getElementById('c-notans').innerText = notans;
+        document.getElementById('c-notvis').innerText = notvis; document.getElementById('c-mark').innerText = mark;
+    }
+
+    function submitTest() {
+        if(!confirm("Are you sure you want to submit the test?")) return;
+        state.submitted = true; clearInterval(timerInterval);
+        let score=0, attempt=0, wrong=0;
+        finalQuestions.forEach((q, i) => {
+            if(state.answers[i] !== undefined) {
+                attempt++;
+                if(state.answers[i] === q.a) score++; else wrong++;
+            }
+        });
+        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const completedData = { score: score, attempted: attempt, wrong: wrong, time: state.time, date: today, userAnswers: state.answers };
+        
+        safeSetItem(COMPLETED_KEY, JSON.stringify(completedData));
+        safeRemoveItem(STORAGE_KEY);
+        
+        renderResultUI(completedData);
+    }
+
+    function renderResultUI(data) {
+        showScreen('result-screen');
+        const acc = data.attempted > 0 ? ((data.score / data.attempted) * 100).toFixed(1) : 0;
+        document.getElementById('r-score').innerText = `${data.score}`;
+        document.getElementById('r-attempt').innerText = data.attempted;
+        document.getElementById('r-wrong').innerText = data.wrong;
+        document.getElementById('r-acc').innerText = `${acc}%`;
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(!data) return;
+
+        let html = '';
+        finalQuestions.forEach((q, i) => {
+            const uAns = data.userAnswers[i];
+            let optHtml = '';
+            q.o.forEach((opt, oIdx) => {
+                let cls = '', checkMark = '';
+                if(oIdx === q.a) { cls = 'correct'; checkMark = ' ✔'; }
+                else if(oIdx === uAns && uAns !== q.a) { cls = 'wrong'; checkMark = ' ❌ (Your Answer)'; }
+                optHtml += `<div class="glass-panel sol-opt ${cls}"><strong>${String.fromCharCode(65 + oIdx)}.</strong> <div style="flex:1;">${opt} ${checkMark}</div></div>`;
+            });
+            let statusText = uAns !== undefined ? (uAns === q.a ? "हल किया (Correct)" : "हल किया (Incorrect)") : "हल नहीं किया (Unattempted)";
+            html += `<div class="glass-panel sol-card"><div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--primary);">प्र ${i+1}. ${q.q}</div>${optHtml}<div style="font-weight:bold; margin:15px 0; color:var(--text-muted);">Status: ${statusText}</div><div class="glass-panel sol-exp">${q.e}</div></div>`;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+
+    function downloadPDF() {
+        const element = document.getElementById('sol-container');
+        
+        // Hide the Back & Download buttons temporarily before generating PDF
+        const actionButtons = element.previousElementSibling;
+        actionButtons.style.display = 'none';
+
+        const opt = {
+            margin:       10,
+            filename:     'HSSC_Hindi_Solutions.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        
+        // Disable dark mode temporarily for better PDF printing if it's on
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) document.documentElement.setAttribute('data-theme', 'light');
+        
+        html2pdf().set(opt).from(element).save().then(() => {
+            // Revert back to original theme after saving
+            if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
+            // Show the action buttons again
+            actionButtons.style.display = 'flex';
+        });
+    }
+</script>
+</body>
+</html>
