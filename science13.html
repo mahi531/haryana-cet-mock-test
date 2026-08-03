@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HSSC Group D Science Test 13</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg-grad-1: #4facfe; --bg-grad-2: #00f2fe; --bg-grad-3: #a18cd1; --bg-grad-4: #fbc2eb;
+            --glass-bg: rgba(255, 255, 255, 0.9); --glass-border: rgba(255, 255, 255, 0.6); --glass-shadow: rgba(31, 38, 135, 0.15);
+            --text-main: #1f2937; --text-muted: #64748b;
+            --primary: #2563eb; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --purple: #8b5cf6;
+            --option-bg: rgba(243, 244, 246, 0.8); --option-selected: rgba(219, 234, 254, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+        [data-theme="dark"] {
+            --bg-grad-1: #0f2027; --bg-grad-2: #203a43; --bg-grad-3: #2c5364; --bg-grad-4: #141e30;
+            --glass-bg: rgba(17, 25, 40, 0.85); --glass-border: rgba(255, 255, 255, 0.15); --glass-shadow: rgba(0, 0, 0, 0.5);
+            --text-main: #f9fafb; --text-muted: #94a3b8;
+            --primary: #3b82f6; 
+            --option-bg: rgba(55, 65, 81, 0.7); --option-selected: rgba(30, 58, 138, 0.8);
+            --card-bg: rgba(31, 41, 55, 0.95);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; touch-action: manipulation;}
+        
+        body { 
+            height: 100vh; height: 100dvh; 
+            background: linear-gradient(45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3), var(--bg-grad-4)); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+            color: var(--text-main); 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 var(--glass-shadow); border-radius: 12px; }
+        
+        .btn { font-family: 'Poppins', sans-serif; background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;}
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-warning { background: var(--warning); color: #fff;}
+        .btn-clear { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-mark { background: var(--purple); color: white; }
+        .btn-prev { background: var(--text-muted); color: white; }
+
+        .screen { display: none; flex-direction: column; height: 100%; width: 100vw; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; }
+
+        #dashboard-screen { overflow-y: auto; background: var(--card-bg); align-items: center; padding-bottom: 30px;}
+        .dash-header-top { background: #1e293b; color: white; width: 100%; padding: 15px 20px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 15px; position: sticky; top:0; z-index: 100;}
+        .dash-content { width: 100%; max-width: 800px; padding: 20px; }
+        .section-title { font-weight: 600; color: var(--primary); margin: 15px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 15px; }
+        .dash-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--glass-border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .test-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text-main);}
+        .test-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        .progress-container { width: 100%; height: 6px; background: var(--glass-border); border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #fbc02d; width: 0%; transition: width 0.5s ease;}
+        .dash-actions { display: flex; gap: 12px; margin-top: 15px; }
+        .dash-actions .btn { flex: 1; padding: 10px; font-size: 14px; border-radius: 8px;}
+        .syllabus-footer { display: flex; justify-content: space-between; font-size: 12px; color: var(--primary); border-top: 1px solid var(--glass-border); padding-top: 12px; margin-top: 15px; }
+
+        header.test-head { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-bottom: 10px; margin-inline: 10px; }
+        .header-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: 700; background: var(--card-bg); border: 1px solid var(--glass-border); color: var(--danger); padding: 5px 12px; border-radius: 20px; }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 0 10px 10px 10px; }
+        .question-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .q-header { padding: 10px 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
+        .q-body { flex: 1; padding: 15px; overflow-y: auto; font-size: 16px; line-height: 1.6; }
+        
+        .options-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;}
+        .option { padding: 12px; border: 2px solid var(--glass-border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--option-bg); font-weight: 500; font-size: 15px;}
+        .option.selected { border-color: var(--primary); background: var(--option-selected); color: var(--primary); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--glass-border); display: flex; justify-content: center; align-items: center; font-weight: bold; }
+        .option.selected .opt-label { background: var(--primary); color: white; border-color: var(--primary);}
+        
+        .q-footer { padding: 10px; border-top: 1px solid var(--glass-border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-radius: 0 0 12px 12px; }
+
+        .palette-section { width: 320px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .palette-header { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; font-weight: bold; font-size: 15px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; font-size: 12px; border-bottom: 1px solid var(--glass-border); font-weight: 500;}
+        .stat-item { display: flex; align-items: center; gap: 6px;}
+        .badge { width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 10px; font-weight: bold;}
+        .s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);} 
+        .s-1 { background: var(--success); } .s-2 { background: var(--danger); } .s-3 { background: var(--purple); } 
+        .s-4 { background: var(--primary); position: relative; }
+        .s-4::after { content: '✔'; position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; background: white; color: var(--primary); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 8px; }
+        
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .p-btn.s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);}
+        .p-btn.active { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.1);}
+        .submit-area { padding: 10px; border-top: 1px solid var(--glass-border); border-radius: 0 0 12px 12px;}
+
+        #result-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        #solution-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        .sol-card { padding: 20px; margin-bottom: 15px; width: 100%; max-width: 800px; page-break-inside: avoid;}
+        .sol-opt { padding: 10px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; gap: 10px; align-items: center; font-size: 15px; background: var(--card-bg);}
+        .sol-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); text-decoration: line-through;}
+        .sol-exp { margin-top: 15px; padding: 15px; background: rgba(37, 99, 235, 0.05); border: 1px solid var(--glass-border); border-left: 4px solid var(--primary); border-radius: 8px; font-size: 14.5px; line-height: 1.6; }
+        .sol-exp ul { padding-left: 20px; margin-top: 8px; }
+        .sol-exp li { margin-bottom: 6px; }
+
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+
+        @media (max-width: 992px) {
+            .main-area { flex-direction: column; overflow-y: auto;}
+            .question-section { flex: none; min-height: 450px;}
+            .palette-section { width: 100%; flex: none; min-height: 350px;}
+            .q-footer .btn { padding: 10px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <div id="dashboard-screen" class="screen active">
+        <div class="dash-header-top">
+            <span style="cursor: pointer;" onclick="alert('Going Back')">&#8592;</span>
+            HSSC CET - Mock Tests
+        </div>
+
+        <div class="dash-content">
+            <div id="dash-unattempted" style="display: none;">
+                <div class="section-title">Suggested Next Test</div>
+                <div class="dash-card">
+                    <div class="test-title">Science Test Number 13 (Biology Special)</div>
+                    <div class="test-meta">
+                        <span>25 Qs • 25 mins • 25.0 Marks</span>
+                    </div>
+                    <div class="test-meta" style="justify-content: flex-end;">
+                        <button class="btn btn-outline" style="padding: 6px 20px; border-radius: 20px;" onclick="startTest()">Start Test 🚀</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span>Syllabus: HSSC Group D - Biology</span>
+                        <span style="color:var(--success);">🔗 Share</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dash-attempted" style="display: none;">
+                <div class="dash-card">
+                    <div class="test-title">Science Test Number 13 (Biology Special)</div>
+                    <div class="test-meta" style="margin-bottom: 5px;">
+                        <span id="dash-score-text" style="font-size: 15px; color: var(--text-muted);">0/25.0 Marks . 1.5K/2.9K Rank</span>
+                    </div>
+                    <div class="progress-container"><div class="progress-fill" id="dash-progress-bar"></div></div>
+                    <div class="dash-actions">
+                        <button class="btn btn-outline" onclick="viewSavedResults()">View Results</button>
+                        <button class="btn btn-outline" onclick="reattemptTest()">Reattempt &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px; font-size: 2rem;">Test Paused ⏸️</h2>
+        <button class="btn btn-primary" style="font-size: 1.2rem; padding: 10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+    </div>
+
+    <div id="test-screen" class="screen">
+        <header class="glass-panel test-head">
+            <div class="header-title">Science Test 13</div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="toggleTheme()">🌓 Theme</button>
+                <button class="btn btn-warning" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="togglePause()">⏸ Pause</button>
+                <div class="timer-box">⏱ <span id="timer-display">25:00</span></div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="glass-panel question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--success); font-weight:bold;">+1 <span style="color: var(--text-muted); font-weight:normal;">|</span> <span style="color: var(--danger);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <button class="btn btn-mark" onclick="markReview()">Mark & Next</button>
+                    <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                    <button class="btn btn-prev" onclick="changeQ(-1)">Previous</button>
+                    <button class="btn btn-primary" onclick="saveNext()">Save & Next</button>
+                </div>
+            </div>
+
+            <div class="glass-panel palette-section">
+                <div class="palette-header">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">25</div> Not Visit</div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn btn-primary" style="width: 100%; background: var(--success); font-size: 15px; padding: 10px;" onclick="submitTest()">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-screen" class="screen">
+        <div style="width: 100%; max-width: 800px; margin-bottom: 15px;"><button class="btn btn-clear" onclick="showDashboard()">&#8592; Back to Dashboard</button></div>
+        <div class="glass-panel" style="max-width: 800px; width: 100%; padding: 25px;">
+            <h1 style="color: var(--primary); text-align: center;">Test Submitted Successfully! 🎉</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 25px 0;">
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-score" style="color: var(--primary); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Score</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-attempt" style="color: var(--success); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Attempted</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-wrong" style="color: var(--danger); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Wrong</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-acc" style="color: var(--purple); font-size: 1.8rem;">0%</h2><p style="color: var(--text-muted); font-size:12px;">Accuracy</p></div>
+            </div>
+            <button class="btn btn-primary" style="width:100%; font-size: 15px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+        </div>
+    </div>
+
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%; margin:0 auto;">
+            <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 12px 15px; position: sticky; top: 5px; z-index: 10;">
+                <h3 style="color: var(--primary);">Detailed Solutions</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" style="padding: 5px 12px; font-size: 13px; background: var(--success);" onclick="downloadPDF()">📥 Download PDF</button>
+                    <button class="btn btn-clear" style="padding: 5px 12px; font-size: 13px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+                </div>
+            </div>
+            <div id="sol-container"></div>
+        </div>
+    </div>
+
+<script>
+    const MEMORY_STORE = {};
+    function safeGetItem(key) { try { return localStorage.getItem(key) || MEMORY_STORE[key] || null; } catch(e) { return MEMORY_STORE[key] || null; } }
+    function safeSetItem(key, value) { try { localStorage.setItem(key, value); } catch(e) {} MEMORY_STORE[key] = value; }
+    function safeRemoveItem(key) { try { localStorage.removeItem(key); } catch(e) {} delete MEMORY_STORE[key]; }
+
+    const STORAGE_KEY = 'hssc_sci_13_active'; 
+    const COMPLETED_KEY = 'hssc_sci_13_comp';
+
+    const finalQuestions = [
+        { q: "मनुष्य की जीभ के किस क्षेत्र तक कड़वाहट (Bitterness) की संवेदना सीमित रहती है?", o: ["अगला भाग", "किनारों", "मध्य भाग", "पिछला भाग"], a: 3, e: `<b>हल:</b> मनुष्य की जीभ में कड़वाहट का स्वाद मुख्य रूप से 'पिछले भाग' (Back of the tongue) पर महसूस होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>जीभ का 'अगला हिस्सा' (Tip) मीठे (Sweet) स्वाद को पहचानता है।</li><li>जीभ के 'किनारे' (Sides) खट्टे (Sour) और नमकीन (Salty) स्वाद को पहचानते हैं।</li><li>जीभ पर पाई जाने वाली स्वाद कलिकाओं को 'टेस्ट बड्स' (Taste buds) कहा जाता है।</li><li>एक सामान्य मनुष्य की जीभ पर लगभग 2000 से 8000 स्वाद कलिकाएं होती हैं।</li><li>'उमामी' (Umami) एक पांचवा स्वाद है (जैसे मीट और मशरूम का स्वाद), जो जीभ के मध्य भाग में महसूस होता है।</li></ul>` },
+        { q: "'एम्नियोसेंटेसिस' (Amniocentesis) किसकी विधि का नाम है?", o: ["गर्भ में शिशु के स्वास्थ्य की दशाओं का पता लगाने की", "अमीनो अम्ल अनुक्रम का पता लगाने की", "गर्भपात प्रेरित करने की", "कृत्रिम गर्भाधान"], a: 0, e: `<b>हल:</b> 'एम्नियोसेंटेसिस' एक मेडिकल परीक्षण है जिसका उपयोग 'गर्भ में पल रहे शिशु के स्वास्थ्य की दशाओं (और आनुवंशिक विकारों) का पता लगाने' के लिए किया जाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>इस प्रक्रिया में गर्भवती महिला के गर्भाशय से थोड़ा सा एम्नियोटिक द्रव (Amniotic fluid) सिरिंज द्वारा निकाला जाता है।</li><li>इस द्रव में भ्रूण (Fetus) की कोशिकाएं होती हैं, जिनकी जांच करके डाउन सिंड्रोम जैसी आनुवंशिक बीमारियों का पता लगाया जाता है।</li><li>दुर्भाग्य से, इस तकनीक का दुरुपयोग भ्रूण के लिंग की जांच (Sex determination) करके कन्या भ्रूण हत्या के लिए भी किया जाता रहा है।</li><li>भारत में लिंग परीक्षण को रोकने के लिए PCPNDT एक्ट (1994) लागू किया गया है।</li><li>यह टेस्ट आमतौर पर गर्भावस्था के 15वें से 20वें सप्ताह के बीच किया जाता है।</li></ul>` },
+        { q: "प्रकाश-संश्लेषण (Photosynthesis) के समय निकलने वाली गैस का क्या नाम है?", o: ["कार्बन डाई ऑक्साइड", "ऑक्सीजन", "नाइट्रोजन", "हाइड्रोजन"], a: 1, e: `<b>हल:</b> हरे पौधों द्वारा प्रकाश-संश्लेषण की क्रिया के दौरान 'ऑक्सीजन' (Oxygen) गैस उपोत्पाद (Byproduct) के रूप में बाहर निकलती है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>प्रकाश-संश्लेषण का रासायनिक समीकरण है: 6CO2 + 6H2O + प्रकाश → C6H12O6 (ग्लूकोज) + 6O2।</li><li>इस प्रक्रिया में पौधे वातावरण से कार्बन डाइऑक्साइड (CO2) ग्रहण करते हैं।</li><li>निकलने वाली ऑक्सीजन गैस वास्तव में पौधों द्वारा लिए गए 'जल' (H2O) के टूटने से प्राप्त होती है, न कि CO2 से।</li><li>यह क्रिया पौधों की पत्तियों में मौजूद 'क्लोरोफिल' (हरित लवक) के कारण संभव होती है।</li><li>प्रकाश-संश्लेषण के लिए सूर्य का प्रकाश, CO2, जल और क्लोरोफिल चारों का होना अनिवार्य है।</li></ul>` },
+        { q: "निम्न रक्त-कोशिकाओं में से कौन-सी एक रक्त-स्कंदन (Coagulation) के लिए अनिवार्य होती है?", o: ["पट्टिकाणु (प्लेटलेट)", "लाल रुधिर कणिका (आर. बी. सी.)", "श्वेत रुधिर कणिका (डब्ल्यू. बी. सी.)", "लसीकाणु (लिम्फोसाइट)"], a: 0, e: `<b>हल:</b> चोट लगने पर खून का थक्का (Blood clotting) जमाने का मुख्य काम 'पट्टिकाणु' या 'प्लेटलेट्स' (Platelets) का होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>प्लेटलेट्स को वैज्ञानिक भाषा में 'थ्रोम्बोसाइट्स' (Thrombocytes) भी कहा जाता है।</li><li>रक्त का थक्का जमाने के लिए प्लेटलेट्स के साथ-साथ 'फाइब्रिनोजेन' प्रोटीन और 'विटामिन K' की भी आवश्यकता होती है।</li><li>डेंगू बुखार (Dengue) में शरीर के अंदर प्लेटलेट्स की संख्या तेजी से गिरने लगती है।</li><li>लाल रुधिर कणिकाएं (RBC) शरीर में ऑक्सीजन ढोने का काम करती हैं (हीमोग्लोबिन के माध्यम से)।</li><li>श्वेत रुधिर कणिकाएं (WBC) शरीर की रोग प्रतिरोधक क्षमता (Immunity) बनाती हैं।</li></ul>` },
+        { q: "प्रथम वियुक्त प्रतिजैविक (First Antibiotic) कौन-सा था?", o: ["टेरामायसिन", "निओमायसिन", "पेनिसिलिन", "स्ट्रेप्टोमायसिन"], a: 2, e: `<b>हल:</b> दुनिया का सबसे पहला खोजा गया प्रतिजैविक (Antibiotic) 'पेनिसिलिन' (Penicillin) था।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>पेनिसिलिन की खोज स्कॉटिश वैज्ञानिक 'अलेक्जेंडर फ्लेमिंग' (Alexander Fleming) ने 1928 में की थी।</li><li>इसे 'पेनिसिलियम नोटेटम' (Penicillium notatum) नामक एक कवक (Fungus/फफूंद) से प्राप्त किया गया था।</li><li>एंटीबायोटिक्स केवल बैक्टीरिया (जीवाणु) से होने वाले रोगों को ठीक करते हैं, ये वायरस पर असर नहीं करते।</li><li>इस खोज के लिए अलेक्जेंडर फ्लेमिंग को 1945 में नोबेल पुरस्कार से सम्मानित किया गया था।</li><li>स्ट्रेप्टोमायसिन की खोज सेलमैन वाक्समैन ने की थी, जो टीबी (Tuberculosis) के इलाज में काम आती है।</li></ul>` },
+        { q: "विषाणु (Virus) में क्या होता है?", o: ["प्रोटीन और लिपिड", "न्यूक्लिक एसिड और प्रोटीन", "लिपिड और कार्बोहाइड्रेट", "कार्बोहाइड्रेट और न्यूक्लिक एसिड"], a: 1, e: `<b>हल:</b> एक साधारण विषाणु (Virus) मुख्य रूप से 'न्यूक्लिक एसिड (DNA या RNA) और प्रोटीन' के आवरण से मिलकर बना होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>वायरस के बाहरी प्रोटीन कोट (कवर) को 'कैप्सिड' (Capsid) कहा जाता है।</li><li>वायरस के अंदर या तो DNA होता है या RNA होता है, लेकिन दोनों एक साथ कभी नहीं होते (जैसे कोरोना वायरस एक RNA वायरस है)।</li><li>वायरस को सजीव (Living) और निर्जीव (Non-living) के बीच की 'कड़ी' माना जाता है।</li><li>शरीर के बाहर वायरस निर्जीव कणों की तरह व्यवहार करते हैं, लेकिन किसी जीवित कोशिका में प्रवेश करते ही सक्रिय होकर अपनी संख्या बढ़ाने लगते हैं।</li><li>विषाणु की खोज रूसी वैज्ञानिक 'इवानोवस्की' (Dmitri Ivanovsky) ने तम्बाकू के मोज़ेक रोग का अध्ययन करते समय की थी।</li></ul>` },
+        { q: "जन्म से पहले शिशु का लिंग किसके द्वारा सुनिश्चित होता है?", o: ["पिता के शुक्राणु से", "माता के डिम्ब द्वारा", "(1) और (2) दोनों एक साथ", "माता के पोषण द्वारा"], a: 0, e: `<b>हल:</b> जन्म से पहले होने वाले शिशु का लिंग (लड़का या लड़की) पूरी तरह से 'पिता के शुक्राणु' (Father's Sperm) द्वारा निर्धारित होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>मानव शरीर की कोशिकाओं में 23 जोड़े (कुल 46) गुणसूत्र (Chromosomes) होते हैं।</li><li>इनमें से 23वां जोड़ा 'लिंग गुणसूत्र' (Sex chromosome) कहलाता है। महिलाओं में यह XX और पुरुषों में XY होता है।</li><li>माता के डिम्ब (Egg) में हमेशा केवल 'X' गुणसूत्र ही होता है।</li><li>पिता के शुक्राणु में 'X' या 'Y' गुणसूत्र हो सकता है। यदि X गुणसूत्र वाला शुक्राणु डिम्ब से मिलता है, तो लड़की (XX) होती है।</li><li>यदि 'Y' गुणसूत्र वाला शुक्राणु मिलता है, तो लड़का (XY) पैदा होता है, इसलिए लिंग का निर्धारण पिता पर निर्भर है।</li></ul>` },
+        { q: "अवटु (थाइरॉयड) ग्रंथि के कम काम करने का क्या कारण हो सकता है?", o: ["आयोडीन की कमी", "लोहे की कमी", "कैल्शियम की कमी", "विटामिन 'सी' की कमी"], a: 0, e: `<b>हल:</b> थाइरॉयड ग्रंथि के कम काम करने (Hypothyroidism) का सबसे मुख्य कारण भोजन में 'आयोडीन की कमी' होना है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>थाइरॉयड ग्रंथि गले में श्वास नली के सामने स्थित होती है और यह मानव शरीर की सबसे बड़ी अंतःस्रावी (Endocrine) ग्रंथि है।</li><li>यह ग्रंथि 'थायरॉक्सिन' हार्मोन बनाती है, जिसके निर्माण के लिए आयोडीन अत्यंत आवश्यक है।</li><li>आयोडीन की भारी कमी से यह ग्रंथि सूजकर बड़ी हो जाती है, जिसे 'घेंघा रोग' (Goiter) कहते हैं।</li><li>लोहे (Iron) की कमी से 'एनीमिया' (रक्तहीनता) रोग होता है।</li><li>विटामिन 'सी' की कमी से मसूड़ों से खून आना (स्कर्वी रोग) होता है।</li></ul>` },
+        { q: "केकड़े (Crab) के कितने पैर होते हैं?", o: ["12", "10", "8", "6"], a: 1, e: `<b>हल:</b> केकड़े (Crabs) के पैरों की संख्या '10' (या 5 जोड़े) होती है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>केकड़े 'डेकापोडा' (Decapoda) गण (Order) के अंतर्गत आते हैं, जिसका अर्थ ही 'दस पैरों वाला' (Deca = 10, Poda = पैर) होता है।</li><li>इन 10 पैरों में से आगे के 2 पैर आम तौर पर बड़े पंजों (Claws / Chelae) के रूप में विकसित होते हैं, जिनका उपयोग वे बचाव और भोजन पकड़ने के लिए करते हैं।</li><li>केकड़े आर्थ्रोपोडा (Arthropoda) संघ और क्रस्टेशिया (Crustacea) वर्ग के जंतु हैं।</li><li>मकड़ियों (Spiders) के 8 पैर होते हैं (एरेक्निडा वर्ग)।</li><li>कीटों (Insects जैसे चींटी, कॉकरोच) के हमेशा 6 पैर (3 जोड़े) होते हैं।</li></ul>` },
+        { q: "निम्न में से कौन-सी केवल स्त्रियों में पाई जाती है?", o: ["थाइरॉइड", "पिट्यूटरी", "अंडाशय", "एडिनॉइड"], a: 2, e: `<b>हल:</b> दी गई ग्रंथियों में से 'अंडाशय' (Ovary) केवल स्त्रियों (मादा) में पाई जाती है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>अंडाशय महिलाओं का प्राथमिक प्रजनन अंग है जो गर्भाशय के दोनों ओर स्थित होता है।</li><li>यह महिलाओं में 'एस्ट्रोजन' (Estrogen) और 'प्रोजेस्टेरोन' (Progesterone) हार्मोन स्रावित करता है।</li><li>महिलाओं के अंडाशय में ही मासिक धर्म चक्र के दौरान डिम्ब (Egg/Ovum) का निर्माण होता है।</li><li>पुरुषों में अंडाशय की जगह 'वृषण' (Testes) होते हैं जो टेस्टोस्टेरोन हार्मोन बनाते हैं।</li><li>थाइरॉइड, पिट्यूटरी (पीयूष ग्रंथि) और एडिनॉइड्स (गले/नाक के पास) ये सभी अंग पुरुष और स्त्री दोनों में समान रूप से पाए जाते हैं।</li></ul>` },
+        { q: "निम्न में से कौन-सा काम गुर्दा (Kidney) नहीं करता?", o: ["रक्त pH का नियमन", "शरीर से उपापचयी अपशिष्ट का निष्कासन", "प्रतिरक्षी तत्वों का उत्पादन", "रक्त में परासरणी दाब का नियमन"], a: 2, e: `<b>हल:</b> शरीर में 'प्रतिरक्षी तत्वों (Antibodies) का उत्पादन' गुर्दा (किडनी) नहीं करता, बल्कि यह काम श्वेत रक्त कणिकाओं (WBC) का है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>गुर्दे (Kidneys) का मुख्य काम रक्त को छानकर यूरिया और अन्य जहरीले अपशिष्ट पदार्थों को मूत्र के रास्ते बाहर निकालना है।</li><li>यह शरीर में पानी की मात्रा (परासरणी दाब / Osmoregulation) और लवणों को संतुलित रखता है।</li><li>किडनी शरीर के एसिड-बेस बैलेंस (रक्त के pH नियमन) में भी महत्वपूर्ण भूमिका निभाती है।</li><li>किडनी की सबसे छोटी कार्यात्मक इकाई को 'नेफ्रॉन' (Nephron) कहा जाता है।</li><li>किडनी में पथरी (Stone) मुख्य रूप से 'कैल्शियम ऑक्सालेट' के जमा होने से बनती है।</li></ul>` },
+        { q: "पौधों में जल का परिवहन किसके माध्यम से होता है?", o: ["कैम्बियम", "फ्लोएम", "एपिडर्मिस", "जाइलम"], a: 3, e: `<b>हल:</b> पौधों में जड़ों से लेकर पत्तियों तक जल और खनिजों का परिवहन 'जाइलम' (Xylem) ऊतक के माध्यम से होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>जाइलम एक जटिल स्थायी ऊतक है जो पानी को हमेशा 'नीचे से ऊपर' की ओर ले जाता है (एकदिशीय/Unidirectional)।</li><li>पत्तियों में प्रकाश-संश्लेषण द्वारा बने हुए भोजन को पौधे के सभी अंगों तक पहुँचाने का काम 'फ्लोएम' (Phloem) ऊतक करता है।</li><li>(याद रखने की ट्रिक: 'ज' से जल - जाइलम; 'फ' से फल/भोजन - फ्लोएम)।</li><li>वृक्षों की आयु की गणना जाइलम के वार्षिक वलयों (Annual rings) को गिनकर की जाती है, इसे डेंड्रोक्रोनोलॉजी कहते हैं।</li><li>एपिडर्मिस (Epidermis) पौधों की सबसे बाहरी त्वचा (Outer layer) होती है।</li></ul>` },
+        { q: "यूकेलिप्टस के वृक्ष अधिक संख्या में कहाँ पाये जाते हैं?", o: ["मिज़ो पहाड़ियाँ", "नागा पहाड़ियाँ", "मणिपुर की पहाड़ियाँ", "नीलगिरि पहाड़ियाँ"], a: 3, e: `<b>हल:</b> भारत में यूकेलिप्टस (Eucalyptus / सफेदा) के वृक्ष सबसे अधिक संख्या में दक्षिण भारत की 'नीलगिरि पहाड़ियों' (Nilgiri Hills) में पाए जाते हैं।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>यूकेलिप्टस मूल रूप से ऑस्ट्रेलिया का पौधा है, जिसे भारत में लाया गया था।</li><li>नीलगिरि पहाड़ियों (तमिलनाडु) के नाम का अर्थ 'नीला पहाड़' है, और वहां चाय के साथ-साथ यूकेलिप्टस की भी भारी खेती होती है।</li><li>यूकेलिप्टस बहुत तेजी से बढ़ता है और जमीन से भारी मात्रा में पानी सोखता है, इसलिए इसे 'पर्यावरण का दुश्मन' (Ecological terrorist) भी कहा जाता है।</li><li>इसकी पत्तियों से यूकेलिप्टस का तेल (नीलगिरि तेल) निकाला जाता है, जिसका उपयोग सर्दी-खांसी की दवाइयों (जैसे विक्स) में होता है।</li><li>नीलगिरि पहाड़ियां पश्चिमी घाट और पूर्वी घाट का मिलन स्थल (Junction) हैं।</li></ul>` },
+        { q: "उत्तेजना (Excitement) के समय निम्न में से कौन-सा हार्मोन अधिक मात्रा में उत्सर्जित होता है?", o: ["कॉर्टिसोन", "सिरोटोनिन", "ऐड्रीनलिन", "एस्ट्रोजन"], a: 2, e: `<b>हल:</b> डर, गुस्सा या उत्तेजना (Excitement) के समय हमारे शरीर में 'ऐड्रीनलिन' (Adrenaline) हार्मोन बहुत अधिक मात्रा में स्रावित होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>ऐड्रीनलिन हार्मोन को 'लड़ो या उड़ो' (Fight or Flight) हार्मोन भी कहा जाता है।</li><li>यह हमारी किडनी के ठीक ऊपर स्थित 'अधिवृक्क ग्रंथि' (Adrenal gland) द्वारा स्रावित होता है।</li><li>जब यह स्रावित होता है, तो अचानक दिल की धड़कन बढ़ जाती है, ब्लड प्रेशर तेज हो जाता है और शरीर को तुरंत ऊर्जा मिलती है ताकि वह खतरे का सामना कर सके।</li><li>सिरोटोनिन (Serotonin) को 'खुशी का हार्मोन' (Happy hormone) कहा जाता है जो मूड को अच्छा रखता है।</li><li>एस्ट्रोजन महिलाओं का मुख्य सेक्स हार्मोन है।</li></ul>` },
+        { q: "सामान्यतः प्रयोग किए जानेवाला मसाला लौंग (Clove) प्राप्त होता है—", o: ["फल से", "तने से", "जड़ (मूल) से", "पुष्प कली से"], a: 3, e: `<b>हल:</b> रसोई में इस्तेमाल होने वाली लौंग (Clove) वास्तव में पेड़ की सूखी हुई 'पुष्प कली' (Flower bud) होती है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>लौंग का वैज्ञानिक नाम सिज़ीगियम एरोमैटिकम (Syzygium aromaticum) है।</li><li>इन कलियों को फूल खिलने से पहले ही तोड़ लिया जाता है और धूप में सुखाया जाता है, जिससे वे भूरे-काले रंग की हो जाती हैं।</li><li>लौंग के तेल का सबसे प्रमुख रासायनिक घटक 'यूजेनॉल' (Eugenol) है, जो दांत के दर्द (Toothache) में बहुत राहत देता है।</li><li>मसालों में केसर (Saffron) फूल के वर्तिकाग्र (Stigma) से प्राप्त होता है।</li><li>हल्दी (Turmeric) पौधे के भूमिगत तने (Rhizome) से और दालचीनी (Cinnamon) पेड़ की छाल (Bark) से प्राप्त होती है।</li></ul>` },
+        { q: "निम्नलिखित में से वे रक्त कणिकाएँ कौन-सी हैं जो रोगों का प्रतिरोध करने में सहायता करती हैं?", o: ["श्वेत कोशिकाएँ", "एक केंद्रक रक्त कोशिकाएँ", "न्यूट्रोफिल", "लसीका कोशिकाएँ"], a: 0, e: `<b>हल:</b> हमारे शरीर को रोगों और संक्रमण (Infection) से बचाने का मुख्य कार्य 'श्वेत रक्त कोशिकाओं' (White Blood Cells - WBCs) का है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>WBCs को वैज्ञानिक भाषा में 'ल्यूकोसाइट्स' (Leukocytes) कहा जाता है।</li><li>ये शरीर की 'पुलिस' या सैनिक की तरह काम करती हैं, जो बाहर से आने वाले वायरस और बैक्टीरिया को खाकर या एंटीबॉडी बनाकर नष्ट कर देती हैं।</li><li>न्यूट्रोफिल और लसीका कोशिकाएं (लिम्फोसाइट्स) वास्तव में श्वेत रक्त कोशिकाओं (WBCs) के ही अलग-अलग प्रकार हैं। चूँकि WBC एक व्यापक (Broad) उत्तर है, इसलिए यह सबसे सही विकल्प है।</li><li>रक्त में RBC की तुलना में WBC की संख्या बहुत कम होती है (लगभग 1 WBC प्रति 600 RBC)।</li><li>ब्लड कैंसर (Leukemia) की स्थिति में शरीर में असामान्य WBCs की संख्या बेतहाशा बढ़ने लगती है।</li></ul>` },
+        { q: "निम्नलिखित में वह ग्रंथि कौन-सी है जो शरीर को तापस्थापी (Thermostat) रखती है?", o: ["पीनियल-ग्रंथि", "पीयूष ग्रंथि", "अवटु-ग्रंथि", "हाइपोथैलेमस"], a: 3, e: `<b>हल:</b> मानव शरीर का तापमान नियंत्रित करने वाला अंग मस्तिष्क में स्थित 'हाइपोथैलेमस' (Hypothalamus) ग्रंथि है, जो थर्मोस्टेट का काम करती है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>मनुष्य एक 'समतापी' (Warm-blooded) प्राणी है, जिसके शरीर का सामान्य तापमान 37°C (98.6°F) फिक्स रहता है।</li><li>जब शरीर बहुत गर्म होता है, तो हाइपोथैलेमस पसीने की ग्रंथियों को सक्रिय कर देता है (ताकि पसीना निकलने से ठंडक मिले)।</li><li>जब ठंड लगती है, तो यह मांसपेशियों को सिकुड़ने का आदेश देता है (जिससे हम कांपते हैं और गर्मी पैदा होती है)।</li><li>तापमान के अलावा, हाइपोथैलेमस भूख, प्यास, नींद और भावनाओं को भी नियंत्रित करता है।</li><li>पीयूष ग्रंथि (Pituitary gland) को 'मास्टर ग्रंथि' कहा जाता है, और हाइपोथैलेमस इस मास्टर ग्रंथि को भी कंट्रोल करता है (Super-master)।</li></ul>` },
+        { q: "मानव डिम्ब (Ovum) में गुणसूत्रों (Chromosomes) की संख्या होती है—", o: ["24", "46", "48", "इनमें से कोई नहीं"], a: 3, e: `<b>हल:</b> मानव डिम्ब (Ovum/मादा अंडाणु) में गुणसूत्रों की संख्या ठीक 23 होती है। चूँकि विकल्पों में 23 नहीं है, इसलिए उत्तर 'इनमें से कोई नहीं' होगा।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>मनुष्य की सामान्य शारीरिक कोशिकाओं (Somatic cells) में 46 गुणसूत्र (23 जोड़े) होते हैं।</li><li>लेकिन प्रजनन कोशिकाएं या गैमीट्स (पुरुषों में शुक्राणु और महिलाओं में डिम्ब) अर्धसूत्री विभाजन (Meiosis) द्वारा बनती हैं, इसलिए वे 'अगुणित' (Haploid) होती हैं और उनमें गुणसूत्रों की संख्या आधी (केवल 23) रह जाती है।</li><li>जब 23 गुणसूत्र वाला डिम्ब 23 गुणसूत्र वाले शुक्राणु से मिलता है (निषेचन/Fertilization), तो बनने वाले भ्रूण (Zygote) में फिर से 46 गुणसूत्र हो जाते हैं।</li><li>चिंपैंजी और आलू में 48 गुणसूत्र होते हैं।</li><li>गुणसूत्रों की खोज विल्हेल्म वॉन वाल्डेयर ने की थी; ये DNA और हिस्टोन प्रोटीन से बने होते हैं।</li></ul>` },
+        { q: "हशीश (Hashish) पौधे से प्राप्त की जाती है। यह बताइए कि वह पौधे के किस भाग से प्राप्त की जाती है?", o: ["पत्तियों से", "तने से", "पत्तियों और मादा पुष्प-क्रम के निःस्राव से", "तने तथा नर पुष्प-क्रम के निःस्राव से"], a: 2, e: `<b>हल:</b> मादक पदार्थ 'हशीश' (चरस) भांग के पौधे की 'पत्तियों और मादा पुष्प-क्रम (Female inflorescence) के रेजिन (निःस्राव)' से प्राप्त की जाती है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>भांग के पौधे का वैज्ञानिक नाम 'कैनाबिस सैटिवा' (Cannabis sativa) है।</li><li>हशीश या चरस इस पौधे से निकलने वाला एक गाढ़ा, चिपचिपा रेजिन (Resin) है जिसमें नशीले तत्व सबसे अधिक केंद्रित होते हैं।</li><li>इसी पौधे की सूखी पत्तियों को पीसकर 'भांग' (Bhang) बनाई जाती है (जो भारत में शिवरात्रि पर काफी प्रचलित है)।</li><li>इसी पौधे के सूखे फूलों और कलियों को 'गांजा' (Marijuana/Weed) कहा जाता है।</li><li>इसमें नशा पैदा करने वाला मुख्य रासायनिक यौगिक 'THC' (Tetrahydrocannabinol) होता है।</li></ul>` },
+        { q: "निम्नलिखित में से शरीर का वह अंग कौन-सा है जो कभी भी विश्राम (Rest) नहीं करता?", o: ["आँखें", "अग्न्याशय", "यकृत", "हृदय"], a: 3, e: `<b>हल:</b> मानव शरीर का वह अंग जो मां के गर्भ से लेकर मृत्यु तक कभी आराम नहीं करता, वह 'हृदय' (Heart) है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>हमारा हृदय एक विशेष प्रकार की 'हृद पेशियों' (Cardiac muscles) से बना होता है, जो बिना थके लगातार सिकुड़ने और फैलने का काम करती हैं।</li><li>एक सामान्य वयस्क मनुष्य का हृदय 1 मिनट में औसतन 72 बार धड़कता है।</li><li>हृदय एक दिन में लगभग 100,000 बार धड़कता है और शरीर में लगभग 7,600 लीटर खून पंप करता है।</li><li>यकृत (Liver) शरीर की सबसे बड़ी ग्रंथि है जिसमें पुनर्जन्म (Regeneration) की सबसे ज्यादा क्षमता होती है।</li><li>मस्तिष्क (Brain) भी सोते समय काम करता रहता है, लेकिन हृदय एक ऐसा मांसपेशीय अंग (Pumping organ) है जो यांत्रिक रूप से कभी रुकता नहीं है।</li></ul>` },
+        { q: "किसकी उपस्थिति के कारण किसी पादप-कोशिका और पशु-कोशिका में अंतर पाया जाता है?", o: ["कोशिका-भित्ति", "क्लोरोप्लास्ट्स", "कोशिका-कला", "केंद्रक"], a: 0, e: `<b>हल:</b> पादप कोशिका (Plant cell) और जंतु कोशिका (Animal cell) के बीच सबसे बड़ा और स्पष्ट अंतर 'कोशिका भित्ति' (Cell Wall) की उपस्थिति है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>पौधों की कोशिकाओं के बाहर एक मजबूत 'कोशिका भित्ति' होती है, जो 'सेलूलोज़' (Cellulose) की बनी होती है। जंतु कोशिकाओं में यह बिल्कुल नहीं पाई जाती।</li><li>क्लोरोप्लास्ट्स (हरित लवक) भी केवल पादप कोशिकाओं में पाए जाते हैं (जो प्रकाश-संश्लेषण करते हैं), लेकिन जड़ जैसी कुछ पादप कोशिकाओं में ये नहीं होते। इसलिए कोशिका भित्ति अधिक सार्वभौमिक अंतर है।</li><li>जंतु कोशिका की सबसे बाहरी परत 'कोशिका झिल्ली' (Cell membrane / कोशिका-कला) होती है (जो पौधों में कोशिका भित्ति के अंदर होती है)।</li><li>पादप कोशिकाओं में एक बहुत बड़ी 'रिक्तिका' (Vacuole) होती है, जबकि जंतु कोशिकाओं में ये बहुत छोटी होती हैं।</li><li>कवक (Fungus) की कोशिका भित्ति 'काइटिन' (Chitin) की बनी होती है।</li></ul>` },
+        { q: "'पराग ज्वर' (Hay fever) निम्नलिखित में से किसका लक्षण है?", o: ["कुपोषण", "एलर्जी", "वृद्धावस्था", "कार्याधिक्य"], a: 1, e: `<b>हल:</b> 'पराग ज्वर' (Hay fever) शरीर के इम्यून सिस्टम द्वारा उत्पन्न एक प्रकार की 'एलर्जी' (Allergy) का लक्षण है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>इसे मेडिकल भाषा में 'एलर्जिक राइनाइटिस' (Allergic rhinitis) कहा जाता है।</li><li>यह मुख्य रूप से वसंत ऋतु (Spring season) में होता है जब हवा में पेड़ों और फूलों के छोटे-छोटे पराग कण (Pollen grains) बहुत अधिक मात्रा में उड़ रहे होते हैं।</li><li>जब ये पराग कण नाक में जाते हैं, तो शरीर का प्रतिरक्षा तंत्र अति-प्रतिक्रिया (Overreact) करता है, जिससे हिस्टामाइन (Histamine) रसायन रिलीज होता है।</li><li>इसके लक्षणों में लगातार छींक आना, नाक बहना, और आंखों में खुजली व पानी आना शामिल है।</li><li>अस्थमा (Asthma) भी धूल और धुएं से होने वाली श्वास नली की एक गंभीर एलर्जी है।</li></ul>` },
+        { q: "निम्नलिखित में से कृषि की उस शाखा को क्या कहा जाता है जो पालतू पशुओं के चारे, आश्रय, स्वास्थ्य तथा प्रजनन से संबंधित होती है?", o: ["डेरी विज्ञान", "पशुचिकित्सा विज्ञान", "कुक्कुटपालन", "पशुपालन (एनीमल हसबेंड्री)"], a: 3, e: `<b>हल:</b> पालतू पशुओं (गाय, भैंस, बकरी आदि) के वैज्ञानिक ढंग से चारे, आश्रय और प्रजनन की देखरेख करने की शाखा को 'पशुपालन' (Animal Husbandry) कहा जाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>यह कृषि (Agriculture) की ही एक बहुत महत्वपूर्ण शाखा है जो किसानों को अतिरिक्त आय प्रदान करती है।</li><li>'पशुचिकित्सा विज्ञान' (Veterinary science) केवल पशुओं की बीमारियों और उनके इलाज से संबंधित है, जबकि पशुपालन उनके पूरे जीवन-यापन का प्रबंधन है।</li><li>'कुक्कुटपालन' (Poultry farming) विशेष रूप से मुर्गियों, बत्तखों (अंडे और मांस के लिए) के पालन को कहा जाता है।</li><li>'डेरी विज्ञान' दुधारू पशुओं के दूध उत्पादन और उसके प्रसंस्करण (Processing) पर केंद्रित है।</li><li>भारत दुनिया का सबसे बड़ा दूध उत्पादक देश है, जिसका मुख्य श्रेय ऑपरेशन फ्लड (श्वेत क्रांति) को जाता है।</li></ul>` },
+        { q: "एडवर्ड जेनर निम्नलिखित में से किस बीमारी से जुड़े हैं?", o: ["विषूचिका (हैजा)", "आन्त्रज्वर", "चेचक", "लकवा"], a: 2, e: `<b>हल:</b> महान वैज्ञानिक एडवर्ड जेनर (Edward Jenner) ने दुनिया का सबसे पहला टीका 'चेचक' (Smallpox) की बीमारी के लिए बनाया था।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>चेचक एक बहुत ही खतरनाक और संक्रामक वायरल बीमारी थी, जिससे शरीर पर दर्दनाक दाने (फफोले) हो जाते थे।</li><li>एडवर्ड जेनर ने 1796 में देखा कि जिन ग्वालिनों (गाय का दूध निकालने वालों) को 'काउपॉक्स' (Cowpox - गायों की हल्की बीमारी) हो गया था, उन्हें भयंकर चेचक की बीमारी नहीं होती थी।</li><li>इसी आधार पर उन्होंने काउपॉक्स के वायरस से चेचक का टीका (Vaccine) विकसित किया।</li><li>'वैक्सीन' (Vaccine) शब्द भी लैटिन शब्द 'Vacca' से बना है, जिसका अर्थ गाय (Cow) होता है।</li><li>एडवर्ड जेनर को "इम्यूनोलॉजी का पिता" (Father of Immunology) कहा जाता है। 1980 में WHO ने चेचक को दुनिया से पूरी तरह खत्म (Eradicated) घोषित कर दिया था।</li></ul>` },
+        { q: "संयुक्त पर्ण (Compound leaf) वाला पौधा होता है-", o: ["पपीता", "नारियल", "पीपल", "जवाकुसुम"], a: 1, e: `<b>हल:</b> दिए गए विकल्पों में 'नारियल' (Coconut) का पौधा संयुक्त पर्ण (Compound leaf) का एक उत्कृष्ट उदाहरण है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>वनस्पति विज्ञान में पत्तियां दो प्रकार की होती हैं: सरल पत्ती (Simple leaf) और संयुक्त पत्ती (Compound leaf)।</li><li>सरल पत्ती में पत्ती का फलक (Leaf blade) पूरा एक होता है (जैसे आम, पीपल, पपीता, गुड़हल/जवाकुसुम)।</li><li>संयुक्त पत्ती में पत्ती का फलक कट कर कई छोटे-छोटे टुकड़ों (Leaflets) में बंट जाता है, जो एक मुख्य डंठल (Rachis) से जुड़े होते हैं।</li><li>नारियल, खजूर, नीम, और गुलाब के पौधों की पत्तियां संयुक्त (Compound) होती हैं।</li><li>नारियल के फल (Endosperm) के अंदर का तरल भाग ही हम पीते हैं, जो वास्तव में तरल भ्रूणपोष है।</li></ul>` }
+    ];
+
+    let state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+    let timerInterval = null;
+    let isPaused = false;
+
+    window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+    function initDashboard() {
+        showScreen('dashboard-screen');
+        let completedData = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) completedData = JSON.parse(dataStr);
+        } catch(e) {}
+
+        if (completedData) {
+            document.getElementById('dash-unattempted').style.display = 'none';
+            document.getElementById('dash-attempted').style.display = 'block';
+            document.getElementById('dash-score-text').innerText = `${completedData.score}/25.0 Marks . 1.5K/2.9K Rank`;
+            document.getElementById('dash-progress-bar').style.width = `${(completedData.score / 25) * 100}%`;
+        } else {
+            document.getElementById('dash-attempted').style.display = 'none';
+            document.getElementById('dash-unattempted').style.display = 'block';
+        }
+    }
+
+    function startTest() {
+        let saved = null;
+        try {
+            const savedStr = safeGetItem(STORAGE_KEY);
+            if(savedStr) saved = JSON.parse(savedStr);
+        } catch(e){}
+
+        if (saved && !saved.submitted) {
+            state = saved;
+        } else {
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+        }
+        initTestEnv();
+    }
+
+    function reattemptTest() {
+        if(confirm("Are you sure you want to start a fresh test? Your active progress will be lost.")) {
+            safeRemoveItem(STORAGE_KEY);
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+            initTestEnv();
+        }
+    }
+
+    function initTestEnv() {
+        showScreen('test-screen');
+        renderQuestion();
+        renderPalette();
+        updateStats();
+        
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+        setInterval(() => { if(!state.submitted) safeSetItem(STORAGE_KEY, JSON.stringify(state)); }, 2000);
+    }
+
+    function viewSavedResults() {
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(data) renderResultUI(data);
+    }
+
+    function showDashboard() { initDashboard(); }
+
+    function showScreen(id) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+    }
+
+    function updateTimer() {
+        if(isPaused || state.submitted) return;
+        if(state.time <= 0) { submitTest(); return; }
+        state.time--;
+        const m = Math.floor(state.time / 60), s = state.time % 60;
+        document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+    }
+
+    function toggleTheme() {
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    function renderQuestion() {
+        state.visited[state.currentQ] = true;
+        const q = finalQuestions[state.currentQ];
+        document.getElementById('q-no').innerText = `Question ${state.currentQ + 1}`;
+        document.getElementById('q-text').innerHTML = q.q;
+        let opts = '';
+        q.o.forEach((opt, i) => {
+            const isSel = state.answers[state.currentQ] === i;
+            const selClass = isSel ? 'selected' : '';
+            const charLabel = String.fromCharCode(65 + i);
+            opts += `<div class="glass-panel option ${selClass}" onclick="selectOption(${i})"><div class="opt-label">${charLabel}</div><div style="flex:1;">${opt}</div></div>`;
+        });
+        document.getElementById('options-box').innerHTML = opts;
+        
+        renderPalette();
+        updateStats();
+    }
+
+    function selectOption(index) { state.answers[state.currentQ] = index; renderQuestion(); }
+    function clearResponse() { delete state.answers[state.currentQ]; delete state.marked[state.currentQ]; renderQuestion(); }
+    function markReview() { state.marked[state.currentQ] = true; changeQ(1); }
+    function saveNext() { delete state.marked[state.currentQ]; changeQ(1); }
+
+    function changeQ(step) {
+        const next = state.currentQ + step;
+        if(next >= 0 && next < finalQuestions.length) { state.currentQ = next; renderQuestion(); }
+    }
+
+    function renderPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        finalQuestions.forEach((_, i) => {
+            let cls = 's-0';
+            if(state.visited[i]) {
+                if(state.answers[i] !== undefined && state.marked[i]) cls = 's-4';
+                else if(state.marked[i]) cls = 's-3';
+                else if(state.answers[i] !== undefined) cls = 's-1';
+                else cls = 's-2';
+            }
+            const active = i === state.currentQ ? 'active' : '';
+            grid.innerHTML += `<button class="p-btn ${cls} ${active}" onclick="state.currentQ = ${i}; renderQuestion();">${i + 1}</button>`;
+        });
+    }
+
+    function updateStats() {
+        let ans=0, notans=0, notvis=0, mark=0;
+        finalQuestions.forEach((_, i) => {
+            if(!state.visited[i]) notvis++;
+            else if(state.marked[i]) mark++;
+            else if(state.answers[i] !== undefined) ans++;
+            else notans++;
+        });
+        document.getElementById('c-ans').innerText = ans; document.getElementById('c-notans').innerText = notans;
+        document.getElementById('c-notvis').innerText = notvis; document.getElementById('c-mark').innerText = mark;
+    }
+
+    function submitTest() {
+        if(!confirm("Are you sure you want to submit the test?")) return;
+        state.submitted = true; clearInterval(timerInterval);
+        let score=0, attempt=0, wrong=0;
+        finalQuestions.forEach((q, i) => {
+            if(state.answers[i] !== undefined) {
+                attempt++;
+                if(state.answers[i] === q.a) score++; else wrong++;
+            }
+        });
+        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const completedData = { score: score, attempted: attempt, wrong: wrong, time: state.time, date: today, userAnswers: state.answers };
+        
+        safeSetItem(COMPLETED_KEY, JSON.stringify(completedData));
+        safeRemoveItem(STORAGE_KEY);
+        
+        renderResultUI(completedData);
+    }
+
+    function renderResultUI(data) {
+        showScreen('result-screen');
+        const acc = data.attempted > 0 ? ((data.score / data.attempted) * 100).toFixed(1) : 0;
+        document.getElementById('r-score').innerText = `${data.score}`;
+        document.getElementById('r-attempt').innerText = data.attempted;
+        document.getElementById('r-wrong').innerText = data.wrong;
+        document.getElementById('r-acc').innerText = `${acc}%`;
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(!data) return;
+
+        let html = '';
+        finalQuestions.forEach((q, i) => {
+            const uAns = data.userAnswers[i];
+            let optHtml = '';
+            q.o.forEach((opt, oIdx) => {
+                let cls = '', checkMark = '';
+                if(oIdx === q.a) { cls = 'correct'; checkMark = ' ✔'; }
+                else if(oIdx === uAns && uAns !== q.a) { cls = 'wrong'; checkMark = ' ❌ (Your Answer)'; }
+                optHtml += `<div class="glass-panel sol-opt ${cls}"><strong>${String.fromCharCode(65 + oIdx)}.</strong> <div style="flex:1;">${opt} ${checkMark}</div></div>`;
+            });
+            let statusText = uAns !== undefined ? (uAns === q.a ? "हल किया (Correct)" : "हल किया (Incorrect)") : "हल नहीं किया (Unattempted)";
+            html += `<div class="glass-panel sol-card"><div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--primary);">प्र ${i+1}. ${q.q}</div>${optHtml}<div style="font-weight:bold; margin:15px 0; color:var(--text-muted);">Status: ${statusText}</div><div class="glass-panel sol-exp">${q.e}</div></div>`;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+
+    function downloadPDF() {
+        const element = document.getElementById('sol-container');
+        
+        const actionButtons = element.previousElementSibling;
+        actionButtons.style.display = 'none';
+
+        const opt = {
+            margin:       10,
+            filename:     'Science_Test_13_Solutions.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) document.documentElement.setAttribute('data-theme', 'light');
+        
+        html2pdf().set(opt).from(element).save().then(() => {
+            if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
+            actionButtons.style.display = 'flex';
+        });
+    }
+</script>
+</body>
+</html>

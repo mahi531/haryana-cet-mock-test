@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HSSC Group D Science Test 11</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg-grad-1: #4facfe; --bg-grad-2: #00f2fe; --bg-grad-3: #a18cd1; --bg-grad-4: #fbc2eb;
+            --glass-bg: rgba(255, 255, 255, 0.9); --glass-border: rgba(255, 255, 255, 0.6); --glass-shadow: rgba(31, 38, 135, 0.15);
+            --text-main: #1f2937; --text-muted: #64748b;
+            --primary: #2563eb; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --purple: #8b5cf6;
+            --option-bg: rgba(243, 244, 246, 0.8); --option-selected: rgba(219, 234, 254, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+        [data-theme="dark"] {
+            --bg-grad-1: #0f2027; --bg-grad-2: #203a43; --bg-grad-3: #2c5364; --bg-grad-4: #141e30;
+            --glass-bg: rgba(17, 25, 40, 0.85); --glass-border: rgba(255, 255, 255, 0.15); --glass-shadow: rgba(0, 0, 0, 0.5);
+            --text-main: #f9fafb; --text-muted: #94a3b8;
+            --primary: #3b82f6; 
+            --option-bg: rgba(55, 65, 81, 0.7); --option-selected: rgba(30, 58, 138, 0.8);
+            --card-bg: rgba(31, 41, 55, 0.95);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; touch-action: manipulation;}
+        
+        body { 
+            height: 100vh; height: 100dvh; 
+            background: linear-gradient(45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3), var(--bg-grad-4)); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+            color: var(--text-main); 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 var(--glass-shadow); border-radius: 12px; }
+        
+        .btn { font-family: 'Poppins', sans-serif; background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;}
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-warning { background: var(--warning); color: #fff;}
+        .btn-clear { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-mark { background: var(--purple); color: white; }
+        .btn-prev { background: var(--text-muted); color: white; }
+
+        .screen { display: none; flex-direction: column; height: 100%; width: 100vw; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; }
+
+        #dashboard-screen { overflow-y: auto; background: var(--card-bg); align-items: center; padding-bottom: 30px;}
+        .dash-header-top { background: #1e293b; color: white; width: 100%; padding: 15px 20px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 15px; position: sticky; top:0; z-index: 100;}
+        .dash-content { width: 100%; max-width: 800px; padding: 20px; }
+        .section-title { font-weight: 600; color: var(--primary); margin: 15px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 15px; }
+        .dash-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--glass-border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .test-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text-main);}
+        .test-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        .progress-container { width: 100%; height: 6px; background: var(--glass-border); border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #fbc02d; width: 0%; transition: width 0.5s ease;}
+        .dash-actions { display: flex; gap: 12px; margin-top: 15px; }
+        .dash-actions .btn { flex: 1; padding: 10px; font-size: 14px; border-radius: 8px;}
+        .syllabus-footer { display: flex; justify-content: space-between; font-size: 12px; color: var(--primary); border-top: 1px solid var(--glass-border); padding-top: 12px; margin-top: 15px; }
+
+        header.test-head { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-bottom: 10px; margin-inline: 10px; }
+        .header-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: 700; background: var(--card-bg); border: 1px solid var(--glass-border); color: var(--danger); padding: 5px 12px; border-radius: 20px; }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 0 10px 10px 10px; }
+        .question-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .q-header { padding: 10px 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
+        .q-body { flex: 1; padding: 15px; overflow-y: auto; font-size: 16px; line-height: 1.6; }
+        
+        .options-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;}
+        .option { padding: 12px; border: 2px solid var(--glass-border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--option-bg); font-weight: 500; font-size: 15px;}
+        .option.selected { border-color: var(--primary); background: var(--option-selected); color: var(--primary); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--glass-border); display: flex; justify-content: center; align-items: center; font-weight: bold; }
+        .option.selected .opt-label { background: var(--primary); color: white; border-color: var(--primary);}
+        
+        .q-footer { padding: 10px; border-top: 1px solid var(--glass-border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-radius: 0 0 12px 12px; }
+
+        .palette-section { width: 320px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .palette-header { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; font-weight: bold; font-size: 15px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; font-size: 12px; border-bottom: 1px solid var(--glass-border); font-weight: 500;}
+        .stat-item { display: flex; align-items: center; gap: 6px;}
+        .badge { width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 10px; font-weight: bold;}
+        .s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);} 
+        .s-1 { background: var(--success); } .s-2 { background: var(--danger); } .s-3 { background: var(--purple); } 
+        .s-4 { background: var(--primary); position: relative; }
+        .s-4::after { content: '✔'; position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; background: white; color: var(--primary); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 8px; }
+        
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .p-btn.s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);}
+        .p-btn.active { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.1);}
+        .submit-area { padding: 10px; border-top: 1px solid var(--glass-border); border-radius: 0 0 12px 12px;}
+
+        #result-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        #solution-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        .sol-card { padding: 20px; margin-bottom: 15px; width: 100%; max-width: 800px; page-break-inside: avoid;}
+        .sol-opt { padding: 10px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; gap: 10px; align-items: center; font-size: 15px; background: var(--card-bg);}
+        .sol-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); text-decoration: line-through;}
+        .sol-exp { margin-top: 15px; padding: 15px; background: rgba(37, 99, 235, 0.05); border: 1px solid var(--glass-border); border-left: 4px solid var(--primary); border-radius: 8px; font-size: 14.5px; line-height: 1.6; }
+        .sol-exp ul { padding-left: 20px; margin-top: 8px; }
+        .sol-exp li { margin-bottom: 6px; }
+
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+
+        @media (max-width: 992px) {
+            .main-area { flex-direction: column; overflow-y: auto;}
+            .question-section { flex: none; min-height: 450px;}
+            .palette-section { width: 100%; flex: none; min-height: 350px;}
+            .q-footer .btn { padding: 10px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <div id="dashboard-screen" class="screen active">
+        <div class="dash-header-top">
+            <span style="cursor: pointer;" onclick="alert('Going Back')">&#8592;</span>
+            HSSC CET - Mock Tests
+        </div>
+
+        <div class="dash-content">
+            <div id="dash-unattempted" style="display: none;">
+                <div class="section-title">Suggested Next Test</div>
+                <div class="dash-card">
+                    <div class="test-title">Science Test Number 11 (Physics Special)</div>
+                    <div class="test-meta">
+                        <span>25 Qs • 25 mins • 25.0 Marks</span>
+                    </div>
+                    <div class="test-meta" style="justify-content: flex-end;">
+                        <button class="btn btn-outline" style="padding: 6px 20px; border-radius: 20px;" onclick="startTest()">Start Test 🚀</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span>Syllabus: HSSC Group D - Physics</span>
+                        <span style="color:var(--success);">🔗 Share</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dash-attempted" style="display: none;">
+                <div class="dash-card">
+                    <div class="test-title">Science Test Number 11 (Physics Special)</div>
+                    <div class="test-meta" style="margin-bottom: 5px;">
+                        <span id="dash-score-text" style="font-size: 15px; color: var(--text-muted);">0/25.0 Marks . 1.5K/2.9K Rank</span>
+                    </div>
+                    <div class="progress-container"><div class="progress-fill" id="dash-progress-bar"></div></div>
+                    <div class="dash-actions">
+                        <button class="btn btn-outline" onclick="viewSavedResults()">View Results</button>
+                        <button class="btn btn-outline" onclick="reattemptTest()">Reattempt &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px; font-size: 2rem;">Test Paused ⏸️</h2>
+        <button class="btn btn-primary" style="font-size: 1.2rem; padding: 10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+    </div>
+
+    <div id="test-screen" class="screen">
+        <header class="glass-panel test-head">
+            <div class="header-title">Science Test 11</div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="toggleTheme()">🌓 Theme</button>
+                <button class="btn btn-warning" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="togglePause()">⏸ Pause</button>
+                <div class="timer-box">⏱ <span id="timer-display">25:00</span></div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="glass-panel question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--success); font-weight:bold;">+1 <span style="color: var(--text-muted); font-weight:normal;">|</span> <span style="color: var(--danger);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <button class="btn btn-mark" onclick="markReview()">Mark & Next</button>
+                    <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                    <button class="btn btn-prev" onclick="changeQ(-1)">Previous</button>
+                    <button class="btn btn-primary" onclick="saveNext()">Save & Next</button>
+                </div>
+            </div>
+
+            <div class="glass-panel palette-section">
+                <div class="palette-header">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">25</div> Not Visit</div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn btn-primary" style="width: 100%; background: var(--success); font-size: 15px; padding: 10px;" onclick="submitTest()">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-screen" class="screen">
+        <div style="width: 100%; max-width: 800px; margin-bottom: 15px;"><button class="btn btn-clear" onclick="showDashboard()">&#8592; Back to Dashboard</button></div>
+        <div class="glass-panel" style="max-width: 800px; width: 100%; padding: 25px;">
+            <h1 style="color: var(--primary); text-align: center;">Test Submitted Successfully! 🎉</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 25px 0;">
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-score" style="color: var(--primary); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Score</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-attempt" style="color: var(--success); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Attempted</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-wrong" style="color: var(--danger); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Wrong</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-acc" style="color: var(--purple); font-size: 1.8rem;">0%</h2><p style="color: var(--text-muted); font-size:12px;">Accuracy</p></div>
+            </div>
+            <button class="btn btn-primary" style="width:100%; font-size: 15px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+        </div>
+    </div>
+
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%; margin:0 auto;">
+            <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 12px 15px; position: sticky; top: 5px; z-index: 10;">
+                <h3 style="color: var(--primary);">Detailed Solutions</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" style="padding: 5px 12px; font-size: 13px; background: var(--success);" onclick="downloadPDF()">📥 Download PDF</button>
+                    <button class="btn btn-clear" style="padding: 5px 12px; font-size: 13px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+                </div>
+            </div>
+            <div id="sol-container"></div>
+        </div>
+    </div>
+
+<script>
+    const MEMORY_STORE = {};
+    function safeGetItem(key) { try { return localStorage.getItem(key) || MEMORY_STORE[key] || null; } catch(e) { return MEMORY_STORE[key] || null; } }
+    function safeSetItem(key, value) { try { localStorage.setItem(key, value); } catch(e) {} MEMORY_STORE[key] = value; }
+    function safeRemoveItem(key) { try { localStorage.removeItem(key); } catch(e) {} delete MEMORY_STORE[key]; }
+
+    const STORAGE_KEY = 'hssc_sci_11_active'; 
+    const COMPLETED_KEY = 'hssc_sci_11_comp';
+
+    const finalQuestions = [
+        { q: "तारों के टिमटिमाने का क्या कारण है ?", o: ["प्रकाश का परिक्षेपण", "पूर्ण आंतरिक परावर्तन", "वायुमंडलीय परावर्तन", "वायुमंडलीय अपवर्तन"], a: 3, e: `<b>हल:</b> तारों के टिमटिमाने (Twinkling of stars) का मुख्य कारण 'वायुमंडलीय अपवर्तन' (Atmospheric Refraction) है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>जब तारों का प्रकाश पृथ्वी के वायुमंडल में प्रवेश करता है, तो हवा की अलग-अलग परतों के कारण वह लगातार अपनी दिशा बदलता है।</li><li>वायुमंडल के तापमान और घनत्व में बदलाव के कारण अपवर्तनांक (Refractive index) बदलता रहता है।</li><li>इसी मुड़ने के कारण तारा कभी अधिक चमकीला तो कभी मद्धिम दिखाई देता है, जिसे टिमटिमाना कहते हैं।</li><li>ग्रह (Planets) तारों की तरह नहीं टिमटिमाते क्योंकि वे पृथ्वी के बहुत करीब होते हैं और प्रकाश के बड़े स्रोत के रूप में काम करते हैं।</li><li>अंतरिक्ष से देखने पर तारे टिमटिमाते हुए नहीं दिखते क्योंकि वहाँ कोई वायुमंडल नहीं है।</li></ul>` },
+        { q: "भूकम्प की तीव्रता मापने वाले यंत्र को कहते हैं—", o: ["इडियोग्राफ", "पैंटोग्राफ", "अर्गोग्राफ", "सीस्मोग्राफ"], a: 3, e: `<b>हल:</b> भूकम्प (Earthquake) की तीव्रता और उसकी तरंगों को मापने के लिए 'सीस्मोग्राफ' (Seismograph) का प्रयोग किया जाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>भूकम्प के अध्ययन को 'सीस्मोलॉजी' (Seismology) कहा जाता है।</li><li>भूकम्प की तीव्रता और ऊर्जा मापने के लिए 'रिक्टर स्केल' (Richter Scale) का उपयोग किया जाता है (0 से 9 के बीच)।</li><li>भूकम्प से होने वाले नुकसान (Intensity) को मापने के लिए 'मरकैली स्केल' (Mercalli scale) का प्रयोग होता है।</li><li>जिस बिंदु से भूकम्प की शुरुआत होती है, उसे 'उद्गम केंद्र' (Focus या Hypocenter) कहते हैं।</li><li>पृथ्वी की सतह पर फोकस के ठीक ऊपर के बिंदु को 'अधिकेंद्र' (Epicenter) कहा जाता है, जहाँ सबसे ज्यादा नुकसान होता है।</li></ul>` },
+        { q: "बहुलमापी (Multimeter) का प्रयोग किसे मापने के लिए किया जाता है?", o: ["धारा", "वोल्टता", "प्रतिरोध", "उपर्युक्त सभी"], a: 3, e: `<b>हल:</b> बहुलमापी (Multimeter) का प्रयोग धारा (Current), वोल्टता (Voltage), और प्रतिरोध (Resistance) तीनों को मापने के लिए किया जाता है। इसलिए 'उपर्युक्त सभी' सही उत्तर है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>मल्टीमीटर को VOM (Volt-Ohm-Milliammeter) भी कहा जाता है।</li><li>विद्युत धारा (Current) को मापने की इकाई 'एम्पीयर' (Ampere) है।</li><li>वोल्टेज (विभवान्तर) को मापने की इकाई 'वोल्ट' (Volt) है।</li><li>प्रतिरोध (Resistance) को मापने की इकाई 'ओम' (Ohm) है।</li><li>आजकल डिजिटल मल्टीमीटर (DMM) का सबसे ज्यादा उपयोग होता है, जो टूटे हुए तार (Continuity) की भी जाँच कर सकता है।</li></ul>` },
+        { q: "श्वेत प्रकाश को भिन्न-भिन्न रंगों में विभक्त करने के लिए निम्नलिखित में से किसका प्रयोग किया जाता है ?", o: ["काँच की सिल्ली", "उत्तल लेन्स", "अवतल लेन्स", "प्रिज्म"], a: 3, e: `<b>हल:</b> श्वेत प्रकाश (White light) को उसके सात अलग-अलग रंगों में विभक्त करने के लिए 'प्रिज्म' (Prism) का प्रयोग किया जाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>प्रकाश के अपने अवयवी रंगों में टूटने की इस घटना को प्रकाश का 'परिक्षेपण' (Dispersion of light) कहते हैं।</li><li>सबसे पहले सर आइजैक न्यूटन ने प्रिज्म का उपयोग करके यह सिद्ध किया था कि सूर्य का प्रकाश सात रंगों (VIBGYOR) से बना है।</li><li>इस स्पेक्ट्रम में लाल रंग का झुकाव सबसे कम होता है क्योंकि इसकी तरंगदैर्ध्य (Wavelength) सबसे अधिक होती है।</li><li>बैंगनी (Violet) रंग का झुकाव (विचलन) सबसे अधिक होता है।</li><li>आसमान में इंद्रधनुष (Rainbow) बनना भी प्रकाश के परिक्षेपण, अपवर्तन और पूर्ण आंतरिक परावर्तन का एक प्राकृतिक उदाहरण है।</li></ul>` },
+        { q: "विद्युत् उत्पादन के लिए प्रयुक्त नाभिकीय रिएक्टर आधारित हैं—", o: ["नाभिकीय विखण्डन पर", "नाभिकीय संलयन पर", "शीत संलयन पर", "अतिचालकता पर"], a: 0, e: `<b>हल:</b> परमाणु ऊर्जा संयंत्रों (Nuclear Reactors) में बिजली बनाने के लिए 'नाभिकीय विखण्डन' (Nuclear Fission) की प्रक्रिया का उपयोग किया जाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>नाभिकीय विखण्डन में एक भारी तत्व (जैसे यूरेनियम-235) का नाभिक दो हल्के नाभिकों में टूटता है और भारी मात्रा में ऊर्जा निकालता है।</li><li>रिएक्टर में इस 'चेन रिएक्शन' (श्रृंखला अभिक्रिया) को नियंत्रित किया जाता है।</li><li>न्यूट्रॉनों की गति को धीमा करने के लिए 'मंदक' (Moderator) के रूप में भारी जल (D2O) या ग्रेफाइट का उपयोग होता है।</li><li>अभिक्रिया को कंट्रोल करने के लिए 'कैडमियम' या 'बोरॉन' की छड़ों (Control rods) का प्रयोग किया जाता है।</li><li>सूर्य और तारों की अपार ऊर्जा का स्रोत 'नाभिकीय संलयन' (Nuclear Fusion) है, विखण्डन नहीं।</li></ul>` },
+        { q: "निमज्जित (पानी में डूबी) वस्तुओं का पता लगाने के लिए किस उपकरण का प्रयोग किया जाता है?", o: ["राडार", "सोनार", "क्वार्सर", "पल्सर"], a: 1, e: `<b>हल:</b> समुद्र के अंदर डूबी हुई वस्तुओं (जैसे पनडुब्बी, बर्फ के पहाड़ या डूबे हुए जहाज) का पता लगाने के लिए 'सोनार' (SONAR) का प्रयोग किया जाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>SONAR का पूरा नाम "Sound Navigation and Ranging" है।</li><li>सोनार में 'पराश्रव्य तरंगों' (Ultrasonic waves) का उपयोग किया जाता है, जिनकी आवृत्ति 20,000 Hz से अधिक होती है।</li><li>यह तरंगे पानी में किसी वस्तु से टकराकर वापस लौटती हैं (Echo), जिससे उसकी दूरी और दिशा का पता चल जाता है।</li><li>हवा में उड़ते हुए हवाई जहाजों का पता लगाने के लिए 'रडार' (RADAR) का प्रयोग किया जाता है (जो रेडियो तरंगों पर काम करता है)।</li><li>समुद्र के जल में ध्वनि की चाल लगभग 1500 मीटर प्रति सेकंड होती है।</li></ul>` },
+        { q: "प्रकाश के परिक्षेपण (Dispersion) का अध्ययन करने के लिए निम्नलिखित में से किस उपकरण का प्रयोग किया जाता है ?", o: ["सूक्ष्मदर्शी", "दूरबीन", "स्पेक्ट्रोमीटर", "फोटोमीटर"], a: 2, e: `<b>हल:</b> प्रकाश के परिक्षेपण (विभिन्न रंगों में टूटना) और स्पेक्ट्रम का बारीक अध्ययन करने के लिए 'स्पेक्ट्रोमीटर' (Spectrometer) का प्रयोग किया जाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>स्पेक्ट्रोमीटर प्रकाश की तरंगदैर्ध्य (Wavelength) और उसकी तीव्रता को मापता है।</li><li>इसका उपयोग यह जानने के लिए किया जाता है कि किसी तारे या पदार्थ से कौन-सी गैसें या तत्व प्रकाश उत्सर्जित कर रहे हैं।</li><li>इस उपकरण में आम तौर पर एक प्रिज्म (Prism) या विवर्तन ग्रेटिंग (Diffraction grating) लगा होता है।</li><li>सूक्ष्मदर्शी (Microscope) छोटी वस्तुओं को बड़ा देखने के लिए इस्तेमाल होता है।</li><li>फोटोमीटर (Photometer) प्रकाश की तीव्रता (Illuminance / Intensity) मापने के काम आता है।</li></ul>` },
+        { q: "फाउंटेन पेन किस सिद्धान्त पर काम करता है ?", o: ["द्रवों का उच्च से निम्न विभव की ओर प्रवाह", "केशिका क्रिया", "बर्नूली का सिद्धान्त", "द्रवों की श्यानता"], a: 1, e: `<b>हल:</b> फाउंटेन पेन (Fountain Pen) मुख्य रूप से 'केशिका क्रिया' (Capillary Action / केशिकत्व) के सिद्धान्त पर काम करता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>केशिका क्रिया का अर्थ है किसी बहुत पतली नली (Capillary tube) में द्रव का स्वतः ऊपर या नीचे चढ़ना।</li><li>फाउंटेन पेन की निब में एक बारीक चीरा (Slit) होता है, जो केशिका नली की तरह काम करता है और इंक को लगातार निब की नोक तक लाता है।</li><li>लालटेन या दीये की बत्ती में तेल का ऊपर चढ़ना भी केशिका क्रिया का ही उदाहरण है।</li><li>पौधों की जड़ों से पानी का पत्तियों तक पहुँचना भी इसी क्रिया (जाइलम ऊतकों में) द्वारा होता है।</li><li>स्याही सोखने वाले कागज (Blotting paper) भी केशिका क्रिया के कारण ही काम करते हैं।</li></ul>` },
+        { q: "पिक्नोमीटर नामक उपकरण का प्रयोग किसे मापने के लिए किया जाता है ?", o: ["घनत्व", "सौर विकिरण की तीव्रता", "भूकम्प की तीव्रता", "उच्च तापमान"], a: 0, e: `<b>हल:</b> पिक्नोमीटर (Pycnometer) का उपयोग मुख्य रूप से द्रवों या ठोस पदार्थों के 'घनत्व' (Density) और 'विशिष्ट गुरुत्व' (Specific gravity) को मापने के लिए किया जाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>यह एक विशेष रूप से डिजाइन की गई कांच की बोतल होती है जिसका आयतन बिल्कुल सटीक होता है।</li><li>घनत्व का सूत्र होता है: घनत्व = द्रव्यमान / आयतन (Density = Mass / Volume)।</li><li>पिक्नोमीटर द्वारा मापन बहुत सटीक होता है क्योंकि इसमें तापमान को भी नियंत्रित रखा जाता है।</li><li>सौर विकिरण मापने के लिए 'पाइरेलियोमीटर' (Pyrheliometer) का प्रयोग होता है।</li><li>बहुत अधिक तापमान (जैसे भट्ठी या सूर्य का तापमान) मापने के लिए 'पाइरोमीटर' (Pyrometer) का इस्तेमाल होता है।</li></ul>` },
+        { q: "फाइबर ऑप्टिक्स किस सिद्धान्त पर काम करते हैं?", o: ["प्रकाश प्रकीर्णन", "पूर्ण आन्तरिक अवशोषण", "पूर्ण आन्तरिक परावर्तन", "ध्रुवण घूर्णन"], a: 2, e: `<b>हल:</b> ऑप्टिकल फाइबर (Optical Fibres) 'प्रकाश के पूर्ण आन्तरिक परावर्तन' (Total Internal Reflection - TIR) के सिद्धान्त पर काम करते हैं।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>पूर्ण आन्तरिक परावर्तन तभी होता है जब प्रकाश सघन माध्यम (Denser medium) से विरल माध्यम (Rarer medium) में जा रहा हो।</li><li>इसके लिए आपतन कोण (Angle of incidence) का मान 'क्रांतिक कोण' (Critical angle) से अधिक होना चाहिए।</li><li>ऑप्टिकल फाइबर का उपयोग हाई-स्पीड इंटरनेट और टेलीकम्युनिकेशन में डेटा ट्रांसफर के लिए किया जाता है।</li><li>मेडिकल क्षेत्र में पेट के अंदर की जांच के लिए 'एंडोस्कोपी' (Endoscopy) में भी ऑप्टिकल फाइबर का ही इस्तेमाल होता है।</li><li>रेगिस्तान में मृगमरीचिका (Mirage) का दिखना और हीरे का चमकना भी पूर्ण आन्तरिक परावर्तन के ही उदाहरण हैं।</li></ul>` },
+        { q: "डेसिबल क्या है ?", o: ["एक संगीत वाद्य", "शोर का तरंगदैर्ध्य", "संगीत का एक स्वर", "ध्वनि स्तर का एक माप"], a: 3, e: `<b>हल:</b> डेसिबल (Decibel - dB) 'ध्वनि स्तर' (तीव्रता/Intensity of sound) को मापने की एक इकाई है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>इस इकाई का नाम टेलीफोन के आविष्कारक 'अलेक्जेंडर ग्राहम बेल' के सम्मान में रखा गया है।</li><li>सामान्य बातचीत का ध्वनि स्तर लगभग 60 डेसिबल (dB) होता है।</li><li>80 डेसिबल (dB) से अधिक की ध्वनि लगातार सुनने पर कानों के लिए हानिकारक होती है और इसे 'शोर' (Noise pollution) माना जाता है।</li><li>विश्व स्वास्थ्य संगठन (WHO) के अनुसार, दिन के समय सुरक्षित ध्वनि स्तर 45 dB होना चाहिए।</li><li>डेसिबल एक लघुगणकीय (Logarithmic) पैमाना है, यानी 20 dB की आवाज 10 dB से 10 गुना ज्यादा शक्तिशाली होती है।</li></ul>` },
+        { q: "सुदूर संवेदी युक्ति (Remote Sensing/Control) में एक अंतर्निर्मित स्रोत होता है-", o: ["एक्स-किरण का", "गामा किरण का", "पराबैंगनी किरण का", "अवरक्त किरण का"], a: 3, e: `<b>हल:</b> रिमोट कंट्रोल (सुदूर संवेदी युक्ति) में संकेतों को भेजने के लिए 'अवरक्त किरणों' (Infrared Rays / IR) का स्रोत होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>टीवी, एसी और अन्य घरेलू उपकरणों के रिमोट में एक छोटा LED लगा होता है जो इन्फ्रारेड किरणें छोड़ता है।</li><li>इन्फ्रारेड किरणों की खोज 'विलियम हर्शेल' ने की थी।</li><li>ये किरणें मनुष्य की आँखों को दिखाई नहीं देती हैं, लेकिन मोबाइल के कैमरे से इन्हें देखा जा सकता है।</li><li>इन किरणों का तरंगदैर्ध्य दृश्य प्रकाश (लाल रंग) से अधिक होता है और इनमें 'उष्मीय प्रभाव' (Heating effect) होता है।</li><li>अंधेरे में देखने वाले नाइट विजन कैमरे और मिलिट्री सेंसर भी अवरक्त (IR) तकनीक का ही उपयोग करते हैं।</li></ul>` },
+        { q: "वायुमंडल में प्रायः गर्मी कहाँ से आती है ?", o: ["सूर्यातप", "चालन", "विकिरण", "संवहन"], a: 2, e: `<b>हल:</b> पृथ्वी का वायुमंडल सीधे सूर्य से आने वाली किरणों से गर्म नहीं होता, बल्कि पृथ्वी से वापस लौटने वाले 'विकिरण' (Terrestrial Radiation) से गर्म होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>सूर्य से ऊष्मा पृथ्वी तक 'लघु तरंगों' (Short waves / सूर्यातप) के रूप में आती है, जो वायुमंडल को बिना गर्म किए पार कर जाती हैं।</li><li>पृथ्वी इस ऊष्मा को सोखकर जब वापस अंतरिक्ष में छोड़ती है, तो यह 'दीर्घ तरंग विकिरण' (Long wave radiation) बन जाती है।</li><li>वायुमंडल में मौजूद कार्बन डाइऑक्साइड और जलवाष्प इन दीर्घ तरंगों को सोख लेते हैं, जिससे वायुमंडल नीचे से ऊपर की ओर गर्म होता है।</li><li>इसे 'ग्रीनहाउस प्रभाव' (Greenhouse effect) भी कहते हैं।</li><li>इसलिए पहाड़ों (ऊंचाई) पर जाने पर तापमान घटने लगता है क्योंकि वे ऊष्मा के मुख्य स्रोत (पृथ्वी की सतह) से दूर हो जाते हैं।</li></ul>` },
+        { q: "ए.सी. (AC) को डी.सी. (DC) में रूपांतरित करने के लिए प्रयुक्त साधन को कहते हैं-", o: ["परिणामित्र (Transformer)", "दिष्टकारी (Rectifier)", "प्रेरण तेल", "डायनेमो"], a: 1, e: `<b>हल:</b> प्रत्यावर्ती धारा (AC) को दिष्ट धारा (DC) में बदलने वाले उपकरण को 'दिष्टकारी' (Rectifier) कहा जाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>हमारे घरों में मोबाइल और लैपटॉप के चार्जर के अंदर रेक्टिफायर ही लगा होता है, क्योंकि इन उपकरणों की बैटरी DC से चार्ज होती है।</li><li>रेक्टिफायर बनाने के लिए 'डायोड' (Diodes) का प्रयोग किया जाता है, जो करंट को सिर्फ एक ही दिशा में बहने देते हैं।</li><li>इसका बिल्कुल उल्टा काम (DC को AC में बदलना) 'इन्वर्टर' (Inverter) करता है।</li><li>ट्रांसफॉर्मर (Transformer) AC वोल्टेज को कम या ज्यादा (Step up / Step down) करने का काम करता है, यह AC को DC में नहीं बदलता।</li><li>डायनेमो (Dynamo) या जनरेटर यांत्रिक ऊर्जा (Mechanical energy) को विद्युत ऊर्जा में बदलता है।</li></ul>` },
+        { q: "पराबैंगनी (UV) किरणों में ऊर्जा किसकी अपेक्षा अधिक होती है ?", o: ["अवरक्त किरणों", "गामा किरणों", "एक्स-किरणों", "अंतरिक्षी-किरणों"], a: 0, e: `<b>हल:</b> विद्युत चुम्बकीय स्पेक्ट्रम में पराबैंगनी किरणों (UV rays) की ऊर्जा 'अवरक्त किरणों' (Infrared rays) की अपेक्षा अधिक होती है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>जिस तरंग की आवृत्ति (Frequency) जितनी ज्यादा होती है, उसकी ऊर्जा उतनी ही अधिक होती है।</li><li>ऊर्जा का घटता क्रम: गामा > एक्स-रे > पराबैंगनी (UV) > दृश्य प्रकाश > अवरक्त (IR) > माइक्रोवेव > रेडियो वेव।</li><li>इसलिए गामा किरणों में सबसे ज्यादा ऊर्जा और रेडियो तरंगों में सबसे कम ऊर्जा होती है।</li><li>पराबैंगनी किरणों की ऊर्जा अधिक होने के कारण ही ये हमारी त्वचा को नुकसान पहुंचाकर सनबर्न और स्किन कैंसर का कारण बन सकती हैं।</li><li>समताप मंडल में मौजूद ओजोन परत हानिकारक UV-B और UV-C किरणों को पृथ्वी तक आने से रोकती है।</li></ul>` },
+        { q: "पवन की गति को मापने वाला उपकरण है-", o: ["आल्टीमीटर", "एनीमोमीटर", "क्रोनोमीटर", "डोजीमीटर"], a: 1, e: `<b>हल:</b> वायु या पवन की गति (Wind speed) मापने के लिए 'एनीमोमीटर' (Anemometer) का प्रयोग किया जाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>एनीमोमीटर में छोटे-छोटे कप लगे होते हैं जो हवा के दबाव से घूमते हैं, जिससे हवा की गति का पता चलता है।</li><li>पवन की दिशा (Direction) जानने के लिए 'विंड वेन' (Wind Vane) या पवन सूचक का इस्तेमाल होता है।</li><li>आल्टीमीटर (Altimeter) का प्रयोग हवाई जहाजों में ऊंचाई मापने के लिए किया जाता है।</li><li>क्रोनोमीटर (Chronometer) एक बहुत सटीक घड़ी है, जिसका इस्तेमाल समुद्री जहाजों पर समय और देशांतर (Longitude) जानने के लिए होता है।</li><li>डोजीमीटर (Dosimeter) का उपयोग हानिकारक रेडियोएक्टिव विकिरण (Radiation) की मात्रा मापने के लिए होता है।</li></ul>` },
+        { q: "गुरुत्वाकर्षण नियम की परिभाषा किसने की थी ?", o: ["न्यूटन", "आर्किमिडीज", "गैलिलियो", "फैराडे"], a: 0, e: `<b>हल:</b> गुरुत्वाकर्षण के सार्वत्रिक नियम (Universal Law of Gravitation) की परिभाषा सर 'आइजैक न्यूटन' (Isaac Newton) ने दी थी।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>न्यूटन के अनुसार, ब्रह्मांड में किन्हीं भी दो पिंडों के बीच लगने वाला आकर्षण बल उनके द्रव्यमान के गुणनफल के समानुपाती और उनके बीच की दूरी के वर्ग के व्युत्क्रमानुपाती होता है (F = G*m1*m2/r²)।</li><li>'G' एक सार्वत्रिक गुरुत्वाकर्षण नियतांक है, जिसका मान पूरे ब्रह्मांड में समान (6.674×10⁻¹¹ N⋅m²/kg²) रहता है।</li><li>पृथ्वी का गुरुत्वीय त्वरण (g) का मान 9.8 m/s² होता है, जो भूमध्य रेखा पर न्यूनतम और ध्रुवों पर अधिकतम होता है।</li><li>आर्किमिडीज ने प्लवन (तैरने) का सिद्धांत और उत्प्लावन बल (Buoyancy) के बारे में बताया था।</li><li>गुरुत्वाकर्षण बल प्रकृति के 4 मूल बलों में सबसे कमजोर (Weakest) बल है।</li></ul>` },
+        { q: "तड़ित चालक (Lightning Conductor) बनाने के लिए प्रयुक्त धातु है-", o: ["लोहा", "ऐलुमिनियम", "कॉपर (तांबा)", "जिंक"], a: 2, e: `<b>हल:</b> ऊँची इमारतों को बिजली (तड़ित) गिरने से बचाने वाले तड़ित चालक मुख्य रूप से 'कॉपर' (तांबे) के बनाए जाते हैं।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>तड़ित चालक का आविष्कार अमेरिका के वैज्ञानिक 'बेंजामिन फ्रैंकलिन' (Benjamin Franklin) ने किया था।</li><li>तांबा विद्युत का बहुत अच्छा सुचालक (Good conductor) होता है, जिसके कारण आसमानी बिजली बिना इमारत को नुकसान पहुँचाए तांबे के तार से होकर सीधे जमीन (Earth) में चली जाती है।</li><li>चांदी (Silver) बिजली की सबसे अच्छी सुचालक है, लेकिन महंगी होने के कारण इसका इस्तेमाल नहीं किया जाता।</li><li>तड़ित चालक का ऊपरी हिस्सा नुकीला (त्रिशूल जैसा) बनाया जाता है, ताकि वह बादलों के चार्ज (आवेश) को आसानी से अपनी ओर खींच सके।</li><li>यह 'ग्राउंडिंग' (Grounding / Earthing) के सिद्धांत पर काम करता है।</li></ul>` },
+        { q: "हाइड्रोजन का गुब्बारा ऊपर की ओर मंडराता है क्योंकि—", o: ["ऊँचाई में कमी से वायु दाब घटता है", "वजन में कमी से वायु दाब घटता है", "गुब्बारे का वजन उसके द्वारा विस्थापित वायु के वजन से कम होता है", "गुब्बारे के भीतर का दाब उसके बाहर के दाब से अधिक होता है"], a: 2, e: `<b>हल:</b> हाइड्रोजन से भरा गुब्बारा हवा में इसलिए ऊपर उठता है क्योंकि 'गुब्बारे का कुल वजन उसके द्वारा विस्थापित की गई हवा के वजन से कम होता है'।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>यह 'आर्किमिडीज के उत्प्लावन सिद्धांत' (Principle of Buoyancy) पर आधारित है।</li><li>हाइड्रोजन गैस हवा की तुलना में बहुत हल्की (कम घनत्व वाली) होती है।</li><li>जब गुब्बारे पर नीचे से लगने वाला बल (उत्प्लावन बल/Upthrust) गुब्बारे के अपने भार से ज्यादा हो जाता है, तो वह हवा में तैरने लगता है।</li><li>हाइड्रोजन एक अत्यधिक ज्वलनशील गैस है, इसलिए आजकल गुब्बारों और एयरशिप में इसकी जगह 'हीलियम' (Helium) का प्रयोग किया जाता है, जो सुरक्षित (अक्रिय) और हल्की होती है।</li><li>गर्म हवा के गुब्बारे भी इसी सिद्धांत पर उड़ते हैं क्योंकि गर्म हवा ठंडी हवा से हल्की होती है।</li></ul>` },
+        { q: "अबिंदुकता (Astigmatism) का दोष दूर करने के लिए निम्नलिखित में से किस लेन्स का प्रयोग करना चाहिए?", o: ["सिलिंडरी लेन्स", "अवतल लेन्स", "उत्तल लेन्स", "द्विफोकसी लेन्स"], a: 0, e: `<b>हल:</b> आंखों के 'अबिंदुकता' (Astigmatism / दृष्टि वैषम्य) दोष को दूर करने के लिए 'सिलिंडरी (बेलनाकार) लेन्स' का प्रयोग किया जाता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>यह दोष आँख की 'कॉर्निया' (Cornea) की गोलाई में अनियमितता आ जाने के कारण होता है।</li><li>इस दोष से पीड़ित व्यक्ति को क्षैतिज (Horizontal) और ऊर्ध्वाधर (Vertical) रेखाएं एक साथ स्पष्ट दिखाई नहीं देतीं; एक धुंधली हो जाती है।</li><li>निकट दृष्टि दोष (Myopia) के लिए 'अवतल लेन्स' (Concave) का प्रयोग होता है।</li><li>दूर दृष्टि दोष (Hypermetropia) के लिए 'उत्तल लेन्स' (Convex) का प्रयोग होता है।</li><li>बुढ़ापे में होने वाले जरा-दृष्टि दोष (Presbyopia) के लिए 'द्विफोकसी' (Bifocal) लेन्स लगाया जाता है।</li></ul>` },
+        { q: "अतिचालक (Superconductor) वे तत्त्व हैं—", o: ["जिनकी चालकता धातुओं और रोधियों के बीच में होती है", "जिनका प्रतिरोध बहुत न्यून तापमान पर लगभग शून्य हो जाता है", "जो बहुत न्यून तापमान पर रोधी बन जाते हैं", "जो विद्युत् का चालन केवल बहुत उच्च तापमान पर ही करते हैं"], a: 1, e: `<b>हल:</b> अतिचालक (Superconductor) वे पदार्थ हैं 'जिनका विद्युत प्रतिरोध एक बहुत ही कम (न्यून) तापमान पर शून्य (Zero) हो जाता है'।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>जब प्रतिरोध शून्य हो जाता है, तो अतिचालक में बिना किसी ऊर्जा नुकसान (हीट लॉस) के लगातार विद्युत धारा बह सकती है।</li><li>जिस तापमान पर पदार्थ अतिचालक बनता है, उसे 'क्रांतिक तापमान' (Critical temperature) कहते हैं।</li><li>अतिचालकता की खोज 1911 में डच भौतिक विज्ञानी 'हेइके कैमरलिंग ओनेस' ने की थी (उन्होंने पारे को 4.2 केल्विन तक ठंडा किया था)।</li><li>अतिचालक पदार्थ अपने अंदर से चुंबकीय क्षेत्र (Magnetic field) को बाहर धकेल देते हैं, इस घटना को 'मीस्नर प्रभाव' (Meissner effect) कहते हैं।</li><li>मैग्लेव ट्रेन (Maglev trains) और MRI स्कैन मशीनों में अतिचालक चुंबकों का ही उपयोग किया जाता है।</li></ul>` },
+        { q: "किसी लेजर (यथा नियॉन लेजर) में सभी परमाणु प्रकाश तरंगें उत्सर्जित करते हैं :", o: ["एक ही आवृत्ति की", "एक ही आयाम की", "एक ही कला (फेज) की", "उपर्युक्त सभी की"], a: 3, e: `<b>हल:</b> लेजर (LASER) तकनीक में सभी परमाणु जो प्रकाश तरंगें छोड़ते हैं, वे एक ही आवृत्ति, एक ही आयाम और एक ही कला (Phase) की होती हैं। इसलिए 'उपर्युक्त सभी' सही उत्तर है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>LASER का फुल फॉर्म 'Light Amplification by Stimulated Emission of Radiation' है।</li><li>लेजर प्रकाश 'सुसंगत' (Coherent) होता है, जिसका मतलब है कि इसकी सभी तरंगें बिल्कुल एक साथ (एक ही फेज में) चलती हैं।</li><li>यह 'एकवर्णी' (Monochromatic) होता है, अर्थात् इसमें केवल एक ही विशिष्ट रंग या तरंगदैर्ध्य (आवृत्ति) होती है।</li><li>यह बहुत ही दिशात्मक (Directional) होता है, यानी यह टॉर्च की तरह फैलता नहीं है बल्कि एक सीधी रेखा में बहुत दूर तक जाता है।</li><li>लेजर का आविष्कार 1960 में 'थियोडोर मेमन' (Theodore Maiman) ने किया था।</li></ul>` },
+        { q: "निम्नलिखित में से किसकी ऊष्माधारिता (Specific Heat Capacity) अधिक है?", o: ["लोहे का टुकड़ा", "जल", "स्वर्ण का टुकड़ा", "बेन्जीन"], a: 1, e: `<b>हल:</b> दिए गए विकल्पों में 'जल' (Water) की विशिष्ट ऊष्माधारिता सबसे अधिक होती है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>विशिष्ट ऊष्माधारिता का अर्थ है किसी पदार्थ के 1 किलोग्राम का तापमान 1°C बढ़ाने के लिए आवश्यक ऊष्मा की मात्रा।</li><li>जल की विशिष्ट ऊष्मा बहुत उच्च (लगभग 4184 J/kg·K) होती है, इसलिए यह बहुत धीरे-धीरे गर्म होता है और बहुत धीरे-धीरे ठंडा होता है।</li><li>इसी गुण के कारण जल का उपयोग वाहनों के इंजन (Radiators) को ठंडा करने के लिए 'कूलेंट' के रूप में किया जाता है।</li><li>लोहा और सोना जैसी धातुओं की ऊष्माधारिता बहुत कम होती है, इसलिए वे तुरंत गर्म और तुरंत ठंडी हो जाती हैं।</li><li>जल के इसी उच्च ऊष्मा गुण के कारण समुद्र तटीय इलाकों का मौसम हमेशा सामान्य (समकारी) बना रहता है।</li></ul>` },
+        { q: "यदि किसी स्थान के तापमान में सहसा वृद्धि हो तो आपेक्षिक आर्द्रता (Relative Humidity) :", o: ["बढ़ती है", "घटती है", "स्थिर रहती है", "घटती-बढ़ती रहती है"], a: 1, e: `<b>हल:</b> यदि हवा में मौजूद नमी (जलवाष्प) की मात्रा समान रहे और अचानक तापमान बढ़ जाए, तो आपेक्षिक आर्द्रता (Relative Humidity) 'घटती' है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>आपेक्षिक आर्द्रता = (हवा में मौजूद वास्तविक नमी / हवा की नमी सोखने की अधिकतम क्षमता) × 100।</li><li>गर्म हवा की नमी सोखने (Hold करने) की क्षमता ठंडी हवा की तुलना में बहुत अधिक होती है।</li><li>इसलिए, जब तापमान बढ़ता है, तो हवा की जलवाष्प रोकने की क्षमता (Denominator) बढ़ जाती है, जिससे प्रतिशत (आपेक्षिक आर्द्रता) घट जाता है।</li><li>वायुमंडल की आर्द्रता मापने के लिए 'हाइग्रोमीटर' (Hygrometer) नामक उपकरण का प्रयोग किया जाता है।</li><li>100% आपेक्षिक आर्द्रता होने पर हवा और नमी नहीं सोख पाती, पसीना नहीं सूखता और बारिश/ओस की स्थिति बन जाती है।</li></ul>` },
+        { q: "'थर्म' (Therm) किसका यूनिट (इकाई) है?", o: ["शक्ति का", "ऊष्मा का", "प्रकाश का", "दूरी का"], a: 1, e: `<b>हल:</b> 'थर्म' (Therm) मुख्य रूप से 'ऊष्मा' (Heat energy) मापने की एक गैर-SI इकाई है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य:</b><ul><li>एक थर्म लगभग 100,000 ब्रिटिश थर्मल यूनिट (BTU) के बराबर होता है।</li><li>इसका उपयोग अधिकतर प्राकृतिक गैस के बिलों में गैस से मिलने वाली ऊर्जा (ऊष्मा) की गणना करने के लिए किया जाता है।</li><li>ऊष्मा (Heat) की SI इकाई 'जूल' (Joule) होती है।</li><li>कैलोरी (Calorie) भी ऊष्मा मापने की एक इकाई है (1 कैलोरी = 4.184 जूल)।</li><li>शक्ति (Power) की इकाई वाट (Watt) और दूरी की इकाई मीटर/प्रकाश-वर्ष होती है।</li></ul>` }
+    ];
+
+    let state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+    let timerInterval = null;
+    let isPaused = false;
+
+    window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+    function initDashboard() {
+        showScreen('dashboard-screen');
+        let completedData = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) completedData = JSON.parse(dataStr);
+        } catch(e) {}
+
+        if (completedData) {
+            document.getElementById('dash-unattempted').style.display = 'none';
+            document.getElementById('dash-attempted').style.display = 'block';
+            document.getElementById('dash-score-text').innerText = `${completedData.score}/25.0 Marks . 1.5K/2.9K Rank`;
+            document.getElementById('dash-progress-bar').style.width = `${(completedData.score / 25) * 100}%`;
+        } else {
+            document.getElementById('dash-attempted').style.display = 'none';
+            document.getElementById('dash-unattempted').style.display = 'block';
+        }
+    }
+
+    function startTest() {
+        let saved = null;
+        try {
+            const savedStr = safeGetItem(STORAGE_KEY);
+            if(savedStr) saved = JSON.parse(savedStr);
+        } catch(e){}
+
+        if (saved && !saved.submitted) {
+            state = saved;
+        } else {
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+        }
+        initTestEnv();
+    }
+
+    function reattemptTest() {
+        if(confirm("Are you sure you want to start a fresh test? Your active progress will be lost.")) {
+            safeRemoveItem(STORAGE_KEY);
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+            initTestEnv();
+        }
+    }
+
+    function initTestEnv() {
+        showScreen('test-screen');
+        renderQuestion();
+        renderPalette();
+        updateStats();
+        
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+        setInterval(() => { if(!state.submitted) safeSetItem(STORAGE_KEY, JSON.stringify(state)); }, 2000);
+    }
+
+    function viewSavedResults() {
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(data) renderResultUI(data);
+    }
+
+    function showDashboard() { initDashboard(); }
+
+    function showScreen(id) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+    }
+
+    function updateTimer() {
+        if(isPaused || state.submitted) return;
+        if(state.time <= 0) { submitTest(); return; }
+        state.time--;
+        const m = Math.floor(state.time / 60), s = state.time % 60;
+        document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+    }
+
+    function toggleTheme() {
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    function renderQuestion() {
+        state.visited[state.currentQ] = true;
+        const q = finalQuestions[state.currentQ];
+        document.getElementById('q-no').innerText = `Question ${state.currentQ + 1}`;
+        document.getElementById('q-text').innerHTML = q.q;
+        let opts = '';
+        q.o.forEach((opt, i) => {
+            const isSel = state.answers[state.currentQ] === i;
+            const selClass = isSel ? 'selected' : '';
+            const charLabel = String.fromCharCode(65 + i);
+            opts += `<div class="glass-panel option ${selClass}" onclick="selectOption(${i})"><div class="opt-label">${charLabel}</div><div style="flex:1;">${opt}</div></div>`;
+        });
+        document.getElementById('options-box').innerHTML = opts;
+        
+        renderPalette();
+        updateStats();
+    }
+
+    function selectOption(index) { state.answers[state.currentQ] = index; renderQuestion(); }
+    function clearResponse() { delete state.answers[state.currentQ]; delete state.marked[state.currentQ]; renderQuestion(); }
+    function markReview() { state.marked[state.currentQ] = true; changeQ(1); }
+    function saveNext() { delete state.marked[state.currentQ]; changeQ(1); }
+
+    function changeQ(step) {
+        const next = state.currentQ + step;
+        if(next >= 0 && next < finalQuestions.length) { state.currentQ = next; renderQuestion(); }
+    }
+
+    function renderPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        finalQuestions.forEach((_, i) => {
+            let cls = 's-0';
+            if(state.visited[i]) {
+                if(state.answers[i] !== undefined && state.marked[i]) cls = 's-4';
+                else if(state.marked[i]) cls = 's-3';
+                else if(state.answers[i] !== undefined) cls = 's-1';
+                else cls = 's-2';
+            }
+            const active = i === state.currentQ ? 'active' : '';
+            grid.innerHTML += `<button class="p-btn ${cls} ${active}" onclick="state.currentQ = ${i}; renderQuestion();">${i + 1}</button>`;
+        });
+    }
+
+    function updateStats() {
+        let ans=0, notans=0, notvis=0, mark=0;
+        finalQuestions.forEach((_, i) => {
+            if(!state.visited[i]) notvis++;
+            else if(state.marked[i]) mark++;
+            else if(state.answers[i] !== undefined) ans++;
+            else notans++;
+        });
+        document.getElementById('c-ans').innerText = ans; document.getElementById('c-notans').innerText = notans;
+        document.getElementById('c-notvis').innerText = notvis; document.getElementById('c-mark').innerText = mark;
+    }
+
+    function submitTest() {
+        if(!confirm("Are you sure you want to submit the test?")) return;
+        state.submitted = true; clearInterval(timerInterval);
+        let score=0, attempt=0, wrong=0;
+        finalQuestions.forEach((q, i) => {
+            if(state.answers[i] !== undefined) {
+                attempt++;
+                if(state.answers[i] === q.a) score++; else wrong++;
+            }
+        });
+        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const completedData = { score: score, attempted: attempt, wrong: wrong, time: state.time, date: today, userAnswers: state.answers };
+        
+        safeSetItem(COMPLETED_KEY, JSON.stringify(completedData));
+        safeRemoveItem(STORAGE_KEY);
+        
+        renderResultUI(completedData);
+    }
+
+    function renderResultUI(data) {
+        showScreen('result-screen');
+        const acc = data.attempted > 0 ? ((data.score / data.attempted) * 100).toFixed(1) : 0;
+        document.getElementById('r-score').innerText = `${data.score}`;
+        document.getElementById('r-attempt').innerText = data.attempted;
+        document.getElementById('r-wrong').innerText = data.wrong;
+        document.getElementById('r-acc').innerText = `${acc}%`;
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(!data) return;
+
+        let html = '';
+        finalQuestions.forEach((q, i) => {
+            const uAns = data.userAnswers[i];
+            let optHtml = '';
+            q.o.forEach((opt, oIdx) => {
+                let cls = '', checkMark = '';
+                if(oIdx === q.a) { cls = 'correct'; checkMark = ' ✔'; }
+                else if(oIdx === uAns && uAns !== q.a) { cls = 'wrong'; checkMark = ' ❌ (Your Answer)'; }
+                optHtml += `<div class="glass-panel sol-opt ${cls}"><strong>${String.fromCharCode(65 + oIdx)}.</strong> <div style="flex:1;">${opt} ${checkMark}</div></div>`;
+            });
+            let statusText = uAns !== undefined ? (uAns === q.a ? "हल किया (Correct)" : "हल किया (Incorrect)") : "हल नहीं किया (Unattempted)";
+            html += `<div class="glass-panel sol-card"><div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--primary);">प्र ${i+1}. ${q.q}</div>${optHtml}<div style="font-weight:bold; margin:15px 0; color:var(--text-muted);">Status: ${statusText}</div><div class="glass-panel sol-exp">${q.e}</div></div>`;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+
+    function downloadPDF() {
+        const element = document.getElementById('sol-container');
+        
+        const actionButtons = element.previousElementSibling;
+        actionButtons.style.display = 'none';
+
+        const opt = {
+            margin:       10,
+            filename:     'Science_Test_11_Solutions.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) document.documentElement.setAttribute('data-theme', 'light');
+        
+        html2pdf().set(opt).from(element).save().then(() => {
+            if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
+            actionButtons.style.display = 'flex';
+        });
+    }
+</script>
+</body>
+</html>
