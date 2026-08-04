@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hindi Grammar Mock </title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg-grad-1: #00c6ff; --bg-grad-2: #0072ff; --bg-grad-3: #43e97b; --bg-grad-4: #38f9d7;
+            --glass-bg: rgba(255, 255, 255, 0.92); --glass-border: rgba(255, 255, 255, 0.6); --glass-shadow: rgba(0, 114, 255, 0.15);
+            --text-main: #1e293b; --text-muted: #475569;
+            --primary: #0284c7; --success: #059669; --danger: #dc2626; --warning: #d97706; --purple: #7c3aed;
+            --option-bg: rgba(241, 245, 249, 0.8); --option-selected: rgba(224, 242, 254, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+        [data-theme="dark"] {
+            --bg-grad-1: #0f172a; --bg-grad-2: #1e293b; --bg-grad-3: #0f2027; --bg-grad-4: #203a43;
+            --glass-bg: rgba(30, 41, 59, 0.85); --glass-border: rgba(255, 255, 255, 0.1); --glass-shadow: rgba(0, 0, 0, 0.5);
+            --text-main: #f8fafc; --text-muted: #cbd5e1;
+            --primary: #38bdf8; 
+            --option-bg: rgba(51, 65, 85, 0.7); --option-selected: rgba(12, 74, 110, 0.8);
+            --card-bg: rgba(15, 23, 42, 0.95);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; touch-action: manipulation;}
+        
+        body { 
+            height: 100vh; height: 100dvh; 
+            background: linear-gradient(45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3), var(--bg-grad-4)); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+            color: var(--text-main); 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 var(--glass-shadow); border-radius: 12px; }
+        
+        .btn { font-family: 'Poppins', sans-serif; background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;}
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-warning { background: var(--warning); color: #fff;}
+        .btn-clear { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-mark { background: var(--purple); color: white; }
+        .btn-prev { background: var(--text-muted); color: white; }
+
+        .screen { display: none; flex-direction: column; height: 100%; width: 100vw; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; }
+
+        #dashboard-screen { overflow-y: auto; background: var(--card-bg); align-items: center; padding-bottom: 30px;}
+        .dash-header-top { background: #1e293b; color: white; width: 100%; padding: 15px 20px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 15px; position: sticky; top:0; z-index: 100;}
+        .dash-content { width: 100%; max-width: 800px; padding: 20px; }
+        .section-title { font-weight: 600; color: var(--primary); margin: 15px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 15px; }
+        .dash-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--glass-border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .test-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text-main);}
+        .test-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        .progress-container { width: 100%; height: 6px; background: var(--glass-border); border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #fbc02d; width: 0%; transition: width 0.5s ease;}
+        .dash-actions { display: flex; gap: 12px; margin-top: 15px; }
+        .dash-actions .btn { flex: 1; padding: 10px; font-size: 14px; border-radius: 8px;}
+        .syllabus-footer { display: flex; justify-content: space-between; font-size: 12px; color: var(--primary); border-top: 1px solid var(--glass-border); padding-top: 12px; margin-top: 15px; }
+
+        header.test-head { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-bottom: 10px; margin-inline: 10px; }
+        .header-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: 700; background: var(--card-bg); border: 1px solid var(--glass-border); color: var(--danger); padding: 5px 12px; border-radius: 20px; }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 0 10px 10px 10px; }
+        .question-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .q-header { padding: 10px 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
+        .q-body { flex: 1; padding: 15px; overflow-y: auto; font-size: 16px; line-height: 1.6; }
+        
+        .options-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;}
+        .option { padding: 12px; border: 2px solid var(--glass-border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--option-bg); font-weight: 500; font-size: 15px;}
+        .option.selected { border-color: var(--primary); background: var(--option-selected); color: var(--primary); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--glass-border); display: flex; justify-content: center; align-items: center; font-weight: bold; }
+        .option.selected .opt-label { background: var(--primary); color: white; border-color: var(--primary);}
+        
+        .q-footer { padding: 10px; border-top: 1px solid var(--glass-border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-radius: 0 0 12px 12px; }
+
+        .palette-section { width: 320px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .palette-header { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; font-weight: bold; font-size: 15px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; font-size: 12px; border-bottom: 1px solid var(--glass-border); font-weight: 500;}
+        .stat-item { display: flex; align-items: center; gap: 6px;}
+        .badge { width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 10px; font-weight: bold;}
+        .s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);} 
+        .s-1 { background: var(--success); } .s-2 { background: var(--danger); } .s-3 { background: var(--purple); } 
+        .s-4 { background: var(--primary); position: relative; }
+        .s-4::after { content: '✔'; position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; background: white; color: var(--primary); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 8px; }
+        
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .p-btn.s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);}
+        .p-btn.active { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.1);}
+        .submit-area { padding: 10px; border-top: 1px solid var(--glass-border); border-radius: 0 0 12px 12px;}
+
+        #result-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        #solution-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        .sol-card { padding: 20px; margin-bottom: 15px; width: 100%; max-width: 800px; page-break-inside: avoid;}
+        .sol-opt { padding: 10px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; gap: 10px; align-items: center; font-size: 15px; background: var(--card-bg);}
+        .sol-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); text-decoration: line-through;}
+        .sol-exp { margin-top: 15px; padding: 15px; background: rgba(2, 132, 199, 0.05); border: 1px solid var(--glass-border); border-left: 4px solid var(--primary); border-radius: 8px; font-size: 14.5px; line-height: 1.6; }
+        .sol-exp ul { padding-left: 20px; margin-top: 8px; }
+        .sol-exp li { margin-bottom: 6px; }
+
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+
+        @media (max-width: 992px) {
+            .main-area { flex-direction: column; overflow-y: auto;}
+            .question-section { flex: none; min-height: 450px;}
+            .palette-section { width: 100%; flex: none; min-height: 350px;}
+            .q-footer .btn { padding: 10px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <div id="dashboard-screen" class="screen active">
+        <div class="dash-header-top">
+            <span style="cursor: pointer;" onclick="alert('Going Back')">&#8592;</span>
+            HSSC CET - Mock Tests
+        </div>
+
+        <div class="dash-content">
+            <div id="dash-unattempted" style="display: none;">
+                <div class="section-title">Suggested Next Test</div>
+                <div class="dash-card">
+                    <div class="test-title">Hindi Grammar Mock  (पर्यायवाची विशेष)</div>
+                    <div class="test-meta">
+                        <span>25 Qs • 25 mins • 25.0 Marks</span>
+                    </div>
+                    <div class="test-meta" style="justify-content: flex-end;">
+                        <button class="btn btn-outline" style="padding: 6px 20px; border-radius: 20px;" onclick="startTest()">Start Test 🚀</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span>Syllabus: HSSC Group D - Hindi (पर्यायवाची शब्द)</span>
+                        <span style="color:var(--success);">🔗 Share</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dash-attempted" style="display: none;">
+                <div class="dash-card">
+                    <div class="test-title">Hindi Grammar Mock  (पर्यायवाची विशेष)</div>
+                    <div class="test-meta" style="margin-bottom: 5px;">
+                        <span id="dash-score-text" style="font-size: 15px; color: var(--text-muted);">0/25.0 Marks . 1.5K/2.9K Rank</span>
+                    </div>
+                    <div class="progress-container"><div class="progress-fill" id="dash-progress-bar"></div></div>
+                    <div class="dash-actions">
+                        <button class="btn btn-outline" onclick="viewSavedResults()">View Results</button>
+                        <button class="btn btn-outline" onclick="reattemptTest()">Reattempt &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px; font-size: 2rem;">Test Paused ⏸️</h2>
+        <button class="btn btn-primary" style="font-size: 1.2rem; padding: 10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+    </div>
+
+    <div id="test-screen" class="screen">
+        <header class="glass-panel test-head">
+            <div class="header-title">Hindi Grammar </div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="toggleTheme()">🌓 Theme</button>
+                <button class="btn btn-warning" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="togglePause()">⏸ Pause</button>
+                <div class="timer-box">⏱ <span id="timer-display">25:00</span></div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="glass-panel question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--success); font-weight:bold;">+1 <span style="color: var(--text-muted); font-weight:normal;">|</span> <span style="color: var(--danger);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <button class="btn btn-mark" onclick="markReview()">Mark & Next</button>
+                    <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                    <button class="btn btn-prev" onclick="changeQ(-1)">Previous</button>
+                    <button class="btn btn-primary" onclick="saveNext()">Save & Next</button>
+                </div>
+            </div>
+
+            <div class="glass-panel palette-section">
+                <div class="palette-header">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">25</div> Not Visit</div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn btn-primary" style="width: 100%; background: var(--success); font-size: 15px; padding: 10px;" onclick="submitTest()">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-screen" class="screen">
+        <div style="width: 100%; max-width: 800px; margin-bottom: 15px;"><button class="btn btn-clear" onclick="showDashboard()">&#8592; Back to Dashboard</button></div>
+        <div class="glass-panel" style="max-width: 800px; width: 100%; padding: 25px;">
+            <h1 style="color: var(--primary); text-align: center;">Test Submitted Successfully! 🎉</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 25px 0;">
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-score" style="color: var(--primary); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Score</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-attempt" style="color: var(--success); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Attempted</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-wrong" style="color: var(--danger); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Wrong</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-acc" style="color: var(--purple); font-size: 1.8rem;">0%</h2><p style="color: var(--text-muted); font-size:12px;">Accuracy</p></div>
+            </div>
+            <button class="btn btn-primary" style="width:100%; font-size: 15px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+        </div>
+    </div>
+
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%; margin:0 auto;">
+            <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 12px 15px; position: sticky; top: 5px; z-index: 10;">
+                <h3 style="color: var(--primary);">Detailed Solutions</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" style="padding: 5px 12px; font-size: 13px; background: var(--success);" onclick="downloadPDF()">📥 Download PDF</button>
+                    <button class="btn btn-clear" style="padding: 5px 12px; font-size: 13px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+                </div>
+            </div>
+            <div id="sol-container"></div>
+        </div>
+    </div>
+
+<script>
+    const MEMORY_STORE = {};
+    function safeGetItem(key) { try { return localStorage.getItem(key) || MEMORY_STORE[key] || null; } catch(e) { return MEMORY_STORE[key] || null; } }
+    function safeSetItem(key, value) { try { localStorage.setItem(key, value); } catch(e) {} MEMORY_STORE[key] = value; }
+    function safeRemoveItem(key) { try { localStorage.removeItem(key); } catch(e) {} delete MEMORY_STORE[key]; }
+
+    const STORAGE_KEY = 'hssc_hindi_paryayvachi_active'; 
+    const COMPLETED_KEY = 'hssc_hindi_paryayvachi_comp';
+
+    const finalQuestions = [
+        { q: "किस विकल्प के सभी शब्द परस्पर पर्यायवाची हैं?", o: ["अग्नि, वह्नि, अनिल", "पाषाण, अश्म, उत्पल", "व्योम, नभ, अम्बर", "पयोधर, उरोज, सरोज"], a: 2, e: `<b>हल:</b> 'व्योम, नभ, अम्बर' तीनों आकाश (गगन) के पर्यायवाची हैं।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम:</b> जब दो या दो से अधिक शब्दों के अर्थ में पूर्ण समानता हो, तो उन्हें पर्यायवाची या समानार्थी शब्द कहते हैं।</li><li>विकल्प 1 में 'अनिल' का अर्थ 'हवा' है, जबकि अग्नि और वह्नि आग के पर्यायवाची हैं (श्रुतिसम भिन्नार्थक नियम)।</li><li>विकल्प 2 में 'उत्पल' का अर्थ 'कमल' होता है, जबकि पाषाण और अश्म पत्थर हैं। (अश्म से ही 'अश्मीभूत' बनता है)।</li><li>विकल्प 4 में 'सरोज' (सरः + ज) का अर्थ कमल है, जबकि पयोधर और उरोज बादल/स्तन के पर्यायवाची हैं।</li><li>अम्बर का एक अर्थ आकाश और दूसरा अर्थ 'वस्त्र' (कपड़ा) भी होता है (अनेकार्थी शब्द)।</li></ul>` },
+        { q: "किस विकल्प के सभी शब्द परस्पर पर्यायवाची नहीं हैं?", o: ["गलत, अशुचि, लुप्त", "व्याल, उरग, पन्नग", "रजनी, यामिनी, निशि", "रश्मि, अंशु, मयूख"], a: 0, e: `<b>हल:</b> 'गलत, अशुचि, लुप्त' परस्पर पर्यायवाची नहीं हैं।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम (भिन्नार्थक):</b> यहाँ तीनों शब्दों के अर्थ भिन्न हैं। 'गलत' का अर्थ अनुचित, 'अशुचि' का अर्थ अपवित्र (अ+शुचि), और 'लुप्त' का अर्थ गायब होना है।</li><li>'व्याल, उरग, पन्नग' सभी सांप (सर्प) के पर्यायवाची हैं। उरग (उर+ग) अर्थात् छाती के बल चलने वाला।</li><li>'रजनी, यामिनी, निशि' सभी रात (रात्रि) के पर्यायवाची हैं।</li><li>'रश्मि, अंशु, मयूख' सभी किरण के पर्यायवाची हैं।</li><li>'अशुचि' शब्द में 'अ' उपसर्ग नकारात्मक अर्थ (नहीं) के लिए प्रयुक्त हुआ है (शुचि = पवित्र)।</li></ul>` },
+        { q: "निम्नलिखित में से कौन-सा शब्द 'लक्ष्मी' का पर्यायवाची नहीं है?", o: ["इन्दिरा", "कमला", "रमा", "इला"], a: 3, e: `<b>हल:</b> 'इला' लक्ष्मी का नहीं, बल्कि सरस्वती और पृथ्वी का पर्यायवाची है।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम (अनेकार्थी):</b> 'इला' एक अनेकार्थी शब्द है जिसका प्रयोग पृथ्वी, सरस्वती और गाय के लिए किया जाता है।</li><li>इन्दिरा, कमला (कमल पर आसीन), और रमा (विष्णु पत्नी) लक्ष्मी के सुप्रसिद्ध पर्यायवाची हैं।</li><li>लक्ष्मी के अन्य पर्यायवाची: श्री, भार्गवी, हरिप्रिया, चंचला।</li><li>कमला में 'कमल' मूल शब्द है और 'आ' स्त्रीप्रत्यय लगाकर इसे स्त्रीलिंग बनाया गया है।</li><li>सरस्वती के अन्य पर्यायवाची: वागेश्वरी, वीणापाणि, शारदा।</li></ul>` },
+        { q: "निम्नलिखित में से 'समुद्र' का पर्यायवाची शब्द नहीं है?", o: ["जलधि", "जलज", "पारावार", "वारिधि"], a: 1, e: `<b>हल:</b> 'जलज' समुद्र का नहीं, बल्कि कमल का पर्यायवाची है।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम (प्रत्यय का खेल):</b> जल (पानी) के पर्यायवाची शब्दों के अंत में 'ज' (जन्म लेने वाला) लगाने से कमल, 'द' (देने वाला) लगाने से बादल, और 'धि' (धारण करने वाला) लगाने से समुद्र के पर्यायवाची बनते हैं।</li><li>जल + ज = जलज (पानी में जन्म लेने वाला अर्थात् कमल)।</li><li>जल + धि = जलधि (समुद्र)। वारि + धि = वारिधि (समुद्र)।</li><li>'पारावार' भी समुद्र का एक बहुत ही महत्वपूर्ण पर्यायवाची है जिसका अर्थ है असीम जलराशि।</li><li>समुद्र के अन्य पर्यायवाची: रत्नाकर, अर्णव, सिंधु, पयोधि।</li></ul>` },
+        { q: "इनमें से कौन-सा शब्द 'स्त्री' का पर्यायवाची नहीं है?", o: ["पाणि", "वनिता", "ललना", "कामिनी"], a: 0, e: `<b>हल:</b> 'पाणि' स्त्री का नहीं, बल्कि 'हाथ' का पर्यायवाची है।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम (समास):</b> पाणि (हाथ) शब्द का प्रयोग कई बहुव्रीहि समासों में होता है। जैसे: वीणापाणि (सरस्वती), चक्रपाणि (विष्णु), शूलपाणि (शिव)।</li><li>वनिता, ललना और कामिनी स्त्री (महिला) के पर्यायवाची हैं।</li><li>'विवाह' को हिंदी में 'पाणिग्रहण' संस्कार (हाथ ग्रहण करना) कहा जाता है।</li><li>स्त्री के अन्य पर्यायवाची: नारी, महिला, रमणी, कांता, अबला।</li><li>कामिनी शब्द 'काम' (इच्छा/प्रेम) से बना है, जिसका अर्थ है सुंदर या आकर्षक स्त्री।</li></ul>` },
+        { q: "निम्नांकित शब्दों में 'नया' का पर्यायवाची शब्द किस विकल्प में नहीं है?", o: ["नवीन", "नवल", "नूतन", "नित्य"], a: 3, e: `<b>हल:</b> 'नित्य' का अर्थ 'नया' नहीं, बल्कि 'हमेशा' या 'प्रतिदिन' (Daily/Always) होता है।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम (तत्सम-तद्भव):</b> 'नया' एक तद्भव शब्द है, जिसका तत्सम रूप 'नव्य' होता है।</li><li>नवीन, नवल और नूतन सभी का अर्थ नया (New) होता है।</li><li>'नूतन' का विलोम 'पुरातन' (पुराना) होता है।</li><li>'नवीन' का विलोम 'प्राचीन' होता है।</li><li>'नित्य' अव्यय के रूप में प्रयोग होता है (जैसे: नित्यकर्म)। इसका विलोम 'अनित्य' होता है।</li></ul>` },
+        { q: "'शाखामृग' किस शब्द का पर्यायवाची है?", o: ["वानर", "हिरण", "मोर", "नीलगाय"], a: 0, e: `<b>हल:</b> 'शाखामृग' वानर (बंदर) का पर्यायवाची है।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम (बहुव्रीहि समास/योगरूढ़):</b> शाखा (पेड़ की डाली) + मृग (जानवर/पशु)। शाखाओं पर दौड़ने वाले पशु को विशेष रूप से वानर (बंदर) कहा जाता है। अतः यहाँ बहुव्रीहि समास है।</li><li>प्राचीन काल में 'मृग' शब्द का प्रयोग केवल हिरण के लिए नहीं, बल्कि किसी भी जंगली पशु के लिए होता था (जैसे मृगराज = शेर)।</li><li>बंदर के अन्य पर्यायवाची: कपि, मर्कट, हरि, कीश।</li><li>हिरण के पर्यायवाची: कुरंग, सारंग, चमरी।</li><li>मोर के पर्यायवाची: मयूर, नीलकंठ, शिखी, केकी।</li></ul>` },
+        { q: "निम्नांकित में से किस विकल्प में सभी शब्द पर्यायवाची हैं?", o: ["हाथ, पाणि, करि", "कान, कर्ण, रदन", "मेंढक, दादुर, मंडूक", "दूध, पय, रसना"], a: 2, e: `<b>हल:</b> 'मेंढक, दादुर, मंडूक' सभी एक ही जीव (मेंढक) के पर्यायवाची हैं।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम (तत्सम):</b> मेंढक तद्भव है, जबकि 'मंडूक' इसका तत्सम रूप है। 'कूपमंडूक' (कुएं का मेंढक) एक प्रसिद्ध मुहावरा है।</li><li>विकल्प 1 में 'करि' का अर्थ 'हाथी' होता है (कर अर्थात् सूंड वाला)।</li><li>विकल्प 2 में 'रदन' का अर्थ 'दांत' होता है (रद = दांत, जैसे गजानन को एकरद/एकरदन भी कहते हैं)।</li><li>विकल्प 4 में 'रसना' का अर्थ 'जीभ' (Tongue) होता है।</li><li>'दादुर' का प्रयोग तुलसीदास जी ने रामचरितमानस में वर्षा ऋतु के वर्णन में किया है ("दादुर धुनि चहुं दिसा सुहाई")।</li></ul>` },
+        { q: "'वामा, कामिनी, रमणी, ललना' ये सब किस शब्द के पर्यायवाची हैं?", o: ["नारी", "गंगा", "भूमि", "सरिता"], a: 0, e: `<b>हल:</b> ये सभी शब्द 'नारी' (स्त्री) के पर्यायवाची हैं।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम (प्रत्यय):</b> इन शब्दों के अंत में ई या आ प्रत्यय लगाकर इन्हें स्त्रीलिंग रूप दिया गया है।</li><li>'वामा' का अर्थ है स्त्री (जो पति के वाम/बाएं अंग में बैठती है - वामांगी)।</li><li>'रमणी' (रमण करने योग्य) और 'ललना' भी सुन्दर स्त्री के लिए प्रयुक्त होते हैं।</li><li>गंगा के पर्यायवाची: जाह्नवी, भागीरथी, सुरसरि, मंदाकिनी।</li><li>सरिता का अर्थ 'नदी' होता है (प्रवाहित होने वाली)।</li></ul>` },
+        { q: "निम्नलिखित में से 'सोना' (Gold) शब्द का पर्यायवाची शब्द नहीं है?", o: ["तड़ित", "हाटक", "हेम", "हिरण्य"], a: 0, e: `<b>हल:</b> 'तड़ित' सोना का नहीं, बल्कि 'बिजली' (Lightning) का पर्यायवाची है।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम (मूल धातु):</b> 'हाटक, हेम, हिरण्य' तीनों ही संस्कृत मूल के शब्द हैं जिनका अर्थ स्वर्ण (सोना) होता है।</li><li>'तड़ित' से 'तड़ित-चालक' (Lightning conductor) शब्द बनता है।</li><li>सोने के अन्य प्रमुख पर्यायवाची: कनक, कुंदन, सुवर्ण, जातरूप।</li><li>'कनक कनक ते सौ गुनी' यमक अलंकार का बहुत प्रसिद्ध उदाहरण है जहाँ कनक का अर्थ सोना और धतूरा होता है।</li><li>'हिरण्यकश्यपु' का नाम भी सोने (हिरण्य) से जुड़ा था क्योंकि उसे भौतिक सुखों से प्रेम था।</li></ul>` },
+        { q: "निम्नलिखित में से 'समुद्र' का पर्यायवाची शब्द नहीं है?", o: ["अर्णव", "उदधि", "जलद", "नदीश"], a: 2, e: `<b>हल:</b> 'जलद' समुद्र का नहीं, बल्कि 'बादल' का पर्यायवाची है।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम (द प्रत्यय):</b> 'जल' + 'द' (देने वाला) = जलद (बादल)। पानी देने वाले को बादल कहते हैं।</li><li>अर्णव और उदधि समुद्र के सुप्रसिद्ध पर्यायवाची हैं। (उदक = जल, धि = धारण करने वाला)।</li><li>'नदीश' (नदी + ईश = नदियों का स्वामी) में दीर्घ संधि है और यह समुद्र का पर्यायवाची है।</li><li>'रत्नाकर' (रत्न + आकर = रत्नों की खान) भी समुद्र को कहते हैं।</li><li>बादल के अन्य पर्यायवाची: मेघ, नीरद, पयोधर, घन।</li></ul>` },
+        { q: "'चन्द्रमा' का सही पर्यायवाची है?", o: ["सुरपति", "मधवा", "पद्माकर", "विधु"], a: 3, e: `<b>हल:</b> चन्द्रमा का सही पर्यायवाची 'विधु' है।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम (व्युत्पत्ति):</b> 'विधु' का अर्थ होता है जो अमृत से भरा हो या प्रकाशमान हो, इसलिए यह चंद्रमा के लिए प्रयुक्त होता है।</li><li>'सुरपति' (सुरों के पति/स्वामी) और 'मधवा' दोनों इन्द्र के पर्यायवाची हैं।</li><li>'पद्माकर' (पद्म + आकर = कमलों की खान) तालाब या सरोवर का पर्यायवाची है।</li><li>चन्द्रमा के अन्य महत्वपूर्ण पर्यायवाची: शशांक, मयंक, राकेश, रजनीश, सोम, इंदु।</li><li>राकेश (राका + ईश = पूर्णिमा की रात का स्वामी) में गुण संधि है।</li></ul>` },
+        { q: "'पर्वत' का पर्यायवाची शब्द है?", o: ["उरग", "जग", "खग", "नग"], a: 3, e: `<b>हल:</b> पर्वत का सही पर्यायवाची शब्द 'नग' है।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम (व्युत्पत्ति):</b> 'न' (नहीं) + 'ग' (गमन करने वाला) = नग। अर्थात् जो अपने स्थान से कभी हिले नहीं (अचल), उसे पर्वत कहते हैं।</li><li>'उरग' (उर/छाती के बल गमन करने वाला) सांप का पर्यायवाची है।</li><li>'खग' (ख/आकाश में गमन करने वाला) पक्षी का पर्यायवाची है।</li><li>'जग' का अर्थ संसार या विश्व होता है।</li><li>पर्वत के अन्य पर्यायवाची: अचल, गिरि, भूधर, शैल, महीधर।</li></ul>` },
+        { q: "इनमें से 'पवन' का पर्यायवाची शब्द नहीं है?", o: ["समीर", "वात", "अनिल", "अनल"], a: 3, e: `<b>हल:</b> 'अनल' पवन (हवा) का नहीं, बल्कि आग (अग्नि) का पर्यायवाची है।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम (श्रुतिसम भिन्नार्थक):</b> हिंदी व्याकरण में 'अनिल' (हवा) और 'अनल' (आग) सुनने में समान पर अर्थ में भिन्न (श्रुतिसम भिन्नार्थक) शब्द हैं।</li><li>समीर, वात, मारुत, और प्रकंपन पवन (हवा) के प्रमुख पर्यायवाची हैं।</li><li>आयुर्वेद में 'वात' रोग शरीर में हवा (गैस) के असंतुलन से जुड़ा होता है।</li><li>अनल के अन्य पर्यायवाची: हुताशन, कृशानु, पावक, दहन, वैश्वानर।</li><li>मारुति (मारुत के पुत्र) हनुमान जी को कहा जाता है।</li></ul>` },
+        { q: "'बिजली' का पर्यायवाची है?", o: ["इषु", "सौदामिनी", "केशी", "राव"], a: 1, e: `<b>हल:</b> बिजली का सही पर्यायवाची 'सौदामिनी' है।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम:</b> 'दामिनी' या 'सौदामिनी' का अर्थ वह चमक है जो बादलों में पैदा होती है।</li><li>'इषु' का अर्थ बाण (तीर) होता है।</li><li>'केशी' का अर्थ बालों वाला या एक प्रसिद्ध राक्षस (जिसका वध कृष्ण ने किया था) होता है।</li><li>'राव' का अर्थ राजा या सरदार होता है।</li><li>बिजली के अन्य पर्यायवाची: चपला, चंचला, विद्युत, तड़ित, शंपा।</li></ul>` },
+        { q: "कलधौत, रूपक, रजत शब्द निम्नलिखित में से किसके पर्यायवाची हैं?", o: ["चन्द्रमा", "स्वर्ण", "सूर्य", "चाँदी"], a: 3, e: `<b>हल:</b> कलधौत, रूपक और रजत 'चाँदी' (Silver) के पर्यायवाची हैं।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम (अनेकार्थी):</b> 'कलधौत' शब्द का प्रयोग मुख्य रूप से चाँदी के लिए होता है, हालांकि प्रसंगवश इसे सोने के लिए भी प्रयुक्त किया जाता है। लेकिन रजत और रूपक विशुद्ध रूप से चाँदी के हैं।</li><li>'रजत' से ही 'रजत जयंती' (Silver Jubilee - 25 वर्ष) शब्द बना है।</li><li>'रूपक' एक अलंकार भी है और प्राचीन भारत में चाँदी के सिक्कों को 'रुप्यक' (जिससे रुपया बना) कहा जाता था।</li><li>स्वर्ण के पर्यायवाची: कनक, हेम, हाटक, कुंदन।</li><li>सूर्य के पर्यायवाची: भानु, रवि, दिनकर, भास्कर।</li></ul>` },
+        { q: "निम्नलिखित में से 'रात' शब्द का पर्यायवाची शब्द है?", o: ["भारती", "दिनेश", "प्रभाकर", "निशा"], a: 3, e: `<b>हल:</b> रात का सही पर्यायवाची 'निशा' है।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम (समास/प्रत्यय):</b> निशा से कई शब्द बनते हैं, जैसे 'निशाचर' (रात में घूमने वाला - राक्षस), 'निशाकर' (रात करने वाला - चन्द्रमा)।</li><li>'भारती' विद्या की देवी सरस्वती का पर्यायवाची है।</li><li>'दिनेश' (दिन + ईश - गुण संधि) अर्थात् दिन का स्वामी, सूर्य का पर्यायवाची है।</li><li>'प्रभाकर' (प्रभा/रोशनी करने वाला) भी सूर्य का ही पर्यायवाची है।</li><li>रात के अन्य पर्यायवाची: रजनी, यामिनी, विभावरी, रैन।</li></ul>` },
+        { q: "निम्नलिखित में से 'किरण' शब्द का पर्यायवाची नहीं है?", o: ["रश्मि", "मरीचि", "अंशु", "गीर्वाण"], a: 3, e: `<b>हल:</b> 'गीर्वाण' किरण का नहीं, बल्कि 'देवता' (God) का पर्यायवाची है।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम:</b> 'अंशु' का अर्थ किरण होता है, इसी से 'अंशुमाली' (किरणों की माला वाला अर्थात् सूर्य) शब्द बना है (बहुव्रीहि समास)।</li><li>रश्मि और मरीचि किरण के अत्यंत प्रसिद्ध पर्यायवाची हैं।</li><li>'मरीचि' से ही मरुस्थल में दिखने वाले दृष्टिभ्रम को 'मृगमरीचिका' (Mirage) कहा जाता है।</li><li>गीर्वाण (देवता) से ही देववाणी संस्कृत को 'गीर्वाणभारती' कहा जाता है।</li><li>देवताओं के अन्य पर्यायवाची: सुर, अमर, निर्जर, त्रिदश।</li></ul>` },
+        { q: "'विरंचि' शब्द किसका पर्यायवाची है?", o: ["ब्रह्मा", "शिवजी", "नारद", "विष्णु"], a: 0, e: `<b>हल:</b> 'विरंचि' या 'विरंच' सृष्टि के रचयिता 'ब्रह्मा' जी का पर्यायवाची है।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम (काव्य प्रयोग):</b> तुलसीदास जी ने रामचरितमानस में ब्रह्मा जी के लिए 'विरंचि' शब्द का बहुत प्रयोग किया है ("विरंचि महेश मुनि ज्ञानी...")।</li><li>ब्रह्मा के अन्य पर्यायवाची: विधि, विधाता, स्वयंभू, चतुरानन, कमलासन।</li><li>शिवजी के पर्यायवाची: चंद्रशेखर, नीलकंठ, त्रिलोचन, शशांकधर।</li><li>विष्णु के पर्यायवाची: नारायण, चक्रपाणि, जनार्दन, गरुड़ध्वज।</li><li>नारद जी को देवर्षि कहा जाता है।</li></ul>` },
+        { q: "'सर्प' का पर्यायवाची है?", o: ["पन्नग", "जातरूप", "केशी", "शार्दूल"], a: 0, e: `<b>हल:</b> 'सर्प' (सांप) का सही पर्यायवाची 'पन्नग' है।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम (व्युत्पत्ति):</b> 'पन्नग' (पन्न + ग) का अर्थ होता है नीचे (पेट) के बल गमन करने वाला।</li><li>'जातरूप' सोने (स्वर्ण) का पर्यायवाची है।</li><li>'शार्दूल' शेर (सिंह) का पर्यायवाची है (संस्कृत में सिंह को शार्दूल कहते हैं)।</li><li>सर्प के अन्य पर्यायवाची: भुजंग, व्याल, विषधर, उरग, नाग, फणी।</li><li>सर्पों के शत्रु गरुड़ को 'पन्नगारि' (पन्नग + अरि) कहा जाता है (दीर्घ संधि)।</li></ul>` },
+        { q: "समानार्थी शब्द का चयन कीजिए - 'नियति'?", o: ["चरित्र", "भाग्य", "कर्म", "स्वभाव"], a: 1, e: `<b>हल:</b> 'नियति' का सही समानार्थी (पर्यायवाची) शब्द 'भाग्य' (Destiny) होता है।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम:</b> नियति का अर्थ है प्रकृति का वह अटल नियम या भाग्य जिसे बदला न जा सके (होनी)।</li><li>'कर्म' का अर्थ इंसान द्वारा किये गए कार्य (Deeds) हैं, जो नियति (भाग्य) के विपरीत माना जाता है।</li><li>'चरित्र' का अर्थ आचरण (Character) होता है।</li><li>नियति के अन्य पर्यायवाची: किस्मत, मुकद्दर, प्राक्तन, भावी, प्रारब्ध।</li><li>नियतिवाद एक दार्शनिक विचारधारा है जो मानती है कि सब कुछ पहले से तय है।</li></ul>` },
+        { q: "इनमें एक शब्द ईश्वर का समानार्थी है?", o: ["भगवान", "कछार", "अंश", "बाण"], a: 0, e: `<b>हल:</b> ईश्वर का सही समानार्थी शब्द 'भगवान' है।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम (प्रत्यय):</b> 'भग' (ऐश्वर्य/समृद्धि) मूल शब्द में 'वान' (युक्त) प्रत्यय लगने से 'भगवान' शब्द बनता है (अर्थात् सभी ऐश्वर्यों से युक्त)।</li><li>'कछार' नदी के किनारे की उस तराई भूमि को कहते हैं जहाँ बाढ़ का पानी पहुँचता है (जलोढ़ मिट्टी का क्षेत्र)।</li><li>'अंश' का अर्थ भाग (Part) या हिस्सा होता है। (श्रुतिसम: अंस = कन्धा)।</li><li>'बाण' के पर्यायवाची तीर, शर, शिलीमुख, इषु होते हैं।</li><li>ईश्वर के अन्य पर्यायवाची: परमात्मा, प्रभु, जगदीश, सर्वेश।</li></ul>` },
+        { q: "इनमें से कौन-सा शब्द 'वायु' का पर्यायवाची नहीं है?", o: ["अनल", "समीर", "पवन", "अनिल"], a: 0, e: `<b>हल:</b> 'अनल' वायु का नहीं, बल्कि 'आग' (Fire) का पर्यायवाची है।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम:</b> यह प्रश्न प्रतियोगी परीक्षाओं में सबसे अधिक दोहराया जाता है ताकि 'अनिल' (हवा) और 'अनल' (आग) के बीच भ्रम पैदा किया जा सके।</li><li>अनिल, पवन और समीर तीनों वायु के बहुत ही सामान्य और शुद्ध पर्यायवाची हैं।</li><li>पवन शब्द में अयादि संधि है (पो + अन = पवन)।</li><li>पवन के देवता को वायुदेव या मरुत कहा जाता है।</li><li>आग (अनल) के अन्य नाम दहन, पावक, और कृशानु हैं।</li></ul>` },
+        { q: "निम्नलिखित में से 'अमृत' का समानार्थक शब्द है?", o: ["पयोधर", "क्षीर", "सुधा", "नीर"], a: 2, e: `<b>हल:</b> 'अमृत' का सही समानार्थक (पर्यायवाची) शब्द 'सुधा' है।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम:</b> सुधा का अर्थ है जीवन देने वाला रस। इसी से 'सुधांशु' (सुधा की किरणों वाला अर्थात् चंद्रमा) शब्द बनता है।</li><li>'पयोधर' (पय/जल धारण करने वाला) बादल का पर्यायवाची है।</li><li>'क्षीर' का अर्थ दूध होता है (क्षीर का तद्भव रूप 'खीर' होता है)। क्षीरसागर (दूध का समुद्र) विष्णु जी का निवास है।</li><li>'नीर' का अर्थ केवल साधारण जल (पानी) होता है।</li><li>अमृत के अन्य पर्यायवाची: पीयूष, अमिय, सोम, सुरभोग।</li></ul>` },
+        { q: "कौन-सा शब्द अर्थ की दृष्टि से 'खग' से संबंधित नहीं है?", o: ["तारक", "द्विज", "पक्षी", "विहग"], a: 0, e: `<b>हल:</b> 'तारक' का संबंध खग (पक्षी) से नहीं है। तारक का अर्थ तारा (Star) या उद्धार करने वाला (तैरने वाला/पार लगाने वाला) होता है।<br><br>💡 <b>व्याकरण नियम व 5 महत्वपूर्ण तथ्य:</b><ul><li><b>नियम (व्युत्पत्ति):</b> खग (ख + ग) = 'ख' अर्थात् आकाश में 'ग' अर्थात् गमन करने वाला (पक्षी)।</li><li>'द्विज' (दो बार जन्म लेने वाला) एक अनेकार्थी शब्द है। पक्षी को द्विज कहते हैं (एक बार अंडे के रूप में, फिर अंडे से बाहर)। इसके अलावा ब्राह्मण और दांत को भी द्विज कहा जाता है।</li><li>पक्षी और विहग सीधे खग के पर्यायवाची हैं।</li><li>विहग के अन्य रूप 'विहंग' या 'विहंगम' भी होते हैं (विहंगम दृष्टि = पक्षी की तरह उड़ती हुई नज़र)।</li><li>खग के अन्य पर्यायवाची: पखेरू, नभचर, अंडज।</li></ul>` }
+    ];
+
+    let state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+    let timerInterval = null;
+    let isPaused = false;
+
+    window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+    function initDashboard() {
+        showScreen('dashboard-screen');
+        let completedData = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) completedData = JSON.parse(dataStr);
+        } catch(e) {}
+
+        if (completedData) {
+            document.getElementById('dash-unattempted').style.display = 'none';
+            document.getElementById('dash-attempted').style.display = 'block';
+            document.getElementById('dash-score-text').innerText = `${completedData.score}/25.0 Marks . 1.5K/2.9K Rank`;
+            document.getElementById('dash-progress-bar').style.width = `${(completedData.score / 25) * 100}%`;
+        } else {
+            document.getElementById('dash-attempted').style.display = 'none';
+            document.getElementById('dash-unattempted').style.display = 'block';
+        }
+    }
+
+    function startTest() {
+        let saved = null;
+        try {
+            const savedStr = safeGetItem(STORAGE_KEY);
+            if(savedStr) saved = JSON.parse(savedStr);
+        } catch(e){}
+
+        if (saved && !saved.submitted) {
+            state = saved;
+        } else {
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+        }
+        initTestEnv();
+    }
+
+    function reattemptTest() {
+        if(confirm("क्या आप सुनिश्चित हैं कि आप नया टेस्ट शुरू करना चाहते हैं? आपकी वर्तमान प्रगति नष्ट हो जाएगी।")) {
+            safeRemoveItem(STORAGE_KEY);
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+            initTestEnv();
+        }
+    }
+
+    function initTestEnv() {
+        showScreen('test-screen');
+        renderQuestion();
+        renderPalette();
+        updateStats();
+        
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+        setInterval(() => { if(!state.submitted) safeSetItem(STORAGE_KEY, JSON.stringify(state)); }, 2000);
+    }
+
+    function viewSavedResults() {
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(data) renderResultUI(data);
+    }
+
+    function showDashboard() { initDashboard(); }
+
+    function showScreen(id) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+    }
+
+    function updateTimer() {
+        if(isPaused || state.submitted) return;
+        if(state.time <= 0) { submitTest(); return; }
+        state.time--;
+        const m = Math.floor(state.time / 60), s = state.time % 60;
+        document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+    }
+
+    function toggleTheme() {
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    function renderQuestion() {
+        state.visited[state.currentQ] = true;
+        const q = finalQuestions[state.currentQ];
+        document.getElementById('q-no').innerText = `प्रश्न ${state.currentQ + 1}`;
+        document.getElementById('q-text').innerHTML = q.q;
+        let opts = '';
+        q.o.forEach((opt, i) => {
+            const isSel = state.answers[state.currentQ] === i;
+            const selClass = isSel ? 'selected' : '';
+            const charLabel = String.fromCharCode(65 + i);
+            opts += `<div class="glass-panel option ${selClass}" onclick="selectOption(${i})"><div class="opt-label">${charLabel}</div><div style="flex:1;">${opt}</div></div>`;
+        });
+        document.getElementById('options-box').innerHTML = opts;
+        
+        renderPalette();
+        updateStats();
+    }
+
+    function selectOption(index) { state.answers[state.currentQ] = index; renderQuestion(); }
+    function clearResponse() { delete state.answers[state.currentQ]; delete state.marked[state.currentQ]; renderQuestion(); }
+    function markReview() { state.marked[state.currentQ] = true; changeQ(1); }
+    function saveNext() { delete state.marked[state.currentQ]; changeQ(1); }
+
+    function changeQ(step) {
+        const next = state.currentQ + step;
+        if(next >= 0 && next < finalQuestions.length) { state.currentQ = next; renderQuestion(); }
+    }
+
+    function renderPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        finalQuestions.forEach((_, i) => {
+            let cls = 's-0';
+            if(state.visited[i]) {
+                if(state.answers[i] !== undefined && state.marked[i]) cls = 's-4';
+                else if(state.marked[i]) cls = 's-3';
+                else if(state.answers[i] !== undefined) cls = 's-1';
+                else cls = 's-2';
+            }
+            const active = i === state.currentQ ? 'active' : '';
+            grid.innerHTML += `<button class="p-btn ${cls} ${active}" onclick="state.currentQ = ${i}; renderQuestion();">${i + 1}</button>`;
+        });
+    }
+
+    function updateStats() {
+        let ans=0, notans=0, notvis=0, mark=0;
+        finalQuestions.forEach((_, i) => {
+            if(!state.visited[i]) notvis++;
+            else if(state.marked[i]) mark++;
+            else if(state.answers[i] !== undefined) ans++;
+            else notans++;
+        });
+        document.getElementById('c-ans').innerText = ans; document.getElementById('c-notans').innerText = notans;
+        document.getElementById('c-notvis').innerText = notvis; document.getElementById('c-mark').innerText = mark;
+    }
+
+    function submitTest() {
+        if(!confirm("क्या आप टेस्ट सबमिट करना चाहते हैं?")) return;
+        state.submitted = true; clearInterval(timerInterval);
+        let score=0, attempt=0, wrong=0;
+        finalQuestions.forEach((q, i) => {
+            if(state.answers[i] !== undefined) {
+                attempt++;
+                if(state.answers[i] === q.a) score++; else wrong++;
+            }
+        });
+        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const completedData = { score: score, attempted: attempt, wrong: wrong, time: state.time, date: today, userAnswers: state.answers };
+        
+        safeSetItem(COMPLETED_KEY, JSON.stringify(completedData));
+        safeRemoveItem(STORAGE_KEY);
+        
+        renderResultUI(completedData);
+    }
+
+    function renderResultUI(data) {
+        showScreen('result-screen');
+        const acc = data.attempted > 0 ? ((data.score / data.attempted) * 100).toFixed(1) : 0;
+        document.getElementById('r-score').innerText = `${data.score}`;
+        document.getElementById('r-attempt').innerText = data.attempted;
+        document.getElementById('r-wrong').innerText = data.wrong;
+        document.getElementById('r-acc').innerText = `${acc}%`;
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(!data) return;
+
+        let html = '';
+        finalQuestions.forEach((q, i) => {
+            const uAns = data.userAnswers[i];
+            let optHtml = '';
+            q.o.forEach((opt, oIdx) => {
+                let cls = '', checkMark = '';
+                if(oIdx === q.a) { cls = 'correct'; checkMark = ' ✔'; }
+                else if(oIdx === uAns && uAns !== q.a) { cls = 'wrong'; checkMark = ' ❌ (आपका उत्तर)'; }
+                optHtml += `<div class="glass-panel sol-opt ${cls}"><strong>${String.fromCharCode(65 + oIdx)}.</strong> <div style="flex:1;">${opt} ${checkMark}</div></div>`;
+            });
+            let statusText = uAns !== undefined ? (uAns === q.a ? "हल किया (सही)" : "हल किया (गलत)") : "हल नहीं किया";
+            html += `<div class="glass-panel sol-card"><div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--primary);">प्र ${i+1}. ${q.q}</div>${optHtml}<div style="font-weight:bold; margin:15px 0; color:var(--text-muted);">स्थिति: ${statusText}</div><div class="glass-panel sol-exp">${q.e}</div></div>`;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+
+    function downloadPDF() {
+        const element = document.getElementById('sol-container');
+        
+        const actionButtons = element.previousElementSibling;
+        actionButtons.style.display = 'none';
+
+        const opt = {
+            margin:       10,
+            filename:     'Hindi_Grammar_Mock_Test.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) document.documentElement.setAttribute('data-theme', 'light');
+        
+        html2pdf().set(opt).from(element).save().then(() => {
+            if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
+            actionButtons.style.display = 'flex';
+        });
+    }
+</script>
+</body>
+</html>

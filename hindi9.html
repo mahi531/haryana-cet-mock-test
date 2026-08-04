@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HSSC Group D Hindi </title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg-grad-1: #ff758c; --bg-grad-2: #ff7eb3; --bg-grad-3: #f6a192; --bg-grad-4: #ffb88c;
+            --glass-bg: rgba(255, 255, 255, 0.9); --glass-border: rgba(255, 255, 255, 0.6); --glass-shadow: rgba(135, 31, 31, 0.15);
+            --text-main: #1f2937; --text-muted: #64748b;
+            --primary: #e11d48; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --purple: #8b5cf6;
+            --option-bg: rgba(243, 244, 246, 0.8); --option-selected: rgba(255, 228, 230, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+        [data-theme="dark"] {
+            --bg-grad-1: #2a0845; --bg-grad-2: #6441A5; --bg-grad-3: #1a0b2e; --bg-grad-4: #310e2d;
+            --glass-bg: rgba(17, 25, 40, 0.85); --glass-border: rgba(255, 255, 255, 0.15); --glass-shadow: rgba(0, 0, 0, 0.5);
+            --text-main: #f9fafb; --text-muted: #94a3b8;
+            --primary: #f43f5e; 
+            --option-bg: rgba(55, 65, 81, 0.7); --option-selected: rgba(136, 19, 55, 0.8);
+            --card-bg: rgba(31, 41, 55, 0.95);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; touch-action: manipulation;}
+        
+        body { 
+            height: 100vh; height: 100dvh; 
+            background: linear-gradient(45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3), var(--bg-grad-4)); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+            color: var(--text-main); 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 var(--glass-shadow); border-radius: 12px; }
+        
+        .btn { font-family: 'Poppins', sans-serif; background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;}
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-warning { background: var(--warning); color: #fff;}
+        .btn-clear { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-mark { background: var(--purple); color: white; }
+        .btn-prev { background: var(--text-muted); color: white; }
+
+        .screen { display: none; flex-direction: column; height: 100%; width: 100vw; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; }
+
+        #dashboard-screen { overflow-y: auto; background: var(--card-bg); align-items: center; padding-bottom: 30px;}
+        .dash-header-top { background: #1e293b; color: white; width: 100%; padding: 15px 20px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 15px; position: sticky; top:0; z-index: 100;}
+        .dash-content { width: 100%; max-width: 800px; padding: 20px; }
+        .section-title { font-weight: 600; color: var(--primary); margin: 15px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 15px; }
+        .dash-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--glass-border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .test-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text-main);}
+        .test-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        .progress-container { width: 100%; height: 6px; background: var(--glass-border); border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #fbc02d; width: 0%; transition: width 0.5s ease;}
+        .dash-actions { display: flex; gap: 12px; margin-top: 15px; }
+        .dash-actions .btn { flex: 1; padding: 10px; font-size: 14px; border-radius: 8px;}
+        .syllabus-footer { display: flex; justify-content: space-between; font-size: 12px; color: var(--primary); border-top: 1px solid var(--glass-border); padding-top: 12px; margin-top: 15px; }
+
+        header.test-head { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-bottom: 10px; margin-inline: 10px; }
+        .header-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: 700; background: var(--card-bg); border: 1px solid var(--glass-border); color: var(--danger); padding: 5px 12px; border-radius: 20px; }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 0 10px 10px 10px; }
+        .question-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .q-header { padding: 10px 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
+        .q-body { flex: 1; padding: 15px; overflow-y: auto; font-size: 16px; line-height: 1.6; }
+        
+        .options-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;}
+        .option { padding: 12px; border: 2px solid var(--glass-border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--option-bg); font-weight: 500; font-size: 15px;}
+        .option.selected { border-color: var(--primary); background: var(--option-selected); color: var(--primary); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--glass-border); display: flex; justify-content: center; align-items: center; font-weight: bold; }
+        .option.selected .opt-label { background: var(--primary); color: white; border-color: var(--primary);}
+        
+        .q-footer { padding: 10px; border-top: 1px solid var(--glass-border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-radius: 0 0 12px 12px; }
+
+        .palette-section { width: 320px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .palette-header { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; font-weight: bold; font-size: 15px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; font-size: 12px; border-bottom: 1px solid var(--glass-border); font-weight: 500;}
+        .stat-item { display: flex; align-items: center; gap: 6px;}
+        .badge { width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 10px; font-weight: bold;}
+        .s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);} 
+        .s-1 { background: var(--success); } .s-2 { background: var(--danger); } .s-3 { background: var(--purple); } 
+        .s-4 { background: var(--primary); position: relative; }
+        .s-4::after { content: '✔'; position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; background: white; color: var(--primary); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 8px; }
+        
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .p-btn.s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);}
+        .p-btn.active { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.1);}
+        .submit-area { padding: 10px; border-top: 1px solid var(--glass-border); border-radius: 0 0 12px 12px;}
+
+        #result-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        #solution-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        .sol-card { padding: 20px; margin-bottom: 15px; width: 100%; max-width: 800px; page-break-inside: avoid;}
+        .sol-opt { padding: 10px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; gap: 10px; align-items: center; font-size: 15px; background: var(--card-bg);}
+        .sol-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); text-decoration: line-through;}
+        .sol-exp { margin-top: 15px; padding: 15px; background: rgba(225, 29, 72, 0.05); border: 1px solid var(--glass-border); border-left: 4px solid var(--primary); border-radius: 8px; font-size: 14.5px; line-height: 1.6; }
+        .sol-exp ul { padding-left: 20px; margin-top: 8px; }
+        .sol-exp li { margin-bottom: 6px; }
+
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+
+        @media (max-width: 992px) {
+            .main-area { flex-direction: column; overflow-y: auto;}
+            .question-section { flex: none; min-height: 450px;}
+            .palette-section { width: 100%; flex: none; min-height: 350px;}
+            .q-footer .btn { padding: 10px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <div id="dashboard-screen" class="screen active">
+        <div class="dash-header-top">
+            <span style="cursor: pointer;" onclick="alert('Going Back')">&#8592;</span>
+            HSSC CET - Mock Tests
+        </div>
+
+        <div class="dash-content">
+            <div id="dash-unattempted" style="display: none;">
+                <div class="section-title">Suggested Next Test</div>
+                <div class="dash-card">
+                    <div class="test-title">Hindi Grammar  (विलोम शब्द)</div>
+                    <div class="test-meta">
+                        <span>25 Qs • 25 mins • 25.0 Marks</span>
+                    </div>
+                    <div class="test-meta" style="justify-content: flex-end;">
+                        <button class="btn btn-outline" style="padding: 6px 20px; border-radius: 20px;" onclick="startTest()">Start Test 🚀</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span>Syllabus: HSSC Group D - Hindi (विलोम शब्द)</span>
+                        <span style="color:var(--success);">🔗 Share</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dash-attempted" style="display: none;">
+                <div class="dash-card">
+                    <div class="test-title">Hindi Grammar  (विलोम शब्द)</div>
+                    <div class="test-meta" style="margin-bottom: 5px;">
+                        <span id="dash-score-text" style="font-size: 15px; color: var(--text-muted);">0/25.0 Marks . 1.5K/2.9K Rank</span>
+                    </div>
+                    <div class="progress-container"><div class="progress-fill" id="dash-progress-bar"></div></div>
+                    <div class="dash-actions">
+                        <button class="btn btn-outline" onclick="viewSavedResults()">View Results</button>
+                        <button class="btn btn-outline" onclick="reattemptTest()">Reattempt &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px; font-size: 2rem;">Test Paused ⏸️</h2>
+        <button class="btn btn-primary" style="font-size: 1.2rem; padding: 10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+    </div>
+
+    <div id="test-screen" class="screen">
+        <header class="glass-panel test-head">
+            <div class="header-title">Hindi </div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="toggleTheme()">🌓 Theme</button>
+                <button class="btn btn-warning" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="togglePause()">⏸ Pause</button>
+                <div class="timer-box">⏱ <span id="timer-display">25:00</span></div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="glass-panel question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--success); font-weight:bold;">+1 <span style="color: var(--text-muted); font-weight:normal;">|</span> <span style="color: var(--danger);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <button class="btn btn-mark" onclick="markReview()">Mark & Next</button>
+                    <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                    <button class="btn btn-prev" onclick="changeQ(-1)">Previous</button>
+                    <button class="btn btn-primary" onclick="saveNext()">Save & Next</button>
+                </div>
+            </div>
+
+            <div class="glass-panel palette-section">
+                <div class="palette-header">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">25</div> Not Visit</div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn btn-primary" style="width: 100%; background: var(--success); font-size: 15px; padding: 10px;" onclick="submitTest()">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-screen" class="screen">
+        <div style="width: 100%; max-width: 800px; margin-bottom: 15px;"><button class="btn btn-clear" onclick="showDashboard()">&#8592; Back to Dashboard</button></div>
+        <div class="glass-panel" style="max-width: 800px; width: 100%; padding: 25px;">
+            <h1 style="color: var(--primary); text-align: center;">Test Submitted Successfully! 🎉</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 25px 0;">
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-score" style="color: var(--primary); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Score</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-attempt" style="color: var(--success); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Attempted</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-wrong" style="color: var(--danger); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Wrong</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-acc" style="color: var(--purple); font-size: 1.8rem;">0%</h2><p style="color: var(--text-muted); font-size:12px;">Accuracy</p></div>
+            </div>
+            <button class="btn btn-primary" style="width:100%; font-size: 15px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+        </div>
+    </div>
+
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%; margin:0 auto;">
+            <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 12px 15px; position: sticky; top: 5px; z-index: 10;">
+                <h3 style="color: var(--primary);">Detailed Solutions</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" style="padding: 5px 12px; font-size: 13px; background: var(--success);" onclick="downloadPDF()">📥 Download PDF</button>
+                    <button class="btn btn-clear" style="padding: 5px 12px; font-size: 13px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+                </div>
+            </div>
+            <div id="sol-container"></div>
+        </div>
+    </div>
+
+<script>
+    const MEMORY_STORE = {};
+    function safeGetItem(key) { try { return localStorage.getItem(key) || MEMORY_STORE[key] || null; } catch(e) { return MEMORY_STORE[key] || null; } }
+    function safeSetItem(key, value) { try { localStorage.setItem(key, value); } catch(e) {} MEMORY_STORE[key] = value; }
+    function safeRemoveItem(key) { try { localStorage.removeItem(key); } catch(e) {} delete MEMORY_STORE[key]; }
+
+    const STORAGE_KEY = 'hssc_hindi_1_active'; 
+    const COMPLETED_KEY = 'hssc_hindi_1_comp';
+
+    const finalQuestions = [
+        { q: "कौनसा विलोम शब्द युग्म सही है?", o: ["आवास-निवास", "नीरस-सरस", "इष्ट-अभीष्ट", "अल्प-स्वल्प"], a: 1, e: `<b>हल:</b> 'नीरस' (रस रहित) और 'सरस' (रस सहित) सही विलोम युग्म है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व अन्य):</b><ul><li>यहाँ 'निर्' (बिना) और 'स' (सहित) उपसर्गों का प्रयोग विलोम बनाने के लिए किया गया है (निर् + रस = नीरस, स + रस = सरस)।</li><li>'आवास' और 'निवास' दोनों का अर्थ रहने का स्थान है, अतः ये पर्यायवाची हैं।</li><li>'इष्ट' और 'अभीष्ट' का अर्थ भी चाहने योग्य होता है (पर्यायवाची)। इष्ट का विलोम अनिष्ट होता है।</li><li>'अल्प' और 'स्वल्प' दोनों कम मात्रा को दर्शाते हैं। अल्प का विलोम बहु या अति होता है।</li><li>विलोम शब्द बनाते समय तत्सम का विलोम तत्सम और तद्भव का विलोम तद्भव ही होना चाहिए।</li></ul>` },
+        { q: "कौनसा विलोम शब्द-युग्म सही है?", o: ["घात-आघात", "उन्मुख-सम्मुख", "प्रत्यक्ष-अपरोक्ष", "पक्ष-प्रतिपक्ष"], a: 3, e: `<b>हल:</b> 'पक्ष' और 'प्रतिपक्ष' सही विलोम युग्म है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व अन्य):</b><ul><li>'प्रति' उपसर्ग का प्रयोग विपरीत या विरोध का अर्थ देने के लिए किया जाता है (पक्ष का अर्थ तरफ, प्रतिपक्ष का अर्थ विरोधी तरफ)।</li><li>'घात' और 'आघात' लगभग समान अर्थ देते हैं (चोट पहुँचाना)। घात का विलोम प्रतिघात होता है।</li><li>'उन्मुख' (सामने मुँह किये हुए) और 'सम्मुख' (सामने) समानार्थी हैं। उन्मुख का विलोम विमुख होता है।</li><li>'प्रत्यक्ष' (आँखों के सामने) और 'अपरोक्ष' (जो परोक्ष न हो अर्थात प्रत्यक्ष) पर्यायवाची हैं। प्रत्यक्ष का विलोम परोक्ष होता है।</li><li>प्रति उपसर्ग से बने अन्य विलोम: वादी-प्रतिवादी, रूप-प्रतिरूप।</li></ul>` },
+        { q: "कौनसा विलोम शब्द युग्म गलत है?", o: ["दयालु-निर्दय", "अग्रज-अनुज", "असीम-निस्सीम", "प्रवृत्ति-निवृत्ति"], a: 2, e: `<b>हल:</b> 'असीम-निस्सीम' युग्म गलत है क्योंकि ये दोनों एक-दूसरे के पर्यायवाची हैं। सही विलोम 'ससीम' होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व अन्य):</b><ul><li>'असीम' (अ + सीमा) का अर्थ है जिसकी सीमा न हो। 'निस्सीम' (निर् + सीमा) का अर्थ भी वही है।</li><li>विलोम बनाने के लिए 'स' (सहित) उपसर्ग लगेगा: ससीम (सीमा के साथ)।</li><li>दयालु का निर्दय (बिना दया के) बिल्कुल सही है।</li><li>अग्रज (पहले जन्मा/बड़ा भाई) का अनुज (पीछे जन्मा/छोटा भाई) सही है (अग्र + ज, अनु + ज)।</li><li>प्रवृत्ति का निवृत्ति सही है ('प्र' और 'नि' उपसर्गों का खेल)।</li></ul>` },
+        { q: "इनमें से कौन-सा शब्द 'विख्यात' का विलोम है?", o: ["ख्यात", "आख्यात", "कुख्यात", "प्रख्यात"], a: 2, e: `<b>हल:</b> 'विख्यात' (प्रसिद्धि प्राप्त/अच्छे काम के लिए) का सही विलोम 'कुख्यात' (बुरे काम के लिए प्रसिद्ध) होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व अन्य):</b><ul><li>मूल शब्द 'ख्यात' (प्रसिद्ध) है।</li><li>इसमें 'वि' (विशेष) उपसर्ग लगने से 'विख्यात' (बहुत प्रसिद्ध) बनता है।</li><li>'कु' उपसर्ग का प्रयोग हमेशा बुरे या हीन अर्थ में होता है (जैसे कुपुत्र, कुमार्ग)। इसलिए कुख्यात मतलब बुरे कामों के लिए प्रसिद्ध।</li><li>'प्रख्यात' भी विख्यात का ही पर्यायवाची है ('प्र' उपसर्ग)।</li><li>इसी प्रकार 'कीर्ति' का विलोम 'अपकीर्ति' होता है।</li></ul>` },
+        { q: "इनमें से किस विकल्प के शब्द परस्पर विलोम हैं?", o: ["मान-सम्मान", "पूत-सपूत", "एक-अनेक", "जय-विजय"], a: 2, e: `<b>हल:</b> 'एक' और 'अनेक' परस्पर सही विलोम शब्द हैं।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व अन्य):</b><ul><li>'एक' मूल शब्द है। इसमें 'अन्' (नहीं) उपसर्ग जुड़ने से 'अनेक' (अन् + एक) बनता है, जिसका अर्थ है जो एक न हो (यानी बहुत)।</li><li>'मान' और 'सम्मान' दोनों आदर सूचक शब्द हैं (पर्यायवाची)। मान का विलोम अपमान होता है।</li><li>'पूत' (पुत्र) और 'सपूत' (अच्छा पुत्र) विलोम नहीं हैं। सपूत का विलोम कपूत होता है।</li><li>'जय' और 'विजय' दोनों जीत के अर्थ में आते हैं। जय का विलोम पराजय होता है।</li><li>हिंदी में 'अन्' उपसर्ग लगाकर कई विलोम बनते हैं (जैसे: आदि-अनादि, अर्थ-अनर्थ)।</li></ul>` },
+        { q: "कौनसा विलोम शब्द-युग्म सही नहीं है?", o: ["साकार-निराकार", "साक्षर-निरक्षर", "ज्ञानी-अज्ञानी", "पूर्व-अपूर्व"], a: 3, e: `<b>हल:</b> 'पूर्व-अपूर्व' युग्म सही विलोम नहीं है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व अन्य):</b><ul><li>'पूर्व' का अर्थ पहले (समय) या पूर्व दिशा होता है। इसका सही विलोम 'पश्च' (बाद वाला) या 'पश्चिम' (दिशा) होता है।</li><li>'अपूर्व' का अर्थ होता है 'जो पहले न हुआ हो' या 'अनोखा'।</li><li>साकार (स + आकार) का निराकार (निर् + आकार) सही है।</li><li>साक्षर (स + अक्षर) का निरक्षर (निर् + अक्षर) सही है।</li><li>ज्ञानी का अज्ञानी ('अ' उपसर्ग से बना नकारात्मक) बिल्कुल सही है।</li></ul>` },
+        { q: "'आकर्षण' का विलोम शब्द है?", o: ["आकृष्ट", "विकर्षण", "अनाकर्षण", "पराकर्षण"], a: 1, e: `<b>हल:</b> 'आकर्षण' (अपनी ओर खींचना) का सही विलोम 'विकर्षण' (दूर धकेलना) होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व अन्य):</b><ul><li>यहाँ मूल शब्द 'कर्षण' (खींचना) है।</li><li>'आ' उपसर्ग (समीप/ओर) और 'वि' उपसर्ग (विपरीत/दूर) लगाकर ये विलोम शब्द बने हैं।</li><li>'आकृष्ट' (आकर्षित किया हुआ) का विलोम 'विकृष्ट' होता है।</li><li>'अनाकर्षण' शब्द भी प्रयोग होता है, लेकिन व्याकरणिक दृष्टि से 'विकर्षण' सबसे सटीक और मानक विलोम है।</li><li>इसी नियम पर 'राग' का विलोम 'विराग' बनता है।</li></ul>` },
+        { q: "'संधि' शब्द का सही विलोम है?", o: ["विग्रह", "ह्रास", "सृष्टि", "व्यष्टि"], a: 0, e: `<b>हल:</b> 'संधि' (मेल या जोड़) का सही विलोम 'विग्रह' (अलग करना/तोड़ना) होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व अन्य):</b><ul><li>व्याकरण में जब दो वर्णों का मेल होता है तो उसे संधि कहते हैं, और उन्हें अलग करने को 'संधि-विच्छेद' या 'विग्रह' कहते हैं।</li><li>ध्यान रहे, 'समास' का विलोम 'व्यास' होता है, जबकि संधि का विग्रह।</li><li>'ह्रास' (कमी) का विलोम 'वृद्धि' होता है।</li><li>'सृष्टि' (निर्माण) का विलोम 'प्रलय' (विनाश) होता है।</li><li>'व्यष्टि' (व्यक्तिगत) का विलोम 'समष्टि' (सामूहिक) होता है।</li></ul>` },
+        { q: "'सामिष' शब्द का विलोम शब्द है-", o: ["निरामिष", "आमिष", "अमिष", "परामिष"], a: 0, e: `<b>हल:</b> 'सामिष' (मांस युक्त) का सही विलोम 'निरामिष' (मांस रहित) होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व अन्य):</b><ul><li>मूल शब्द 'आमिष' है, जिसका अर्थ 'मांस' होता है।</li><li>'स' (सहित) + आमिष = सामिष (मांस खाने वाला या मांस युक्त)।</li><li>'निर्' (बिना) + आमिष = निरामिष (मांस न खाने वाला या शाकाहारी)।</li><li>'आमिष' और 'सामिष' दोनों समानार्थी (पर्यायवाची) माने जाते हैं।</li><li>यह प्रश्न प्रतियोगी परीक्षाओं में सबसे ज्यादा बार पूछा जाता है क्योंकि लोग आमिष और सामिष को विलोम समझ लेते हैं।</li></ul>` },
+        { q: "इनमें से कौनसा विलोम-युग्म सही नहीं है?", o: ["ऋत-अनृत", "प्राचीन-अर्वाचीन", "लौकिक-सांसारिक", "स्थावर-जंगम"], a: 2, e: `<b>हल:</b> 'लौकिक-सांसारिक' विलोम युग्म नहीं है, बल्कि ये दोनों पर्यायवाची शब्द हैं।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व अन्य):</b><ul><li>'लौकिक' (इस लोक का) का सही विलोम 'अलौकिक' (जो इस लोक का न हो) या 'पारलौकिक' होता है।</li><li>लोक + इक प्रत्यय से लौकिक बना है। संसार + इक = सांसारिक।</li><li>'ऋत' (सत्य/सच्चाई) का विलोम 'अनृत' (अन् + ऋत = झूठ) बिल्कुल सही है।</li><li>'प्राचीन' (पुराना) का विलोम 'अर्वाचीन' (नया/आधुनिक) होता है (यह भी बहुत महत्वपूर्ण है)।</li><li>'स्थावर' (स्थिर रहने वाला) का 'जंगम' (चलने वाला) एकदम सही युग्म है।</li></ul>` },
+        { q: "सक्रिय का विलोम है?", o: ["निष्क्रिय", "स्थिर", "जड़", "शांत"], a: 0, e: `<b>हल:</b> 'सक्रिय' (Active) का सही विलोम 'निष्क्रिय' (Inactive) होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व নিয়ম व अन्य):</b><ul><li>मूल शब्द 'क्रिय' (कर्म/क्रिया) है।</li><li>'स' (सहित) उपसर्ग लगने से 'सक्रिय' (क्रिया के साथ) बना।</li><li>'निस्' (रहित/बिना) उपसर्ग लगने से 'निष्क्रिय' बना (संधि के नियम से स् का ष् हो जाता है: निः + क्रिय)।</li><li>'स्थिर' का विलोम चंचल या अस्थिर होता है।</li><li>'जड़' (मूर्ख/स्थिर) का विलोम 'चेतन' होता है।</li></ul>` },
+        { q: "'निर्बल' का विलोम है-", o: ["सुदृढ़", "सबल", "बाहुबली", "समुन्नत"], a: 1, e: `<b>हल:</b> 'निर्बल' (बिना बल के) का सही विलोम 'सबल' (बल सहित) होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व अन्य):</b><ul><li>यहाँ भी उपसर्गों का नियम लागू होता है: मूल शब्द 'बल' है।</li><li>निर् + बल = निर्बल (जिसमें बल न हो)।</li><li>स + बल = सबल (बल के साथ/ताकतवर)।</li><li>'सुदृढ़' (बहुत मजबूत) का विलोम 'कमजोर' या 'अदृढ़' हो सकता है।</li><li>'समुन्नत' (अच्छी तरह उन्नत) का विलोम 'अवनत' होता है।</li></ul>` },
+        { q: "'उत्कर्ष' का विलोम है-", o: ["पतन", "अपकर्ष", "अपभ्रष्ट", "विकर्ष"], a: 1, e: `<b>हल:</b> 'उत्कर्ष' (ऊपर उठना/उन्नति) का सही विलोम 'अपकर्ष' (नीचे गिरना/अवनति) होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व अन्य):</b><ul><li>यह विलोम शब्द 'उत्' और 'अप' उपसर्गों के प्रयोग से बना है।</li><li>मूल धातु 'कृष्' (खींचना) है। उत् (ऊपर) + कर्ष = उत्कर्ष। अप (नीचे/बुरा) + कर्ष = अपकर्ष।</li><li>'पतन' का विलोम 'उत्थान' होता है। (उत्थान-पतन का जोड़ा है, उत्कर्ष-अपकर्ष का जोड़ा है)।</li><li>परीक्षा में मिलते-जुलते शब्द भ्रमित करते हैं, अतः सही उपसर्ग वाले जोड़े को ही चुनें।</li><li>उत्कर्ष भाववाचक संज्ञा है, इसलिए इसका विलोम भी भाववाचक संज्ञा (अपकर्ष) ही होगा।</li></ul>` },
+        { q: "'समष्टि' का विपरीतार्थी शब्द है-", o: ["विशिष्ट", "अशिष्ट", "अपुष्टि", "व्यष्टि"], a: 3, e: `<b>हल:</b> 'समष्टि' (समूह/सामूहिकता/Macro) का विपरीतार्थी शब्द 'व्यष्टि' (व्यक्ति/इकाई/Micro) होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व अन्य):</b><ul><li>अर्थशास्त्र में इन शब्दों का बहुत प्रयोग होता है: समष्टि अर्थशास्त्र (Macroeconomics) और व्यष्टि अर्थशास्त्र (Microeconomics)।</li><li>'विशिष्ट' (Special) का विलोम 'सामान्य' (General) होता है।</li><li>'अशिष्ट' (असभ्य) का विलोम 'शिष्ट' (सभ्य) होता है।</li><li>'अपुष्टि' का विलोम 'पुष्टि' (प्रमाणित करना) होता है।</li><li>संस्कृत मूल के शब्दों (तत्सम) का विलोम हमेशा तत्सम ही होना चाहिए, यह विलोम शब्दों का प्रमुख नियम है।</li></ul>` },
+        { q: "निम्न में से 'अभिज्ञ' का विलोम है-", o: ["अल्पज्ञ", "सर्वज्ञ", "विज्ञ", "अनभिज्ञ"], a: 3, e: `<b>हल:</b> 'अभिज्ञ' (भली-भांति जानने वाला) का सही विलोम 'अनभिज्ञ' (बिल्कुल न जानने वाला) होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व अन्य):</b><ul><li>छात्र अक्सर 'अभिज्ञ' को 'अज्ञानी' मान लेते हैं, जो गलत है। 'अभि' (अच्छी तरह) + 'ज्ञ' (जानने वाला) = अभिज्ञ।</li><li>अनभिज्ञ का निर्माण: अन् (नकारात्मक उपसर्ग) + अभिज्ञ = अनभिज्ञ।</li><li>'अल्पज्ञ' (थोड़ा जानने वाला) का विलोम 'बहुज्ञ' (बहुत जानने वाला) होता है।</li><li>'सर्वज्ञ' (सब कुछ जानने वाला) का विलोम 'अज्ञ' या 'अल्पज्ञ' होता है।</li><li>'अज्ञ' (कुछ न जानने वाला) का विलोम 'विज्ञ' या 'प्रज्ञ' होता है।</li></ul>` },
+        { q: "'ऋजुता' का सही विलोम है-", o: ["टेढ़ापन", "वक्रता", "बांकापन", "तिरछापन"], a: 1, e: `<b>हल:</b> 'ऋजुता' (सीधापन/सरलता) का सही विलोम 'वक्रता' (टेढ़ापन) होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व अन्य):</b><ul><li>मूल शब्द 'ऋजु' (सीधा) है, जिसका विलोम 'वक्र' (टेढ़ा) होता है।</li><li>दोनों शब्दों में भाववाचक संज्ञा बनाने के लिए 'ता' प्रत्यय जोड़ा गया है (ऋजु + ता = ऋजुता, वक्र + ता = वक्रता)।</li><li>नियम के अनुसार, यदि शब्द में प्रत्यय है तो विलोम में भी वही प्रत्यय होना चाहिए।</li><li>'टेढ़ापन' भी अर्थ में सही है, लेकिन वह तद्भव शब्द है, जबकि ऋजुता तत्सम है। तत्सम का विलोम तत्सम (वक्रता) ही होगा।</li><li>गणित में ऋजु कोण (180°) सीधी रेखा को दर्शाता है।</li></ul>` },
+        { q: "स्थावर का विलोम है-", o: ["सहृदय", "जंगम", "जंगल", "सदय"], a: 1, e: `<b>हल:</b> 'स्थावर' (एक स्थान पर स्थिर रहने वाला/अचल) का विलोम 'जंगम' (चलने-फिरने वाला/सचल) होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व अन्य):</b><ul><li>यह हिंदी व्याकरण का बहुत ही महत्वपूर्ण और बार-बार पूछा जाने वाला विलोम युग्म है।</li><li>संपत्ति के संदर्भ में: स्थावर संपत्ति (Real Estate/Immovable property) और जंगम संपत्ति (Movable property)।</li><li>'सहृदय' (अच्छे हृदय वाला) का विलोम 'हृदयहीन' या 'निर्दय' होता है।</li><li>'सदय' (दया सहित) का विलोम 'निर्दय' (बिना दया के) होता है।</li><li>जंगल का विलोम मरुभूमि या शहर हो सकता है, लेकिन यह स्थावर से संबंधित नहीं है।</li></ul>` },
+        { q: "निर्दय का विलोम है-", o: ["सहृदय", "सहय", "समय", "सदय"], a: 3, e: `<b>हल:</b> 'निर्दय' (जिसमें दया न हो) का सही विलोम 'सदय' (दया सहित) होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व अन्य):</b><ul><li>उपसर्ग का नियम: निर् (बिना) + दया = निर्दय। स (सहित) + दया = सदय।</li><li>अक्सर लोग 'निर्दयी' शब्द का प्रयोग करते हैं, जो व्याकरण की दृष्टि से अशुद्ध है। सही शब्द 'निर्दय' ही है।</li><li>'सहृदय' का अर्थ होता है जिसके पास अच्छा या भावुक हृदय हो।</li><li>निर्दय का एक अन्य विलोम 'दयालु' भी हो सकता है, लेकिन विकल्पों के अनुसार 'सदय' सबसे सटीक है।</li><li>तत्सम शब्दों में उपसर्ग बदलकर विलोम बनाना सबसे आम और शुद्ध तरीका है।</li></ul>` },
+        { q: "'अवर' शब्द का विलोम होगा-", o: ["दूसरा", "अपर", "प्रवर", "अधम"], a: 2, e: `<b>हल:</b> 'अवर' (छोटा, निम्न या कनिष्ठ) का विलोम 'प्रवर' (बड़ा, श्रेष्ठ या वरिष्ठ) होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व अन्य):</b><ul><li>यह भी उपसर्ग पर आधारित विलोम है। 'अव्' और 'प्र' उपसर्गों का प्रयोग हुआ है।</li><li>सरकारी नौकरियों में पदों के नाम होते हैं: अवर श्रेणी लिपिक (LDC - Lower Division Clerk) और प्रवर श्रेणी (Upper Division)।</li><li>'अपर' का अर्थ होता है दूसरा या अन्य।</li><li>'अधम' (नीच/बुरा) का विलोम 'उत्तम' (श्रेष्ठ/अच्छा) होता है।</li><li>इन शब्दों का प्रयोग मुख्य रूप से आधिकारिक (Official) हिंदी में किया जाता है।</li></ul>` },
+        { q: "किस विकल्प में सही विपरीतार्थक (विलोम) प्रयुक्त नहीं हुआ?", o: ["ज्ञान-अज्ञान", "संयुक्त-वियुक्त", "चल-अचल", "उद्बोधन-प्रबोधन"], a: 3, e: `<b>हल:</b> 'उद्बोधन-प्रबोधन' में सही विलोम प्रयुक्त नहीं हुआ है क्योंकि ये दोनों लगभग समानार्थी (पर्यायवाची) शब्द हैं।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व अन्य):</b><ul><li>उद्बोधन का अर्थ है जगाना या ज्ञान देना, और प्रबोधन का अर्थ भी भली-भांति जगाना या समझाना होता है।</li><li>ज्ञान का अज्ञान ('अ' उपसर्ग नकारात्मक) बिल्कुल सही है।</li><li>संयुक्त (जुड़ा हुआ) का वियुक्त (अलग किया हुआ) सही है (सम् और वि उपसर्ग)।</li><li>चल (चलने वाला) का अचल (न चलने वाला/पर्वत) सही है।</li><li>समानार्थी शब्दों को विलोम के रूप में पहचानना परीक्षा में फंसाने का एक आम तरीका है।</li></ul>` },
+        { q: "'विद्यार्थियों को प्रतिदिन विद्यालय आना अनिवार्य है' वाक्य में प्रयुक्त रेखांकित शब्द (अनिवार्य) का विलोम होगा-", o: ["आवश्यक", "वैकल्पिक", "अनुकूल", "अधिकार"], a: 1, e: `<b>हल:</b> 'अनिवार्य' (कम्पलसरी/जिसे टाला न जा सके) का निकटतम विलोम 'वैकल्पिक' (ऑप्शनल/विकल्प वाला) होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व अन्य):</b><ul><li>अनिवार्य शब्द 'अ + निवार्य' से बना है (जिसका निवारण न हो सके)।</li><li>वैकल्पिक शब्द 'विकल्प + इक' प्रत्यय से बना है (जहाँ चुनने की आज़ादी हो)।</li><li>'आवश्यक' (जरूरी) का विलोम 'अनावश्यक' होता है।</li><li>'अनुकूल' (पक्ष में) का विलोम 'प्रतिकूल' (विपक्ष में) होता है।</li><li>'अधिकार' का विलोम 'कर्तव्य' या 'अनाधिकार' होता है।</li></ul>` },
+        { q: "निम्नलिखित में विलोम शब्द युग्म है-", o: ["हिंसा-प्रतिहिंसा", "ह्रास-परिहास", "मान-सम्मान", "वादी-प्रतिवादी"], a: 3, e: `<b>हल:</b> 'वादी-प्रतिवादी' सही विलोम शब्द युग्म है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व अन्य):</b><ul><li>वादी का अर्थ है मुकदमा दायर करने वाला (Plaintiff), और प्रतिवादी का अर्थ है अपना बचाव करने वाला (Defendant)। यहाँ 'प्रति' उपसर्ग विरोध दर्शाता है।</li><li>हिंसा और प्रतिहिंसा (हिंसा के बदले हिंसा) विलोम नहीं हैं। हिंसा का विलोम अहिंसा होता है।</li><li>ह्रास (कमी/नुकसान) का विलोम वृद्धि होता है। परिहास का अर्थ मजाक होता है।</li><li>मान और सम्मान पर्यायवाची हैं (इनका विलोम अपमान होगा)।</li><li>अदालती और कानूनी शब्दावली में वादी-प्रतिवादी का बहुत प्रयोग होता है।</li></ul>` },
+        { q: "निम्नलिखित में से 'आर्द्र' का विलोम है-", o: ["सार्द्र", "गीला", "शुष्क", "गरम"], a: 2, e: `<b>हल:</b> 'आर्द्र' (नमी युक्त/Wet) का सही विलोम 'शुष्क' (सूखा/Dry) होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व अन्य):</b><ul><li>यह तत्सम शब्द है, इसलिए इसका विलोम भी तत्सम (शुष्क) ही चुना गया है।</li><li>यदि शब्द 'गीला' (तद्भव) होता, तो उसका विलोम 'सूखा' होता।</li><li>'गरम' का विलोम 'ठंडा' होता है।</li><li>भूगोल में जलवायु के लिए इन शब्दों का बहुत प्रयोग होता है (आर्द्र जलवायु - शुष्क जलवायु)।</li><li>'सार्द्र' (स + आर्द्र) का अर्थ भी नमी सहित होता है, अतः यह पर्यायवाची के निकट है।</li></ul>` },
+        { q: "'गमन' का विलोम शब्द है-", o: ["गम", "अगम", "आगमन", "नागम"], a: 2, e: `<b>हल:</b> 'गमन' (जाना/Departure) का सही विलोम 'आगमन' (आना/Arrival) होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व अन्य):</b><ul><li>मूल शब्द 'गमन' में 'आ' उपसर्ग जोड़ने से विलोम बनता है (आ + गमन = आगमन)। 'आ' उपसर्ग दिशा को उलट देता है।</li><li>'अगम' का अर्थ होता है जहाँ जाया न जा सके, इसका विलोम 'सुगम' (जहाँ आसानी से जाया जा सके) होता है।</li><li>संस्कृत की 'गम्' धातु (जाना) से ये सभी शब्द बने हैं।</li><li>'गम' का अर्थ दुःख होता है (अरबी/फ़ारसी मूल), जिसका विलोम ख़ुशी होता है।</li><li>रेलवे स्टेशनों पर प्रायः गमन (Departure) और आगमन (Arrival) लिखा होता है।</li></ul>` },
+        { q: "'गौरव' का विलोम शब्द कौनसा है?", o: ["लघु", "लघिमा", "लाघव", "लघुत्व"], a: 2, e: `<b>हल:</b> 'गौरव' (बड़प्पन/महानता) का सही विलोम 'लाघव' (छोटापन/हल्कापन) होता है।<br><br>💡 <b>5 महत्वपूर्ण तथ्य (व्याकरण नियम व अन्य):</b><ul><li>यह तद्धित प्रत्यय का बहुत ही सुंदर नियम है: 'गुरु' शब्द में 'अ' प्रत्यय लगने से 'गौरव' बनता है (उ का औ हो जाता है)।</li><li>उसी प्रकार, 'लघु' (छोटा) शब्द में 'अ' प्रत्यय लगने से 'लाघव' बनता है।</li><li>'लघिमा' का विलोम 'गरिमा' होता है (लघु + इमा = लघिमा, गुरु + इमा = गरिमा)।</li><li>'लघुत्व' का विलोम 'गुरुत्व' होता है (त्व प्रत्यय)।</li><li>'लघु' का विलोम 'गुरु' या 'दीर्घ' होता है।</li></ul>` }
+    ];
+
+    let state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+    let timerInterval = null;
+    let isPaused = false;
+
+    window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+    function initDashboard() {
+        showScreen('dashboard-screen');
+        let completedData = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) completedData = JSON.parse(dataStr);
+        } catch(e) {}
+
+        if (completedData) {
+            document.getElementById('dash-unattempted').style.display = 'none';
+            document.getElementById('dash-attempted').style.display = 'block';
+            document.getElementById('dash-score-text').innerText = `${completedData.score}/25.0 Marks . 1.5K/2.9K Rank`;
+            document.getElementById('dash-progress-bar').style.width = `${(completedData.score / 25) * 100}%`;
+        } else {
+            document.getElementById('dash-attempted').style.display = 'none';
+            document.getElementById('dash-unattempted').style.display = 'block';
+        }
+    }
+
+    function startTest() {
+        let saved = null;
+        try {
+            const savedStr = safeGetItem(STORAGE_KEY);
+            if(savedStr) saved = JSON.parse(savedStr);
+        } catch(e){}
+
+        if (saved && !saved.submitted) {
+            state = saved;
+        } else {
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+        }
+        initTestEnv();
+    }
+
+    function reattemptTest() {
+        if(confirm("क्या आप सुनिश्चित हैं कि आप नया टेस्ट शुरू करना चाहते हैं? आपकी वर्तमान प्रगति नष्ट हो जाएगी।")) {
+            safeRemoveItem(STORAGE_KEY);
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+            initTestEnv();
+        }
+    }
+
+    function initTestEnv() {
+        showScreen('test-screen');
+        renderQuestion();
+        renderPalette();
+        updateStats();
+        
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+        setInterval(() => { if(!state.submitted) safeSetItem(STORAGE_KEY, JSON.stringify(state)); }, 2000);
+    }
+
+    function viewSavedResults() {
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(data) renderResultUI(data);
+    }
+
+    function showDashboard() { initDashboard(); }
+
+    function showScreen(id) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+    }
+
+    function updateTimer() {
+        if(isPaused || state.submitted) return;
+        if(state.time <= 0) { submitTest(); return; }
+        state.time--;
+        const m = Math.floor(state.time / 60), s = state.time % 60;
+        document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+    }
+
+    function toggleTheme() {
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    function renderQuestion() {
+        state.visited[state.currentQ] = true;
+        const q = finalQuestions[state.currentQ];
+        document.getElementById('q-no').innerText = `प्रश्न ${state.currentQ + 1}`;
+        document.getElementById('q-text').innerHTML = q.q;
+        let opts = '';
+        q.o.forEach((opt, i) => {
+            const isSel = state.answers[state.currentQ] === i;
+            const selClass = isSel ? 'selected' : '';
+            const charLabel = String.fromCharCode(65 + i);
+            opts += `<div class="glass-panel option ${selClass}" onclick="selectOption(${i})"><div class="opt-label">${charLabel}</div><div style="flex:1;">${opt}</div></div>`;
+        });
+        document.getElementById('options-box').innerHTML = opts;
+        
+        renderPalette();
+        updateStats();
+    }
+
+    function selectOption(index) { state.answers[state.currentQ] = index; renderQuestion(); }
+    function clearResponse() { delete state.answers[state.currentQ]; delete state.marked[state.currentQ]; renderQuestion(); }
+    function markReview() { state.marked[state.currentQ] = true; changeQ(1); }
+    function saveNext() { delete state.marked[state.currentQ]; changeQ(1); }
+
+    function changeQ(step) {
+        const next = state.currentQ + step;
+        if(next >= 0 && next < finalQuestions.length) { state.currentQ = next; renderQuestion(); }
+    }
+
+    function renderPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        finalQuestions.forEach((_, i) => {
+            let cls = 's-0';
+            if(state.visited[i]) {
+                if(state.answers[i] !== undefined && state.marked[i]) cls = 's-4';
+                else if(state.marked[i]) cls = 's-3';
+                else if(state.answers[i] !== undefined) cls = 's-1';
+                else cls = 's-2';
+            }
+            const active = i === state.currentQ ? 'active' : '';
+            grid.innerHTML += `<button class="p-btn ${cls} ${active}" onclick="state.currentQ = ${i}; renderQuestion();">${i + 1}</button>`;
+        });
+    }
+
+    function updateStats() {
+        let ans=0, notans=0, notvis=0, mark=0;
+        finalQuestions.forEach((_, i) => {
+            if(!state.visited[i]) notvis++;
+            else if(state.marked[i]) mark++;
+            else if(state.answers[i] !== undefined) ans++;
+            else notans++;
+        });
+        document.getElementById('c-ans').innerText = ans; document.getElementById('c-notans').innerText = notans;
+        document.getElementById('c-notvis').innerText = notvis; document.getElementById('c-mark').innerText = mark;
+    }
+
+    function submitTest() {
+        if(!confirm("क्या आप टेस्ट सबमिट करना चाहते हैं?")) return;
+        state.submitted = true; clearInterval(timerInterval);
+        let score=0, attempt=0, wrong=0;
+        finalQuestions.forEach((q, i) => {
+            if(state.answers[i] !== undefined) {
+                attempt++;
+                if(state.answers[i] === q.a) score++; else wrong++;
+            }
+        });
+        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const completedData = { score: score, attempted: attempt, wrong: wrong, time: state.time, date: today, userAnswers: state.answers };
+        
+        safeSetItem(COMPLETED_KEY, JSON.stringify(completedData));
+        safeRemoveItem(STORAGE_KEY);
+        
+        renderResultUI(completedData);
+    }
+
+    function renderResultUI(data) {
+        showScreen('result-screen');
+        const acc = data.attempted > 0 ? ((data.score / data.attempted) * 100).toFixed(1) : 0;
+        document.getElementById('r-score').innerText = `${data.score}`;
+        document.getElementById('r-attempt').innerText = data.attempted;
+        document.getElementById('r-wrong').innerText = data.wrong;
+        document.getElementById('r-acc').innerText = `${acc}%`;
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(!data) return;
+
+        let html = '';
+        finalQuestions.forEach((q, i) => {
+            const uAns = data.userAnswers[i];
+            let optHtml = '';
+            q.o.forEach((opt, oIdx) => {
+                let cls = '', checkMark = '';
+                if(oIdx === q.a) { cls = 'correct'; checkMark = ' ✔'; }
+                else if(oIdx === uAns && uAns !== q.a) { cls = 'wrong'; checkMark = ' ❌ (आपका उत्तर)'; }
+                optHtml += `<div class="glass-panel sol-opt ${cls}"><strong>${String.fromCharCode(65 + oIdx)}.</strong> <div style="flex:1;">${opt} ${checkMark}</div></div>`;
+            });
+            let statusText = uAns !== undefined ? (uAns === q.a ? "हल किया (सही)" : "हल किया (गलत)") : "हल नहीं किया";
+            html += `<div class="glass-panel sol-card"><div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--primary);">प्र ${i+1}. ${q.q}</div>${optHtml}<div style="font-weight:bold; margin:15px 0; color:var(--text-muted);">स्थिति: ${statusText}</div><div class="glass-panel sol-exp">${q.e}</div></div>`;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+
+    function downloadPDF() {
+        const element = document.getElementById('sol-container');
+        
+        const actionButtons = element.previousElementSibling;
+        actionButtons.style.display = 'none';
+
+        const opt = {
+            margin:       10,
+            filename:     'Hindi_Grammar_Test_1_Solutions.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) document.documentElement.setAttribute('data-theme', 'light');
+        
+        html2pdf().set(opt).from(element).save().then(() => {
+            if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
+            actionButtons.style.display = 'flex';
+        });
+    }
+</script>
+</body>
+</html>
