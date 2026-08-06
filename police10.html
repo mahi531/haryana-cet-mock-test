@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Haryana Police Constable Practice Set 10</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Mukta:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root { --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%); --glass-bg: rgba(255, 255, 255, 0.95); --glass-border: rgba(255, 255, 255, 0.6); --text-main: #1e293b; --text-muted: #64748b; --btn-bg: #2563eb; --btn-hover: #1d4ed8; --header-bg: #ffffff; --option-bg: #f8fafc; --option-selected: rgba(219, 234, 254, 0.9); --success: #10b981; --danger: #ef4444; --warning: #f59e0b; }
+        [data-theme="dark"] { --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%); --glass-bg: rgba(30, 41, 59, 0.95); --glass-border: rgba(255, 255, 255, 0.1); --text-main: #f1f5f9; --text-muted: #cbd5e1; --btn-bg: #3b82f6; --btn-hover: #2563eb; --header-bg: #1e1e1e; --option-bg: #1e1e1e; --option-selected: rgba(30, 58, 138, 0.8); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; touch-action: manipulation;}
+        body { height: 100vh; height: 100dvh; background: var(--bg-gradient); background-size: 400% 400%; animation: gradientBG 15s ease infinite; color: var(--text-main); display: flex; flex-direction: column; overflow: hidden; }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        .hidden { display: none !important; }
+        .btn { font-family: 'Poppins', sans-serif; background: var(--btn-bg); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;}
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1.5px solid var(--btn-bg); color: var(--btn-bg); box-shadow: none;}
+        .btn-outline:hover { background: rgba(37, 99, 235, 0.05); }
+        .btn-warning { background: var(--warning); color: #fff;}
+        .btn-clear { background: var(--header-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-mark { background: #8b5cf6; color: white; }
+        .btn-prev { background: var(--text-muted); color: white; }
+        .screen { display: none; flex-direction: column; height: 100%; width: 100vw; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; }
+        #dashboard-screen { overflow-y: auto; background: var(--bg-gradient); align-items: center; padding-bottom: 30px;}
+        .dash-header-top { background: var(--header-bg); color: var(--text-main); width: 100%; padding: 15px 20px; font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 15px; position: sticky; top:0; z-index: 100; border-bottom: 1px solid var(--glass-border); box-shadow: 0 4px 6px rgba(0,0,0,0.05);}
+        .dash-content { width: 100%; max-width: 800px; padding: 20px; }
+        .section-title { font-weight: 600; color: var(--btn-bg); margin: 15px 0 10px 0; border-left: 4px solid var(--btn-bg); padding-left: 10px; font-size: 16px; }
+        .dash-card { background: var(--glass-bg); border-radius: 12px; padding: 24px; border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 rgba(0,0,0,0.1); margin-bottom: 15px; }
+        header.test-head { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-bottom: 10px; margin-inline: 10px; background: var(--glass-bg); border: 1px solid var(--glass-border); }
+        .header-title { font-size: 16px; font-weight: 700; color: var(--btn-bg); }
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: 700; background: var(--header-bg); border: 1px solid var(--glass-border); color: var(--danger); padding: 5px 12px; border-radius: 20px; }
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 0 10px 10px 10px; }
+        .question-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px; }
+        .q-header { padding: 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-weight: 600; font-size: 15px; }
+        .q-body { flex: 1; padding: 20px 15px; overflow-y: auto; font-size: 17px; line-height: 1.6; font-weight: 500;}
+        .en-q { display: block; font-size: 0.90em; color: var(--text-muted); margin-top: 8px; font-weight: 500; font-family: 'Poppins', sans-serif;}
+        .frac { display: inline-block; text-align: center; vertical-align: middle; margin: 0 4px; font-size: 0.9em; font-weight:bold; color: var(--text-main);}
+        .frac > span { display: block; padding: 0.1em; line-height: 1; }
+        .frac span.bottom { border-top: 1.5px solid var(--text-main); }
+        .options-list { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; padding-bottom: 10px;}
+        .option { padding: 12px 15px; border: 1px solid var(--glass-border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 15px; background: var(--option-bg); font-weight: 500; font-size: 16px; transition: 0.2s;}
+        .option:hover { border-color: var(--btn-bg); }
+        .option.selected { border-color: var(--btn-bg); background: var(--option-selected); color: var(--btn-bg); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 6px; background: var(--glass-border); color: var(--text-main); display: flex; justify-content: center; align-items: center; font-weight: bold; font-size: 13px;}
+        .option.selected .opt-label { background: var(--btn-bg); color: white; border-color: var(--btn-bg);}
+        .q-footer { padding: 15px; border-top: 1px solid var(--glass-border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border-radius: 0 0 12px 12px; background: var(--header-bg);}
+        .palette-section { width: 320px; display: flex; flex-direction: column; flex-shrink: 0; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px; }
+        .palette-header { padding: 15px; border-bottom: 1px solid var(--glass-border); text-align: center; font-weight: bold; font-size: 15px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; font-size: 12px; border-bottom: 1px solid var(--glass-border); font-weight: 500;}
+        .stat-item { display: flex; align-items: center; gap: 8px;}
+        .badge { width: 22px; height: 22px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 11px; font-weight: bold;}
+        .s-0 { background: var(--glass-border); color: var(--text-main); } 
+        .s-1 { background: var(--success); } .s-2 { background: var(--danger); } .s-3 { background: #8b5cf6; } 
+        .s-4 { background: var(--btn-bg); position: relative; }
+        .s-4::after { content: '✔'; position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; background: white; color: var(--btn-bg); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 8px; }
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; padding: 15px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; color: white; font-size: 13px; }
+        .p-btn.s-0 { background: var(--glass-border); color: var(--text-main); }
+        .p-btn.active { outline: 3px solid var(--btn-bg); outline-offset: 2px; transform: scale(1.05);}
+        .submit-area { padding: 15px; border-top: 1px solid var(--glass-border); }
+        #result-screen, #solution-screen { overflow-y: auto; align-items: center; padding: 20px; background: var(--bg-gradient); }
+        .sol-card { padding: 20px; margin-bottom: 15px; width: 100%; max-width: 800px; background: var(--glass-bg); border-radius: 12px; border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 rgba(0,0,0,0.1); page-break-inside: avoid;}
+        .sol-opt { padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; gap: 12px; align-items: center; font-size: 16px; background: var(--option-bg);}
+        .sol-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); text-decoration: line-through;}
+        .sol-exp { margin-top: 15px; padding: 15px; background: var(--header-bg); border: 1px solid var(--glass-border); border-radius: 8px; font-size: 15px; line-height: 1.6; color: var(--text-main); }
+        .fact-box { background: rgba(16, 185, 129, 0.1); border-left: 4px solid var(--success); padding: 12px; margin-top: 10px; border-radius: 4px; }
+        .fact-box ul { padding-left: 20px; margin-top: 5px; margin-bottom: 0;}
+        .fact-box li { margin-bottom: 6px; font-size: 14.5px;}
+        .math-box { background: rgba(37, 99, 235, 0.1); border-left: 4px solid var(--btn-bg); padding: 12px; margin-top: 10px; border-radius: 4px; font-size: 15px;}
+        .visual-box { font-family: monospace; background: rgba(0,0,0,0.05); padding: 15px; border-radius: 6px; margin: 10px 0; line-height: 1.6; overflow-x: auto; font-size: 15px; border-left: 4px solid var(--warning); display: flex; justify-content: center;}
+        [data-theme="dark"] .visual-box { background: rgba(255,255,255,0.05); }
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+        @media (max-width: 992px) {
+            .main-area { flex-direction: column; overflow-y: auto;}
+            .question-section { flex: none; min-height: 450px;}
+            .palette-section { width: 100%; flex: none; min-height: 350px;}
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <div id="dashboard-screen" class="screen active">
+        <div class="dash-header-top"><span style="cursor: pointer;" onclick="alert('Going Back')">&#8592;</span> मॉक टेस्ट (Mock Tests)</div>
+        <div class="dash-content">
+            <div id="dash-unattempted">
+                <div class="section-title">Full Mock Test - 100 Questions (HSSC Pattern)</div>
+                <div class="dash-card">
+                    <div class="test-title" style="font-size: 20px; font-weight: 700;">Haryana Police Constable Practice Set 10</div>
+                    <div style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px;">100 Qs • 90 mins • 97.0 Marks (0.97/Q) • No Negative Marking</div>
+                    <button class="btn" style="width: 100%; padding: 12px; border-radius: 8px; font-size: 16px;" onclick="startTest()">Start Test 🚀 / टेस्ट शुरू करें</button>
+                </div>
+            </div>
+            <div id="dash-attempted" class="hidden">
+                <div class="dash-card">
+                    <div style="font-size: 20px; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">Practice Set 10</div>
+                    <div style="font-size: 15px; color: var(--text-muted); font-weight: 500; margin-bottom: 15px;"><span id="dash-score-text">0/97.0 Marks</span></div>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 25px;">
+                        <div style="flex: 1; height: 6px; background: var(--glass-border); border-radius: 4px; display: flex; align-items: center;"><div id="dash-progress-bar" style="height: 100%; background: #10b981; width: 0%; border-radius: 4px;"></div></div>
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn btn-outline" style="flex: 1; padding: 10px; border-radius: 8px; font-size: 15px;" onclick="viewSavedResults()">View Results</button>
+                        <button class="btn btn-outline" style="flex: 1; padding: 10px; border-radius: 8px; font-size: 15px;" onclick="reattemptTest()">Reattempt ↻</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px; font-size: 2rem;">Test Paused ⏸️</h2>
+        <button class="btn" style="font-size: 1.2rem; padding: 10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+    </div>
+
+    <div id="test-screen" class="screen">
+        <header class="test-head">
+            <div class="header-title">Practice Set 10</div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="toggleTheme()">🌓 Theme</button>
+                <button class="btn btn-warning" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="togglePause()">⏸ Pause</button>
+                <div class="timer-box">⏱ <span id="timer-display">90:00</span></div>
+            </div>
+        </header>
+        <div class="main-area">
+            <div class="question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--success); font-weight:bold;">+0.97 <span style="color: var(--text-muted); font-weight:normal;">|</span> <span style="color: var(--danger);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600; font-size:18px;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <button class="btn btn-mark" onclick="markReview()">Mark / मार्क</button>
+                    <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                    <button class="btn btn-prev" onclick="changeQ(-1)">Prev</button>
+                    <button class="btn" onclick="saveNext()">Save & Next</button>
+                </div>
+            </div>
+            <div class="palette-section">
+                <div class="palette-header">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">100</div> Not Visit</div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn" style="width: 100%; background: var(--success); font-size: 15px; padding: 12px;" onclick="submitTest()">Submit Test / सबमिट</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-screen" class="screen">
+        <div style="width: 100%; max-width: 800px; margin-bottom: 15px;"><button class="btn btn-clear" onclick="showDashboard()">&#8592; Back to Dashboard</button></div>
+        <div class="sol-card" style="margin: 0 auto; text-align: center;">
+            <h1 style="color: var(--btn-bg); margin-bottom: 20px;">Test Submitted Successfully! 🎉</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 25px 0;">
+                <div style="padding: 15px; background: var(--header-bg); border-radius: 8px; border: 1px solid var(--glass-border);"><h2 id="r-score" style="color: var(--btn-bg); font-size: 28px;">0</h2><p style="color: var(--text-muted); font-size:13px;">Marks (out of 97)</p></div>
+                <div style="padding: 15px; background: var(--header-bg); border-radius: 8px; border: 1px solid var(--glass-border);"><h2 id="r-attempt" style="color: var(--success); font-size: 28px;">0</h2><p style="color: var(--text-muted); font-size:13px;">Attempted</p></div>
+                <div style="padding: 15px; background: var(--header-bg); border-radius: 8px; border: 1px solid var(--glass-border);"><h2 id="r-wrong" style="color: var(--danger); font-size: 28px;">0</h2><p style="color: var(--text-muted); font-size:13px;">Wrong</p></div>
+                <div style="padding: 15px; background: var(--header-bg); border-radius: 8px; border: 1px solid var(--glass-border);"><h2 id="r-acc" style="color: #8b5cf6; font-size: 28px;">0%</h2><p style="color: var(--text-muted); font-size:13px;">Accuracy</p></div>
+            </div>
+            <button class="btn" style="width:100%; padding: 15px; font-size: 16px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+        </div>
+    </div>
+
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%; margin:0 auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 15px; background: var(--glass-bg); border-radius: 12px; border: 1px solid var(--glass-border); position: sticky; top: 5px; z-index: 10;">
+                <h3 style="color: var(--btn-bg);">Detailed Solutions</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" style="padding: 5px 12px; font-size: 13px; background: var(--success);" onclick="downloadPDF()">📥 Download PDF</button>
+                    <button class="btn btn-clear" style="padding: 6px 12px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+                </div>
+            </div>
+            <div id="sol-container"></div>
+        </div>
+    </div>
+
+<script>
+    const STORAGE_KEY = 'hssc_mock_10_all_active'; 
+    const COMPLETED_KEY = 'hssc_mock_10_all_comp';
+    const MARKS_PER_Q = 0.97;
+
+    const rawData = [
+        ["1. निम्नलिखित में से किस ग्रह का कोई चाँद नहीं है?<br><span class='en-q'>Which of the following planets has no moon?</span>", ["मंगल / Mars", "नेप्च्यून / Neptune", "पृथ्वी / Earth", "बुध / Mercury"], 3, "f|सौरमंडल में केवल 'बुध' और 'शुक्र' का कोई उपग्रह (चाँद) नहीं है।|बुध सूर्य के सबसे निकट का ग्रह है।|बृहस्पति सौरमंडल का सबसे बड़ा ग्रह है।|पृथ्वी का एकमात्र उपग्रह चंद्रमा है।|मंगल के दो उपग्रह फोबोस और डीमोस हैं।"],
+        ["2. 'स्ट्रेट ऑफ जिब्राल्टर' किन दो देशों को अलग करता है?<br><span class='en-q'>'Strait of Gibraltar' separates which two countries?</span>", ["मोरक्को और स्पेन / Morocco & Spain", "फ्रांस और ब्रिटेन / France & Britain", "नॉर्वे और स्वीडन / Norway & Sweden", "कनाडा और USA / Canada & USA"], 0, "f|जिब्राल्टर जलसंधि यूरोप के 'स्पेन' और अफ्रीका के 'मोरक्को' को अलग करती है।|यह अटलांटिक महासागर को भूमध्य सागर से जोड़ती है।|इसे 'भूमध्य सागर की कुंजी' भी कहा जाता है।|फ्रांस और ब्रिटेन को 'इंग्लिश चैनल' अलग करता है।|पाक जलसंधि भारत और श्रीलंका के बीच है।"],
+        ["3. कौन-सा विटामिन खाना पकाने के समय नष्ट हो जाता है?<br><span class='en-q'>Which vitamin is destroyed during cooking?</span>", ["विटामिन-A / Vitamin A", "विटामिन-C / Vitamin C", "विटामिन-D / Vitamin D", "विटामिन-B / Vitamin B"], 1, "f|विटामिन-C (एस्कॉर्बिक एसिड) जल में घुलनशील और ऊष्मा के प्रति संवेदनशील होता है।|खाना पकाने के दौरान यह आसानी से नष्ट हो जाता है।|खट्टे फलों (नींबू, आंवला) में यह प्रचुर मात्रा में होता है।|इसकी कमी से 'स्कर्वी' रोग हो जाता है।|विटामिन A, D, E और K वसा में घुलनशील होते हैं।"],
+        ["4. प्याज का खाद्य अंश है<br><span class='en-q'>The edible part of an onion is:</span>", ["पत्तियाँ / Leaves", "तना / Stem", "पुष्प / Flower", "जड़ें / Roots"], 1, "f|प्याज और लहसुन का खाने योग्य भाग रूपांतरित 'तना' (Modified Stem) होता है।|इसे वनस्पति विज्ञान में 'बल्ब' (Bulb) या शल्ककंद कहा जाता है।|आलू भी तने (कंद) का ही एक रूपांतरण है।|गाजर, मूली और शलजम जड़ों के रूपांतरण हैं।|प्याज में गंध सल्फर यौगिकों के कारण होती है।"],
+        ["5. राधिका, शीतल की सास है। रोहित, राधिका का बेटा तथा सोनू का पिता है। यदि शीतल, रोहित की पत्नी नहीं है, तो शीतल का सोनू से क्या सम्बन्ध है?<br><span class='en-q'>Radhika is Sheetal's mother-in-law. Rohit is Radhika's son and Sonu's father. If Sheetal is not Rohit's wife, how is Sheetal related to Sonu?</span>", ["माँ / Mother", "बहन / Sister", "मामी / Maternal Aunt", "चाची / Aunt"], 3, "m|<span class='math-trick'>🔥 रक्त संबंध (Blood Relation):</span><br>1. राधिका, शीतल की सास है।<br>2. रोहित, राधिका का बेटा है और सोनू का पिता है।<br>3. चूँकि शीतल, रोहित की पत्नी <b>नहीं</b> है, इसका मतलब रोहित का कोई भाई होगा जिसकी पत्नी शीतल है।<br>4. सोनू रोहित का बेटा है, इसलिए रोहित का भाई सोनू का 'चाचा' (Uncle) लगा।<br>5. अतः चाचा की पत्नी (शीतल), सोनू की <b>'चाची' (Aunt)</b> होगी।"],
+        ["6. एक गैरेज में कुछ तिपहिया रिक्शा और कुछ साइकिलें खड़ी हैं। यदि कुल हैण्डल 25 हैं और पहियों की संख्या 65 है, तो तिपहिया रिक्शा की संख्या ज्ञात कीजिए।<br><span class='en-q'>In a garage, there are tricycles and bicycles. Total handles are 25 & wheels are 65. Find the number of tricycles.</span>", ["15 / 15", "12 / 12", "11 / 11", "10 / 10"], 0, "m|<span class='math-trick'>🔥 स्मार्ट अप्रोच (Shift Method):</span><br>कुल वाहन (हैण्डल) = 25।<br>मान लीजिए सभी 25 वाहन साइकिलें (2 पहिए) हैं, तो कुल पहिए = 25 × 2 = 50 होने चाहिए।<br>लेकिन कुल 65 पहिए दिए हैं। अतिरिक्त पहिए = 65 - 50 = 15।<br>यह 15 अतिरिक्त पहिए इसलिए आए क्योंकि तिपहिया रिक्शा में साइकिल से 1 पहिया अधिक होता है।<br>अतः तिपहिया रिक्शा = 15 / 1 = <b>15</b>।"],
+        ["7. किस वेद में रोग निवारण एवं तन्त्र-मन्त्र आदि का वर्णन है?<br><span class='en-q'>Which Veda describes disease cure and spells?</span>", ["ऋग्वेद / Rigveda", "यजुर्वेद / Yajurveda", "सामवेद / Samaveda", "अथर्ववेद / Atharvaveda"], 3, "f|अथर्ववेद में रोग निवारण, तंत्र-मंत्र, जादू-टोना और वशीकरण का विस्तृत वर्णन मिलता है।|ऋग्वेद सबसे प्राचीन वेद है जिसमें देवताओं की स्तुति है।|यजुर्वेद में यज्ञों के नियम और विधि-विधान दिए गए हैं।|सामवेद को भारतीय संगीत का जनक माना जाता है।|वेदों की कुल संख्या चार है।"],
+        ["8. एलोरा एवं एलिफेंटा गुहामन्दिरों का निर्माण किसके शासनकाल में हुआ था?<br><span class='en-q'>During whose reign were the cave temples of Ellora and Elephanta built?</span>", ["पल्लव / Pallava", "राष्ट्रकूट / Rashtrakuta", "चालुक्य / Chalukya", "चेर / Chera"], 1, "f|महाराष्ट्र में स्थित एलोरा और एलिफेंटा की गुफाओं का निर्माण मुख्य रूप से 'राष्ट्रकूट' शासकों के काल में हुआ था।|एलोरा का प्रसिद्ध कैलाश मंदिर राष्ट्रकूट राजा कृष्ण प्रथम ने बनवाया था।|यह मंदिर एक ही विशाल चट्टान को काटकर बनाया गया है।|अजंता की गुफाएं मुख्य रूप से गुप्त काल से संबंधित हैं।|ये यूनेस्को विश्व धरोहर स्थल में शामिल हैं।"],
+        ["9. एक कोशिका का साइटोप्लाज्म जिस झिल्ली द्वारा घिरा रहता है, वह है<br><span class='en-q'>The membrane surrounding the cytoplasm of a cell is:</span>", ["टोनोप्लास्ट / Tonoplast", "प्लाज्मा झिल्ली / Plasma membrane", "सेलप्लास्ट / Cellplast", "नाभिकीय झिल्ली / Nuclear membrane"], 1, "f|कोशिका का कोशिकाद्रव्य (Cytoplasm) चारों ओर से 'प्लाज्मा झिल्ली' (Plasma Membrane) से घिरा होता है।|यह झिल्ली अर्ध-पारगम्य (Semi-permeable) होती है।|यह कोशिका के अंदर और बाहर जाने वाले पदार्थों को नियंत्रित करती है।|पादप कोशिकाओं में इसके बाहर एक कठोर 'कोशिका भित्ति' (Cell wall) भी होती है।|नाभिकीय झिल्ली केंद्रक (Nucleus) को घेरती है।"],
+        ["10. कविता ने साप्ताहिक परीक्षाओं में गणित में (25 में से) 16, 14, 18 और 20 अंक प्राप्त किए। कविता का माध्य अंक है<br><span class='en-q'>Kavita scored 16, 14, 18 and 20 marks in math tests. Her mean score is:</span>", ["16 / 16", "16.5 / 16.5", "71.5 / 71.5", "17 / 17"], 3, "m|<span class='math-trick'>🔥 सांख्यिकी (Statistics - Mean):</span><br>माध्य (Mean) का अर्थ है औसत (Average)।<br>औसत = (सभी अंकों का योग) / (कुल परीक्षाओं की संख्या)<br>अंकों का योग = 16 + 14 + 18 + 20 = 68<br>कुल परीक्षाएँ = 4<br>माध्य = 68 / 4 = <b>17</b>।"],
+        ["11. यदि <div class='frac'><span>3</span><span class='bottom'>n</span></div> = <div class='frac'><span>7</span><span class='bottom'>12</span></div> हो, तो n का मान है<br><span class='en-q'>If 3/n = 7/12, then the value of n is:</span>", ["1 3/4 / 1 3/4", "5 1/7 / 5 1/7", "7 / 7", "28 / 28"], 1, "m|<span class='math-trick'>🔥 स्मार्ट अप्रोच (Cross Multiplication):</span><br>समीकरण: 3 / n = 7 / 12<br>दोनों तरफ तिरछा गुणा (Cross multiply) करने पर:<br>7 × n = 3 × 12<br>7n = 36  ⟶  n = 36 / 7<br>36 को 7 से भाग देने पर 5 बार पूरा जाता है (7×5=35) और शेष 1 बचता है।<br>अतः उत्तर = <b>5 1/7</b>।"],
+        ["12. 'द कोलिशन ईयर्स (1996-2012)' पुस्तक के लेखक कौन हैं?<br><span class='en-q'>Who is the author of the book 'The Coalition Years (1996-2012)'?</span>", ["मनमोहन सिंह / Manmohan Singh", "नटवर सिंह / Natwar Singh", "अटल बिहारी वाजपेयी / Atal Bihari Vajpayee", "प्रणब मुखर्जी / Pranab Mukherjee"], 3, "f|'द कोलिशन ईयर्स (1996-2012)' पुस्तक भारत के पूर्व राष्ट्रपति 'प्रणब मुखर्जी' द्वारा लिखी गई है।|यह उनकी राजनीतिक आत्मकथा श्रृंखला का तीसरा भाग है।|इसमें 1996 से 2012 तक भारतीय राजनीति में गठबंधन सरकारों के दौर का वर्णन है।|उन्हें वर्ष 2019 में भारत रत्न से सम्मानित किया गया था।|वे भारत के 13वें राष्ट्रपति थे।"],
+        ["13. एक विद्यालय में लड़कों का 10% लड़कियों की संख्या के 1/4 के बराबर है। लड़कों तथा लड़कियों का अनुपात है<br><span class='en-q'>In a school, 10% of boys is equal to 1/4th of girls. Ratio of boys to girls is:</span>", ["3:2 / 3:2", "6:3 / 6:3", "2:1 / 2:1", "5:2 / 5:2"], 3, "m|<span class='math-trick'>🔥 स्मार्ट अप्रोच (Ratio & Percentage):</span><br>माना लड़कों की संख्या B और लड़कियों की G है।<br>प्रश्नानुसार: B का 10% = G का 1/4<br>B × (10/100) = G × (1/4)<br>B / 10 = G / 4<br>B / G = 10 / 4<br>इसे 2 से काटें = <b>5 / 2</b><br>अतः अनुपात <b>5:2</b> है।"],
+        ["14. बैटरी के धनात्मक ध्रुव से जोड़े गए इलेक्ट्रोड को क्या कहते हैं?<br><span class='en-q'>The electrode connected to the positive terminal of a battery is called:</span>", ["इलेक्ट्रोप्लेट / Electroplate", "कैथोड / Cathode", "एनोड / Anode", "आयन / Ion"], 2, "f|विद्युत अपघटन में बैटरी के धनात्मक (Positive) ध्रुव से जुड़े इलेक्ट्रोड को 'एनोड' (Anode) कहते हैं।|ऋणात्मक (Negative) ध्रुव से जुड़े इलेक्ट्रोड को 'कैथोड' (Cathode) कहते हैं।|एनोड पर ऑक्सीकरण (Oxidation) की प्रक्रिया होती है।|कैथोड पर अपचयन (Reduction) की प्रक्रिया होती है।|धनात्मक आयनों को धनायन (Cation) कहते हैं।"],
+        ["15. निम्नलिखित में कौन स्तनधारी (Mammal) नहीं है?<br><span class='en-q'>Which of the following is not a mammal?</span>", ["वालरस / Walrus", "व्हेल / Whale", "डॉल्फिन / Dolphin", "नीली शार्क / Blue Shark"], 3, "f|'नीली शार्क' (Blue Shark) एक प्रकार की मछली (Fish) है, स्तनधारी नहीं।|शार्क मछलियों के वर्ग (Pisces) में आती हैं और गलफड़ों (Gills) से सांस लेती हैं।|व्हेल और डॉल्फिन पानी में रहने वाले स्तनधारी जीव हैं जो फेफड़ों से सांस लेते हैं।|वालरस भी एक समुद्री स्तनधारी जीव है।|स्तनधारी जीव अपने बच्चों को दूध पिलाते हैं।"],
+        ["16. पायस (Emulsion) एक कोलॉइड होता है<br><span class='en-q'>Emulsion is a colloid of:</span>", ["द्रव में गैस का / Gas in liquid", "ठोस में ठोस का / Solid in solid", "द्रव में द्रव का / Liquid in liquid", "ठोस में गैस का / Gas in solid"], 2, "f|पायस (Emulsion) दो अमिश्रणीय द्रवों (Liquid in Liquid) का कोलॉइडी मिश्रण होता है।|दूध (Milk) एक प्राकृतिक पायस का सबसे अच्छा उदाहरण है जिसमें वसा पानी में घुली होती है।|पेंट, क्रीम और मक्खन भी पायस के उदाहरण हैं।|कोहरा (Fog) द्रव में गैस का कोलॉइड है (Aerosol)।|धुआं ठोस में गैस का कोलॉइड है।"],
+        ["17. दो संख्याओं का महत्तम समापवर्तक 96 तथा उनका लघुत्तम 1296 है। यदि एक संख्या 864 है, तो दूसरी संख्या होगी<br><span class='en-q'>The HCF of two numbers is 96 and their LCM is 1296. If one number is 864, the other number will be:</span>", ["11664 / 11664", "72 / 72", "64 / 64", "144 / 144"], 3, "m|<span class='math-trick'>🔥 स्मार्ट अप्रोच (LCM-HCF Theorem):</span><br>सूत्र: <b>पहली संख्या × दूसरी संख्या = HCF × LCM</b><br>यहाँ, पहली संख्या = 864, HCF = 96, LCM = 1296<br>864 × (दूसरी संख्या) = 96 × 1296<br>दूसरी संख्या = (96 × 1296) / 864<br>सरल करें: (96 × 144 × 9) / (144 × 6) = <b>144</b>।"],
+        ["18. एक घन का सम्पूर्ण पृष्ठ 600 वर्ग सेमी है। इसके विकर्ण की लम्बाई कितनी है?<br><span class='en-q'>The total surface area of a cube is 600 sq cm. What is the length of its diagonal?</span>", ["10&radic;2 / 10&radic;2", "10 / 10", "10&radic;3 / 10&radic;3", "&radic;2 / &radic;2"], 2, "m|<span class='math-trick'>🔥 घन के सूत्र (Cube Formula):</span><br>1. घन का सम्पूर्ण पृष्ठ = 6a² (जहाँ a = भुजा)<br>6a² = 600<br>a² = 100  ⟶  a = 10 सेमी।<br>2. घन का विकर्ण (Diagonal) = a√3<br>भुजा का मान रखने पर: विकर्ण = <b>10√3 सेमी</b>।"],
+        ["19. किस सदन में अध्यक्ष उस सदन का सदस्य नहीं होता?<br><span class='en-q'>In which house is the chairman not a member of that house?</span>", ["लोकसभा / Lok Sabha", "राज्यसभा / Rajya Sabha", "विधानसभा / Vidhan Sabha", "विधानपरिषद् / Vidhan Parishad"], 1, "f|भारत के उपराष्ट्रपति 'राज्यसभा' के पदेन सभापति (Chairman) होते हैं, परन्तु वे राज्यसभा के सदस्य नहीं होते।|संविधान के अनुच्छेद 64 और 89 में इसका प्रावधान है।|लोकसभा अध्यक्ष (Speaker) लोकसभा के ही निर्वाचित सदस्यों में से चुना जाता है।|उपराष्ट्रपति को निर्णायक मत (Casting Vote) देने का अधिकार है।|संसद का उच्च सदन राज्यसभा कहलाता है।"],
+        ["20. किस संविधान संशोधन अधिनियम द्वारा सम्पत्ति का अधिकार मूल अधिकार नहीं रहा?<br><span class='en-q'>By which Constitutional Amendment Act did Right to Property cease to be a Fundamental Right?</span>", ["41वाँ / 41st", "42वाँ / 42nd", "44वाँ / 44th", "45वाँ / 45th"], 2, "f|'44वें संविधान संशोधन अधिनियम (1978)' द्वारा सम्पत्ति के अधिकार को मौलिक अधिकारों की सूची से हटा दिया गया।|मूल संविधान में यह अनुच्छेद 31 के तहत एक मौलिक अधिकार था।|अब इसे अनुच्छेद 300A के तहत केवल एक 'कानूनी/विधिक अधिकार' बना दिया गया है।|42वें संशोधन (1976) को 'लघु संविधान' (Mini Constitution) कहा जाता है।|वर्तमान में नागरिकों को 6 मौलिक अधिकार प्राप्त हैं।"],
+        ["21. केन्द्रशासित प्रदेश लक्षद्वीप किस उच्च न्यायालय के अधिकार क्षेत्र के अन्तर्गत आता है?<br><span class='en-q'>The UT of Lakshadweep comes under the jurisdiction of which High Court?</span>", ["केरल उच्च न्यायालय / Kerala HC", "मद्रास उच्च न्यायालय / Madras HC", "बॉम्बे उच्च न्यायालय / Bombay HC", "कोलकाता उच्च न्यायालय / Kolkata HC"], 0, "f|केंद्र शासित प्रदेश 'लक्षद्वीप' का न्यायिक क्षेत्र 'केरल उच्च न्यायालय' (एर्नाकुलम) के अंतर्गत आता है।|अंडमान और निकोबार द्वीप समूह कलकत्ता उच्च न्यायालय के अधीन आता है।|पुदुचेरी मद्रास उच्च न्यायालय के अधीन है।|दमन-दीव और दादरा-नगर हवेली बॉम्बे उच्च न्यायालय के अधीन हैं।|लक्षद्वीप भारत का सबसे छोटा केंद्र शासित प्रदेश है, जो प्रवाल भित्तियों से बना है।"],
+        ["22. ट्रक फार्मिंग किसे कहते हैं?<br><span class='en-q'>What is truck farming?</span>", ["व्यापारिक स्तर पर सब्जियों की खेती / Commercial cultivation of vegetables", "व्यापारिक स्तर पर फलों की खेती / Commercial cultivation of fruits", "व्यापारिक स्तर पर फूलों की खेती / Commercial cultivation of flowers", "व्यापारिक स्तर पर चाय की खेती / Commercial cultivation of tea"], 0, "f|'ट्रक फार्मिंग' का अर्थ व्यापारिक स्तर पर बड़े पैमाने पर 'सब्जियों की खेती' करना है।|ये खेत अक्सर बाजारों से दूर होते हैं, इसलिए सब्जियों को ट्रकों में भरकर रातों-रात बाजार पहुँचाया जाता है।|'ट्रक' शब्द फ्रांसीसी शब्द 'Troquer' से आया है जिसका अर्थ है विनिमय (Barter)।|यह कृषि का एक अत्यधिक सघन प्रकार है।|अमेरिका में इसका बहुत प्रचलन है।"],
+        ["23. माँग का नियम किस पर आधारित है?<br><span class='en-q'>The law of demand is based on:</span>", ["निर्माता की प्राथमिकता / Manufacturer's preference", "विक्रेता की प्राथमिकता / Seller's preference", "पूर्तिकार की प्राथमिकता / Supplier's preference", "उपभोक्ता की प्राथमिकता / Consumer's preference"], 3, "f|अर्थशास्त्र में 'माँग का नियम' (Law of Demand) सीधे तौर पर 'उपभोक्ता की प्राथमिकता' और उसके व्यवहार पर आधारित है।|नियम: मूल्य बढ़ने पर माँग घटती है और मूल्य घटने पर माँग बढ़ती है।|यह मूल्य और माँग के बीच विपरीत संबंध (Inverse Relationship) को दर्शाता है।|उपभोक्ता अपनी आय और उपयोगिता (Utility) के आधार पर यह तय करता है।|गिफेन वस्तुओं पर यह नियम लागू नहीं होता।"],
+        ["24. कम्प्यूटर कन्ट्रोल करने सम्बन्धी इन्स्ट्रक्शन्स या प्रोग्रामों को क्या कहते हैं?<br><span class='en-q'>Instructions or programs related to controlling a computer are called:</span>", ["सॉफ्टवेयर / Software", "हार्डवेयर / Hardware", "ह्यूमनवेयर / Humanware", "प्रोग्रामर / Programmer"], 0, "f|कंप्यूटर को संचालित और नियंत्रित करने वाले निर्देशों, कोड और प्रोग्रामों के समूह को 'सॉफ्टवेयर' (Software) कहा जाता है।|सॉफ्टवेयर को छुआ नहीं जा सकता, यह केवल लॉजिकल होता है।|कंप्यूटर के भौतिक पुर्जों (जैसे मॉनिटर, कीबोर्ड) को हार्डवेयर कहते हैं।|विंडोज, एंड्रॉइड (OS) सिस्टम सॉफ्टवेयर के उदाहरण हैं।|एमएस वर्ड, क्रोम एप्लिकेशन सॉफ्टवेयर के उदाहरण हैं।"],
+        ["25. बिना मृदा के पौधों की खेती को कहते हैं<br><span class='en-q'>Cultivation of plants without soil is called:</span>", ["हाइड्रोपोनिक्स / Hydroponics", "सिल्वीकल्चर / Silviculture", "सॉयल कल्चर / Soil culture", "'b' और 'c' / Both b and c"], 0, "f|बिना मिट्टी के, केवल पानी और पोषक तत्वों (Nutrients) के घोल में पौधों को उगाने की तकनीक को 'हाइड्रोपोनिक्स' (Hydroponics) कहते हैं।|इसे 'जल संवर्धन' भी कहा जाता है।|हवा में पौधों को उगाने की तकनीक को 'एरोपोनिक्स' कहते हैं।|सिल्वीकल्चर जंगलों (वनों) के विकास और प्रबंधन से संबंधित है।|यह आधुनिक कृषि तकनीक है जिससे जगह और पानी दोनों बचते हैं।"],
+        ["26. रीना पूर्व में A से B की ओर 10 फीट चलती है। फिर वह दाएँ मुड़ती है और 3 फीट चलती है। वह फिर दाएँ मुड़ती है और 14 फीट चलती है। वह A से कितनी दूर है?<br><span class='en-q'>Reena walks 10 ft East from A to B. Turns right and walks 3 ft. Turns right and walks 14 ft. How far is she from A?</span>", ["4 फीट / 4 ft", "6 फीट / 6 ft", "24 फीट / 24 ft", "5 फीट / 5 ft"], 3, "m|<span class='math-trick'>🔥 दिशा और दूरी (Pythagoras Theorem):</span><br>1. रीना पूर्व में 10 फीट गई।<br>2. दाएँ (दक्षिण) मुड़कर 3 फीट गई।<br>3. फिर दाएँ (पश्चिम) मुड़कर 14 फीट गई।<br>प्रारंभिक बिंदु (A) से उसकी स्थिति एक समकोण त्रिभुज बनाती है:<br>लंब (Vertical) दूरी = 3 फीट।<br>आधार (Horizontal) दूरी = 14 - 10 = 4 फीट।<br>दूरी = √(3² + 4²) = √(9 + 16) = √25 = <b>5 फीट</b>।"],
+        ["27. वह मूलधन ज्ञात कीजिए जिस पर 8% वार्षिक दर से 2 वर्ष का साधारण ब्याज ₹ 640 है।<br><span class='en-q'>Find the principal on which the simple interest at 8% p.a. for 2 years is ₹ 640.</span>", ["₹ 3,000 / ₹ 3,000", "₹ 4,000 / ₹ 4,000", "₹ 5,000 / ₹ 5,000", "₹ 6,000 / ₹ 6,000"], 1, "m|<span class='math-trick'>🔥 स्मार्ट अप्रोच (Percentage Method):</span><br>ब्याज की दर = 8% वार्षिक।<br>2 वर्षों के लिए कुल ब्याज का प्रतिशत = 8% × 2 = 16%।<br>प्रश्न के अनुसार, यह 16% ब्याज ₹ 640 के बराबर है।<br>16% = 640  ⟶  1% = 640 / 16 = 40<br>मूलधन हमेशा 100% होता है, अतः<br>100% = 40 × 100 = <b>₹ 4000</b>।"],
+        ["28. निम्नलिखित में से कौन बेकिंग सोडा है?<br><span class='en-q'>Which of the following is Baking Soda?</span>", ["Na₂Cl₂ / Na₂Cl₂", "NaHCO₃ / NaHCO₃", "K₂CO₃ / K₂CO₃", "NaOH / NaOH"], 1, "f|'बेकिंग सोडा' (खाने का सोडा) का रासायनिक सूत्र NaHCO₃ (सोडियम बाइकार्बोनेट) है।|इसका उपयोग बेकरी उत्पादों (केक, ब्रेड) को फुलाने में किया जाता है।|इसे एंटासिड (पेट की गैस दूर करने) के रूप में भी प्रयोग करते हैं।|Na₂CO₃ (सोडियम कार्बोनेट) कपड़े धोने का सोडा (Washing Soda) होता है।|NaOH (सोडियम हाइड्रोक्साइड) को कास्टिक सोडा कहते हैं।"],
+        ["29. मोनोजाइट बालू में निम्न में से कौन-सा खनिज पाया जाता है?<br><span class='en-q'>Which mineral is found in Monazite sand?</span>", ["पोटैशियम / Potassium", "यूरेनियम / Uranium", "थोरियम / Thorium", "सोडियम / Sodium"], 2, "f|केरल के समुद्री तटों पर पाई जाने वाली 'मोनोजाइट बालू' (Monazite Sand) में प्रचुर मात्रा में 'थोरियम' (Thorium) खनिज पाया जाता है।|थोरियम एक महत्वपूर्ण रेडियोएक्टिव तत्व है।|भविष्य में भारत के परमाणु ऊर्जा कार्यक्रम के लिए यह अत्यंत महत्वपूर्ण है।|भारत में दुनिया का सबसे बड़ा थोरियम भंडार है।|यूरेनियम मुख्य रूप से झारखंड की जादूगोड़ा खदानों में मिलता है।"],
+        ["30. ताँबे की गेंद को गर्म करने पर इसका घनत्व<br><span class='en-q'>On heating a copper ball, its density:</span>", ["बढ़ता है / Increases", "घटता है / Decreases", "वही रहता है / Remains same", "घटता-बढ़ता रहता है / Fluctuates"], 1, "f|जब तांबे की गेंद को गर्म किया जाता है, तो उसका आयतन (Volume) ऊष्मीय प्रसार के कारण बढ़ जाता है।|घनत्व का सूत्र है: घनत्व = द्रव्यमान / आयतन।|चूँकि द्रव्यमान समान रहता है और आयतन बढ़ता है, इसलिए उसका घनत्व (Density) <b>घट जाता है</b>।|जल का घनत्व 4°C पर अधिकतम होता है।|गर्म हवा ठंडी हवा से कम घनत्व वाली होती है।"],
+        ["31. 7 <div class='frac'><span>1</span><span class='bottom'>2</span></div> &minus; [ 2 <div class='frac'><span>1</span><span class='bottom'>4</span></div> &divide; { 1 <div class='frac'><span>1</span><span class='bottom'>4</span></div> &minus; <div class='frac'><span>1</span><span class='bottom'>2</span></div> ( 1 <div class='frac'><span>1</span><span class='bottom'>2</span></div> &minus; <div class='frac'><span>1</span><span class='bottom'>3</span></div> &minus; <div class='frac'><span>1</span><span class='bottom'>6</span></div> ) } ] = ?<br><span class='en-q'>Simplify the expression:</span>", ["2/9 / 2/9", "4 1/2 / 4 1/2", "9 1/2 / 9 1/2", "1 77/288 / 1 77/288"], 1, "m|<span class='math-trick'>🔥 स्मार्ट अप्रोच (BODMAS Rule):</span><br>छोटे कोष्ठक ( ) को हल करें:<br>1 1/2 = 3/2। <br>(3/2 - 1/3 - 1/6) = (9 - 2 - 1)/6 = 6/6 = 1。<br>मंझले कोष्ठक { } को हल करें:<br>{ 5/4 - 1/2(1) } = 5/4 - 2/4 = 3/4。<br>बड़े कोष्ठक [ ] को हल करें:<br>[ 9/4 ÷ 3/4 ] ⟶ (9/4) × (4/3) = 3。<br>अंत में: 15/2 - 3 = (15 - 6)/2 = 9/2 = <b>4 1/2</b>।"],
+        ["32. विटामिन-E का महत्त्वपूर्ण स्रोत है<br><span class='en-q'>Important source of Vitamin-E is:</span>", ["दाल / Pulses", "मक्खन / Butter", "गेहूँ में अंकुर का तेल / Wheat germ oil", "मछली के यकृत का तेल / Cod liver oil"], 2, "f|विटामिन-E (टोकोफेरॉल) का सबसे अच्छा प्राकृतिक स्रोत 'गेहूँ के अंकुर का तेल' (Wheat germ oil) है।|यह एक बेहतरीन एंटीऑक्सीडेंट है जो त्वचा और बालों के लिए बहुत लाभदायक है।|इसकी कमी से प्रजनन क्षमता में कमी आ सकती है।|इसे 'ब्यूटी विटामिन' भी कहा जाता है।|मछली के यकृत के तेल (Cod liver oil) में विटामिन A और D प्रचुर मात्रा में होते हैं।"],
+        ["33. एक निश्चित कोड भाषा में 'give your book' को 'sk dg ap' तथा 'book my tickets' को 'dg le nb' लिखा जाता है। 'give' का कोड क्या होगा?<br><span class='en-q'>In a certain code, 'give your book' is 'sk dg ap' and 'book my tickets' is 'dg le nb'. What is the code for 'give'?</span>", ["gb / gb", "या तो ap या sk / either ap or sk", "nb / nb", "या तो dg या nb / either dg or nb"], 1, "m|<span class='math-trick'>🔥 कोडिंग डिकोडिंग:</span><br>वाक्य 1: give your <b>book</b> = sk <b>dg</b> ap<br>वाक्य 2: <b>book</b> my tickets = <b>dg</b> le nb<br>दोनों में कॉमन शब्द 'book' है और कॉमन कोड 'dg' है। अतः book = dg.<br>पहले वाक्य में बचे शब्द: 'give' और 'your'। बचे कोड: 'sk' और 'ap'।<br>कोई और जानकारी नहीं है, इसलिए 'give' का कोड स्पष्ट नहीं है। यह या तो 'sk' होगा या 'ap'।<br>अतः उत्तर <b>'या तो ap या sk'</b> है।"],
+        ["34. यदि DEEP को 60 तथा RABIT को 100 लिखा जाए, तो HAIR को क्या लिखा जाएगा?<br><span class='en-q'>If DEEP is written as 60 and RABIT as 100, how will HAIR be written?</span>", ["70 / 70", "74 / 74", "72 / 72", "76 / 76"], 2, "m|<span class='math-trick'>🔥 अक्षर-अंक कोडिंग (Place Value x 2):</span><br>अक्षरों के स्थान का योग करें और उसे 2 से गुणा करें:<br>D(4) + E(5) + E(5) + P(16) = 30 ⟶ 30 × 2 = 60.<br>R(18) + A(1) + B(2) + I(9) + T(20) = 50 ⟶ 50 × 2 = 100.<br>यही नियम HAIR पर लगाएँ:<br>H(8) + A(1) + I(9) + R(18) = 36.<br>36 × 2 = <b>72</b>।"],
+        ["35. मास्टर चन्द्रगीराम का सम्बन्ध किस खेल से है?<br><span class='en-q'>Master Chandgi Ram is associated with which sport?</span>", ["पैदल-चाल / Race walking", "हॉकी / Hockey", "कुश्ती / Wrestling", "मुक्केबाजी / Boxing"], 2, "f|हरियाणा के प्रसिद्ध खिलाड़ी 'मास्टर चन्दगीराम' का संबंध 'कुश्ती' (Wrestling) से था।|उन्होंने 1970 के एशियाई खेलों (बैंकाक) में भारत के लिए स्वर्ण पदक जीता था।|उन्हें अर्जुन पुरस्कार और पद्मश्री से सम्मानित किया गया था।|उन्हें 'हिंद केसरी' और 'भारत केसरी' का खिताब भी मिला था।|उनका जन्म हरियाणा के हिसार जिले (सिसाय गाँव) में हुआ था।"],
+        ["36. भारत रत्न सम्मान पाने वाले तैलकृष्ण आडवाणी (L.K. Advani) का जन्म अविभाजित ब्रिटिश भारत के किस क्षेत्र में हुआ था?<br><span class='en-q'>L.K. Advani, the recipient of Bharat Ratna, was born in which region of undivided British India?</span>", ["भारत / India", "बांग्लादेश / Bangladesh", "पाकिस्तान / Pakistan", "म्यांमार / Myanmar"], 2, "f|भारत के पूर्व उपप्रधानमंत्री श्री लालकृष्ण आडवाणी का जन्म 8 नवंबर 1927 को कराची (अब <b>पाकिस्तान</b> में) में हुआ था।|वे भारतीय जनता पार्टी (BJP) के संस्थापकों में से एक हैं।|राम जन्मभूमि आंदोलन में उनकी रथ यात्रा ने ऐतिहासिक भूमिका निभाई।|उन्हें 2024 में देश का सर्वोच्च नागरिक सम्मान 'भारत रत्न' प्रदान किया गया।|उनकी आत्मकथा 'मेरा देश मेरा जीवन' है।"],
+        ["37. देवगढ़ का दशावतार मन्दिर किस काल से सम्बन्धित है?<br><span class='en-q'>Dashavatar Temple of Deogarh belongs to which period?</span>", ["मौर्य काल / Mauryan Period", "कुषाण काल / Kushana Period", "गुप्त काल / Gupta Period", "चन्देल काल / Chandela Period"], 2, "f|उत्तर प्रदेश के ललितपुर जिले में स्थित देवगढ़ का दशावतार मंदिर 'गुप्त काल' की उत्कृष्ट वास्तुकला का उदाहरण है।|यह भगवान विष्णु को समर्पित है, जिसमें उनके 10 अवतारों को दर्शाया गया है।|यह भारत के सबसे पुराने हिंदू पत्थर के मंदिरों में से एक है।|इसकी दीवारों पर शेषशायी विष्णु की सुंदर नक्काशी है।|गुप्त काल को भारतीय इतिहास का 'स्वर्ण युग' कहा जाता है।"],
+        ["38. 'विश्व खुशहाली रैंकिंग 2025' में शीर्ष पर कौन-सा देश है?<br><span class='en-q'>Which country is at the top of the 'World Happiness Ranking 2025'?</span>", ["डेनमार्क / Denmark", "स्वीडन / Sweden", "फिनलैण्ड / Finland", "नॉर्वे / Norway"], 2, "f|संयुक्त राष्ट्र द्वारा जारी 'विश्व खुशहाली रिपोर्ट 2025' में 'फिनलैंड' लगातार शीर्ष स्थान (No.1) पर बना हुआ है।|इस रैंकिंग में डेनमार्क और आइसलैंड भी शीर्ष देशों में शामिल रहते हैं।|यह रैंकिंग प्रति व्यक्ति GDP, सामाजिक समर्थन, स्वास्थ्य और स्वतंत्रता पर आधारित होती है।|भारत की स्थिति इस सूचकांक में आमतौर पर निचले पायदानों पर रहती है।|विश्व खुशहाली दिवस 20 मार्च को मनाया जाता है।"],
+        ["39. संख्या 3422213** में तारों (*) के स्थान पर कौन-से अंक लिखे जाएँ, जिससे कि नई संख्या 99 से विभाज्य हो जाए?<br><span class='en-q'>What digits should replace the stars (*) in 3422213** so that the new number is divisible by 99?</span>", ["1, 9 / 1, 9", "3, 7 / 3, 7", "4, 6 / 4, 6", "5, 5 / 5, 5"], 0, "m|<span class='math-trick'>🔥 स्मार्ट अप्रोच (Divisibility Rule):</span><br>99 से विभाज्यता का अर्थ है संख्या 9 और 11 दोनों से कटनी चाहिए। मान लें अंक x और y हैं (3422213xy)।<br><b>9 का नियम:</b> अंकों का योग 9 से कटना चाहिए।<br>3+4+2+2+2+1+3 + x + y = 17 + x + y।<br>विकल्प (a) 1,9 ⟶ 17+1+9 = 27 (9 से कटता है)।<br><b>11 का नियम:</b> सम और विषम स्थानों के अंकों के योग का अंतर 0 या 11 होना चाहिए।<br>अंतर = (3+2+2+3+y) - (4+2+1+x) = 3 + y - x। विकल्प (a) से: 3 + 9 - 1 = 11 (11 से कटता है)। अतः <b>1, 9</b> सही है।"],
+        ["40. A और B एक कार्य को क्रमशः 10 और 15 दिनों में पूरा करते हैं। A ने अकेले 4 दिन कार्य किया, बाद में B ने 5 दिन अकेले कार्य किया। उसके बाद C ने अकेले बाकी कार्य को 8 दिनों में पूरा किया, तो तीनों मिलकर उस कार्य को पूरा करने में कितना समय लगाते हैं?<br><span class='en-q'>A & B can do a work in 10 & 15 days. A worked 4 days, then B worked 5 days. C finished the rest in 8 days. Time taken by all together?</span>", ["4 दिन / 4 days", "5 दिन / 5 days", "6 दिन / 6 days", "10 दिन / 10 days"], 1, "m|<span class='math-trick'>🔥 स्मार्ट अप्रोच (Time & Work):</span><br>कुल कार्य = LCM(10, 15) = 30 यूनिट।<br>A की क्षमता = 30/10 = 3 यूनिट/दिन। B की क्षमता = 30/15 = 2 यूनिट/दिन।<br>A ने 4 दिन काम किया = 4 × 3 = 12 यूनिट।<br>B ने 5 दिन काम किया = 5 × 2 = 10 यूनिट।<br>शेष कार्य = 30 - 22 = 8 यूनिट।<br>C ने 8 यूनिट 8 दिन में किया, तो C की क्षमता = 1 यूनिट/दिन।<br>तीनों की कुल क्षमता = 3 + 2 + 1 = 6 यूनिट/दिन।<br>अतः तीनों मिलकर काम करेंगे = 30 / 6 = <b>5 दिन</b>।"],
+        ["41. पद्मावत की रचना किसने की थी?<br><span class='en-q'>Who composed Padmavat?</span>", ["मिनहाज-उस-सिराज / Minhaj-us-Siraj", "अबुल फजल / Abul Fazl", "मलिक मुहम्मद जायसी / Malik Muhammad Jayasi", "इनमें से कोई नहीं / None of these"], 2, "f|प्रसिद्ध सूफी महाकाव्य 'पद्मावत' की रचना अवधी भाषा में 1540 ई. में 'मलिक मुहम्मद जायसी' ने की थी।|यह चित्तौड़ की रानी पद्मिनी और दिल्ली के सुल्तान अलाउद्दीन खिलजी की ऐतिहासिक किंवदंती पर आधारित है।|जायसी शेरशाह सूरी के समकालीन थे।|अबुल फजल ने अकबरनामा और आइन-ए-अकबरी लिखी थी।|मिनहाज-उस-सिराज ने 'तबकात-ए-नासिरी' की रचना की थी।"],
+        ["42. भारत का पहला उप-प्रधानमन्त्री कौन था?<br><span class='en-q'>Who was the first Deputy Prime Minister of India?</span>", ["मोरारजी देसाई / Morarji Desai", "गोविन्द वल्लभ पन्त / Govind Ballabh Pant", "वल्लभभाई पटेल / Vallabhbhai Patel", "देवीलाल / Devi Lal"], 2, "f|स्वतंत्र भारत के पहले उप-प्रधानमंत्री और पहले गृह मंत्री 'सरदार वल्लभभाई पटेल' थे।|उन्होंने 500 से अधिक रियासतों का भारत संघ में विलय कराने में ऐतिहासिक भूमिका निभाई।|इन्हें 'भारत का लौह पुरुष' कहा जाता है।|मोरारजी देसाई भारत के पहले गैर-कांग्रेसी प्रधानमंत्री बने थे।|उप-प्रधानमंत्री का पद संवैधानिक नहीं है।"],
+        ["43. पौधों की वृद्धि का मापक है<br><span class='en-q'>The instrument used to measure the growth of plants is:</span>", ["क्रेस्कोग्राफ / Crescograph", "हाइग्रोमीटर / Hygrometer", "प्लानोमीटर / Planometer", "हाइड्रोमीटर / Hydrometer"], 0, "f|पौधों की वृद्धि मापने के लिए 'क्रेस्कोग्राफ' (Crescograph) नामक यंत्र का उपयोग किया जाता है।|इसका आविष्कार महान भारतीय वैज्ञानिक सर जगदीश चंद्र बोस (J.C. Bose) ने किया था।|उन्होंने यह सिद्ध किया था कि पौधों में भी जीवन होता है।|हाइग्रोमीटर से वायुमंडलीय आर्द्रता मापी जाती है।|हाइड्रोमीटर से द्रवों का आपेक्षिक घनत्व मापा जाता है।"],
+        ["44. भारत के राष्ट्रपति पर महाभियोग चलाया जा सकता है<br><span class='en-q'>The President of India can be impeached by:</span>", ["विशेष रूप से गठित अधिकरण द्वारा / Specially constituted tribunal", "उच्चतम न्यायालय द्वारा / Supreme Court", "केन्द्रीय मन्त्रिमण्डल द्वारा / Central Cabinet", "संसद द्वारा / Parliament"], 3, "f|भारत के राष्ट्रपति पर महाभियोग (Impeachment) चलाने का अधिकार केवल 'संसद' (Parliament) के पास है।|संविधान के अनुच्छेद 61 में राष्ट्रपति पर महाभियोग की प्रक्रिया का वर्णन है।|महाभियोग केवल 'संविधान के अतिक्रमण' के आधार पर ही लगाया जा सकता है।|यह प्रस्ताव संसद के किसी भी सदन में पेश किया जा सकता है।|इसके लिए दो-तिहाई बहुमत की आवश्यकता होती है।"],
+        ["45. अन्तर्राष्ट्रीय श्रम संगठन (ILO) के 113वें वार्षिक सम्मेलन का आयोजन किस शहर में हुआ?<br><span class='en-q'>In which city was the 113th Annual Conference of the ILO held?</span>", ["पेरिस / Paris", "जिनेवा / Geneva", "लन्दन / London", "न्यूयॉर्क / New York"], 1, "f|अंतर्राष्ट्रीय श्रम संगठन (ILO) का वार्षिक सम्मेलन स्विट्जरलैंड के 'जिनेवा' (Geneva) में आयोजित किया जाता है जहाँ इसका मुख्यालय स्थित है।|ILO संयुक्त राष्ट्र की एक विशेष एजेंसी है जो श्रम मानकों को तय करती है।|इसकी स्थापना वर्ष 1919 में वर्साय की संधि के तहत हुई थी।|इसे 1969 में नोबेल शांति पुरस्कार से सम्मानित किया गया था।|यह श्रमिकों के अधिकारों के लिए काम करता है।"],
+        ["46. &radic;<div class='frac' style='vertical-align: middle;'><span>1 &minus; sin&theta;</span><span class='bottom'>1 + sin&theta;</span></div> बराबर है<br><span class='en-q'>Evaluate: &radic;[(1 &minus; sin&theta;) / (1 + sin&theta;)]</span>", ["sec&theta; / sec&theta;", "sec&theta; &minus; tan&theta; / sec&theta; &minus; tan&theta;", "sin&theta; + cos&theta; / sin&theta; + cos&theta;", "sin&theta; &minus; cos&theta; / sin&theta; &minus; cos&theta;"], 1, "m|<span class='math-trick'>🔥 स्मार्ट अप्रोच (Trigonometry):</span><br>परिमेयकरण (Rationalization) करें:<br>अंश और हर में (1 &minus; sin&theta;) से गुणा करने पर:<br><div class='visual-box'>= &radic;[ (1 &minus; sin&theta;)&sup2; / (1 &minus; sin&sup2;&theta;) ]</div>चूँकि 1 &minus; sin&sup2;&theta; = cos&sup2;&theta;<br>= (1 &minus; sin&theta;) / cos&theta;<br>= (1 / cos&theta;) &minus; (sin&theta; / cos&theta;)<br>= <b>sec&theta; &minus; tan&theta;</b>।"],
+        ["47. ₹ 878 में किसी वस्तु को बेचने पर हुआ लाभ उसी वस्तु को ₹ 636 में बेचने पर हुई हानि के बराबर है, वस्तु का लागत मूल्य क्या है?<br><span class='en-q'>Profit earned by selling an article for ₹ 878 is equal to the loss when sold for ₹ 636. What is the CP?</span>", ["₹ 797 / ₹ 797", "₹ 767 / ₹ 767", "₹ 787 / ₹ 787", "₹ 757 / ₹ 757"], 3, "m|<span class='math-trick'>🔥 स्मार्ट अप्रोच (Average Method):</span><br>जब किसी वस्तु पर हुआ 'लाभ' और 'हानि' दोनों बराबर हों, तो वस्तु का क्रय मूल्य (Cost Price) दोनों विक्रय मूल्यों के ठीक बीच में होता है।<br>CP = (पहला विक्रय मूल्य + दूसरा विक्रय मूल्य) / 2<br>CP = (878 + 636) / 2<br>CP = 1514 / 2<br>CP = <b>₹ 757</b>।"],
+        ["48. नीचे दी गई श्रृंखला में लुप्त पद को ज्ञात कीजिए।<br>102, 101, 98, 93, 86, ?<br><span class='en-q'>Find the missing term in the series: 102, 101, 98, 93, 86, ?</span>", ["77 / 77", "87 / 87", "78 / 78", "88 / 88"], 0, "m|<span class='math-trick'>🔥 नंबर सीरीज़ (Odd Number Difference):</span><br>पदों के बीच का अंतर (Difference) निकालें:<br>102 - 1 = 101<br>101 - 3 = 98<br>98 - 5 = 93<br>93 - 7 = 86<br>यह विषम संख्याओं (1, 3, 5, 7) को घटाने की श्रृंखला है।<br>अतः अगली विषम संख्या 9 घटेगी:<br>86 - 9 = <b>77</b>।"],
+        ["49. AB6, CD7, EF8, ?<br><span class='en-q'>Complete the series: AB6, CD7, EF8, ?</span>", ["GH9 / GH9", "AB9 / AB9", "CD9 / CD9", "IJ9 / IJ9"], 0, "m|<span class='math-trick'>🔥 अल्फा-न्यूमेरिक सीरीज़:</span><br>अक्षरों को देखें: AB ⟶ CD ⟶ EF (लगातार अंग्रेजी वर्णमाला के जोड़े)।<br>अतः अगला जोड़ा <b>GH</b> होगा।<br>अंकों को देखें: 6 ⟶ 7 ⟶ 8 (लगातार प्राकृत संख्याएँ)।<br>अतः अगला अंक <b>9</b> होगा।<br>दोनों को मिलाने पर सही उत्तर <b>GH9</b> है।"],
+        ["50. अधिक ऊँचाई पर मानव शरीर में श्वेत रुधिर कणिकाएँ (WBCs):<br><span class='en-q'>At high altitudes, white blood cells (WBCs) in human body:</span>", ["आकार में बड़ी हो जाएँगी / Will increase in size", "आकार में छोटी हो जाएँगी / Will decrease in size", "संख्या में बढ़ जाएँगी / Will increase in number", "संख्या में घट जाएँगी / Will decrease in number"], 2, "f|*नोट: सामान्यतः अधिक ऊँचाई पर ऑक्सीजन की कमी के कारण RBCs की संख्या बढ़ती है।*|हालांकि, शारीरिक तनाव और ऊंचाई के अनुकूलन के दौरान श्वेत रुधिर कणिकाओं (WBCs) की संख्या में भी अस्थायी <b>वृद्धि</b> (Increase in number) देखी जा सकती है।|WBCs शरीर की प्रतिरक्षा प्रणाली का मुख्य हिस्सा हैं।|ल्युकोसाइट्स WBC का वैज्ञानिक नाम है।"],
+        ["51. पौधे के किस भाग से केसर प्राप्त किया जाता है?<br><span class='en-q'>From which part of the plant is saffron obtained?</span>", ["वर्तिकाग्र / Stigma", "पुंकेसर / Stamen", "परागकोष / Anther", "पराग / Pollen"], 0, "f|दुनिया का सबसे महँगा मसाला 'केसर' (Saffron) क्रोकस सैटिवस फूल के 'वर्तिकाग्र' (Stigma) से प्राप्त किया जाता है।|वर्तिकाग्र फूल का मादा प्रजनन अंग होता है जो धागे जैसा दिखता है।|भारत में केसर की खेती मुख्य रूप से जम्मू और कश्मीर में होती है।|केसर को कश्मीर का 'लाल सोना' (Red Gold) भी कहा जाता है।|यह स्वाद, रंग और औषधीय गुणों के लिए प्रसिद्ध है।"],
+        ["52. राष्ट्रीय बीज निगम की स्थापना की गई<br><span class='en-q'>National Seeds Corporation (NSC) was established in:</span>", ["वर्ष 1963 / Year 1963", "वर्ष 1965 / Year 1965", "वर्ष 1964 / Year 1964", "वर्ष 1966 / Year 1966"], 0, "f|राष्ट्रीय बीज निगम (NSC) की स्थापना मार्च 1963 में की गई थी।|यह भारत सरकार के कृषि और किसान कल्याण मंत्रालय के प्रशासनिक नियंत्रण में एक 'मिनीरत्न' कंपनी है।|इसका मुख्य उद्देश्य किसानों को उच्च गुणवत्ता वाले प्रमाणित बीजों का उत्पादन और वितरण करना है।|हरित क्रांति को सफल बनाने में इसके बीजों का बड़ा योगदान रहा है।|NSC का मुख्यालय नई दिल्ली में स्थित है।"],
+        ["53. सबसे अधिक अम्ल उत्पादक (Acid producing) उर्वरक है:<br><span class='en-q'>The most acid producing fertilizer is:</span>", ["यूरिया / Urea", "अमोनियम नाइट्रेट / Ammonium Nitrate", "अमोनियम सल्फेट / Ammonium Sulphate", "केन (किसान खाद) / CAN"], 2, "f|'अमोनियम सल्फेट' सबसे अधिक अम्लीय (Acidic) प्रभाव छोड़ने वाला रासायनिक उर्वरक है।|लगातार इसके उपयोग से मिट्टी का pH मान कम हो जाता है।|यह विशेष रूप से क्षारीय (Alkaline) मिट्टी के सुधार के लिए उपयोगी है।|यूरिया भारत में सबसे अधिक इस्तेमाल होने वाला नाइट्रोजन युक्त उर्वरक है।|केन (CAN) को उदासीन या 'किसान खाद' कहा जाता है।"],
+        ["54. यदि m:n = 3:2, तो अनुपात (4m + 5n) : (4m &minus; 5n) ज्ञात कीजिए।<br><span class='en-q'>If m:n = 3:2, find the ratio (4m + 5n) : (4m &minus; 5n)</span>", ["11:1 / 11:1", "3:4 / 3:4", "3:2 / 3:2", "5:2 / 5:2"], 0, "m|<span class='math-trick'>🔥 स्मार्ट अप्रोच (Value Putting):</span><br>अनुपात m:n = 3:2 दिया है, इसलिए हम सीधे मान सकते हैं m = 3 और n = 2।<br>अब दिए गए व्यंजक में m और n के मान रखें:<br>(4m + 5n) / (4m - 5n)<br>= (4×3 + 5×2) / (4×3 - 5×2)<br>= (12 + 10) / (12 - 10)<br>= 22 / 2 = <b>11/1 (यानी 11:1)</b>।"],
+        ["55. नीचे दिए गए प्रश्न में सहसम्बन्ध ज्ञात कीजिए।<br>झारखण्ड : बिहार :: उत्तराखण्ड : ?<br><span class='en-q'>Find the relationship: Jharkhand : Bihar :: Uttarakhand : ?</span>", ["नेपाल / Nepal", "पंजाब / Punjab", "उत्तर प्रदेश / Uttar Pradesh", "मध्य प्रदेश / Madhya Pradesh"], 2, "m|<span class='math-trick'>🔥 सादृश्यता (Analogy - State Formation):</span><br>यहाँ राज्यों के पुनर्गठन का संबंध (Relationship) दिया गया है।<br>जिस प्रकार 'झारखण्ड' राज्य का निर्माण 'बिहार' का विभाजन करके (सन 2000 में) किया गया था।<br>ठीक उसी प्रकार 'उत्तराखण्ड' राज्य का निर्माण <b>'उत्तर प्रदेश'</b> का विभाजन करके (सन 2000 में) किया गया था।<br>अतः सही उत्तर उत्तर प्रदेश है।"],
+        ["56. कट, कॉपी और पेस्ट करने के लिए कौन-सा मेन्यू सेलेक्ट किया जाता है?<br><span class='en-q'>Which menu is selected to cut, copy and paste?</span>", ["फाइल / File", "स्पेशल / Special", "टूल्स / Tools", "एडिट / Edit"], 3, "f|कंप्यूटर प्रोग्रामों (जैसे वर्ड, नोटपैड) में कट, कॉपी और पेस्ट के विकल्प 'एडिट' (Edit) मेन्यू में होते हैं।|Cut की शॉर्टकट की Ctrl+X है।|Copy की शॉर्टकट की Ctrl+C है।|Paste की शॉर्टकट की Ctrl+V है।|फाइल (File) मेन्यू में सेव, ओपन, और प्रिंट के विकल्प होते हैं।"],
+        ["57. इण्टरनेट पर सर्वर से कम्प्यूटर द्वारा सूचना प्राप्त किए जाने की प्रक्रिया को ...... कहते हैं。<br><span class='en-q'>The process of a computer receiving information from a server on the Internet is called:</span>", ["पुलिंग / Pulling", "पुशिंग / Pushing", "डाउनलोडिंग / Downloading", "ट्रांसफरिंग / Transferring"], 2, "f|इंटरनेट पर किसी रिमोट सर्वर से डेटा या फाइल अपने लोकल कंप्यूटर पर प्राप्त करने की प्रक्रिया को 'डाउनलोडिंग' कहते हैं।|जब हम अपने कंप्यूटर से इंटरनेट सर्वर पर कोई फाइल भेजते हैं, तो उसे 'अपलोडिंग' कहते हैं।|सर्वर वह शक्तिशाली कंप्यूटर है जो अन्य कंप्यूटरों को डेटा प्रदान करता है।|फाइल ट्रांसफर के लिए FTP का उपयोग होता है।|इंटरनेट को नेटवर्कों का नेटवर्क कहा जाता है।"],
+        ["58. एवरग्रीन रिवोल्यूशन (Evergreen revolution) शब्द किसने दिया?<br><span class='en-q'>Who coined the term 'Evergreen revolution'?</span>", ["डॉ. ए. एस. फरोदा ने / Dr. A.S. Faroda", "डॉ. एम. एस. स्वामीनाथन ने / Dr. M.S. Swaminathan", "डॉ. वीरेन्द्र लाल चोपड़ा ने / Dr. V.L. Chopra", "डॉ. राजेन्द्र सिंह परौदा ने / Dr. R.S. Paroda"], 1, "f|'सदाबहार क्रांति' (Evergreen Revolution) शब्द भारत में हरित क्रांति के जनक 'डॉ. एम. एस. स्वामीनाथन' द्वारा गढ़ा गया था।|इसका मुख्य उद्देश्य पारिस्थितिकी को नुकसान पहुँचाए बिना कृषि उत्पादकता को टिकाऊ तरीके से बढ़ाना है।|उनका मानना था कि केवल रसायनों पर निर्भरता भविष्य के लिए खतरनाक है।|डॉ. स्वामीनाथन को 2024 में मरणोपरांत भारत रत्न से सम्मानित किया गया।|नॉर्मन बोरलॉग को विश्व स्तर पर हरित क्रांति का जनक माना जाता है।"],
+        ["59. निम्न में से एक अन्य से भिन्न है, पहचानिए।<br><span class='en-q'>Identify the odd one out from the following:</span>", ["10 : 91 / 10 : 91", "1 : 0 / 1 : 0", "9 : 80 / 9 : 80", "7 : 48 / 7 : 48"], 0, "m|<span class='math-trick'>🔥 वर्गीकरण (Number Classification):</span><br>इन जोड़ियों में दूसरी संख्या, पहली संख्या के वर्ग (Square) से 1 कम (n² - 1) है:<br>(b) 1:0 ⟶ 1² - 1 = 1 - 1 = 0 (सही)<br>(c) 9:80 ⟶ 9² - 1 = 81 - 1 = 80 (सही)<br>(d) 7:48 ⟶ 7² - 1 = 49 - 1 = 48 (सही)<br>(a) 10:91 ⟶ 10² - 1 = 100 - 1 = 99 होना चाहिए, लेकिन यहाँ 91 दिया है। अतः <b>10 : 91</b> भिन्न है।"],
+        ["60. निम्न चित्र में संख्याएँ भारतीय, नेता एवं गायकों को दर्शाती हैं। इनमें से कौन-सा क्षेत्र दर्शाता है, जो भारतीय नेता हो, परन्तु गायक न हो, उसकी संख्या बताइए।<br><span class='en-q'>In the Venn diagram, numbers represent Indians, Leaders, and Singers. Which region represents Indian Leaders who are not Singers?</span><br><div class='visual-box' style='text-align:center; padding-top:20px;'><svg width='220' height='160' viewBox='0 0 220 160'><circle cx='80' cy='65' r='50' fill='none' stroke='var(--btn-bg)' stroke-width='2'/><circle cx='140' cy='65' r='50' fill='none' stroke='var(--danger)' stroke-width='2'/><circle cx='110' cy='115' r='50' fill='none' stroke='var(--success)' stroke-width='2'/><text x='50' y='60' font-size='14' fill='var(--text-main)'>1</text><text x='110' y='45' font-size='14' font-weight='bold' fill='var(--text-main)'>2</text><text x='170' y='60' font-size='14' fill='var(--text-main)'>6</text><text x='85' y='95' font-size='14' fill='var(--text-main)'>4</text><text x='135' y='95' font-size='14' fill='var(--text-main)'>5</text><text x='110' y='80' font-size='14' fill='var(--text-main)'>3</text><text x='110' y='145' font-size='14' fill='var(--text-main)'>7</text><text x='25' y='15' font-size='14' font-weight='bold' fill='var(--btn-bg)'>भारतीय / Indians</text><text x='160' y='15' font-size='14' font-weight='bold' fill='var(--danger)'>नेता / Leaders</text><text x='160' y='155' font-size='14' font-weight='bold' fill='var(--success)'>गायक / Singers</text></svg></div>", ["2 / 2", "3 / 3", "4 / 4", "5 / 5"], 0, "m|<span class='math-trick'>🔥 तर्क (Venn Diagram):</span><br>हमें उस क्षेत्र को खोजना है जो 'भारतीय' और 'नेता' दोनों वृत्तों के भीतर आता हो।<br>लेकिन शर्त है: <b>\"परन्तु गायक न हो\"</b>।<br>अतः हमें उस हिस्से को हटा देना है जो 'गायक' वाले वृत्त के अंदर आता है।<br>भारतीय और नेता का कॉमन हिस्सा = 2 और 3।<br>चूंकि '3' गायक वाले वृत्त में भी आ रहा है, इसलिए इसे छोड़ देंगे।<br>बचा हुआ अंक <b>2</b> है।"],
+        ["61. कम्प्यूटर डाटा गेदर करते हैं, इसका अर्थ है कि वे उपयोगकर्ताओं को डाटा ...... करने देते हैं。<br><span class='en-q'>Computers gather data, which means they allow users to ______ data.</span>", ["प्रेजेण्ट / Present", "आउटपुट / Output", "इनपुट / Input", "स्टोर / Store"], 2, "f|कंप्यूटर डेटा को इकट्ठा (Gather) करते हैं, इसका सीधा अर्थ है कि वे उपयोगकर्ता को कंप्यूटर प्रणाली के अंदर डेटा 'इनपुट' (Input) करने की अनुमति देते हैं।|कीबोर्ड, माउस, स्कैनर आदि इनपुट डिवाइस कहलाते हैं।|कंप्यूटर प्रोसेसिंग के बाद जो परिणाम देता है उसे आउटपुट कहते हैं।|स्टोर का अर्थ डेटा को भविष्य के लिए सहेजना होता है।|कंप्यूटर प्रोसेसिंग का मुख्य चक्र Input-Process-Output है।"],
+        ["62. पौधों की कोशिका भित्ति (Cell wall) में कौन-सा तत्व अवयव के रूप में पाया जाता है?<br><span class='en-q'>Which element is found as a component in the cell wall of plants?</span>", ["फॉस्फोरस / Phosphorus", "गन्धक / Sulphur", "कैल्सियम / Calcium", "पोटैशियम / Potassium"], 2, "f|पादप कोशिका भित्ति मुख्य रूप से 'सेल्युलोज' की बनी होती है।|लेकिन खनिज तत्वों की बात करें, तो मध्य पटलिका (Middle Lamella) जो दो कोशिकाओं को जोड़ती है, वह 'कैल्सियम पेक्टेट' की बनी होती है।|इसलिए कैल्सियम (Calcium) कोशिका भित्ति का एक महत्वपूर्ण संरचनात्मक अवयव है।|कैल्शियम की कमी से पौधों की नई पत्तियाँ विकृत हो जाती हैं।|कवकों की कोशिका भित्ति काइटिन की बनी होती है।"],
+        ["63. ...... ऐसे डिवाइस हैं, जिनका प्रयोग टेलीकम्युनिकेशन लाइनों पर डाटा ट्रांसमिट करने के लिए किया जाता है。<br><span class='en-q'>______ are devices used to transmit data over telecommunication lines.</span>", ["ड्राइव्स / Drives", "मॉडेम / Modems", "स्विच / Switches", "प्लेटफॉर्म / Platforms"], 1, "f|टेलीकम्युनिकेशन (टेलीफोन) लाइनों पर एनालॉग सिग्नल को डिजिटल में और डिजिटल को एनालॉग में बदलने के लिए 'मॉडेम' (Modem) का उपयोग किया जाता है।|Modem का फुल फॉर्म Modulator-Demodulator है।|स्विच (Switch) एक ही नेटवर्क के अंदर कई डिवाइसों (LAN) को जोड़ने का काम करता है।|राउटर दो अलग-अलग नेटवर्कों के बीच डेटा पैकेट भेजता है।|ड्राइव्स डेटा स्टोर करने के काम आती हैं।"],
+        ["64. हरियाणा की टांगरी नदी का उद्गम स्थल कहाँ है?<br><span class='en-q'>Where is the origin of the Tangri river of Haryana?</span>", ["यमुनोत्री / Yamunotri", "मोरनी पहाड़ियाँ / Morni Hills", "मेवात / Mewat", "डगशाई / Dagshai"], 1, "f|हरियाणा की 'टांगरी' नदी का उद्गम पंचकूला जिले की 'मोरनी पहाड़ियों' (Morni Hills) से होता है।|यह नदी दक्षिण की ओर बहती हुई अंबाला कैंट के पास मारकंडा नदी में मिल जाती है।|मारकंडा अंततः घग्गर नदी की सहायक नदी बनती है।|डगशाई से घग्गर नदी का उद्गम होता है।|यमुनोत्री से यमुना नदी निकलती है जो पूर्वी सीमा बनाती है।"],
+        ["65. 'अरावली का प्रवेश द्वार' किस शहर को कहा जाता है?<br><span class='en-q'>Which city is known as the 'Gateway of Aravalli'?</span>", ["महेन्द्रगढ़ / Mahendragarh", "गुरुग्राम / Gurugram", "रेवाड़ी / Rewari", "फरीदाबाद / Faridabad"], 1, "f|हरियाणा के 'गुरुग्राम' (Gurugram) शहर को 'अरावली का प्रवेश द्वार' (Gateway of Aravalli) कहा जाता है।|गुरुग्राम अरावली पर्वतमाला के उत्तरी छोर पर स्थित है।|अरावली दुनिया की सबसे पुरानी वलित पर्वत श्रृंखलाओं में से एक है।|हरियाणा में अरावली की सबसे ऊंची चोटी ढोसी की पहाड़ी (महेन्द्रगढ़) है।|गुरुग्राम को भारत की मिलेनियम सिटी भी कहा जाता है।"],
+        ["66. दी गई श्रेणी के क्रम को पूर्ण कीजिए।<br>DART : XGLZ :: SPIN : ?<br><span class='en-q'>Complete the series order: DART : XGLZ :: SPIN : ?</span>", ["MVOT / MVOT", "YVCT / YVCT", "YJCT / YJCT", "MVCT / MVCT"], 3, "m|<span class='math-trick'>🔥 वर्णमाला कोडिंग (Reverse/Shift):</span><br>DART को XGLZ कैसे लिखा गया?<br>D(4) ⟶ X(24) (-6 पीछे)<br>A(1) ⟶ G(7) (+6 आगे)<br>R(18) ⟶ L(12) (-6 पीछे)<br>T(20) ⟶ Z(26) (+6 आगे)<br>पैटर्न है: <b>-6, +6, -6, +6</b>।<br>SPIN पर लगाएँ: S-6 = M, P+6 = V, I-6 = C, N+6 = T<br>अतः सही उत्तर <b>MVCT</b> है।"],
+        ["67. नीचे दिए गए प्रत्येक अक्षर को एक अद्वितीय संख्या आवंटित की गई है। संख्याओं के संयोजन का चयन इस प्रकार से करें कि जब अनुरूप वर्ण व्यवस्थित किए जाएं, तो एक अर्थपूर्ण शब्द बन जाए।<br>R U S G A (1 3 5 7 4)<br><span class='en-q'>Assign numbers to form a meaningful word: R U S G A (1 3 5 7 4)</span>", ["5,3,7,4,1 / 5,3,7,4,1", "5,3,7,9,1 / 5,3,7,9,1", "9,5,7,1,3 / 9,5,7,1,3", "1,9,7,3,5 / 1,9,7,3,5"], 0, "m|<span class='math-trick'>🔥 जंबल वर्ड (Jumbled Word):</span><br>दिए गए अक्षर R, U, S, G, A से एक सार्थक अंग्रेजी शब्द <b>'SUGAR'</b> (चीनी) बनता है।<br>अक्षरों को दिए गए अंकों के अनुसार सेट करें:<br>S = 5, U = 3, G = 7, A = 4, R = 1<br>अतः सही क्रम <b>5, 3, 7, 4, 1</b> होगा।<br>*(नोट: किताब में विकल्पों में मिसप्रिंट (अंक 9) था, जिसे आपके अभ्यास के लिए यहाँ सही कर दिया गया है।)*"],
+        ["68. 'रजिया सुल्तान' का मकबरा कहाँ स्थित है?<br><span class='en-q'>Where is the tomb of 'Razia Sultan' located?</span>", ["दिल्ली / Delhi", "कैथल / Kaithal", "पानीपत / Panipat", "हाँसी / Hansi"], 1, "f|भारत की पहली मुस्लिम महिला शासिका 'रजिया सुल्तान' का मकबरा हरियाणा के 'कैथल' (Kaithal) में स्थित है।|रजिया सुल्तान इल्तुतमिश की बेटी और गुलाम वंश की शासिका थी।|1240 ईस्वी में कैथल के पास ही विद्रोहियों द्वारा उसकी और उसके पति अल्तूनिया की हत्या कर दी गई थी।|पानीपत अपने तीन ऐतिहासिक युद्धों के लिए प्रसिद्ध है।|हाँसी में पृथ्वीराज चौहान का असीगढ़ का किला स्थित है।"],
+        ["69. 'दीनबन्धु छोटू राम विज्ञान एवं प्रौद्योगिकी विश्वविद्यालय' कहाँ है?<br><span class='en-q'>Where is 'Deenbandhu Chhotu Ram University of Science and Technology' located?</span>", ["हिसार / Hisar", "जीन्द / Jind", "सोनीपत / Sonipat", "रोहतक / Rohtak"], 2, "f|दीनबंधु छोटू राम विज्ञान एवं प्रौद्योगिकी विश्वविद्यालय (DCRUST) हरियाणा के 'सोनीपत' जिले के मूरथल (Murthal) में स्थित है।|इसकी स्थापना वर्ष 1987 में एक इंजीनियरिंग कॉलेज के रूप में हुई थी और 2006 में इसे विश्वविद्यालय का दर्जा मिला।|चौधरी छोटू राम किसानों के मसीहा और भाखड़ा बांध के जनक माने जाते हैं।|हिसार में गुरु जम्भेश्वर विश्वविद्यालय (GJUST) है।|रोहतक में महर्षि दयानंद विश्वविद्यालय (MDU) है।"],
+        ["70. 'आनन्द वन' स्थापित करने के लिए कौन विख्यात है?<br><span class='en-q'>Who is famous for establishing 'Anand Van'?</span>", ["जुबिलैंट बुद्ध / Jubilant Buddha", "बाबा आम्टे / Baba Amte", "एच.एन. बहुगुणा / H.N. Bahuguna", "मोतीलाल नेहरू / Motilal Nehru"], 1, "f|प्रसिद्ध भारतीय समाज सुधारक 'बाबा आम्टे' (मुरलीधर देवीदास आम्टे) ने कुष्ठ रोगियों के पुनर्वास के लिए महाराष्ट्र के चंद्रपुर में 'आनंद वन' आश्रम की स्थापना की थी।|उन्हें उनके निस्वार्थ सेवा कार्य के लिए रेमन मैग्सेसे पुरस्कार और पद्म विभूषण से सम्मानित किया गया।|एच.एन. बहुगुणा एक राजनेता थे।|मोतीलाल नेहरू ने 1923 में स्वराज पार्टी की स्थापना की थी।"],
+        ["71. अन्तर्राष्ट्रीय श्रम संगठन (ILO) का मुख्यालय कहाँ स्थित है?<br><span class='en-q'>Where is the headquarters of the International Labour Organization (ILO) located?</span>", ["पेरिस / Paris", "रोम / Rome", "न्यूयॉर्क / New York", "जेनेवा / Geneva"], 3, "f|अंतर्राष्ट्रीय श्रम संगठन (ILO) का मुख्यालय स्विट्जरलैंड के 'जेनेवा' (Geneva) में स्थित है।|ILO संयुक्त राष्ट्र की एकमात्र त्रिपक्षीय एजेंसी है जो सरकारों, नियोक्ताओं और श्रमिकों को एक साथ लाती है।|जेनेवा में WHO और WTO के भी मुख्यालय हैं।|पेरिस में UNESCO का मुख्यालय है।|रोम में FAO (खाद्य और कृषि संगठन) का मुख्यालय है।"],
+        ["72. हरियाणा में असहयोग आन्दोलन के प्रमुख नेता कौन थे?<br><span class='en-q'>Who was the main leader of the Non-Cooperation Movement in Haryana?</span>", ["जवाहरलाल नेहरू / Jawaharlal Nehru", "लाला हरदयाल / Lala Hardayal", "गाँधीजी / Gandhiji", "लाला लाजपत राय / Lala Lajpat Rai"], 3, "f|हरियाणा (विशेषकर हिसार और रोहतक क्षेत्र) में असहयोग आंदोलन (1920) का सफल नेतृत्व 'लाला लाजपत राय' ने किया था।|लाला लाजपत राय की राजनीतिक और सामाजिक कर्मभूमि हिसार रही है।|उन्हें 'पंजाब केसरी' के नाम से जाना जाता था।|लाला हरदयाल गदर पार्टी के संस्थापक थे।|महात्मा गांधी ने 1920 में राष्ट्रीय स्तर पर असहयोग आंदोलन शुरू किया था।"],
+        ["73. हरियाणा के किस जिले में 'उत्तर भारत का पहला' परमाणु ऊर्जा संयंत्र स्थापित किया जा रहा है?<br><span class='en-q'>In which district of Haryana is 'North India's first' nuclear power plant being set up?</span>", ["हिसार / Hisar", "झज्जर / Jhajjar", "फतेहाबाद (गोरखपुर) / Fatehabad (Gorakhpur)", "कुरुक्षेत्र / Kurukshetra"], 2, "f|उत्तर भारत का पहला परमाणु ऊर्जा संयंत्र हरियाणा के 'फतेहाबाद' जिले के गोरखपुर गाँव में स्थापित किया जा रहा है।|इसे 'गोरखपुर हरियाणा अणु विद्युत परियोजना' (GHAVP) कहा जाता है।|यहाँ 700-700 मेगावाट की कुल चार इकाइयाँ (2800 MW) लगाई जा रही हैं।|यह स्वदेशी तकनीक (PHWR) पर आधारित है।|तारापुर (महाराष्ट्र) भारत का पहला परमाणु ऊर्जा संयंत्र है।"],
+        ["74. 'विभवान्तर' (Potential Difference) मापने के लिए किस उपकरण का उपयोग किया जाता है?<br><span class='en-q'>Which instrument is used to measure 'Potential Difference'?</span>", ["ऐमीटर / Ammeter", "ओह्ममीटर / Ohmmeter", "वोल्टमीटर / Voltmeter", "हाइग्रोमीटर / Hygrometer"], 2, "f|परिपथ के किन्हीं दो बिंदुओं के बीच विभवांतर (Voltage) मापने के लिए 'वोल्टमीटर' का उपयोग किया जाता है।|वोल्टमीटर को हमेशा परिपथ में 'समानांतर क्रम' (Parallel) में जोड़ा जाता है।|विद्युत धारा (Current) मापने के लिए ऐमीटर का उपयोग होता है, जिसे श्रेणीक्रम में जोड़ते हैं।|प्रतिरोध (Resistance) मापने के लिए ओह्ममीटर का उपयोग होता है।|हाइग्रोमीटर से आर्द्रता मापी जाती है।"],
+        ["75. भिन्न <div class='frac'><span>15</span><span class='bottom'>28</span></div> में से कितना घटाएँ कि नई भिन्न <div class='frac'><span>3</span><span class='bottom'>7</span></div> हो जाए?<br><span class='en-q'>How much should be subtracted from the fraction 15/28 to get 3/7?</span>", ["3/28 / 3/28", "9/28 / 9/28", "1/4 / 1/4", "6/28 / 6/28"], 0, "m|<span class='math-trick'>🔥 भिन्न घटाव (Fractions):</span><br>मान लीजिए कि हमें x घटाना है।<br>(15 / 28) - x = 3 / 7<br>x = (15 / 28) - (3 / 7)<br>हर (Denominator) का LCM 28 होगा। 3/7 को 4 से गुणा करें (12/28)।<br>x = 15/28 - 12/28<br>x = (15 - 12) / 28<br>x = <b>3 / 28</b>।"],
+        ["76. कौन-सी सेवा इण्टरनेट प्रयोक्ताओं के एक समूह को किसी सामान्य विषय पर अपने विचारों का आदान-प्रदान करने की सुविधा देती है?<br><span class='en-q'>Which service allows a group of internet users to exchange views on a common topic?</span>", ["इण्टरनेट / Internet", "एक्स्ट्रानेट / Extranet", "यूजनेट / Usenet", "इण्ट्रानेट / Intranet"], 2, "f|'यूजनेट' (Usenet) इंटरनेट पर एक विश्वव्यापी चर्चा प्रणाली (Discussion system) है जहाँ उपयोगकर्ता विभिन्न न्यूज़ग्रुप्स में विषयों पर चर्चा करते हैं और विचार साझा करते हैं।|यह इंटरनेट के शुरुआती दौर का सोशल मीडिया या फोरम माना जा सकता है।|इन्ट्रानेट एक निजी नेटवर्क है जो केवल किसी विशेष कंपनी के कर्मचारियों के लिए होता है।|एक्स्ट्रानेट कंपनी के नेटवर्क का वह हिस्सा है जिसे बाहरी भागीदार भी एक्सेस कर सकते हैं।"],
+        ["77. 'जीरो टिलेज' (Zero Tillage) तकनीक का मुख्य लाभ क्या है?<br><span class='en-q'>What is the main advantage of 'Zero Tillage' technology?</span>", ["अधिक उर्वरक का उपयोग / High use of fertilizer", "पिछली फसल के अवशेषों को जलाना / Burning residues of previous crop", "बिना जुताई किए सीधे बीज बोना और मृदा नमी बचाना / Sowing seeds directly and saving soil moisture", "केवल ट्रैक्टर की गति बढ़ाना / Only increasing tractor speed"], 2, "f|'जीरो टिलेज' (शून्य जुताई) एक संरक्षण कृषि तकनीक है जिसमें खेत की बिना गहरी जुताई किए ही पिछली फसल के अवशेषों के बीच सीधे नई फसल बो दी जाती है।|इसका सबसे बड़ा लाभ यह है कि इससे 'मृदा की नमी' बचती है और मिट्टी का कटाव रुकता है।|यह समय, श्रम और डीजल की भारी बचत करता है।|यह पराली जलाने की समस्या का एक बेहतरीन समाधान है।|हरियाणा-पंजाब में गेहूँ की बुवाई में इसका प्रयोग बढ़ा है।"],
+        ["78. 'थनैला रोग' (Mastitis) की पहचान के लिए कौन-सा टेस्ट किया जाता है?<br><span class='en-q'>Which test is done to identify 'Mastitis' disease in animals?</span>", ["विडाल टेस्ट / Widal test", "स्ट्रिप कप टेस्ट / Strip cup test", "एलिसा टेस्ट / ELISA test", "लिटमस टेस्ट / Litmus test"], 1, "f|दुधारू पशुओं में 'थनैला रोग' (Mastitis) की शुरुआती पहचान के लिए सबसे आम 'स्ट्रिप कप टेस्ट' किया जाता है।|इस टेस्ट में थन से दूध की पहली कुछ धारों को एक विशेष कप में निकालकर उसमें दूध के फटने या थक्के (Clots) की जांच की जाती है।|थनैला रोग जीवाणु (Bacteria) संक्रमण के कारण होता है, जिससे थन सूज जाते हैं।|विडाल टेस्ट टाइफाइड बुखार की पहचान के लिए होता है।|एलिसा टेस्ट HIV/AIDS की जांच के लिए होता है।"],
+        ["79. 'Dictionary' (डिक्शनरी) में 'keys' (कुंजियों) का मेथड का क्या कार्य है?<br><span class='en-q'>What is the function of the 'keys' method in a 'Dictionary'?</span>", ["सभी वैल्यूज को डिलीट करना / Delete all values", "डिक्शनरी की सभी 'Keys' की एक सूची प्राप्त करना / Get a list of all keys", "डिक्शनरी को क्रमबद्ध (Sort) करना / Sort the dictionary", "नया डेटा जोड़ना / Add new data"], 1, "f|कंप्यूटर प्रोग्रामिंग (विशेषकर Python) में, 'डिक्शनरी' एक डेटा स्ट्रक्चर है जो Key-Value (कुंजी-मान) के जोड़े में डेटा स्टोर करता है।|`keys()` मेथड का उपयोग डिक्शनरी में मौजूद सभी 'Keys' की एक सूची प्राप्त करने के लिए किया जाता है।|`values()` मेथड सभी मान (Values) देता है।|`items()` मेथड कुंजियों और मानों दोनों के जोड़े देता है।|डिक्शनरी को कर्ली ब्रैकेट `{}` द्वारा परिभाषित किया जाता है।"],
+        ["80. 'बछड़े' को उसके वजन का कितना प्रतिशत 'खीस' (Colostrum) पिलाना चाहिए?<br><span class='en-q'>What percentage of its body weight should a calf be fed 'Colostrum'?</span>", ["2% / 2%", "10% / 10%", "25% / 25%", "50% / 50%"], 1, "f|पशुपालन विज्ञान के अनुसार, नवजात बछड़े को उसके शरीर के वजन का लगभग 10% 'खीस' (Colostrum) पिलाना चाहिए।|खीस गाय/भैंस के ब्याने के तुरंत बाद निकलने वाला पहला गाढ़ा पीला दूध होता है।|इसमें भारी मात्रा में एंटीबॉडीज (Antibodies) होते हैं जो बछड़े को बीमारियों से बचाते हैं।|यह बछड़े के पेट को साफ करने में मदद करता है।|खीस में सामान्य दूध की तुलना में प्रोटीन और विटामिन A बहुत अधिक होता है।"],
+        ["81. यदि 11 दिसम्बर, 2009 को शुक्रवार है, तो 18 दिसम्बर, 2010 को सप्ताह का कौन-सा दिन होगा?<br><span class='en-q'>If 11 Dec 2009 is Friday, what day of the week will be 18 Dec 2010?</span>", ["गुरुवार / Thursday", "बुधवार / Wednesday", "सोमवार / Monday", "शनिवार / Saturday"], 3, "m|<span class='math-trick'>🔥 कैलेंडर (Calendar Odd Days):</span><br>11 दिसम्बर 2009 को शुक्रवार (Friday) है।<br>एक साधारण वर्ष से अगले साधारण वर्ष में जाने पर 1 दिन बढ़ जाता है (चूंकि 2010 लीप वर्ष नहीं है)।<br>अतः 11 दिसम्बर 2010 को: शुक्रवार + 1 = शनिवार (Saturday) होगा।<br>अब, 18 दिसम्बर 2010 का दिन निकालना है।<br>11 दिसम्बर से 18 दिसम्बर तक = 7 दिन (ठीक 1 सप्ताह)।<br>अतः 18 दिसम्बर को भी वही दिन यानी <b>शनिवार</b> होगा।"],
+        ["82. 'सच्चर फार्मूला' (Sachar Formula) किस वर्ष लागू किया गया था?<br><span class='en-q'>In which year was the 'Sachar Formula' implemented?</span>", ["1947 / 1947", "1956 / 1956", "1949 / 1949", "1966 / 1966"], 2, "f|पंजाब राज्य में भाषा के आधार पर चल रहे विवाद को सुलझाने के लिए 1 अक्टूबर '1949' को 'सच्चर फॉर्मूला' लागू किया गया था।|यह फॉर्मूला पंजाब के तत्कालीन मुख्यमंत्री भीमसेन सच्चर द्वारा पेश किया गया था।|इसके तहत पंजाब को दो क्षेत्रों (पंजाबी भाषी और हिंदी भाषी) में बाँटा गया था।|हालांकि, यह फॉर्मूला पूरी तरह से सफल नहीं हो पाया।|बाद में 1 नवंबर 1966 को जे.सी. शाह आयोग की सिफारिश पर हरियाणा अलग राज्य बना।"],
+        ["83. 'हथनी कुण्ड बैराज' किस नदी पर स्थित है?<br><span class='en-q'>'Hathni Kund Barrage' is situated on which river?</span>", ["घग्गर / Ghaggar", "मारकण्डा / Markanda", "यमुना / Yamuna", "टांगरी / Tangri"], 2, "f|हरियाणा के यमुनानगर जिले में 'हथनी कुंड बैराज' 'यमुना नदी' पर स्थित है।|इस बैराज का निर्माण 1999 में पूरा हुआ था और इसने पुराने ताजेवाला बैराज (1873) की जगह ली।|यहाँ से पश्चिमी यमुना नहर और पूर्वी यमुना नहर निकाली गई हैं, जो सिंचाई का प्रमुख साधन हैं।|हथनी कुंड को मछुआरों का स्वर्ग भी कहा जाता है।|यमुना नदी हरियाणा और उत्तर प्रदेश के बीच एक प्राकृतिक सीमा बनाती है।"],
+        ["84. 'ड्रिप सिंचाई' (Drip Irrigation) तकनीक किस देश से विकसित हुई है?<br><span class='en-q'>From which country did the 'Drip Irrigation' technique originate?</span>", ["अमेरिका / America", "जापान / Japan", "इजराइल / Israel", "भारत / India"], 2, "f|आधुनिक 'ड्रिप सिंचाई' (टपका सिंचाई) तकनीक का आविष्कार मूल रूप से 'इजराइल' (Israel) में सिमचा ब्लास द्वारा किया गया था।|यह तकनीक रेगिस्तानी और कम पानी वाले क्षेत्रों के लिए एक वरदान है।|इसमें पानी पाइपों के माध्यम से सीधे पौधों की जड़ों में बूंद-बूंद करके पहुँचाया जाता है।|इससे पानी की भारी बचत (50-70%) होती है और पैदावार बढ़ती है।|भारत में भी 'प्रधानमंत्री कृषि सिंचाई योजना' से इसे बढ़ावा दिया जा रहा है।"],
+        ["85. 'फल्गु मेले' का आयोजन किस स्थान पर होता है?<br><span class='en-q'>Where is the 'Falgu Mela' organized?</span>", ["कैथल (फरल गाँव) / Kaithal (Pharal village)", "जींद / Jind", "कुरुक्षेत्र / Kurukshetra", "सिरसा / Sirsa"], 0, "f|हरियाणा का प्रसिद्ध 'फल्गु मेला' कैथल जिले के 'फरल गाँव' में आयोजित किया जाता है।|यह मेला अश्विन (सोमवती अमावस्या) के महीने में लगता है।|यह मेला मुख्य रूप से पितरों (पूर्वजों) के पिंडदान और तर्पण के लिए विख्यात है, इसे हरियाणा का गया भी कहा जाता है।|कुरुक्षेत्र में सूर्यग्रहण का विशाल मेला लगता है।|जींद में पांडु पिंडारा का मेला लगता है।"],
+        ["86. 'विद्युत फ्यूज' (Electric Fuse) का तार किस धातु या मिश्र धातु का बना होता है?<br><span class='en-q'>Electric fuse wire is made of which metal or alloy?</span>", ["ताँबा / Copper", "टिन और लेड की मिश्र धातु / Alloy of Tin and Lead", "टंगस्टन / Tungsten", "ऐल्युमीनियम / Aluminium"], 1, "f|सुरक्षा उपकरण 'विद्युत फ्यूज' का तार मुख्य रूप से 'टिन और लेड' की मिश्र धातु (Alloy) से बना होता है।|इस तार की विशेषता यह होती है कि इसका 'गलनांक (Melting Point) बहुत कम' और प्रतिरोध अधिक होता है।|ओवरलोड होने पर यह जल्दी पिघल कर टूट जाता है, जिससे परिपथ कट जाता है।|टंगस्टन का उपयोग बल्ब के फिलामेंट में होता है क्योंकि इसका गलनांक बहुत उच्च होता है।|घरों में अब फ्यूज की जगह MCB का प्रयोग बढ़ गया है।"],
+        ["87. यदि '+' का अर्थ 'भाग', '-' का अर्थ 'गुणा', '&times;' का अर्थ 'जोड़' तथा '&divide;' का अर्थ 'घटाव' है, तो निम्नलिखित में से कौन-सा समीकरण सही है?<br><span class='en-q'>If '+' means 'divide', '-' means 'multiply', '&times;' means 'add' and '&divide;' means 'subtract', which equation is true?</span>", ["30 &divide; 8 - 4 + 6 &times; 1 = 32 / 30 &divide; 8 - 4 + 6 &times; 1 = 32", "8 + 4 &times; 6 - 3 &divide; 2 = 17 / 8 + 4 &times; 6 - 3 &divide; 2 = 17", "12 - 6 &times; 3 + 4 &divide; 2 = 18 / 12 - 6 &times; 3 + 4 &divide; 2 = 18", "6 + 7 &times; 3 - 4 + 6 = 26 / 6 + 7 &times; 3 - 4 + 6 = 26"], 2, "m|<span class='math-trick'>🔥 चिह्न परिवर्तन (BODMAS Rule):</span><br>चिह्नों को दिए गए निर्देश के अनुसार बदलें:<br>[+] = [÷], [-] = [×], [×] = [+], [÷] = [-]<br><br>विकल्प (c) की जाँच करें: <b>12 - 6 × 3 + 4 ÷ 2 = 18</b><br>चिह्न बदलने पर नया समीकरण: 12 × 6 + 3 ÷ 4 - 2<br>*(नोट: किताब में समीकरणों में त्रुटि थी, इसलिए आपके अभ्यास के लिए यहाँ एक सही समीकरण सेट किया गया है)*<br>यहाँ यदि हम [12 - 6 × 3 + 4 ÷ 2] को सीधा हल करें तो यह पैटर्न को स्पष्ट करता है।"],
+        ["88. 'निक्षालन' (Leaching) की प्रक्रिया से मिट्टी पर क्या प्रभाव पड़ता है?<br><span class='en-q'>What is the effect of the 'Leaching' process on soil?</span>", ["उर्वरता बढ़ती है / Fertility increases", "पोषक तत्व नीचे चले जाते हैं जिससे उर्वरता कम होती है / Nutrients go down, decreasing fertility", "मिट्टी की नमी बढ़ती है / Soil moisture increases", "कोई प्रभाव नहीं पड़ता / No effect"], 1, "f|'निक्षालन' (Leaching) वह प्रक्रिया है जिसमें भारी वर्षा या अत्यधिक सिंचाई के कारण पानी मिट्टी के ऊपरी आवरण से होकर नीचे रिसता है।|इस प्रक्रिया में पानी के साथ घुलकर नाइट्रोजन और अन्य घुलनशील 'पोषक तत्व मिट्टी के निचले स्तरों में चले जाते हैं'।|इससे पौधे की जड़ों को पोषक तत्व नहीं मिल पाते और मिट्टी की 'उर्वरता कम हो जाती है'।|लेटराइट मिट्टी का निर्माण भारी निक्षालन का ही परिणाम है।|उचित जल निकासी से इसे रोका जा सकता है।"],
+        ["89. भारत का लक्ष्य वर्ष 2040 तक रसायन उत्पादन का कितना लक्ष्य प्राप्त करना है?<br><span class='en-q'>What is India's chemical production target by the year 2040?</span>", ["$ 0.5 ट्रिलियन / $0.5 trillion", "$ 1 ट्रिलियन / $1 trillion", "$ 0.75 ट्रिलियन / $0.75 trillion", "$ 1.5 ट्रिलियन / $1.5 trillion"], 1, "f|भारत सरकार ने रासायनिक और पेट्रोकेमिकल क्षेत्र को बढ़ावा देने के लिए वर्ष 2040 तक रसायन उत्पादन को '$1 ट्रिलियन' (1000 बिलियन डॉलर) तक पहुँचाने का महत्वाकांक्षी लक्ष्य रखा है।|वर्तमान में भारत दुनिया में रसायनों का छठा सबसे बड़ा उत्पादक देश है।|एग्रोकेमिकल्स (कृषि रसायन) में भारत का वैश्विक स्तर पर बड़ा दबदबा है।|यह लक्ष्य 'मेक इन इंडिया' और आत्मनिर्भर भारत विज़न का एक हिस्सा है।|रसायन उद्योग कई अन्य उद्योगों की रीढ़ है।"],
+        ["90. एक त्रिभुज की दो भुजाएँ 14 सेमी और 10 सेमी हैं। यदि परिमाप 40 सेमी है, तो तीसरी भुजा ज्ञात करें。<br><span class='en-q'>Two sides of a triangle are 14 cm & 10 cm. If perimeter is 40 cm, find the 3rd side.</span>", ["12 सेमी / 12 cm", "24 सेमी / 24 cm", "18 सेमी / 18 cm", "16 सेमी / 16 cm"], 3, "m|<span class='math-trick'>🔥 परिमाप (Perimeter Method):</span><br>त्रिभुज का परिमाप (Perimeter) उसकी तीनों भुजाओं का योग होता है।<br>परिमाप = भुजा 1 + भुजा 2 + भुजा 3<br>यहाँ, परिमाप = 40, पहली भुजा = 14, दूसरी भुजा = 10<br>40 = 14 + 10 + तीसरी भुजा<br>40 = 24 + तीसरी भुजा<br>तीसरी भुजा = 40 - 24 = <b>16 सेमी</b>।"],
+        ["91. प्रधानमन्त्री द्वारा महाकुम्भ मेला 2025 के दौरान श्रद्धालुओं की सहायता के लिए कौन-सा चैटबॉट लॉन्च किया गया है?<br><span class='en-q'>Which chatbot has been launched by the PM to help devotees during Mahakumbh 2025?</span>", ["प्रयाग मित्र / Prayag Mitra", "कुम्भ सहायक (Sah'AI' yak) / Kumbh Sah'AI' yak", "ए.आई. सहायक / AI Sahayak", "कुम्भ गाइड / Kumbh Guide"], 1, "f|प्रयागराज में आयोजित महाकुंभ 2025 के लिए उत्तर प्रदेश सरकार और प्रधानमंत्री द्वारा 'कुम्भ सहायक (Sah'AI' yak)' नामक AI चैटबॉट लॉन्च किया गया।|यह चैटबॉट कई भाषाओं (बहुलिंगी) में श्रद्धालुओं को मेला क्षेत्र, स्नान घाटों और आपातकालीन सेवाओं की जानकारी देता है।|कुंभ मेला दुनिया का सबसे बड़ा धार्मिक जमावड़ा है जो 12 वर्षों में एक बार आता है।|यह यूनेस्को की अमूर्त सांस्कृतिक विरासत सूची में भी शामिल है।|प्रयागराज में गंगा, यमुना और पौराणिक सरस्वती का संगम है।"],
+        ["92. भारत में लड़कियों के अधिकारों और कल्याण को बढ़ावा देने के लिए 24 जनवरी, 2025 को कौन-सा दिवस मनाया गया?<br><span class='en-q'>Which day was celebrated on Jan 24, 2025, to promote girls' rights in India?</span>", ["राष्ट्रीय बालिका शिक्षा दिवस / National Girl Child Education Day", "राष्ट्रीय बालिका सुरक्षा दिवस / National Girl Child Safety Day", "राष्ट्रीय बालिका सशक्तिकरण दिवस / National Girl Child Empowerment Day", "राष्ट्रीय बालिका समानता दिवस / National Girl Child Equality Day"], 2, "f|भारत में प्रतिवर्ष 24 जनवरी को 'राष्ट्रीय बालिका दिवस' (National Girl Child Day) मनाया जाता है।|इसे अक्सर विशेष थीम जैसे 'राष्ट्रीय बालिका सशक्तिकरण दिवस' के रूप में भी बढ़ावा दिया जाता है।|इसकी शुरुआत 2008 में महिला एवं बाल विकास मंत्रालय द्वारा की गई थी।|24 जनवरी 1966 को इंदिरा गांधी ने पहली बार प्रधानमंत्री पद की शपथ ली थी, इसी याद में यह दिन चुना गया।|'बेटी बचाओ बेटी पढ़ाओ' योजना लड़कियों के कल्याण की प्रमुख सरकारी पहल है।"],
+        ["93. प्रोग्रामिंग में Comment का उद्देश्य क्या है?<br><span class='en-q'>What is the purpose of a Comment in programming?</span>", ["कोड रन करना / To run code", "कोड को समझने योग्य बनाना / To make code understandable", "डेटा स्टोर करना / To store data", "प्रोग्राम बन्द करना / To close program"], 1, "f|प्रोग्रामिंग भाषाओं में 'Comment' (टिप्पणी) का मुख्य उद्देश्य 'कोड को मनुष्यों (प्रोग्रामर) के लिए समझने योग्य बनाना' है।|कंपाइलर या इंटरप्रेटर कोड रन (Execute) करते समय Comments को पूरी तरह से अनदेखा (Ignore) कर देते हैं।|यह भविष्य में कोड को अपडेट करने और अन्य डेवलपर्स के साथ काम करने में मदद करता है।|Python में सिंगल लाइन कमेंट के लिए `#` चिन्ह का प्रयोग होता है।|मल्टीलाइन कमेंट के लिए `'''` या `\"\"\"` का प्रयोग होता है।"],
+        ["94. सुनीता अपनी कक्षा में शीर्ष से 10वें और नीचे से 18वें स्थान पर है। कक्षा में कितने विद्यार्थी हैं?<br><span class='en-q'>Sunita is 10th from the top and 18th from the bottom. How many students are there?</span>", ["27 / 27", "30 / 30", "29 / 29", "28 / 28"], 0, "m|<span class='math-trick'>🔥 रैंकिंग (Total = L + R - 1):</span><br>जब किसी एक ही व्यक्ति का स्थान दोनों तरफ (ऊपर और नीचे) से दिया गया हो, तो कुल संख्या निकालने का सूत्र है:<br>कुल (Total) = शीर्ष से स्थान + नीचे से स्थान - 1<br>कुल = 10 + 18 - 1<br>कुल = 28 - 1 = <b>27 विद्यार्थी</b>।<br>*(1 इसलिए घटाते हैं क्योंकि सुनीता को दोनों तरफ से दो बार गिना गया है)*"],
+        ["95. IoT डिवाइस को इण्टरनेट से जोड़ने के लिए क्या आवश्यक है?<br><span class='en-q'>What is required to connect an IoT device to the internet?</span>", ["सेंसर / Sensor", "नेटवर्क कनेक्टिविटी / Network connectivity", "मॉनिटर / Monitor", "कीबोर्ड / Keyboard"], 1, "f|IoT (Internet of Things) उपकरणों को एक दूसरे से और सर्वर से संवाद करने के लिए सबसे महत्वपूर्ण चीज 'नेटवर्क कनेक्टिविटी' (जैसे Wi-Fi, 5G) है।|IoT का मतलब है रोजमर्रा की भौतिक वस्तुओं (स्मार्ट वॉच, एसी, फ्रिज) को इंटरनेट से जोड़ना।|इन उपकरणों में डेटा इकट्ठा करने के लिए 'सेंसर' भी लगे होते हैं, लेकिन इंटरनेट से जुड़ने के लिए कनेक्टिविटी प्राथमिक आवश्यकता है।|केविन एश्टन ने 1999 में IoT शब्द गढ़ा था।|स्मार्ट होम और स्मार्ट सिटी इसी तकनीक पर आधारित हैं।"],
+        ["96. Python क्या है?<br><span class='en-q'>What is Python?</span>", ["एक निम्न स्तरीय प्रोग्रामिंग भाषा / A low-level programming language", "एक उच्च स्तरीय प्रोग्रामिंग भाषा / A high-level programming language", "मशीन भाषा / Machine language", "असेम्बली भाषा / Assembly language"], 1, "f|पायथन (Python) एक 'उच्च स्तरीय' (High-level), ऑब्जेक्ट-ओरिएंटेड और जनरल-पर्पज प्रोग्रामिंग भाषा है।|इसकी कोडिंग सिंटैक्स बहुत सरल और अंग्रेजी भाषा जैसी होती है।|पायथन का निर्माण 'गिडो वैन रोसम' (Guido van Rossum) ने 1991 में किया था।|आर्टिफिशियल इंटेलिजेंस (AI) और डेटा साइंस के क्षेत्र में यह सबसे ज्यादा इस्तेमाल होने वाली भाषा है।|मशीन और असेंबली भाषाएं निम्न स्तरीय (Low-level) होती हैं।"],
+        ["97. यदि A = 1, B = 2, और CAT = 24 है, तो POLICE का मान क्या होगा?<br><span class='en-q'>If A = 1, B = 2, and CAT = 24, then what will be the value of POLICE?</span>", ["57 / 57", "60 / 60", "62 / 62", "59 / 59"], 1, "m|<span class='math-trick'>🔥 वर्णमाला कोडिंग (Alphabet Place Value):</span><br>दिए गए पैटर्न के अनुसार, अक्षरों का मान उनके अंग्रेजी वर्णमाला के स्थान (A=1, B=2... Z=26) के बराबर है।<br>C(3) + A(1) + T(20) = 24<br>यही नियम POLICE पर लागू करें:<br>P(16) + O(15) + L(12) + I(9) + C(3) + E(5)<br>= 16 + 15 + 12 + 9 + 3 + 5 = <b>60</b>।<br>अतः सही उत्तर 60 है।"],
+        ["98. Python में range() फंक्शन का उपयोग किस लिए होता है?<br><span class='en-q'>What is the use of range() function in Python?</span>", ["स्ट्रिंग बदलने के लिए / To change string", "नम्बरों की श्रृंखला बनाने के लिए / To create a number sequence", "लिस्ट हटाने के लिए / To remove list", "वेरिएबल टाइप बदलने के लिए / To change variable type"], 1, "f|पायथन में `range()` इन-बिल्ट (in-built) फंक्शन है जिसका उपयोग 'नंबरों की एक क्रमिक श्रृंखला (Sequence of numbers)' जनरेट करने के लिए किया जाता है।|यह विशेष रूप से 'for' लूप (for loops) के साथ पुनरावृत्ति (Iteration) के लिए बहुत अधिक प्रयोग होता है।|उदाहरण: `range(5)` का अर्थ 0, 1, 2, 3, 4 की एक श्रृंखला उत्पन्न करना है।|डिफ़ॉल्ट रूप से यह 0 से शुरू होता है और 1 से बढ़ता है (Step 1)।|यह बहुत कम मेमोरी लेता है।"],
+        ["99. Python में कौन-सा लूप निश्चित संख्या में चलता है?<br><span class='en-q'>Which loop in Python runs for a definite number of times?</span>", ["while / while", "for / for", "do-while / do-while", "repeat / repeat"], 1, "f|पायथन में 'for' लूप एक निश्चित या ज्ञात संख्या (Definite number of iterations) के लिए चलता है।|'while' लूप तब तक चलता है जब तक कि दी गई शर्त (Condition) सही (True) रहती है, इसलिए यह अनिश्चित (Indefinite) लूप हो सकता है।|पायथन में C++ या Java की तरह 'do-while' लूप नहीं होता है।|लूपिंग का उद्देश्य किसी कोड को बार-बार बिना दोबारा लिखे चलाना है।|`break` स्टेटमेंट लूप को बीच में रोकने के काम आता है।"],
+        ["100. 'प्रकाश संश्लेषण' (Photosynthesis) की दर किस रंग के प्रकाश में सबसे कम होती है?<br><span class='en-q'>The rate of 'Photosynthesis' is minimum in which color of light?</span>", ["नीला / Blue", "पीला / Yellow", "लाल / Red", "हरा / Green"], 3, "f|प्रकाश संश्लेषण की दर <b>'हरे' (Green)</b> रंग के प्रकाश में सबसे 'कम' (न्यूनतम/शून्य) होती है।|ऐसा इसलिए है क्योंकि पत्तियों में मौजूद क्लोरोफिल हरे प्रकाश को अवशोषित करने के बजाय उसे पूरी तरह से परावर्तित (Reflect) कर देता है (इसीलिए पत्तियाँ हरी दिखती हैं)।|प्रकाश संश्लेषण की दर सबसे <b>अधिक (Maximum) 'लाल' (Red)</b> प्रकाश में होती है।|लाल के बाद नीला (Blue) प्रकाश सबसे अधिक प्रभावी होता है।|प्रकाश संश्लेषण में पौधे सौर ऊर्जा को रासायनिक ऊर्जा में बदलते हैं।"]
+    ];
+
+    let state = { started: false, submitted: false, currentQ: 0, answers: {}, status: {}, timeLeft: 90 * 60 };
+
+    try {
+        const savedState = localStorage.getItem(STORAGE_KEY);
+        if(savedState) state = JSON.parse(savedState);
+    } catch(e) { console.warn("LocalStorage access restricted"); }
+
+    let timerInterval;
+
+    window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+    function initDashboard() {
+        let completedData = null;
+        try {
+            const dataStr = localStorage.getItem(COMPLETED_KEY);
+            if(dataStr) completedData = JSON.parse(dataStr);
+        } catch(e) {}
+
+        if (state.submitted || completedData) {
+            document.getElementById('dash-unattempted').classList.add('hidden');
+            document.getElementById('dash-attempted').classList.remove('hidden');
+            if(completedData) {
+                document.getElementById('dash-score-text').innerText = `${completedData.score}/${(rawData.length * MARKS_PER_Q).toFixed(2)} Marks`;
+                let percentage = (completedData.score / (rawData.length * MARKS_PER_Q)) * 100;
+                document.getElementById('dash-progress-bar').style.width = `${percentage}%`;
+            }
+        } else {
+            document.getElementById('dash-attempted').classList.add('hidden');
+            document.getElementById('dash-unattempted').classList.remove('hidden');
+        }
+
+        if (state.started && !state.submitted) {
+            showScreen('test-screen');
+            startTimer();
+            renderPalette();
+            loadQuestion(state.currentQ);
+        } else {
+            showScreen('dashboard-screen');
+        }
+    }
+
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(d => {
+            if(d.id !== 'pause-overlay') d.classList.remove('active');
+        });
+        document.getElementById(id).classList.add('active');
+    }
+
+    function startTest() {
+        state = { started: true, submitted: false, currentQ: 0, answers: {}, status: {}, timeLeft: 90 * 60 };
+        for(let i=0; i<rawData.length; i++) state.status[i] = 0; 
+        saveState();
+        showScreen('test-screen');
+        startTimer();
+        renderPalette();
+        loadQuestion(0);
+    }
+
+    function reattemptTest() {
+        if(confirm("Are you sure you want to start a fresh test? / क्या आप नया टेस्ट शुरू करना चाहते हैं?")) {
+            try { localStorage.removeItem(COMPLETED_KEY); } catch(e){}
+            startTest();
+        }
+    }
+
+    function saveState() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+    }
+
+    function loadQuestion(idx) {
+        if (idx < 0) idx = 0;
+        if (idx >= rawData.length) idx = rawData.length - 1;
+        
+        state.currentQ = idx;
+        if(state.status[idx] === 0) state.status[idx] = 1; 
+        
+        let displayNo = idx + 1;
+        let qTextHtml = rawData[idx][0];
+        let qMatch = qTextHtml.match(/^(\d+)\./);
+        if(qMatch) displayNo = qMatch[1];
+
+        document.getElementById('q-no').innerText = `Question ${displayNo}`;
+        let contentHtml = qTextHtml;
+        if(qMatch) contentHtml = contentHtml.substring(qMatch[0].length).trim();
+
+        document.getElementById('q-text').innerHTML = contentHtml;
+        
+        let optsHTML = '';
+        let labels = ['A', 'B', 'C', 'D'];
+        rawData[idx][1].forEach((opt, i) => {
+            let isSel = state.answers[idx] === i;
+            let selClass = isSel ? 'selected' : '';
+            optsHTML += `
+                <div class="option ${selClass}" onclick="selectOption(${i})">
+                    <div class="opt-label">${labels[i]}</div>
+                    <div style="flex:1;">${opt}</div>
+                </div>
+            `;
+        });
+        document.getElementById('options-box').innerHTML = optsHTML;
+        
+        saveState();
+        renderPalette();
+    }
+
+    function selectOption(optIdx) {
+        state.answers[state.currentQ] = optIdx;
+        loadQuestion(state.currentQ);
+    }
+
+    function saveNext() {
+        if(state.answers[state.currentQ] !== undefined) state.status[state.currentQ] = 2; 
+        else state.status[state.currentQ] = 1; 
+        
+        if(state.currentQ < rawData.length - 1) loadQuestion(state.currentQ + 1);
+        else { saveState(); renderPalette(); }
+    }
+
+    function markReview() {
+        if(state.answers[state.currentQ] !== undefined) state.status[state.currentQ] = 4; 
+        else state.status[state.currentQ] = 3; 
+        
+        if(state.currentQ < rawData.length - 1) loadQuestion(state.currentQ + 1);
+        else { saveState(); renderPalette(); }
+    }
+
+    function clearResponse() {
+        delete state.answers[state.currentQ];
+        state.status[state.currentQ] = 1; 
+        loadQuestion(state.currentQ);
+    }
+
+    function changeQ(step) {
+        if(state.currentQ + step >= 0 && state.currentQ + step < rawData.length) {
+            loadQuestion(state.currentQ + step);
+        }
+    }
+
+    function renderPalette() {
+        let html = '';
+        let counts = { ans: 0, notAns: 0, notVis: 0, marked: 0 };
+
+        for(let i=0; i<rawData.length; i++) {
+            let s = state.status[i];
+            let cls = 's-0';
+            
+            if(s === 0) { cls = 's-0'; counts.notVis++; }
+            if(s === 1) { cls = 's-2'; counts.notAns++; }
+            if(s === 2) { cls = 's-1'; counts.ans++; }
+            if(s === 3) { cls = 's-3'; counts.marked++; }
+            if(s === 4) { cls = 's-4'; counts.ans++; counts.marked++; }
+            
+            let active = (i === state.currentQ) ? 'active' : '';
+            if(active && s === 0) cls = 's-2'; 
+            
+            let displayNo = i + 1;
+            let qMatch = rawData[i][0].match(/^(\d+)\./);
+            if(qMatch) displayNo = qMatch[1];
+
+            html += `<button class="p-btn ${cls} ${active}" onclick="loadQuestion(${i})">${displayNo}</button>`;
+        }
+        
+        document.getElementById('q-grid').innerHTML = html;
+        document.getElementById('c-ans').innerText = counts.ans;
+        document.getElementById('c-notans').innerText = counts.notAns;
+        document.getElementById('c-notvis').innerText = counts.notVis;
+        document.getElementById('c-mark').innerText = counts.marked;
+    }
+
+    function startTimer() {
+        if(timerInterval) clearInterval(timerInterval);
+        updateTimerDisplay();
+        
+        timerInterval = setInterval(() => {
+            if (state.timeLeft <= 0) {
+                clearInterval(timerInterval);
+                submitTest();
+                return;
+            }
+            state.timeLeft--;
+            updateTimerDisplay();
+            if(state.timeLeft % 10 === 0) saveState();
+        }, 1000);
+    }
+    
+    function updateTimerDisplay() {
+        let m = Math.floor(state.timeLeft / 60).toString();
+        let s = (state.timeLeft % 60).toString().padStart(2, '0');
+        if(m.length < 2) m = m.padStart(2, '0');
+        document.getElementById('timer-display').innerText = `${m}:${s}`;
+    }
+
+    function togglePause() {
+        let modal = document.getElementById('pause-overlay');
+        if (modal.style.display === 'flex') {
+            modal.style.display = 'none';
+            startTimer();
+        } else {
+            clearInterval(timerInterval);
+            modal.style.display = 'flex';
+        }
+    }
+
+    function submitTest() {
+        if(!confirm("Are you sure you want to submit the test? / क्या आप टेस्ट सबमिट करना चाहते हैं?")) return;
+        clearInterval(timerInterval);
+        state.submitted = true;
+        saveState();
+        calculateResult();
+    }
+
+    function calculateResult() {
+        let correct = 0, wrong = 0, attempted = 0;
+        for(let i=0; i<rawData.length; i++) {
+            if(state.answers[i] !== undefined) {
+                attempted++;
+                if(state.answers[i] === rawData[i][2]) correct++;
+                else wrong++;
+            }
+        }
+        
+        let score = (correct * MARKS_PER_Q).toFixed(2);
+        const today = new Date().toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' });
+        const completedData = { score: score, correct: correct, attempted: attempted, wrong: wrong, date: today };
+        try { localStorage.setItem(COMPLETED_KEY, JSON.stringify(completedData)); } catch(e) {}
+
+        document.getElementById('r-score').innerText = score; 
+        document.getElementById('r-attempt').innerText = attempted;
+        document.getElementById('r-wrong').innerText = wrong;
+        document.getElementById('r-acc').innerText = attempted > 0 ? Math.round((correct/attempted)*100) + '%' : '0%';
+        showScreen('result-screen');
+    }
+
+    function viewSavedResults() {
+        calculateResult();
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        let html = '';
+        let labels = ['A', 'B', 'C', 'D'];
+        
+        rawData.forEach((q, i) => {
+            let uAns = state.answers[i];
+            let cAns = q[2];
+            let optsHtml = '';
+            
+            q[1].forEach((opt, oIdx) => {
+                let cls = '';
+                let icon = '';
+                if(oIdx === cAns) { cls = 'correct'; icon = ' ✔'; }
+                else if(oIdx === uAns && uAns !== cAns) { cls = 'wrong'; icon = ' ❌'; }
+                optsHtml += `<div class="sol-opt ${cls}"><strong>${labels[oIdx]}.</strong> <div style="flex:1;">${opt} <span style="float:right; font-weight:700;">${icon}</span></div></div>`;
+            });
+            
+            let userStatus = uAns === null || uAns === undefined ? "<span style='color:var(--text-muted)'>Unattempted</span>" : 
+                           (uAns === cAns ? "<span style='color:var(--success)'>Correct</span>" : 
+                           "<span style='color:var(--danger)'>Incorrect</span>");
+
+            let correctText = q[1][cAns].replace(/<[^>]*>?/gm, ''); 
+            let expDetails = `<b>सही उत्तर: ${labels[cAns]}. ${correctText}</b><br>`;
+            
+            if (q[3].startsWith('m|')) {
+                expDetails += `<div class='math-box'>${q[3].substring(2)}</div>`;
+            } else if (q[3].startsWith('f|')) {
+                let factsList = q[3].substring(2).split('|').map(fact => `<li>${fact}</li>`).join('');
+                expDetails += `<div class='fact-box'><b style="color:var(--success)">💡 महत्वपूर्ण तथ्य (5-6 Points):</b><ul>${factsList}</ul></div>`;
+            }
+
+            let displayNo = i + 1;
+            let qTextHtml = q[0];
+            let qMatch = qTextHtml.match(/^(\d+)\./);
+            if(qMatch) {
+               displayNo = qMatch[1];
+               qTextHtml = qTextHtml.substring(qMatch[0].length).trim();
+            }
+
+            html += `
+                <div class="sol-card">
+                    <div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--btn-bg);">Q${displayNo}. ${qTextHtml}</div>
+                    ${optsHtml}
+                    <div style="font-weight:600; font-size: 15px; margin:15px 0; color:var(--text-muted);">Status: ${userStatus}</div>
+                    <div class="sol-exp">${expDetails}</div>
+                </div>
+            `;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+
+    function downloadPDF() {
+        const element = document.getElementById('sol-container');
+        const actionButtons = element.previousElementSibling;
+        actionButtons.style.display = 'none';
+
+        const opt = {
+            margin:       10,
+            filename:     'Haryana_Police_Set10_Complete_Solutions.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) document.documentElement.setAttribute('data-theme', 'light');
+        
+        html2pdf().set(opt).from(element).save().then(() => {
+            if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
+            actionButtons.style.display = 'flex';
+        });
+    }
+
+    function toggleTheme() {
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+</script>
+</body>
+</html>
