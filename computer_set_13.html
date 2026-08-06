@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Computer Set Number 13</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg-grad-1: #4facfe; --bg-grad-2: #00f2fe; --bg-grad-3: #a18cd1; --bg-grad-4: #fbc2eb;
+            --glass-bg: rgba(255, 255, 255, 0.9); --glass-border: rgba(255, 255, 255, 0.6); --glass-shadow: rgba(31, 38, 135, 0.15);
+            --text-main: #1f2937; --text-muted: #64748b;
+            --primary: #2563eb; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --purple: #8b5cf6;
+            --option-bg: rgba(243, 244, 246, 0.8); --option-selected: rgba(219, 234, 254, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+        [data-theme="dark"] {
+            --bg-grad-1: #0f2027; --bg-grad-2: #203a43; --bg-grad-3: #2c5364; --bg-grad-4: #141e30;
+            --glass-bg: rgba(17, 25, 40, 0.85); --glass-border: rgba(255, 255, 255, 0.15); --glass-shadow: rgba(0, 0, 0, 0.5);
+            --text-main: #f9fafb; --text-muted: #94a3b8;
+            --primary: #3b82f6; 
+            --option-bg: rgba(55, 65, 81, 0.7); --option-selected: rgba(30, 58, 138, 0.8);
+            --card-bg: rgba(31, 41, 55, 0.95);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; touch-action: manipulation;}
+        
+        body { 
+            height: 100vh; height: 100dvh; 
+            background: linear-gradient(45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3), var(--bg-grad-4)); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+            color: var(--text-main); 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 var(--glass-shadow); border-radius: 12px; }
+        
+        .btn { font-family: 'Poppins', sans-serif; background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;}
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-warning { background: var(--warning); color: #fff;}
+        .btn-clear { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-mark { background: var(--purple); color: white; }
+        .btn-prev { background: var(--text-muted); color: white; }
+
+        .screen { display: none; flex-direction: column; height: 100%; width: 100vw; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; }
+
+        #dashboard-screen { overflow-y: auto; background: var(--card-bg); align-items: center; padding-bottom: 30px;}
+        .dash-header-top { background: #1e293b; color: white; width: 100%; padding: 15px 20px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 15px; position: sticky; top:0; z-index: 100;}
+        .dash-content { width: 100%; max-width: 800px; padding: 20px; }
+        .section-title { font-weight: 600; color: var(--primary); margin: 15px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 15px; }
+        .dash-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--glass-border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .test-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text-main);}
+        .test-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        .progress-container { width: 100%; height: 6px; background: var(--glass-border); border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #fbc02d; width: 0%; transition: width 0.5s ease;}
+        .dash-actions { display: flex; gap: 12px; margin-top: 15px; }
+        .dash-actions .btn { flex: 1; padding: 10px; font-size: 14px; border-radius: 8px;}
+        .syllabus-footer { display: flex; justify-content: space-between; font-size: 12px; color: var(--primary); border-top: 1px solid var(--glass-border); padding-top: 12px; margin-top: 15px; }
+
+        header.test-head { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-bottom: 10px; margin-inline: 10px; }
+        .header-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: 700; background: var(--card-bg); border: 1px solid var(--glass-border); color: var(--danger); padding: 5px 12px; border-radius: 20px; }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 0 10px 10px 10px; }
+        .question-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .q-header { padding: 10px 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
+        .q-body { flex: 1; padding: 15px; overflow-y: auto; font-size: 16px; line-height: 1.6; }
+        
+        .en-q { display: block; font-size: 0.90em; color: var(--text-muted); margin-top: 8px; font-weight: 500; font-family: 'Poppins', sans-serif;}
+
+        .options-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;}
+        .option { padding: 12px; border: 2px solid var(--glass-border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--option-bg); font-weight: 500; font-size: 15px;}
+        .option.selected { border-color: var(--primary); background: var(--option-selected); color: var(--primary); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--glass-border); display: flex; justify-content: center; align-items: center; font-weight: bold; }
+        .option.selected .opt-label { background: var(--primary); color: white; border-color: var(--primary);}
+        
+        .q-footer { padding: 10px; border-top: 1px solid var(--glass-border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-radius: 0 0 12px 12px; }
+
+        .palette-section { width: 320px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .palette-header { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; font-weight: bold; font-size: 15px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; font-size: 12px; border-bottom: 1px solid var(--glass-border); font-weight: 500;}
+        .stat-item { display: flex; align-items: center; gap: 6px;}
+        .badge { width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 10px; font-weight: bold;}
+        .s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);} 
+        .s-1 { background: var(--success); } .s-2 { background: var(--danger); } .s-3 { background: var(--purple); } 
+        .s-4 { background: var(--primary); position: relative; }
+        .s-4::after { content: '✔'; position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; background: white; color: var(--primary); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 8px; }
+        
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .p-btn.s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);}
+        .p-btn.active { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.1);}
+        .submit-area { padding: 10px; border-top: 1px solid var(--glass-border); border-radius: 0 0 12px 12px;}
+
+        #result-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        #solution-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        .sol-card { padding: 20px; margin-bottom: 15px; width: 100%; max-width: 800px; page-break-inside: avoid;}
+        .sol-opt { padding: 10px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; gap: 10px; align-items: center; font-size: 15px; background: var(--card-bg);}
+        .sol-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); text-decoration: line-through;}
+        .sol-exp { margin-top: 15px; padding: 15px; background: rgba(37, 99, 235, 0.05); border: 1px solid var(--glass-border); border-left: 4px solid var(--primary); border-radius: 8px; font-size: 14.5px; line-height: 1.6; }
+        .sol-exp ul { padding-left: 20px; margin-top: 8px; }
+        .sol-exp li { margin-bottom: 6px; }
+
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+
+        @media (max-width: 992px) {
+            .main-area { flex-direction: column; overflow-y: auto;}
+            .question-section { flex: none; min-height: 450px;}
+            .palette-section { width: 100%; flex: none; min-height: 350px;}
+            .q-footer .btn { padding: 10px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <div id="dashboard-screen" class="screen active">
+        <div class="dash-header-top">
+            <span style="cursor: pointer;" onclick="alert('Going Back')">&#8592;</span>
+            Mock Tests
+        </div>
+
+        <div class="dash-content">
+            <div id="dash-unattempted" style="display: none;">
+                <div class="section-title">Suggested Next Test</div>
+                <div class="dash-card">
+                    <div class="test-title">Computer Set Number 13</div>
+                    <div class="test-meta">
+                        <span>25 Qs • 25 mins • 25.0 Marks</span>
+                    </div>
+                    <div class="test-meta" style="justify-content: flex-end;">
+                        <button class="btn btn-outline" style="padding: 6px 20px; border-radius: 20px;" onclick="startTest()">Start Test 🚀</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span>Syllabus: Computer Fundamentals & Internet</span>
+                        <span style="color:var(--success);">🔗 Share</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dash-attempted" style="display: none;">
+                <div class="dash-card">
+                    <div class="test-title">Computer Set Number 13</div>
+                    <div class="test-meta" style="margin-bottom: 5px;">
+                        <span id="dash-score-text" style="font-size: 15px; color: var(--text-muted);">0/25.0 Marks</span>
+                    </div>
+                    <div class="progress-container"><div class="progress-fill" id="dash-progress-bar"></div></div>
+                    <div class="dash-actions">
+                        <button class="btn btn-outline" onclick="viewSavedResults()">View Results</button>
+                        <button class="btn btn-outline" onclick="reattemptTest()">Reattempt &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px; font-size: 2rem;">Test Paused ⏸️</h2>
+        <button class="btn btn-primary" style="font-size: 1.2rem; padding: 10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+    </div>
+
+    <div id="test-screen" class="screen">
+        <header class="glass-panel test-head">
+            <div class="header-title">Computer Set 13</div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="toggleTheme()">🌓 Theme</button>
+                <button class="btn btn-warning" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="togglePause()">⏸ Pause</button>
+                <div class="timer-box">⏱ <span id="timer-display">25:00</span></div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="glass-panel question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--success); font-weight:bold;">+1 <span style="color: var(--text-muted); font-weight:normal;">|</span> <span style="color: var(--danger);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <button class="btn btn-mark" onclick="markReview()">Mark & Next</button>
+                    <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                    <button class="btn btn-prev" onclick="changeQ(-1)">Previous</button>
+                    <button class="btn btn-primary" onclick="saveNext()">Save & Next</button>
+                </div>
+            </div>
+
+            <div class="glass-panel palette-section">
+                <div class="palette-header">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">25</div> Not Visit</div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn btn-primary" style="width: 100%; background: var(--success); font-size: 15px; padding: 10px;" onclick="submitTest()">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-screen" class="screen">
+        <div style="width: 100%; max-width: 800px; margin-bottom: 15px;"><button class="btn btn-clear" onclick="showDashboard()">&#8592; Back to Dashboard</button></div>
+        <div class="glass-panel" style="max-width: 800px; width: 100%; padding: 25px;">
+            <h1 style="color: var(--primary); text-align: center;">Test Submitted Successfully! 🎉</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 25px 0;">
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-score" style="color: var(--primary); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Score</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-attempt" style="color: var(--success); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Attempted</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-wrong" style="color: var(--danger); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Wrong</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-acc" style="color: var(--purple); font-size: 1.8rem;">0%</h2><p style="color: var(--text-muted); font-size:12px;">Accuracy</p></div>
+            </div>
+            <button class="btn btn-primary" style="width:100%; font-size: 15px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+        </div>
+    </div>
+
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%; margin:0 auto;">
+            <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 12px 15px; position: sticky; top: 5px; z-index: 10;">
+                <h3 style="color: var(--primary);">Detailed Solutions</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" style="padding: 5px 12px; font-size: 13px; background: var(--success);" onclick="downloadPDF()">📥 Download PDF</button>
+                    <button class="btn btn-clear" style="padding: 5px 12px; font-size: 13px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+                </div>
+            </div>
+            <div id="sol-container"></div>
+        </div>
+    </div>
+
+<script>
+    const MEMORY_STORE = {};
+    function safeGetItem(key) { try { return localStorage.getItem(key) || MEMORY_STORE[key] || null; } catch(e) { return MEMORY_STORE[key] || null; } }
+    function safeSetItem(key, value) { try { localStorage.setItem(key, value); } catch(e) {} MEMORY_STORE[key] = value; }
+    function safeRemoveItem(key) { try { localStorage.removeItem(key); } catch(e) {} delete MEMORY_STORE[key]; }
+
+    const STORAGE_KEY = 'comp_set_13_active'; 
+    const COMPLETED_KEY = 'comp_set_13_comp';
+
+    const finalQuestions = [
+        {
+            "q": "1. निम्न में से कौन-सा सर्वाधिक तीव्र गति का प्रिंटर है-<br><span class='en-q'>Which of the following is the fastest printer?</span>",
+            "o": ["जेट प्रिंटर / Jet Printer", "लेजर प्रिंटर / Laser Printer", "डाट मैट्रिक्स प्रिंटर / Dot Matrix Printer", "नार्मल प्रिंटर / Normal Printer"],
+            "a": 1,
+            "e": "<b>हल:</b> सभी प्रकार के प्रिंटरों में 'लेजर प्रिंटर' (Laser Printer) की प्रिंटिंग गति और गुणवत्ता सर्वाधिक (Fastest) होती है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>लेजर प्रिंटर एक 'नॉन-इम्पैक्ट' (Non-Impact) और 'पेज प्रिंटर' (Page Printer) है।</li><li>यह एक बार में पूरा एक पेज प्रिंट करता है।</li><li>इसमें तरल स्याही के बजाय 'टोनर' (Toner - सूखे पाउडर) का इस्तेमाल होता है।</li><li>लेजर प्रिंटर में प्रकाशीय ड्रम (Optical Drum) और लेजर बीम का उपयोग किया जाता है।</li><li>डॉट मैट्रिक्स प्रिंटर (Dot Matrix) एक इम्पैक्ट कैरेक्टर प्रिंटर है जो बहुत धीमा होता है।</li></ul>"
+        },
+        {
+            "q": "2. निम्न में से कौन एक स्कैनर का प्रकार है ?<br><span class='en-q'>Which of the following is a type of scanner?</span>",
+            "o": ["नॉर्मल बेड स्कैनर / Normal bed scanner", "फ्लैट बेड स्कैनर / Flatbed scanner", "डबल बेड स्कैनर / Double bed scanner", "सिंगल बेड स्कैनर / Single bed scanner"],
+            "a": 1,
+            "e": "<b>हल:</b> 'फ्लैट बेड स्कैनर' (Flatbed scanner) स्कैनर का एक सबसे आम और प्रमुख प्रकार है, जिसमें एक सपाट कांच की सतह होती है जिस पर स्कैन करने के लिए दस्तावेज़ रखा जाता है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>स्कैनर एक 'इनपुट डिवाइस' (Input Device) है।</li><li>यह हार्ड कॉपी (कागज़) को सॉफ्ट कॉपी (डिजिटल फॉर्मेट) में बदलता है।</li><li>हैंडहेल्ड (Handheld) स्कैनर भी इसका एक प्रकार है जिसे हाथ से पकड़कर इस्तेमाल किया जाता है।</li><li>बारकोड रीडर (BCR) भी एक प्रकार का स्कैनर ही है।</li><li>स्कैन की गई फाइलें आमतौर पर JPEG, PNG या PDF फॉर्मेट में सेव होती हैं।</li></ul>"
+        },
+        {
+            "q": "3. एक बाइट में...........बिट्स होते हैं ।<br><span class='en-q'>There are ________ bits in a byte.</span>",
+            "o": ["दो / Two", "चार / Four", "आठ / Eight", "इनमें से कोई नहीं / None of these"],
+            "a": 2,
+            "e": "<b>हल:</b> कंप्यूटर मेमोरी की भाषा में, एक बाइट (Byte) में '8' (आठ) बिट्स (Bits) होते हैं।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>'बिट' (Bit) कंप्यूटर मेमोरी की सबसे छोटी इकाई है (जिसका मान 0 या 1 होता है)।</li><li>Bit का पूरा नाम Binary Digit है।</li><li>4 बिट्स के समूह को एक 'निब्बल' (Nibble) कहा जाता है।</li><li>एक बाइट (8 बिट्स) एक कैरेक्टर (जैसे एक अक्षर या अंक) को स्टोर करने के लिए पर्याप्त होता है।</li><li>1024 बाइट्स मिलकर 1 किलोबाइट (1 KB) बनाते हैं।</li></ul>"
+        },
+        {
+            "q": "4. सी.पी.यू. के मुख्य दो भाग हैं-<br><span class='en-q'>The two main parts of C.P.U. are-</span>",
+            "o": ["कन्ट्रोल यूनिट व रजिस्टर / Control Unit and Register", "कन्ट्रोल यूनिट व ए.एल.यू. / Control Unit and A.L.U.", "रजिस्टर व मेन मेमोरी / Register and Main Memory", "इनमें से कोई नहीं / None of these"],
+            "a": 1,
+            "e": "<b>हल:</b> सेंट्रल प्रोसेसिंग यूनिट (CPU) के दो सबसे मुख्य भाग 'कन्ट्रोल यूनिट' (CU) और 'ए.एल.यू.' (ALU) होते हैं।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>ALU (Arithmetic Logic Unit) सभी गणितीय (जोड़, घटाव) और तार्किक (तुलना) कार्य करता है।</li><li>CU (Control Unit) कंप्यूटर के सभी ऑपरेशन्स को नियंत्रित और निर्देशित करता है। यह कंप्यूटर का नर्वस सिस्टम है।</li><li>रजिस्टर्स (Registers) CPU के अंदर मौजूद सबसे तेज़ और सबसे छोटी मेमोरी होती है।</li><li>CPU को कंप्यूटर का 'मस्तिष्क' (Brain) भी कहा जाता है।</li><li>मेन मेमोरी (RAM/ROM) CPU का आंतरिक भाग नहीं, बल्कि मदरबोर्ड का हिस्सा होती है।</li></ul>"
+        },
+        {
+            "q": "5. निम्नांकित में कौन-सा वैध कथन है ?<br><span class='en-q'>Which of the following is a valid statement?</span>",
+            "o": ["1 KB = 1024 बाइट्स / 1 KB = 1024 bytes", "1 MB = 1024 बाइट्स / 1 MB = 1024 bytes", "1 KB = 1000 बाइट्स / 1 KB = 1000 bytes", "1 MB = 1000 बाइट्स / 1 MB = 1000 bytes"],
+            "a": 0,
+            "e": "<b>हल:</b> कंप्यूटर मेमोरी की माप के अनुसार, 1 किलोबाइट (1 KB) '1024 बाइट्स' के बराबर होता है। अतः यह कथन वैध (Valid) है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>कंप्यूटर बाइनरी सिस्टम (बेस 2) पर काम करता है, इसलिए 2^10 = 1024 होता है।</li><li>1 मेगाबाइट (1 MB) = 1024 KB (किलोबाइट्स) होता है।</li><li>1 गीगाबाइट (1 GB) = 1024 MB (मेगाबाइट्स) होता है।</li><li>1 टेराबाइट (1 TB) = 1024 GB (गीगाबाइट्स) होता है।</li><li>हालाँकि, हार्ड ड्राइव निर्माता अक्सर 1 KB को 1000 बाइट्स मानकर मार्केटिंग करते हैं, लेकिन तकनीकी रूप से यह 1024 बाइट्स ही होता है।</li></ul>"
+        },
+        {
+            "q": "6. माइक्रोप्रोसेसर स्मृति और अन्य भाग के भौतिक कनेक्शन को कहते हैं ?<br><span class='en-q'>The physical connection between a microprocessor, memory, and other parts is called?</span>",
+            "o": ["पाथ / Path", "हब / Hub", "एड्रेस बस / Address Bus", "इनमें से कोई नहीं / None of these"],
+            "a": 2,
+            "e": "<b>हल:</b> माइक्रोप्रोसेसर, मेमोरी और अन्य हार्डवेयर उपकरणों के बीच जो भौतिक कनेक्शन (तारों का समूह) डेटा या एड्रेस ले जाता है, उसे 'एड्रेस बस' (Address Bus) या सिस्टम बस कहते हैं।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>बस (Bus) मदरबोर्ड पर मौजूद सर्किट (तारों) का एक सेट है जिसके जरिए डेटा ट्रांसफर होता है।</li><li>डेटा बस (Data Bus) एक्चुअल डेटा को एक जगह से दूसरी जगह ले जाती है।</li><li>एड्रेस बस (Address Bus) मेमोरी की उस लोकेशन (Address) की जानकारी ले जाती है जहाँ से डेटा पढ़ना या लिखना है।</li><li>कंट्रोल बस (Control Bus) कंट्रोल सिग्नल्स ले जाती है।</li><li>हब (Hub) नेटवर्किंग में इस्तेमाल होने वाला एक डिवाइस है।</li></ul>"
+        },
+        {
+            "q": "7. कम्प्यूटर सिस्टम के सभी यूनिट कन्ट्रोल होते हैं-<br><span class='en-q'>All units of a computer system are controlled by-</span>",
+            "o": ["ए एल यू द्वारा / By ALU", "डिस्क द्वारा / By Disk", "सीपीयू द्वारा / By CPU", "मॉनीटर द्वारा / By Monitor"],
+            "a": 2,
+            "e": "<b>हल:</b> कंप्यूटर सिस्टम की सभी इकाइयों (इनपुट, आउटपुट, मेमोरी आदि) का नियंत्रण 'सीपीयू' (CPU - Central Processing Unit) द्वारा किया जाता है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>CPU कंप्यूटर का मुख्य नियंत्रक और प्रोसेसर है (इसे कंप्यूटर का ब्रेन कहते हैं)।</li><li>विशेष रूप से, CPU के अंदर मौजूद 'कंट्रोल यूनिट' (CU) सभी हार्डवेयर को निर्देश देता है।</li><li>ALU केवल गणितीय और तार्किक गणनाएं करता है।</li><li>डिस्क (Disk) डेटा स्टोर करने के काम आती है।</li><li>मॉनीटर केवल आउटपुट (परिणाम) प्रदर्शित करने का काम करता है।</li></ul>"
+        },
+        {
+            "q": "8. एक किलो बाइट बराबर होता है-<br><span class='en-q'>One Kilobyte is equal to-</span>",
+            "o": ["1056 बाइट्स / 1056 Bytes", "1054 बाइट्स / 1054 Bytes", "1024 बाइट्स / 1024 Bytes", "1028 बाइट्स / 1028 Bytes"],
+            "a": 2,
+            "e": "<b>हल:</b> एक किलो बाइट (1 KB) '1024 बाइट्स' (1024 Bytes) के बराबर होता है।<br>*(नोट: मूल प्रश्न की तस्वीर में 'बिट्स' लिखा था जो एक प्रिंटिंग मिस्टेक थी, तकनीकी सटीकता के लिए इसे 'बाइट्स' कर दिया गया है।)*<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>कंप्यूटर की मेमोरी को मापने की सबसे छोटी इकाई बिट (Bit) है।</li><li>8 बिट्स मिलकर 1 बाइट (Byte) बनाते हैं।</li><li>1024 Bytes = 1 KB (Kilobyte)।</li><li>1024 KB = 1 MB (Megabyte)।</li><li>यह माप बाइनरी सिस्टम (2^10 = 1024) पर आधारित है।</li></ul>"
+        },
+        {
+            "q": "9. डिजीटल कम्प्यूटर का इनमें से कौन-सा यूनिट नहीं है?<br><span class='en-q'>Which of the following is not a unit of a digital computer?</span>",
+            "o": ["इनपुट यूनिट / Input unit", "कंट्रोल यूनिट / Control unit", "आउटपुट यूनिट / Output unit", "डाटा यूनिट / Data unit"],
+            "a": 3,
+            "e": "<b>हल:</b> कंप्यूटर आर्किटेक्चर में 'डाटा यूनिट' (Data unit) नामक कोई विशिष्ट मानक हार्डवेयर यूनिट नहीं होती। डेटा को मेमोरी में स्टोर किया जाता है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>वॉन न्यूमैन (Von Neumann) आर्किटेक्चर के अनुसार कंप्यूटर के मुख्य 3 भाग होते हैं।</li><li>इनपुट यूनिट (Input Unit): जिससे डेटा अंदर जाता है (जैसे की-बोर्ड)।</li><li>सेंट्रल प्रोसेसिंग यूनिट (CPU): जिसमें कंट्रोल यूनिट (CU) और ALU शामिल होते हैं।</li><li>आउटपुट यूनिट (Output Unit): जिससे परिणाम बाहर आता है (जैसे मॉनिटर)।</li><li>मेमोरी यूनिट (Memory Unit) भी होती है जो डेटा स्टोर करती है।</li></ul>"
+        },
+        {
+            "q": "10. Computer के संदर्भ में ALU का तात्पर्य क्या है?<br><span class='en-q'>What does ALU stand for in the context of a computer?</span>",
+            "o": ["Arithmetic Logic Unit", "Array Logic Unit", "Application Logic Unit", "Alternate Logic Unit"],
+            "a": 0,
+            "e": "<b>हल:</b> कंप्यूटर के संदर्भ में ALU का पूरा नाम 'Arithmetic Logic Unit' (अर्थमेटिक लॉजिक यूनिट) है। यह CPU का एक महत्वपूर्ण भाग है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>ALU कंप्यूटर की सभी 'गणितीय गणनाएं' (Arithmetic calculations जैसे +, -, *, /) करता है।</li><li>यह 'तार्किक' (Logical) निर्णय भी लेता है (जैसे >, <, =, AND, OR)।</li><li>यह सीधे कंट्रोल यूनिट (CU) के निर्देशों पर काम करता है।</li><li>गणना के दौरान यह डेटा को रजिस्टर्स (Registers) से लेता है और वापस वहीं रखता है।</li><li>CPU को ALU और CU का संयोजन माना जाता है।</li></ul>"
+        },
+        {
+            "q": "11. एक किलोबाइट बराबर होता है-<br><span class='en-q'>One Kilobyte is equal to-</span>",
+            "o": ["1024 बाइट्स / 1024 bytes", "1000 बाइट्स / 1000 bytes", "1042 बाइट्स / 1042 bytes", "1 Kg. बाइट्स / 1 Kg. bytes"],
+            "a": 0,
+            "e": "<b>हल:</b> कंप्यूटर मेमोरी की माप प्रणाली के अनुसार, 1 किलोबाइट (1 KB) '1024 बाइट्स' के बराबर होता है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>1 Byte (बाइट) = 8 Bits (बिट्स)।</li><li>1 KB (Kilobyte) = 1024 Bytes।</li><li>1 MB (Megabyte) = 1024 KB।</li><li>1 GB (Gigabyte) = 1024 MB।</li><li>बाइनरी नंबर सिस्टम में 2 की घात 10 (2^10) का मान 1024 होता है, इसीलिए यह 1000 के बजाय 1024 होता है।</li></ul>"
+        },
+        {
+            "q": "12. वेब पेज का एक वर्ड जिसे क्लिक करने पर दूसरा डाक्यूमेन्ट खुलता है, उसे .......... कहते हैं-<br><span class='en-q'>A word on a web page that opens another document when clicked is called..........</span>",
+            "o": ["एंकर / Anchor", "हाइपरलिंक / Hyperlink", "रेफरेन्स / Reference", "URL / URL"],
+            "a": 1,
+            "e": "<b>हल:</b> वेब पेज पर मौजूद ऐसा टेक्स्ट या चित्र जिस पर क्लिक करने से आप किसी दूसरे पेज या वेबसाइट पर पहुँच जाते हैं, उसे 'हाइपरलिंक' (Hyperlink) कहते हैं।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>आमतौर पर वेब पेजों पर हाइपरलिंक नीले रंग (Blue color) के होते हैं और उनके नीचे एक लाइन (Underlined) खींची होती है।</li><li>हाइपरलिंक पर माउस का कर्सर ले जाने पर कर्सर एक 'हाथ' (Hand) के आकार में बदल जाता है।</li><li>HTML में हाइपरलिंक बनाने के लिए एंकर टैग `<a>` का उपयोग किया जाता है।</li><li>URL (Uniform Resource Locator) किसी वेबसाइट का एड्रेस होता है।</li><li>रेफरेन्स (Reference) आमतौर पर किसी स्रोत का उल्लेख करने के लिए प्रयुक्त शब्द है।</li></ul>"
+        },
+        {
+            "q": "13. निम्नलिखित में से कनेक्टिविटी का उदाहरण कौन-सा है-<br><span class='en-q'>Which of the following is an example of connectivity?</span>",
+            "o": ["इन्टरनेट / Internet", "फ्लॉपी डिस्क / Floppy Disk", "पॉवर कॉर्ड / Power Cord", "डाटा / Data"],
+            "a": 0,
+            "e": "<b>हल:</b> 'इन्टरनेट' (Internet) कनेक्टिविटी (Connectivity - जुड़ने या नेटवर्क से कनेक्ट होने) का सबसे बड़ा और बेहतरीन उदाहरण है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>इंटरनेट दुनिया भर के कंप्यूटर नेटवर्कों का एक विशाल वैश्विक नेटवर्क है।</li><li>यह TCP/IP प्रोटोकॉल सूट का उपयोग करके दुनिया भर के डिवाइसों को कनेक्ट करता है।</li><li>फ्लॉपी डिस्क एक 'स्टोरेज डिवाइस' (भंडारण युक्ति) है।</li><li>पॉवर कॉर्ड (Power Cord) बिजली की आपूर्ति (Power supply) के लिए इस्तेमाल होने वाली केबल है।</li><li>डेटा (Data) वे सूचनाएं हैं जिनका कंप्यूटर प्रोसेस करता है।</li></ul>"
+        },
+        {
+            "q": "14. विश्व व्यापी जाल WWW के आविष्कारक तथा प्रवर्तक हैं-<br><span class='en-q'>The inventor and founder of the World Wide Web (WWW) is-</span>",
+            "o": ["बिल गेट्स / Bill Gates", "ली एन फियोंग / Lee N. Fiyong", "एन रसल / N. Russel", "टिम बर्नर्स ली / Tim Berners-Lee"],
+            "a": 3,
+            "e": "<b>हल:</b> वर्ल्ड वाइड वेब (WWW) का आविष्कार 1989 में ब्रिटिश वैज्ञानिक 'टिम बर्नर्स-ली' (Tim Berners-Lee) ने किया था।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>टिम बर्नर्स-ली ने स्विट्जरलैंड के CERN (यूरोपीय परमाणु अनुसंधान संगठन) में काम करते हुए इसका आविष्कार किया था।</li><li>उन्होंने ही HTML (HyperText Markup Language) और URL का भी आविष्कार किया।</li><li>दुनिया की पहली वेबसाइट और पहला वेब ब्राउज़र (जिसका नाम भी WorldWideWeb था) उन्होंने ही बनाया था।</li><li>बिल गेट्स (Bill Gates) ने माइक्रोसॉफ्ट (Microsoft) कंपनी की स्थापना की थी।</li><li>इंटरनेट और WWW दोनों अलग-अलग चीजें हैं। इंटरनेट नेटवर्कों का नेटवर्क है, जबकि WWW उस पर मौजूद सूचनाओं का जाल है।</li></ul>"
+        },
+        {
+            "q": "15. याहू, गूगल व एमएसएन (MSN) हैं-<br><span class='en-q'>Yahoo, Google, and MSN are-</span>",
+            "o": ["सर्च इंजन / Search Engines", "कम्प्यूटर ब्रॉड / Computer Brands", "स्विट्जरलैंड में बनने वाली घड़ियां / Watches made in Switzerland", "शनि ग्रह के छल्ले / Rings of Saturn planet"],
+            "a": 0,
+            "e": "<b>हल:</b> याहू (Yahoo), गूगल (Google), और एमएसएन (MSN - जो अब बिंग/Bing है) इंटरनेट पर सूचनाएं खोजने वाले 'सर्च इंजन' (Search Engines) हैं।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>सर्च इंजन एक ऐसा सॉफ्टवेयर सिस्टम है जिसे वर्ल्ड वाइड वेब (WWW) पर वेब खोज (Web Search) करने के लिए डिज़ाइन किया गया है।</li><li>वर्तमान में 'Google' दुनिया का सबसे बड़ा और सबसे अधिक उपयोग किया जाने वाला सर्च इंजन है।</li><li>सर्च इंजन जानकारी खोजने के लिए स्पाइडर्स या क्रॉलर्स (Spiders/Crawlers) नामक प्रोग्राम का उपयोग करते हैं।</li><li>चीन का प्रमुख सर्च इंजन 'Baidu' (बैदू) है।</li><li>वेब ब्राउज़र (जैसे क्रोम, मोज़िला) अलग होते हैं, वे वेबसाइट खोलने के काम आते हैं, जबकि सर्च इंजन ब्राउज़र के अंदर चलते हैं।</li></ul>"
+        },
+        {
+            "q": "16. ई-मेल भेजते समय ......... की लाइन संदेश की विषय-वस्तु के बारे में बता देती है-<br><span class='en-q'>While sending an e-mail, the ......... line tells about the content of the message-</span>",
+            "o": ["टू / To", "सब्जेक्ट / Subject", "कन्टेंट्स / Contents", "CC / CC"],
+            "a": 1,
+            "e": "<b>हल:</b> ई-मेल (E-mail) भेजते समय 'सब्जेक्ट' (Subject) लाइन यह बताती है कि यह ई-मेल किस विषय (Topic/Content) के बारे में है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>'To' (टू) वाले खाने में उस व्यक्ति का ई-मेल एड्रेस लिखा जाता है जिसे मेल भेजना हो।</li><li>सब्जेक्ट (Subject) लाइन को पढ़कर प्राप्तकर्ता को ईमेल खोले बिना ही उसका उद्देश्य पता चल जाता है।</li><li>CC (Carbon Copy) का उपयोग उसी मेल की एक कॉपी किसी अन्य व्यक्ति को भेजने के लिए किया जाता है (जिसमें सभी को पता चलता है कि मेल किसे-किसे भेजा गया है)।</li><li>BCC (Blind Carbon Copy) में प्राप्तकर्ताओं को यह पता नहीं चलता कि यह मेल और किसे भेजा गया है।</li><li>रे टॉमलिंसन (Ray Tomlinson) को ईमेल का आविष्कारक माना जाता है।</li></ul>"
+        },
+        {
+            "q": "17. ......... ऐसे डिवाइस हैं जिनका प्रयोग टेलीकम्युनिकेशन लाइनों पर डाटा ट्रान्समिट करने के लिए किया जाता है-<br><span class='en-q'>......... are devices used to transmit data over telecommunication lines-</span>",
+            "o": ["ड्राइव्स / Drives", "ड्राइव बेज / Drive bays", "मॉडेम / Modem", "प्लेटफार्म / Platform"],
+            "a": 2,
+            "e": "<b>हल:</b> टेलीकम्युनिकेशन (टेलीफोन) लाइनों पर एनालॉग सिग्नल को डिजिटल में और डिजिटल को एनालॉग में बदलने के लिए 'मॉडेम' (Modem) का उपयोग किया जाता है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>Modem का फुल फॉर्म Modulator-Demodulator है।</li><li>टेलीफोन लाइनें एनालॉग सिग्नल पर काम करती हैं, जबकि कंप्यूटर डिजिटल सिग्नल पर काम करता है।</li><li>मॉडेम सेंडर की तरफ डिजिटल को एनालॉग में बदलता है (Modulation)।</li><li>रिसीवर की तरफ यह एनालॉग को वापस डिजिटल में बदलता है (Demodulation)।</li><li>इंटरनेट कनेक्शन (डायल-अप/ब्रॉडबैंड) प्राप्त करने के लिए मॉडेम आवश्यक है।</li></ul>"
+        },
+        {
+            "q": "18. निम्न में से कौन कम्प्यूटर पद नहीं है-<br><span class='en-q'>Which of the following is not a computer term?</span>",
+            "o": ["एनालॉग / Analog", "बाइनरी कोड / Binary code", "चिप / Chip", "मॉडेम / Modem"],
+            "a": 0,
+            "e": "<b>हल:</b> दिए गए विकल्पों में, चिप, बाइनरी कोड, और मॉडेम पूरी तरह से डिजिटल कंप्यूटर से जुड़े पद हैं। जबकि 'एनालॉग' (Analog) एक प्रकार का निरंतर (Continuous) सिग्नल है, जो डिजिटल (0,1) की प्रकृति के विपरीत है। (दिए गए संदर्भ में इसे ही भिन्न माना गया है)।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>आधुनिक कंप्यूटर 'डिजिटल कंप्यूटर' होते हैं जो बाइनरी कोड (0 और 1) पर काम करते हैं।</li><li>एनालॉग कंप्यूटर भौतिक मात्राओं (जैसे दबाव, तापमान, वोल्टेज) को मापते हैं (जैसे थर्मामीटर, स्पीडोमीटर)।</li><li>चिप (IC) सिलिकॉन की बनी होती है जिस पर कंप्यूटर का प्रोसेसर होता है।</li><li>मॉडेम (Modem) नेटवर्किंग डिवाइस है।</li><li>हाइब्रिड कंप्यूटर एनालॉग और डिजिटल दोनों का मिश्रण होते हैं (जैसे पेट्रोल पंप की मशीन)।</li></ul>"
+        },
+        {
+            "q": "19. निम्नलिखित में से कौन-सा पद केवल नेटवर्क का कनेक्शन है, जिसे साथ जोड़ा जा सकता है-<br><span class='en-q'>Which of the following terms is only a network connection that can be joined together?</span>",
+            "o": ["वर्चुअल प्राइवेट नेटवर्क / Virtual Private Network", "इन्टरनेट / Internet", "इंट्रानेट / Intranet", "एक्सट्रानेट / Extranet"],
+            "a": 1,
+            "e": "<b>हल:</b> 'इन्टरनेट' (Internet) विश्व स्तर पर फैले हुए कई छोटे-बड़े नेटवर्कों का एक सार्वजनिक कनेक्शन है जिसे एक साथ जोड़ा गया है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>इंटरनेट को 'नेटवर्कों का नेटवर्क' (Network of Networks) कहा जाता है।</li><li>इंट्रानेट (Intranet) एक निजी (Private) नेटवर्क होता है जो केवल किसी विशेष कंपनी या संस्था के कर्मचारियों तक सीमित रहता है।</li><li>एक्सट्रानेट (Extranet) कंपनी के नेटवर्क का वह हिस्सा है जिसे बाहरी लोग (सप्लायर्स/पार्टनर्स) भी सुरक्षित रूप से एक्सेस कर सकते हैं।</li><li>VPN (Virtual Private Network) सार्वजनिक इंटरनेट पर एक सुरक्षित और एन्क्रिप्टेड कनेक्शन बनाता है।</li><li>इंटरनेट का कोई एक मालिक नहीं है, यह एक सार्वजनिक ढांचा है।</li></ul>"
+        },
+        {
+            "q": "20. अनसॉलिसिटेड ई-मेल को क्या कहते हैं-<br><span class='en-q'>Unsolicited e-mail is called-</span>",
+            "o": ["न्यूज ग्रुप / News group", "बैकबोन / Backbone", "फ्लेमिंग / Flaming", "स्पैम / Spam"],
+            "a": 3,
+            "e": "<b>हल:</b> अनचाहे (Unsolicited), थोक में (Bulk) और व्यावसायिक विज्ञापन वाले ई-मेल जो बिना मांगे प्राप्त होते हैं, उन्हें 'स्पैम' (Spam) या जंक मेल (Junk Mail) कहते हैं।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>स्पैम ईमेल अक्सर साइबर अपराधियों द्वारा फिशिंग (Phishing) या मैलवेयर (Malware) फैलाने के लिए इस्तेमाल किए जाते हैं।</li><li>ईमेल सेवा प्रदाता (जैसे Gmail) स्पैम को रोकने के लिए 'Spam Filters' का उपयोग करते हैं जो ऐसे मेल को स्पैम फोल्डर में डाल देते हैं।</li><li>'फ्लेमिंग' (Flaming) इंटरनेट पर किसी के प्रति अपमानजनक या क्रोधित भाषा का प्रयोग करने को कहते हैं।</li><li>'बैकबोन' (Backbone) इंटरनेट के मुख्य उच्च गति वाले डेटा मार्गों (High-speed lines) को कहते हैं।</li><li>स्पैम शब्द एक प्रकार के डिब्बाबंद मांस (Canned meat) के ब्रांड से लिया गया है।</li></ul>"
+        },
+        {
+            "q": "21. कोई वेबसाइट एक्सेस करने पर सबसे पहले जो पेज दिखाई पड़ता है, उसे कहते हैं-<br><span class='en-q'>The first page that appears when accessing a website is called-</span>",
+            "o": ["फर्स्ट पेज / First page", "मेन पेज / Main page", "होम पेज / Home page", "इनमें से कोई नहीं / None of these"],
+            "a": 2,
+            "e": "<b>हल:</b> जब हम कोई वेबसाइट खोलते हैं (जैसे www.google.com), तो सबसे पहले जो मुख्य पेज या स्वागत पृष्ठ दिखाई देता है, उसे 'होम पेज' (Home page) कहते हैं।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>होम पेज पूरी वेबसाइट की सामग्री (Content) की एक अनुक्रमणिका (Index) या प्रवेश द्वार (Gateway) की तरह काम करता है।</li><li>तकनीकी रूप से इस पेज की फाइल का नाम अक्सर 'index.html' या 'default.html' रखा जाता है।</li><li>वेब पेजों का निर्माण HTML (HyperText Markup Language) का उपयोग करके किया जाता है।</li><li>ब्राउज़र को खोलने पर जो डिफ़ॉल्ट पेज खुलता है, उसे भी होम पेज कहा जा सकता है।</li><li>वेबसाइट कई वेब पेजों का एक संग्रह (Collection) होती है जो हाइपरलिंक द्वारा जुड़े होते हैं।</li></ul>"
+        },
+        {
+            "q": "22. साधारण शब्दों में नेटवर्कों का नेटवर्क कहलाता है-<br><span class='en-q'>In simple words, the network of networks is called-</span>",
+            "o": ["एक्स्ट्रानेट / Extranet", "इंट्रानेट / Intranet", "वेबनेट / Webnet", "इंटरनेट / Internet"],
+            "a": 3,
+            "e": "<b>हल:</b> विश्व भर में फैले हुए लाखों-करोड़ों छोटे और बड़े नेटवर्कों के आपस में जुड़ने से जो विशाल जाल बनता है, उसे 'इंटरनेट' (Internet) कहा जाता है। अतः इसे 'नेटवर्कों का नेटवर्क' कहते हैं।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>इंटरनेट की शुरुआत 1969 में अमेरिकी रक्षा विभाग के प्रोजेक्ट 'ARPANET' से मानी जाती है।</li><li>भारत में इंटरनेट की शुरुआत 15 अगस्त 1995 को VSNL (विदेश संचार निगम लिमिटेड) द्वारा की गई थी।</li><li>यह TCP/IP (Transmission Control Protocol/Internet Protocol) के सिद्धांत पर काम करता है।</li><li>इंट्रानेट (Intranet) एक प्राइवेट (कंपनी का अपना) नेटवर्क होता है।</li><li>वेब (WWW) इंटरनेट के माध्यम से एक्सेस की जाने वाली एक सेवा है, न कि खुद इंटरनेट।</li></ul>"
+        },
+        {
+            "q": "23. ......... का प्रयोग करते हुए वेब पेज का कोड लिखा जाता है-<br><span class='en-q'>Web page code is written using.........</span>",
+            "o": ["फिफ्थ जनरेशन लैंग्वेज / Fifth generation language", "विनजिप / Winzip", "पर्ल / Perl", "हाइपरटेक्स्ट मार्कअप लैंग्वेज / Hypertext Markup Language (HTML)"],
+            "a": 3,
+            "e": "<b>हल:</b> इंटरनेट पर मौजूद किसी भी वेब पेज को बनाने और उसका कोड (Structure) लिखने के लिए 'हाइपरटेक्स्ट मार्कअप लैंग्वेज' (HTML) का प्रयोग किया जाता है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>HTML का आविष्कार 1989 में टिम बर्नर्स-ली ने किया था।</li><li>यह कोई प्रोग्रामिंग भाषा नहीं है, बल्कि एक मार्कअप लैंग्वेज (Markup Language) है जो टैग्स (Tags) का उपयोग करती है।</li><li>HTML पेजों को सुंदर बनाने के लिए CSS (Cascading Style Sheets) का उपयोग होता है।</li><li>वेब पेज में जान (इंटरएक्टिविटी) डालने के लिए JavaScript का उपयोग किया जाता है।</li><li>विनजिप (Winzip) फाइलों को कम्प्रेस (छोटा) करने वाला एक सॉफ्टवेयर है।</li></ul>"
+        },
+        {
+            "q": "24. छोटे एप्लीकेशन प्रोग्राम, जो वेब पेज पर चलते हैं और यह सुनिश्चित करते हैं कि फॉर्म ठीक से पूरा हो गया है या एनिमेशन प्रोवाइड करते हैं, उन्हें........ कहते हैं ।<br><span class='en-q'>Small application programs that run on a web page and ensure that a form is completed correctly or provide animation are called........</span>",
+            "o": ["फ्लैश / Flash", "स्पाइडर्स / Spiders", "कूकीज / Cookies", "एप्लेट्स / Applets"],
+            "a": 0,
+            "e": "<b>हल:</b> दिए गए विकल्पों के अनुसार वेब पेज पर एनिमेशन, वीडियो और इंटरैक्टिव कंटेंट चलाने के लिए 'फ्लैश' (Flash - Adobe Flash) का उपयोग किया जाता था (हालाँकि अब यह बंद हो चुका है)।<br>*(नोट: फॉर्म वैलिडेशन के लिए जावास्क्रिप्ट का और छोटे प्रोग्राम्स के लिए Java Applets का भी उपयोग होता था, लेकिन यहाँ उत्तर की दृष्टि से 'फ्लैश' दिया गया है)।*<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>Adobe Flash का उपयोग 2000 के दशक में वेब एनिमेशन और ऑनलाइन गेम के लिए बहुत होता था।</li><li>31 दिसंबर 2020 को Adobe ने आधिकारिक तौर पर फ्लैश प्लेयर को बंद (End of Life) कर दिया है।</li><li>अब फ्लैश की जगह HTML5, CSS3, और JavaScript का इस्तेमाल होता है।</li><li>कूकीज (Cookies) छोटे टेक्स्ट फाइल हैं जो वेबसाइट्स यूजर की जानकारी (लॉगिन, प्राथमिकताएं) याद रखने के लिए ब्राउज़र में सेव करती हैं।</li><li>स्पाइडर्स (Spiders) सर्च इंजन के बोट्स (Bots) होते हैं जो इंटरनेट पर नए वेब पेजों को खोजते हैं।</li></ul>"
+        },
+        {
+            "q": "25. निम्न में से कौन-सा एक वेब ब्राउज़र (Web Browser) नहीं है?<br><span class='en-q'>Which of the following is not a web browser?</span>",
+            "o": ["गूगल क्रोम / Google Chrome", "मोज़िला फायरफॉक्स / Mozilla Firefox", "सफारी / Safari", "लिनक्स / Linux"],
+            "a": 3,
+            "e": "<b>हल:</b> 'लिनक्स' (Linux) एक वेब ब्राउज़र नहीं है, बल्कि यह एक ओपन-सोर्स 'ऑपरेटिंग सिस्टम' (Operating System) है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>वेब ब्राउज़र वह एप्लीकेशन सॉफ्टवेयर है जिसका उपयोग इंटरनेट (वेबसाइट्स) एक्सेस करने के लिए किया जाता है।</li><li>गूगल क्रोम (Google Chrome) वर्तमान में दुनिया का सबसे लोकप्रिय वेब ब्राउज़र है।</li><li>सफारी (Safari) एप्पल (Apple) के डिवाइस (iPhone, Mac) का डिफ़ॉल्ट वेब ब्राउज़र है।</li><li>मोज़िला फायरफॉक्स (Firefox) एक प्रसिद्ध ओपन-सोर्स ब्राउज़र है।</li><li>विंडोज का डिफ़ॉल्ट ब्राउज़र पहले Internet Explorer था, अब Microsoft Edge है।</li></ul>"
+        }
+    ];
+
+    let state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+    let timerInterval = null;
+    let isPaused = false;
+
+    window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+    function initDashboard() {
+        showScreen('dashboard-screen');
+        let completedData = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) completedData = JSON.parse(dataStr);
+        } catch(e) {}
+
+        if (completedData) {
+            document.getElementById('dash-unattempted').style.display = 'none';
+            document.getElementById('dash-attempted').style.display = 'block';
+            document.getElementById('dash-score-text').innerText = `${completedData.score}/25.0 Marks`;
+            document.getElementById('dash-progress-bar').style.width = `${(completedData.score / 25) * 100}%`;
+        } else {
+            document.getElementById('dash-attempted').style.display = 'none';
+            document.getElementById('dash-unattempted').style.display = 'block';
+        }
+    }
+
+    function startTest() {
+        let saved = null;
+        try {
+            const savedStr = safeGetItem(STORAGE_KEY);
+            if(savedStr) saved = JSON.parse(savedStr);
+        } catch(e){}
+
+        if (saved && !saved.submitted) {
+            state = saved;
+        } else {
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+        }
+        initTestEnv();
+    }
+
+    function reattemptTest() {
+        if(confirm("Are you sure you want to start a fresh test? Your active progress will be lost.")) {
+            safeRemoveItem(STORAGE_KEY);
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+            initTestEnv();
+        }
+    }
+
+    function initTestEnv() {
+        showScreen('test-screen');
+        renderQuestion();
+        renderPalette();
+        updateStats();
+        
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+        setInterval(() => { if(!state.submitted) safeSetItem(STORAGE_KEY, JSON.stringify(state)); }, 2000);
+    }
+
+    function viewSavedResults() {
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(data) renderResultUI(data);
+    }
+
+    function showDashboard() { initDashboard(); }
+
+    function showScreen(id) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+    }
+
+    function updateTimer() {
+        if(isPaused || state.submitted) return;
+        if(state.time <= 0) { submitTest(); return; }
+        state.time--;
+        const m = Math.floor(state.time / 60), s = state.time % 60;
+        document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+    }
+
+    function toggleTheme() {
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    function renderQuestion() {
+        state.visited[state.currentQ] = true;
+        const q = finalQuestions[state.currentQ];
+        
+        // Extract exact numbering for display
+        let displayNo = state.currentQ + 1;
+        let qTextHtml = q.q;
+        let qMatch = qTextHtml.match(/^(\d+)\./);
+        if(qMatch) {
+            displayNo = qMatch[1];
+            qTextHtml = qTextHtml.substring(qMatch[0].length).trim();
+        }
+
+        document.getElementById('q-no').innerText = `Question ${displayNo}`;
+        document.getElementById('q-text').innerHTML = qTextHtml;
+        let opts = '';
+        q.o.forEach((opt, i) => {
+            const isSel = state.answers[state.currentQ] === i;
+            const selClass = isSel ? 'selected' : '';
+            const charLabel = String.fromCharCode(65 + i);
+            opts += `<div class="glass-panel option ${selClass}" onclick="selectOption(${i})"><div class="opt-label">${charLabel}</div><div style="flex:1;">${opt}</div></div>`;
+        });
+        document.getElementById('options-box').innerHTML = opts;
+        
+        renderPalette();
+        updateStats();
+    }
+
+    function selectOption(index) { state.answers[state.currentQ] = index; renderQuestion(); }
+    function clearResponse() { delete state.answers[state.currentQ]; delete state.marked[state.currentQ]; renderQuestion(); }
+    function markReview() { state.marked[state.currentQ] = true; changeQ(1); }
+    function saveNext() { delete state.marked[state.currentQ]; changeQ(1); }
+
+    function changeQ(step) {
+        const next = state.currentQ + step;
+        if(next >= 0 && next < finalQuestions.length) { state.currentQ = next; renderQuestion(); }
+    }
+
+    function renderPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        finalQuestions.forEach((q, i) => {
+            let cls = 's-0';
+            if(state.visited[i]) {
+                if(state.answers[i] !== undefined && state.marked[i]) cls = 's-4';
+                else if(state.marked[i]) cls = 's-3';
+                else if(state.answers[i] !== undefined) cls = 's-1';
+                else cls = 's-2';
+            }
+            const active = i === state.currentQ ? 'active' : '';
+            
+            let displayNo = i + 1;
+            let qMatch = q.q.match(/^(\d+)\./);
+            if(qMatch) {
+                displayNo = qMatch[1];
+            }
+            grid.innerHTML += `<button class="p-btn ${cls} ${active}" onclick="state.currentQ = ${i}; renderQuestion();">${displayNo}</button>`;
+        });
+    }
+
+    function updateStats() {
+        let ans=0, notans=0, notvis=0, mark=0;
+        finalQuestions.forEach((_, i) => {
+            if(!state.visited[i]) notvis++;
+            else if(state.marked[i]) mark++;
+            else if(state.answers[i] !== undefined) ans++;
+            else notans++;
+        });
+        document.getElementById('c-ans').innerText = ans; document.getElementById('c-notans').innerText = notans;
+        document.getElementById('c-notvis').innerText = notvis; document.getElementById('c-mark').innerText = mark;
+    }
+
+    function submitTest() {
+        if(!confirm("Are you sure you want to submit the test? / क्या आप टेस्ट सबमिट करना चाहते हैं?")) return;
+        state.submitted = true; clearInterval(timerInterval);
+        let score=0, attempt=0, wrong=0;
+        finalQuestions.forEach((q, i) => {
+            if(state.answers[i] !== undefined) {
+                attempt++;
+                if(state.answers[i] === q.a) score++; else wrong++;
+            }
+        });
+        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const completedData = { score: score, attempted: attempt, wrong: wrong, time: state.time, date: today, userAnswers: state.answers };
+        
+        safeSetItem(COMPLETED_KEY, JSON.stringify(completedData));
+        safeRemoveItem(STORAGE_KEY);
+        
+        renderResultUI(completedData);
+    }
+
+    function renderResultUI(data) {
+        showScreen('result-screen');
+        const acc = data.attempted > 0 ? ((data.score / data.attempted) * 100).toFixed(1) : 0;
+        document.getElementById('r-score').innerText = `${data.score}`;
+        document.getElementById('r-attempt').innerText = data.attempted;
+        document.getElementById('r-wrong').innerText = data.wrong;
+        document.getElementById('r-acc').innerText = `${acc}%`;
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(!data) return;
+
+        let html = '';
+        finalQuestions.forEach((q, i) => {
+            const uAns = data.userAnswers[i];
+            let optHtml = '';
+            q.o.forEach((opt, oIdx) => {
+                let cls = '', checkMark = '';
+                if(oIdx === q.a) { cls = 'correct'; checkMark = ' ✔'; }
+                else if(oIdx === uAns && uAns !== q.a) { cls = 'wrong'; checkMark = ' ❌ (Your Answer)'; }
+                optHtml += `<div class="glass-panel sol-opt ${cls}"><strong>${String.fromCharCode(65 + oIdx)}.</strong> <div style="flex:1;">${opt} <span style="float:right; font-weight:700;">${checkMark}</span></div></div>`;
+            });
+            let statusText = uAns !== undefined ? (uAns === q.a ? "हल किया (Correct)" : "हल किया (Incorrect)") : "हल नहीं किया (Unattempted)";
+            
+            let displayNo = i + 1;
+            let qTextHtml = q.q;
+            let qMatch = qTextHtml.match(/^(\d+)\./);
+            if(qMatch) {
+               displayNo = qMatch[1];
+               qTextHtml = qTextHtml.substring(qMatch[0].length).trim();
+            }
+
+            html += `<div class="glass-panel sol-card"><div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--primary);">Q${displayNo}. ${qTextHtml}</div>${optHtml}<div style="font-weight:bold; margin:15px 0; color:var(--text-muted);">Status: ${statusText}</div><div class="glass-panel sol-exp">${q.e}</div></div>`;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+
+    function downloadPDF() {
+        const element = document.getElementById('sol-container');
+        
+        const actionButtons = element.previousElementSibling;
+        actionButtons.style.display = 'none';
+
+        const opt = {
+            margin:       10,
+            filename:     'Computer_Set_13_Solutions.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) document.documentElement.setAttribute('data-theme', 'light');
+        
+        html2pdf().set(opt).from(element).save().then(() => {
+            if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
+            actionButtons.style.display = 'flex';
+        });
+    }
+</script>
+</body>
+</html>

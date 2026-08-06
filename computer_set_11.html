@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Computer Set Number 11</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg-grad-1: #4facfe; --bg-grad-2: #00f2fe; --bg-grad-3: #a18cd1; --bg-grad-4: #fbc2eb;
+            --glass-bg: rgba(255, 255, 255, 0.9); --glass-border: rgba(255, 255, 255, 0.6); --glass-shadow: rgba(31, 38, 135, 0.15);
+            --text-main: #1f2937; --text-muted: #64748b;
+            --primary: #2563eb; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --purple: #8b5cf6;
+            --option-bg: rgba(243, 244, 246, 0.8); --option-selected: rgba(219, 234, 254, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+        [data-theme="dark"] {
+            --bg-grad-1: #0f2027; --bg-grad-2: #203a43; --bg-grad-3: #2c5364; --bg-grad-4: #141e30;
+            --glass-bg: rgba(17, 25, 40, 0.85); --glass-border: rgba(255, 255, 255, 0.15); --glass-shadow: rgba(0, 0, 0, 0.5);
+            --text-main: #f9fafb; --text-muted: #94a3b8;
+            --primary: #3b82f6; 
+            --option-bg: rgba(55, 65, 81, 0.7); --option-selected: rgba(30, 58, 138, 0.8);
+            --card-bg: rgba(31, 41, 55, 0.95);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; touch-action: manipulation;}
+        
+        body { 
+            height: 100vh; height: 100dvh; 
+            background: linear-gradient(45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3), var(--bg-grad-4)); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+            color: var(--text-main); 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 var(--glass-shadow); border-radius: 12px; }
+        
+        .btn { font-family: 'Poppins', sans-serif; background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;}
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-warning { background: var(--warning); color: #fff;}
+        .btn-clear { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-mark { background: var(--purple); color: white; }
+        .btn-prev { background: var(--text-muted); color: white; }
+
+        .screen { display: none; flex-direction: column; height: 100%; width: 100vw; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; }
+
+        #dashboard-screen { overflow-y: auto; background: var(--card-bg); align-items: center; padding-bottom: 30px;}
+        .dash-header-top { background: #1e293b; color: white; width: 100%; padding: 15px 20px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 15px; position: sticky; top:0; z-index: 100;}
+        .dash-content { width: 100%; max-width: 800px; padding: 20px; }
+        .section-title { font-weight: 600; color: var(--primary); margin: 15px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 15px; }
+        .dash-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--glass-border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .test-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text-main);}
+        .test-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        .progress-container { width: 100%; height: 6px; background: var(--glass-border); border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #fbc02d; width: 0%; transition: width 0.5s ease;}
+        .dash-actions { display: flex; gap: 12px; margin-top: 15px; }
+        .dash-actions .btn { flex: 1; padding: 10px; font-size: 14px; border-radius: 8px;}
+        .syllabus-footer { display: flex; justify-content: space-between; font-size: 12px; color: var(--primary); border-top: 1px solid var(--glass-border); padding-top: 12px; margin-top: 15px; }
+
+        header.test-head { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-bottom: 10px; margin-inline: 10px; }
+        .header-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: 700; background: var(--card-bg); border: 1px solid var(--glass-border); color: var(--danger); padding: 5px 12px; border-radius: 20px; }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 0 10px 10px 10px; }
+        .question-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .q-header { padding: 10px 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
+        .q-body { flex: 1; padding: 15px; overflow-y: auto; font-size: 16px; line-height: 1.6; }
+        
+        .en-q { display: block; font-size: 0.90em; color: var(--text-muted); margin-top: 8px; font-weight: 500; font-family: 'Poppins', sans-serif;}
+
+        .options-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;}
+        .option { padding: 12px; border: 2px solid var(--glass-border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--option-bg); font-weight: 500; font-size: 15px;}
+        .option.selected { border-color: var(--primary); background: var(--option-selected); color: var(--primary); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--glass-border); display: flex; justify-content: center; align-items: center; font-weight: bold; }
+        .option.selected .opt-label { background: var(--primary); color: white; border-color: var(--primary);}
+        
+        .q-footer { padding: 10px; border-top: 1px solid var(--glass-border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-radius: 0 0 12px 12px; }
+
+        .palette-section { width: 320px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .palette-header { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; font-weight: bold; font-size: 15px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; font-size: 12px; border-bottom: 1px solid var(--glass-border); font-weight: 500;}
+        .stat-item { display: flex; align-items: center; gap: 6px;}
+        .badge { width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 10px; font-weight: bold;}
+        .s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);} 
+        .s-1 { background: var(--success); } .s-2 { background: var(--danger); } .s-3 { background: var(--purple); } 
+        .s-4 { background: var(--primary); position: relative; }
+        .s-4::after { content: '✔'; position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; background: white; color: var(--primary); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 8px; }
+        
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .p-btn.s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);}
+        .p-btn.active { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.1);}
+        .submit-area { padding: 10px; border-top: 1px solid var(--glass-border); border-radius: 0 0 12px 12px;}
+
+        #result-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        #solution-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        .sol-card { padding: 20px; margin-bottom: 15px; width: 100%; max-width: 800px; page-break-inside: avoid;}
+        .sol-opt { padding: 10px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; gap: 10px; align-items: center; font-size: 15px; background: var(--card-bg);}
+        .sol-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); text-decoration: line-through;}
+        .sol-exp { margin-top: 15px; padding: 15px; background: rgba(37, 99, 235, 0.05); border: 1px solid var(--glass-border); border-left: 4px solid var(--primary); border-radius: 8px; font-size: 14.5px; line-height: 1.6; }
+        .sol-exp ul { padding-left: 20px; margin-top: 8px; }
+        .sol-exp li { margin-bottom: 6px; }
+
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+
+        @media (max-width: 992px) {
+            .main-area { flex-direction: column; overflow-y: auto;}
+            .question-section { flex: none; min-height: 450px;}
+            .palette-section { width: 100%; flex: none; min-height: 350px;}
+            .q-footer .btn { padding: 10px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <div id="dashboard-screen" class="screen active">
+        <div class="dash-header-top">
+            <span style="cursor: pointer;" onclick="alert('Going Back')">&#8592;</span>
+            Mock Tests
+        </div>
+
+        <div class="dash-content">
+            <div id="dash-unattempted" style="display: none;">
+                <div class="section-title">Suggested Next Test</div>
+                <div class="dash-card">
+                    <div class="test-title">Computer Set Number 11</div>
+                    <div class="test-meta">
+                        <span>25 Qs • 25 mins • 25.0 Marks</span>
+                    </div>
+                    <div class="test-meta" style="justify-content: flex-end;">
+                        <button class="btn btn-outline" style="padding: 6px 20px; border-radius: 20px;" onclick="startTest()">Start Test 🚀</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span>Syllabus: Computer Hardware & Fundamentals</span>
+                        <span style="color:var(--success);">🔗 Share</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dash-attempted" style="display: none;">
+                <div class="dash-card">
+                    <div class="test-title">Computer Set Number 11</div>
+                    <div class="test-meta" style="margin-bottom: 5px;">
+                        <span id="dash-score-text" style="font-size: 15px; color: var(--text-muted);">0/25.0 Marks</span>
+                    </div>
+                    <div class="progress-container"><div class="progress-fill" id="dash-progress-bar"></div></div>
+                    <div class="dash-actions">
+                        <button class="btn btn-outline" onclick="viewSavedResults()">View Results</button>
+                        <button class="btn btn-outline" onclick="reattemptTest()">Reattempt &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px; font-size: 2rem;">Test Paused ⏸️</h2>
+        <button class="btn btn-primary" style="font-size: 1.2rem; padding: 10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+    </div>
+
+    <div id="test-screen" class="screen">
+        <header class="glass-panel test-head">
+            <div class="header-title">Computer Set 11</div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="toggleTheme()">🌓 Theme</button>
+                <button class="btn btn-warning" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="togglePause()">⏸ Pause</button>
+                <div class="timer-box">⏱ <span id="timer-display">25:00</span></div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="glass-panel question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--success); font-weight:bold;">+1 <span style="color: var(--text-muted); font-weight:normal;">|</span> <span style="color: var(--danger);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <button class="btn btn-mark" onclick="markReview()">Mark & Next</button>
+                    <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                    <button class="btn btn-prev" onclick="changeQ(-1)">Previous</button>
+                    <button class="btn btn-primary" onclick="saveNext()">Save & Next</button>
+                </div>
+            </div>
+
+            <div class="glass-panel palette-section">
+                <div class="palette-header">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">25</div> Not Visit</div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn btn-primary" style="width: 100%; background: var(--success); font-size: 15px; padding: 10px;" onclick="submitTest()">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-screen" class="screen">
+        <div style="width: 100%; max-width: 800px; margin-bottom: 15px;"><button class="btn btn-clear" onclick="showDashboard()">&#8592; Back to Dashboard</button></div>
+        <div class="glass-panel" style="max-width: 800px; width: 100%; padding: 25px;">
+            <h1 style="color: var(--primary); text-align: center;">Test Submitted Successfully! 🎉</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 25px 0;">
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-score" style="color: var(--primary); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Score</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-attempt" style="color: var(--success); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Attempted</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-wrong" style="color: var(--danger); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Wrong</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-acc" style="color: var(--purple); font-size: 1.8rem;">0%</h2><p style="color: var(--text-muted); font-size:12px;">Accuracy</p></div>
+            </div>
+            <button class="btn btn-primary" style="width:100%; font-size: 15px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+        </div>
+    </div>
+
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%; margin:0 auto;">
+            <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 12px 15px; position: sticky; top: 5px; z-index: 10;">
+                <h3 style="color: var(--primary);">Detailed Solutions</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" style="padding: 5px 12px; font-size: 13px; background: var(--success);" onclick="downloadPDF()">📥 Download PDF</button>
+                    <button class="btn btn-clear" style="padding: 5px 12px; font-size: 13px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+                </div>
+            </div>
+            <div id="sol-container"></div>
+        </div>
+    </div>
+
+<script>
+    const MEMORY_STORE = {};
+    function safeGetItem(key) { try { return localStorage.getItem(key) || MEMORY_STORE[key] || null; } catch(e) { return MEMORY_STORE[key] || null; } }
+    function safeSetItem(key, value) { try { localStorage.setItem(key, value); } catch(e) {} MEMORY_STORE[key] = value; }
+    function safeRemoveItem(key) { try { localStorage.removeItem(key); } catch(e) {} delete MEMORY_STORE[key]; }
+
+    const STORAGE_KEY = 'comp_set_11_active'; 
+    const COMPLETED_KEY = 'comp_set_11_comp';
+
+    const finalQuestions = [
+        {
+            "q": "1. कम्प्यूटर की समस्त सूचनाएं या आउटपुट देखने के लिए किस डिवाइस का प्रयोग किया जाता है?<br><span class='en-q'>Which device is used to view all the information or output of a computer?</span>",
+            "o": ["मॉनीटर / Monitor", "की-बोर्ड / Keyboard", "एएलयू / ALU", "सीपीयू / CPU"],
+            "a": 0,
+            "e": "<b>हल:</b> कम्प्यूटर में प्रोसेस होने के बाद परिणाम देखने के लिए 'मॉनीटर' (Monitor) का प्रयोग किया जाता है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>मॉनिटर को VDU (विजुअल डिस्प्ले यूनिट) भी कहा जाता है।</li><li>यह एक प्राथमिक आउटपुट डिवाइस है जो 'सॉफ्ट कॉपी' (Soft copy) आउटपुट प्रदान करता है।</li><li>मॉनिटर की स्क्रीन पर चित्र बहुत छोटे बिंदुओं से मिलकर बनते हैं जिन्हें पिक्सेल (Pixels) कहते हैं।</li><li>इसके मुख्य प्रकार CRT, LCD, LED और OLED हैं।</li><li>स्क्रीन का रेजोल्यूशन (Resolution) पिक्सेल की संख्या पर निर्भर करता है, जितने अधिक पिक्सेल उतनी अच्छी क्वालिटी।</li></ul>"
+        },
+        {
+            "q": "2. निम्नलिखित में से कौन सा आउटपुट का एक माध्यम है?<br><span class='en-q'>Which of the following is an output medium?</span>",
+            "o": ["स्कैनर / Scanner", "माउस / Mouse", "प्रिंटर / Printer", "की-बोर्ड / Keyboard"],
+            "a": 2,
+            "e": "<b>हल:</b> दिए गए विकल्पों में 'प्रिंटर' (Printer) एक आउटपुट डिवाइस है, जो कंप्यूटर से प्रोसेस किए गए डेटा को कागज पर छापता है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>प्रिंटर हमें 'हार्ड कॉपी' (Hard copy) आउटपुट प्रदान करता है।</li><li>स्कैनर (Scanner) एक इनपुट डिवाइस है जो हार्ड कॉपी को सॉफ्ट कॉपी (डिजिटल) में बदलता है।</li><li>माउस एक पॉइंटिंग इनपुट डिवाइस है जिसे डगलस एंगेलबार्ट ने बनाया था।</li><li>की-बोर्ड कंप्यूटर का सबसे प्राथमिक इनपुट डिवाइस है।</li><li>स्पीकर और प्लॉटर (Plotter) भी आउटपुट डिवाइस के बेहतरीन उदाहरण हैं।</li></ul>"
+        },
+        {
+            "q": "3. सर्वाधिक तेज गति का प्रिन्टर है-<br><span class='en-q'>The fastest speed printer is-</span>",
+            "o": ["लेजर प्रिन्टर / Laser Printer", "जेट प्रिन्टर / Jet Printer", "थर्मल प्रिन्टर / Thermal Printer", "डेजी व्हील प्रिन्टर / Daisy Wheel Printer"],
+            "a": 0,
+            "e": "<b>हल:</b> सभी प्रकार के प्रिंटरों में 'लेजर प्रिन्टर' (Laser Printer) की प्रिंटिंग गति और गुणवत्ता सबसे अधिक होती है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>लेजर प्रिंटर एक 'नॉन-इम्पैक्ट' (Non-Impact) और 'पेज प्रिंटर' (Page Printer) है।</li><li>यह एक बार में पूरा एक पेज प्रिंट करता है।</li><li>इसमें तरल स्याही के बजाय 'टोनर' (सूखे पाउडर) का इस्तेमाल होता है।</li><li>लेजर प्रिंटर में प्रकाशीय ड्रम (Optical Drum) और लेजर बीम का उपयोग किया जाता है।</li><li>डेजी व्हील (Daisy Wheel) एक इम्पैक्ट कैरेक्टर प्रिंटर है जो बहुत धीमा होता है।</li></ul>"
+        },
+        {
+            "q": "4. L.C.D. का पूरा नाम क्या होता है-<br><span class='en-q'>What is the full form of L.C.D.?</span>",
+            "o": ["Lead Crystal Device", "Light Central Display", "Liquid Central Display", "Liquid Crystal Display"],
+            "a": 3,
+            "e": "<b>हल:</b> L.C.D. का पूरा नाम 'Liquid Crystal Display' (लिक्विड क्रिस्टल डिस्प्ले) होता है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>LCD तकनीक का उपयोग मॉनिटर, टीवी और लैपटॉप की स्क्रीन बनाने में किया जाता है।</li><li>इसमें दो शीशे की परतों के बीच तरल क्रिस्टल (Liquid crystal) भरा होता है।</li><li>LCD मॉनिटर पुरानी CRT (Cathode Ray Tube) मॉनिटर की तुलना में बहुत पतले और हल्के होते हैं।</li><li>यह CRT की तुलना में बहुत कम बिजली (Power) की खपत करता है।</li><li>LED का फुल फॉर्म Light Emitting Diode होता है, जो LCD से भी बेहतर तकनीक है।</li></ul>"
+        },
+        {
+            "q": "5. किसी मेन फ्रेम या सुपर कम्प्यूटर को एक्सेस करने के लिए उपयोगकर्ता इनमें से किसका इस्तेमाल करता है-<br><span class='en-q'>Which of the following does a user use to access a mainframe or supercomputer?</span>",
+            "o": ["टर्मिनल / Terminal", "नोड / Node", "डेस्कटॉप / Desktop", "कोई नहीं / None of these"],
+            "a": 0,
+            "e": "<b>हल:</b> मेनफ्रेम या सुपर कंप्यूटर जैसे बड़े सर्वरों से जुड़ने और उन्हें एक्सेस करने के लिए उपयोगकर्ता 'टर्मिनल' (Terminal) का इस्तेमाल करते हैं।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>टर्मिनल में आमतौर पर एक मॉनिटर और की-बोर्ड होता है, लेकिन अपनी कोई प्रोसेसिंग पावर (CPU) नहीं होती।</li><li>इन्हें 'डंब टर्मिनल' (Dumb Terminal) भी कहा जाता है क्योंकि ये केवल सर्वर पर निर्भर होते हैं।</li><li>नेटवर्क में जुड़े हर कंप्यूटर को 'नोड' (Node) कहा जाता है।</li><li>मेनफ्रेम कंप्यूटर का उपयोग बड़े संगठनों (जैसे बैंक, रेलवे) में विशाल डेटा को प्रोसेस करने के लिए होता है।</li><li>सुपर कंप्यूटर का उपयोग मौसम विज्ञान और अंतरिक्ष अनुसंधान में किया जाता है।</li></ul>"
+        },
+        {
+            "q": "6. पर्सनल कम्प्यूटर आपस में किससे जुड़े होते हैं-<br><span class='en-q'>How are personal computers connected to each other?</span>",
+            "o": ["सर्वर / Server", "सुपर कम्प्यूटर / Super Computer", "नेटवर्क / Network", "कोई नहीं / None"],
+            "a": 2,
+            "e": "<b>हल:</b> सूचना और संसाधनों (Resources) को साझा करने के लिए कई पर्सनल कंप्यूटर (PCs) आपस में जुड़कर एक 'नेटवर्क' (Network) बनाते हैं।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>नेटवर्क मुख्य रूप से तीन प्रकार के होते हैं: LAN, MAN, और WAN।</li><li>LAN (Local Area Network) का उपयोग एक ही बिल्डिंग या ऑफिस में कंप्यूटर जोड़ने के लिए होता है।</li><li>WAN (Wide Area Network) पूरी दुनिया के कंप्यूटरों को जोड़ता है (जैसे इंटरनेट)।</li><li>नेटवर्क में जो मुख्य कंप्यूटर सभी को सेवाएं देता है उसे 'सर्वर' (Server) कहते हैं।</li><li>नेटवर्क में जुड़े अन्य कंप्यूटरों को क्लाइंट (Client) कहा जाता है।</li></ul>"
+        },
+        {
+            "q": "7. सक्रिय प्रोग्राम को बंद करना-<br><span class='en-q'>To close an active program:</span>",
+            "o": ["Alt + F4", "Ctrl + F4", "Shift + F10", "Ctrl + D"],
+            "a": 0,
+            "e": "<b>हल:</b> विंडोज (Windows) ऑपरेटिंग सिस्टम में किसी भी चालू या 'सक्रिय प्रोग्राम' (Active Program) को बंद करने के लिए `Alt + F4` शॉर्टकट की (Shortcut key) का प्रयोग किया जाता है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>यदि डेस्कटॉप पर कोई प्रोग्राम खुला नहीं है, तो `Alt + F4` दबाने से 'Shut Down' (कंप्यूटर बंद करने) का मेन्यू खुल जाता है।</li><li>`Ctrl + F4` का उपयोग किसी एक टैब या विंडो के अंदर खुले डॉक्यूमेंट को बंद करने के लिए होता है।</li><li>`Shift + F10` माउस के राइट-क्लिक (Right-click) जैसा कार्य करता है।</li><li>`Ctrl + D` का उपयोग फाइल डिलीट करने या वेब ब्राउज़र में बुकमार्क (Bookmark) जोड़ने के लिए होता है।</li><li>`Esc` (Escape) कुंजी का प्रयोग किसी चल रही प्रक्रिया को रद्द (Cancel) करने के लिए होता है।</li></ul>"
+        },
+        {
+            "q": "8. पंच कार्ड को किसने बनाया था ?<br><span class='en-q'>Who created the punch card? (According to the option)</span>",
+            "o": ["ब्लेस पास्कल / Blaise Pascal", "चार्ल्स बैबेज / Charles Babbage", "जार्ज बूल / George Boole", "बिल गेट्स / Bill Gates"],
+            "a": 1,
+            "e": "<b>हल:</b> दिए गए विकल्पों के आधार पर 'चार्ल्स बैबेज' (Charles Babbage) को पंच कार्ड का प्रयोगकर्ता माना गया है, क्योंकि उन्होंने अपने 'एनालिटिकल इंजन' में निर्देश देने के लिए इसका इस्तेमाल किया था।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>वास्तव में पंच कार्ड का आविष्कार 'जोसेफ मैरी जैक्वार्ड' (1801) ने कपड़ा बुनने की मशीन के लिए किया था।</li><li>डेटा प्रोसेसिंग के लिए पंच कार्ड का व्यावसायिक उपयोग 'हर्मन होलेरिथ' (Herman Hollerith) ने किया था।</li><li>चार्ल्स बैबेज को 'कंप्यूटर का पिता' (Father of Computer) कहा जाता है।</li><li>ब्लेस पास्कल ने पहला मैकेनिकल कैलकुलेटर (Pascaline) बनाया था।</li><li>शुरुआती (पहली पीढ़ी के) कंप्यूटरों में इनपुट और आउटपुट के लिए पंच कार्ड का ही उपयोग होता था।</li></ul>"
+        },
+        {
+            "q": "9. हार्ड डिस्क के विषय में क्या सत्य है ?<br><span class='en-q'>What is true about a hard disk?</span>",
+            "o": ["हार्ड डिस्क की ट्रैक्स रेखाएं होती हैं / Tracks are lines", "हार्ड डिस्क की ट्रैक्स चतुर्भुज होती है / Tracks are quadrilateral", "हार्ड डिस्क की ट्रैक्स वर्गाकार होती है / Tracks are square", "हार्ड डिस्क की ट्रैक्स वृत्ताकार होती है / Tracks are circular"],
+            "a": 3,
+            "e": "<b>हल:</b> हार्ड डिस्क की प्लेटर्स (Platters) में डेटा स्टोर करने के लिए जो ट्रैक्स (Tracks) बने होते हैं, वे 'वृत्ताकार' (Circular) होते हैं।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>हार्ड डिस्क एक मैग्नेटिक स्टोरेज (चुंबकीय भंडारण) डिवाइस है।</li><li>डिस्क की सतह कई संकेंद्रित (Concentric) वृत्तों में बंटी होती है, जिन्हें 'ट्रैक्स' (Tracks) कहते हैं।</li><li>इन ट्रैक्स को आगे छोटे-छोटे भागों में बांटा जाता है, जिन्हें 'सेक्टर' (Sectors) कहा जाता है।</li><li>डिस्क को ट्रैक्स और सेक्टर्स में विभाजित करने की प्रक्रिया को 'फॉर्मेटिंग' (Formatting) कहते हैं।</li><li>हार्ड डिस्क की स्पीड को RPM (Revolutions Per Minute) में मापा जाता है।</li></ul>"
+        },
+        {
+            "q": "10. किसी प्रिंटर की गति का मात्रक क्या है ?<br><span class='en-q'>What is the unit of speed of a printer?</span>",
+            "o": ["लाइन्स पर मिनट / Lines per minute", "पेजेज पर मिनट / Pages per minute", "कैरेक्टर्स पर मिनट / Characters per minute", "नम्बरस पर मिनट / Numbers per minute"],
+            "a": 1,
+            "e": "<b>हल:</b> लेजर और इंकजेट जैसे आधुनिक प्रिंटरों की गति को मुख्य रूप से 'पेजेज पर मिनट' (PPM - Pages Per Minute) में मापा जाता है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>डॉट मैट्रिक्स जैसे कैरेक्टर प्रिंटर की गति को CPS (Characters Per Second) में मापा जाता है।</li><li>लाइन प्रिंटर (Line Printer) की गति को LPM (Lines Per Minute) में मापा जाता है।</li><li>लेकिन जब सामान्य तौर पर (बिना प्रकार बताए) आधुनिक प्रिंटर की गति पूछी जाए, तो PPM ही सही मात्रक होता है।</li><li>प्रिंटर की 'गुणवत्ता' (Quality) को DPI (Dots Per Inch) में मापा जाता है।</li><li>DPI जितना अधिक होगा, प्रिंट की क्वालिटी उतनी ही शानदार होगी।</li></ul>"
+        },
+        {
+            "q": "11. ऑडियो एडिटर<br><span class='en-q'>An audio editor:</span>",
+            "o": ["संगीत को तीव्र करने के लिए एक सुविधाजनक यन्त्र है / Is a tool to intensify music", "आपको ऑडियो फाइल के sections को excerpt करने का अधिकार प्रदान करता है / Allows you to excerpt sections of an audio file", "सीधा प्रसारण वाला संगीत को आपके PC द्वारा रिकॉर्ड करने के लिए / For recording live music via PC", "इंटरनेट पर ऑडियो फाइल को भेजने के लिए / To send audio files over internet"],
+            "a": 1,
+            "e": "<b>हल:</b> 'ऑडियो एडिटर' (Audio Editor) एक प्रकार का एप्लीकेशन सॉफ्टवेयर है जो उपयोगकर्ता को ऑडियो फाइलों के हिस्सों (Sections) को काटने (excerpt/trim), जोड़ने और एडिट करने की सुविधा प्रदान करता है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>ऑडियो एडिटर के उदाहरणों में Audacity, Adobe Audition आदि शामिल हैं।</li><li>इसकी मदद से ऑडियो से बैकग्राउंड नॉइज़ (Noise) को भी हटाया जा सकता है।</li><li>ऑडियो फाइलों के प्रमुख फॉर्मेट MP3, WAV, और AAC होते हैं।</li><li>ऑडियो एडिट करने के बाद फाइल को अलग-अलग फॉर्मेट में 'एक्सपोर्ट' (Export) किया जा सकता है।</li><li>मल्टीमीडिया (Multimedia) में ऑडियो, वीडियो, टेक्स्ट और ग्राफिक्स का संयोजन होता है।</li></ul>"
+        },
+        {
+            "q": "12. QuickTime है, एक<br><span class='en-q'>QuickTime is a:</span>",
+            "o": ["video tuner", "video capture card", "video editing program", "video playing program"],
+            "a": 3,
+            "e": "<b>हल:</b> क्विकटाइम (QuickTime) Apple Inc. द्वारा विकसित किया गया एक 'वीडियो प्लेइंग प्रोग्राम' (Video playing program / Media Player) है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>यह विभिन्न प्रकार के डिजिटल वीडियो, पिक्चर, और ऑडियो फॉर्मेट को चलाने में सक्षम है।</li><li>QuickTime का डिफ़ॉल्ट वीडियो फाइल फॉर्मेट `.mov` होता है।</li><li>VLC और Windows Media Player भी इसी तरह के लोकप्रिय मीडिया प्लेयर हैं।</li><li>वीडियो कैप्चर कार्ड (Video Capture Card) एक हार्डवेयर डिवाइस है जो बाहरी वीडियो सिग्नल को कंप्यूटर में रिकॉर्ड करता है।</li><li>वीडियो एडिटिंग प्रोग्राम (जैसे Premiere Pro) वीडियो को ट्रिम और एडिट करने के काम आते हैं।</li></ul>"
+        },
+        {
+            "q": "13. माइक्रोकम्यूटर में प्रोसेसर या CPU को मुख्यतः इससे जानते हैं<br><span class='en-q'>The processor or CPU in a microcomputer is mainly known as:</span>",
+            "o": ["माइक्रोप्रोसेसर / Microprocessor", "डेस्कटॉप / Desktop", "लैपटॉप / Laptop", "पर्सनल प्रोसेसर / Personal Processor"],
+            "a": 0,
+            "e": "<b>हल:</b> माइक्रो कंप्यूटर (जैसे PC, लैपटॉप) में लगे छोटे आकार के CPU को 'माइक्रोप्रोसेसर' (Microprocessor) के नाम से जाना जाता है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>माइक्रोप्रोसेसर का आविष्कार कंप्यूटर की 'चौथी पीढ़ी' (4th Generation) में हुआ था।</li><li>दुनिया का सबसे पहला माइक्रोप्रोसेसर 'Intel 4004' था, जिसे 1971 में बनाया गया था।</li><li>यह एक सिलिकॉन चिप (IC) होती है जिस पर लाखों ट्रांजिस्टर लगे होते हैं।</li><li>CPU (Central Processing Unit) कंप्यूटर का मस्तिष्क (Brain) होता है जो सारा डेटा प्रोसेस करता है।</li><li>CPU के मुख्य तीन भाग होते हैं: ALU, CU (कंट्रोल यूनिट), और Registers (मेमोरी)।</li></ul>"
+        },
+        {
+            "q": "14. की-बोर्ड में F1 से F12 तक की 'की' को क्या कहते हैं ?<br><span class='en-q'>What are the keys from F1 to F12 on a keyboard called?</span>",
+            "o": ["एंटर की / Enter keys", "कर्सर कन्ट्रोल की / Cursor control keys", "फंक्शन की / Function keys", "कन्ट्रोल की / Control keys"],
+            "a": 2,
+            "e": "<b>हल:</b> की-बोर्ड के सबसे ऊपरी भाग में मौजूद F1 से लेकर F12 तक की कुंजियों को 'फंक्शन की' (Function Keys) कहा जाता है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>एक मानक की-बोर्ड में कुल 12 फंक्शन कुंजियाँ (F1 - F12) होती हैं।</li><li>प्रत्येक फंक्शन की (Key) का अलग-अलग सॉफ्टवेयर में अलग-अलग काम होता है (Shortcuts)।</li><li>F1 कुंजी का उपयोग आमतौर पर 'Help' (सहायता) मेन्यू खोलने के लिए किया जाता है।</li><li>F5 कुंजी का उपयोग विंडोज में स्क्रीन को 'Refresh' (रिफ्रेश) करने के लिए होता है।</li><li>एरो कुंजियों (Arrow keys) को 'कर्सर कंट्रोल की' या नेविगेशन कुंजियाँ कहते हैं।</li></ul>"
+        },
+        {
+            "q": "15. डिस्क प्लेटरो के समूह को क्या कहते हैं ?<br><span class='en-q'>What is a group of disk platters called?</span>",
+            "o": ["फ्लॉपी डिस्क / Floppy Disk", "सी.डी. / C.D.", "हार्ड डिस्क / Hard Disk", "उपर्युक्त में से कोई नहीं / None of the above"],
+            "a": 2,
+            "e": "<b>हल:</b> हार्ड डिस्क ड्राइव (HDD) के अंदर डेटा स्टोर करने के लिए एक के ऊपर एक रखी गई कई चुंबकीय डिस्क होती हैं, इस प्लेटरो के समूह को 'हार्ड डिस्क' कहते हैं।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>हार्ड डिस्क में कई वृत्ताकार धातु की डिस्क होती हैं जिन्हें 'प्लेटर्स' (Platters) कहा जाता है।</li><li>ये प्लेटर्स एल्युमिनियम या कांच के बने होते हैं और उन पर चुंबकीय सामग्री (Magnetic material) की परत चढ़ी होती है।</li><li>हर प्लेटर के ऊपर और नीचे डेटा पढ़ने/लिखने के लिए रीड/राइट हेड (Read/Write Head) लगा होता है।</li><li>हार्ड डिस्क एक सेकेंडरी (Secondary) और स्थायी स्टोरेज डिवाइस है।</li><li>CD में केवल एक ही प्रकाशीय (Optical) डिस्क होती है।</li></ul>"
+        },
+        {
+            "q": "16. एक पिक्सेल होता है-<br><span class='en-q'>A pixel is:</span>",
+            "o": ["एक कम्प्यूटर प्रोग्राम जो आकृति बनाता है / A program that creates a shape", "द्वितीयक मेमोरी में आकृति का भण्डारण करना / Storing shape in secondary memory", "किसी आकृति का सूक्ष्म निर्णायक अंग / The smallest resolvable part of a picture", "उपरोक्त में से कोई नहीं / None of the above"],
+            "a": 2,
+            "e": "<b>हल:</b> 'पिक्सेल' (Pixel) किसी भी डिजिटल चित्र या डिस्प्ले स्क्रीन का सबसे 'सूक्ष्म निर्णायक अंग' (Smallest element / Resolution unit) होता है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>Pixel शब्द 'Picture Element' से मिलकर बना है।</li><li>आपके मोबाइल या मॉनिटर की स्क्रीन पर जो कुछ भी दिखता है, वह लाखों छोटे-छोटे पिक्सेल से मिलकर बनता है।</li><li>स्क्रीन पर पिक्सेल जितने ज्यादा और जितने पास-पास होंगे, चित्र (Image) उतना ही साफ (Clear) दिखेगा।</li><li>कुल पिक्सेल की संख्या को स्क्रीन का 'रेजोल्यूशन' (Resolution) कहा जाता है (जैसे 1920x1080)।</li><li>एक पिक्सेल लाल, हरे और नीले (RGB) रंग के संयोजन से बनता है।</li></ul>"
+        },
+        {
+            "q": "17. ग्राफिकल यूजर इन्वायरमेंट में कौन-सी प्रामाणिक पोंइटिंग डिवाइस का उपयोग होता है ?<br><span class='en-q'>Which standard pointing device is used in a Graphical User Environment?</span>",
+            "o": ["की-बोर्ड / Keyboard", "माउस / Mouse", "जॉयस्टिक / Joystick", "ट्रैक बॉल / Trackball"],
+            "a": 1,
+            "e": "<b>हल:</b> ग्राफिकल यूजर इंटरफ़ेस (GUI) वाले ऑपरेटिंग सिस्टम (जैसे Windows) में स्क्रीन पर आइटम चुनने के लिए सबसे मानक 'पॉइंटिंग डिवाइस' (Pointing Device) 'माउस' (Mouse) है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>माउस का आविष्कार 1960 के दशक में डगलस एंगेलबार्ट ने किया था।</li><li>माउस स्क्रीन पर एक तीर (Arrow/Cursor) को नियंत्रित करता है।</li><li>GUI (Graphical User Interface) में हम कमांड टाइप करने के बजाय आइकॉन (Icons) पर माउस से क्लिक करके काम करते हैं।</li><li>जॉयस्टिक (Joystick) का इस्तेमाल मुख्य रूप से वीडियो गेम खेलने और सिम्युलेटर में होता है।</li><li>ट्रैक बॉल (Trackball) भी माउस जैसा ही एक इनपुट डिवाइस है, जिसमें एक बॉल घुमाकर कर्सर कंट्रोल किया जाता है।</li></ul>"
+        },
+        {
+            "q": "18. 32-बिट कम्प्यूटर के प्रयोग हेतु कौन-सी संख्या पद्धति का सामान्यतः प्रयोग होता है ?<br><span class='en-q'>Which number system is generally used for a 32-bit computer?</span>",
+            "o": ["2 (द्विआधारी / Binary)", "10 (दशमलव / Decimal)", "16 (हेक्साडेसिमल / Hexadecimal)", "32"],
+            "a": 0,
+            "e": "<b>हल:</b> किसी भी कंप्यूटर (चाहे वह 32-बिट हो या 64-बिट) की आंतरिक कार्यप्रणाली हमेशा 'द्विआधारी (Binary) संख्या पद्धति' (बेस 2) पर ही आधारित होती है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>बाइनरी संख्या पद्धति में केवल दो अंक होते हैं: '0' (शून्य) और '1' (एक)।</li><li>कंप्यूटर 0 को 'Off' (लो वोल्टेज) और 1 को 'On' (हाई वोल्टेज) के रूप में समझता है।</li><li>एक 'बिट' (Bit) कंप्यूटर की सबसे छोटी स्टोरेज इकाई है (या तो 0 या 1)।</li><li>32-बिट कंप्यूटर का मतलब है कि इसका प्रोसेसर एक बार में 32 बिट डेटा (यानी 4 बाइट्स) को प्रोसेस कर सकता है।</li><li>मनुष्य अपनी आम जिंदगी में 'दशमलव' (Decimal - बेस 10) संख्या पद्धति का प्रयोग करता है।</li></ul>"
+        },
+        {
+            "q": "19. निम्न में से कौन आउटपुट डिवाइस नहीं है ?<br><span class='en-q'>Which of the following is not an output device?</span>",
+            "o": ["स्कैनर / Scanner", "प्रिन्टर / Printer", "फ्लैट स्क्रीन / Flat screen", "टच-स्क्रीन / Touch-screen"],
+            "a": 0,
+            "e": "<b>हल:</b> 'स्कैनर' (Scanner) एक आउटपुट डिवाइस नहीं है, बल्कि यह एक 'इनपुट डिवाइस' (Input Device) है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>स्कैनर का काम कागज़ पर छपे टेक्स्ट या चित्र (Hard copy) को स्कैन करके कंप्यूटर में डिजिटल रूप (Soft copy) में भेजना है।</li><li>प्रिंटर एक प्रमुख आउटपुट डिवाइस है जो सॉफ्ट कॉपी को हार्ड कॉपी में बदलता है।</li><li>फ्लैट स्क्रीन (Monitor) भी आउटपुट डिवाइस है।</li><li>टच-स्क्रीन (Touch-screen) एक ऐसा डिवाइस है जो 'इनपुट' (छूकर निर्देश देना) और 'आउटपुट' (स्क्रीन पर परिणाम दिखाना) दोनों का काम करता है।</li><li>बारकोड रीडर और माइक्रोफोन भी इनपुट डिवाइस की श्रेणी में आते हैं।</li></ul>"
+        },
+        {
+            "q": "20. निम्नलिखित डिवाइस में कौन-सी डिवाइस ऐसी है जिससे हम सूचना प्राप्त तो कर सकते हैं परन्तु उसको मिटा अथवा उसमें संशोधन नहीं कर सकते?<br><span class='en-q'>From which of the following devices can we retrieve information but not erase or modify it?</span>",
+            "o": ["फ्लॉपी डिस्क / Floppy Disk", "हार्ड डिस्क / Hard Disk", "टेप ड्राइव / Tape Drive", "सीडी रोम / CD-ROM"],
+            "a": 3,
+            "e": "<b>हल:</b> 'सीडी रोम' (CD-ROM - Compact Disc Read Only Memory) एक ऐसा ऑप्टिकल स्टोरेज माध्यम है, जिसमें एक बार जो डेटा लिख दिया जाता है, उसे केवल पढ़ा (Read) जा सकता है, उसमें कोई बदलाव या उसे मिटाया नहीं जा सकता।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>CD-ROM का उपयोग मुख्य रूप से सॉफ्टवेयर डिस्ट्रीब्यूशन और संगीत एल्बम बेचने के लिए किया जाता था।</li><li>फ्लॉपी डिस्क, हार्ड डिस्क और टेप ड्राइव 'चुंबकीय' (Magnetic) डिस्क हैं जिनमें डेटा बार-बार लिखा और मिटाया जा सकता है।</li><li>CD-R (CD-Recordable) में हम सिर्फ एक बार डेटा लिख सकते हैं (Burn कर सकते हैं)।</li><li>CD-RW (CD-Rewritable) में डेटा को कई बार लिखा और मिटाया जा सकता है।</li><li>CD-ROM की स्टोरेज क्षमता लगभग 700 MB होती है।</li></ul>"
+        },
+        {
+            "q": "21. कॉम्पैक्ट डिस्क में कौन-सी टेक्नालॉजी प्रयोग होती है?<br><span class='en-q'>Which technology is used in a Compact Disc?</span>",
+            "o": ["यांत्रिक / Mechanical", "विद्युतीय / Electrical", "विद्युतीय-चुम्बकीय / Electro-magnetic", "लेजर / Laser"],
+            "a": 3,
+            "e": "<b>हल:</b> कॉम्पैक्ट डिस्क (CD) और अन्य ऑप्टिकल डिस्कों (जैसे DVD, Blu-ray) में डेटा को पढ़ने (Read) और लिखने (Write) के लिए 'लेजर' (Laser) तकनीक का प्रयोग किया जाता है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>CD में डेटा पढ़ने के लिए एक बहुत पतली लाल रंग की लेजर बीम (Infrared laser) का उपयोग होता है।</li><li>Blu-ray डिस्क में ज्यादा डेटा स्टोर करने के लिए नीली-बैंगनी (Blue-violet) लेजर का उपयोग किया जाता है।</li><li>हार्ड डिस्क और फ्लॉपी डिस्क में डेटा स्टोर करने के लिए 'चुंबकीय' (Magnetic) तकनीक का इस्तेमाल होता है।</li><li>CD में डेटा गड्ढों (Pits) और समतल सतह (Lands) के रूप में स्टोर होता है।</li><li>ऑप्टिकल डिस्क खराब होने (खरोंच लगने) की संभावना चुंबकीय डिस्क की तुलना में कम होती है।</li></ul>"
+        },
+        {
+            "q": "22. निम्न में कौन-सी डिवाइस सबसे ज्यादा डाटा स्टोर कर सकती है ?<br><span class='en-q'>Which of the following devices can store the most data?</span>",
+            "o": ["फ्लॉपी डिस्क / Floppy Disk", "हार्ड डिस्क / Hard Disk", "कॉम्पैक्ट डिस्क / Compact Disc", "मेग्नेटो ऑप्टिक डिस्क / Magneto-optic disk"],
+            "a": 1,
+            "e": "<b>हल:</b> दिए गए सभी विकल्पों में से 'हार्ड डिस्क' (Hard Disk / HDD) की डेटा स्टोर करने की क्षमता (Storage Capacity) सबसे अधिक होती है (यह Terabytes या TB में होती है)।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>फ्लॉपी डिस्क की क्षमता बहुत कम (आमतौर पर केवल 1.44 MB) होती है।</li><li>एक स्टैंडर्ड कॉम्पैक्ट डिस्क (CD) लगभग 700 MB डेटा स्टोर कर सकती है।</li><li>DVD की क्षमता 4.7 GB से 8.5 GB तक होती है।</li><li>हार्ड डिस्क वर्तमान में 1 TB, 2 TB और इससे भी अधिक क्षमता में उपलब्ध हैं।</li><li>हार्ड डिस्क कंप्यूटर का मुख्य सेकेंडरी स्टोरेज (Secondary Storage) डिवाइस है।</li></ul>"
+        },
+        {
+            "q": "23. प्राइमरी मेमोरी स्टोर करती है-<br><span class='en-q'>Primary memory stores:</span>",
+            "o": ["केवल डाटा / Only Data", "केवल प्रोग्राम / Only Programs", "केवल रिजल्ट / Only Results", "उपरोक्त सभी / All of the above"],
+            "a": 3,
+            "e": "<b>हल:</b> कंप्यूटर की प्राइमरी मेमोरी (जैसे RAM) में प्रोसेसिंग के लिए आवश्यक डेटा, वर्तमान में चल रहे प्रोग्राम और आउटपुट से पहले के परिणाम (Results) ये 'सभी' अस्थायी रूप से स्टोर रहते हैं।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>प्राइमरी मेमोरी (मुख्य मेमोरी) सीधे CPU के संपर्क में रहती है।</li><li>RAM (Random Access Memory) एक अस्थिर (Volatile) मेमोरी है, यानी बिजली बंद होते ही इसमें मौजूद सब कुछ मिट जाता है।</li><li>कंप्यूटर जब चालू होता है, तो ऑपरेटिंग सिस्टम हार्ड डिस्क से लोड होकर RAM में ही आता है।</li><li>ROM (Read Only Memory) भी प्राइमरी मेमोरी का हिस्सा है, लेकिन यह स्थायी (Non-volatile) होती है।</li><li>कंप्यूटर की प्रोसेसिंग स्पीड काफी हद तक RAM की क्षमता पर निर्भर करती है।</li></ul>"
+        },
+        {
+            "q": "24. निम्न में से कौन-सी डिवाइस डाटा एवं प्रोग्राम में अन्तर कर सकती है ?<br><span class='en-q'>Which of the following devices can distinguish between data and programs?</span>",
+            "o": ["इनपुट डिवाइस / Input Device", "आउटपुट डिवाइस / Output Device", "मेमोरी / Memory", "माइक्रो प्रोसेसर / Microprocessor"],
+            "a": 3,
+            "e": "<b>हल:</b> 'माइक्रोप्रोसेसर' (CPU) वह डिवाइस है जो यह समझ और अंतर कर सकता है कि कौन सा हिस्सा डेटा (Data) है और कौन सा हिस्सा उसे प्रोसेस करने का निर्देश (Program / Instructions) है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>मेमोरी (Memory) केवल 0 और 1 (बाइनरी) के रूप में स्टोर करती है, उसे यह पता नहीं होता कि वह डेटा है या प्रोग्राम।</li><li>माइक्रोप्रोसेसर के अंदर कंट्रोल यूनिट (CU) निर्देशों को डिकोड (समझने) का काम करता है।</li><li>ALU (Arithmetic Logic Unit) डेटा पर गणितीय और तार्किक (Logical) ऑपरेशन करता है।</li><li>माइक्रोप्रोसेसर को कंप्यूटर का 'मस्तिष्क' (Brain) कहा जाता है।</li><li>इनपुट और आउटपुट डिवाइस केवल डेटा को अंदर लाने और बाहर ले जाने का काम करते हैं।</li></ul>"
+        },
+        {
+            "q": "25. मेमोरी यूनिट निम्न में से किसका पार्ट होता है ?<br><span class='en-q'>Memory unit is a part of which of the following?</span>",
+            "o": ["इनपुट डिवाइस / Input Device", "कंट्रोल यूनिट / Control Unit", "आउटपुट डिवाइस / Output Device", "सेन्ट्रल प्रोसेसिंग यूनिट / Central Processing Unit"],
+            "a": 3,
+            "e": "<b>हल:</b> मेमोरी यूनिट (विशेष रूप से रजिस्टर और कैश मेमोरी) 'सेंट्रल प्रोसेसिंग यूनिट' (CPU) का एक महत्वपूर्ण हिस्सा होती है।<br><br>💡 <b>5-6 महत्त्वपूर्ण तथ्य:</b><ul><li>CPU के मुख्य तीन घटक होते हैं: ALU (अर्थमेटिक लॉजिक यूनिट), CU (कंट्रोल यूनिट) और MU (मेमोरी यूनिट / रजिस्टर्स)।</li><li>CPU के अंदर की मेमोरी (Registers) सबसे तेज़ गति से काम करने वाली मेमोरी होती है।</li><li>कंट्रोल यूनिट (CU) कंप्यूटर के सभी कार्यों को निर्देशित और नियंत्रित करता है, यह कंप्यूटर का 'नर्वस सिस्टम' (Nervous system) है।</li><li>मुख्य मेमोरी (RAM) CPU के बाहर मदरबोर्ड पर लगी होती है।</li><li>CPU को ही माइक्रोप्रोसेसर कहा जाता है।</li></ul>"
+        }
+    ];
+
+    let state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+    let timerInterval = null;
+    let isPaused = false;
+
+    window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+    function initDashboard() {
+        showScreen('dashboard-screen');
+        let completedData = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) completedData = JSON.parse(dataStr);
+        } catch(e) {}
+
+        if (completedData) {
+            document.getElementById('dash-unattempted').style.display = 'none';
+            document.getElementById('dash-attempted').style.display = 'block';
+            document.getElementById('dash-score-text').innerText = `${completedData.score}/25.0 Marks`;
+            document.getElementById('dash-progress-bar').style.width = `${(completedData.score / 25) * 100}%`;
+        } else {
+            document.getElementById('dash-attempted').style.display = 'none';
+            document.getElementById('dash-unattempted').style.display = 'block';
+        }
+    }
+
+    function startTest() {
+        let saved = null;
+        try {
+            const savedStr = safeGetItem(STORAGE_KEY);
+            if(savedStr) saved = JSON.parse(savedStr);
+        } catch(e){}
+
+        if (saved && !saved.submitted) {
+            state = saved;
+        } else {
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+        }
+        initTestEnv();
+    }
+
+    function reattemptTest() {
+        if(confirm("Are you sure you want to start a fresh test? Your active progress will be lost.")) {
+            safeRemoveItem(STORAGE_KEY);
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+            initTestEnv();
+        }
+    }
+
+    function initTestEnv() {
+        showScreen('test-screen');
+        renderQuestion();
+        renderPalette();
+        updateStats();
+        
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+        setInterval(() => { if(!state.submitted) safeSetItem(STORAGE_KEY, JSON.stringify(state)); }, 2000);
+    }
+
+    function viewSavedResults() {
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(data) renderResultUI(data);
+    }
+
+    function showDashboard() { initDashboard(); }
+
+    function showScreen(id) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+    }
+
+    function updateTimer() {
+        if(isPaused || state.submitted) return;
+        if(state.time <= 0) { submitTest(); return; }
+        state.time--;
+        const m = Math.floor(state.time / 60), s = state.time % 60;
+        document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+    }
+
+    function toggleTheme() {
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    function renderQuestion() {
+        state.visited[state.currentQ] = true;
+        const q = finalQuestions[state.currentQ];
+        
+        // Extract exact numbering for display
+        let displayNo = state.currentQ + 1;
+        let qTextHtml = q.q;
+        let qMatch = qTextHtml.match(/^(\d+)\./);
+        if(qMatch) {
+            displayNo = qMatch[1];
+            qTextHtml = qTextHtml.substring(qMatch[0].length).trim();
+        }
+
+        document.getElementById('q-no').innerText = `Question ${displayNo}`;
+        document.getElementById('q-text').innerHTML = qTextHtml;
+        let opts = '';
+        q.o.forEach((opt, i) => {
+            const isSel = state.answers[state.currentQ] === i;
+            const selClass = isSel ? 'selected' : '';
+            const charLabel = String.fromCharCode(65 + i);
+            opts += `<div class="glass-panel option ${selClass}" onclick="selectOption(${i})"><div class="opt-label">${charLabel}</div><div style="flex:1;">${opt}</div></div>`;
+        });
+        document.getElementById('options-box').innerHTML = opts;
+        
+        renderPalette();
+        updateStats();
+    }
+
+    function selectOption(index) { state.answers[state.currentQ] = index; renderQuestion(); }
+    function clearResponse() { delete state.answers[state.currentQ]; delete state.marked[state.currentQ]; renderQuestion(); }
+    function markReview() { state.marked[state.currentQ] = true; changeQ(1); }
+    function saveNext() { delete state.marked[state.currentQ]; changeQ(1); }
+
+    function changeQ(step) {
+        const next = state.currentQ + step;
+        if(next >= 0 && next < finalQuestions.length) { state.currentQ = next; renderQuestion(); }
+    }
+
+    function renderPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        finalQuestions.forEach((q, i) => {
+            let cls = 's-0';
+            if(state.visited[i]) {
+                if(state.answers[i] !== undefined && state.marked[i]) cls = 's-4';
+                else if(state.marked[i]) cls = 's-3';
+                else if(state.answers[i] !== undefined) cls = 's-1';
+                else cls = 's-2';
+            }
+            const active = i === state.currentQ ? 'active' : '';
+            
+            let displayNo = i + 1;
+            let qMatch = q.q.match(/^(\d+)\./);
+            if(qMatch) {
+                displayNo = qMatch[1];
+            }
+            grid.innerHTML += `<button class="p-btn ${cls} ${active}" onclick="state.currentQ = ${i}; renderQuestion();">${displayNo}</button>`;
+        });
+    }
+
+    function updateStats() {
+        let ans=0, notans=0, notvis=0, mark=0;
+        finalQuestions.forEach((_, i) => {
+            if(!state.visited[i]) notvis++;
+            else if(state.marked[i]) mark++;
+            else if(state.answers[i] !== undefined) ans++;
+            else notans++;
+        });
+        document.getElementById('c-ans').innerText = ans; document.getElementById('c-notans').innerText = notans;
+        document.getElementById('c-notvis').innerText = notvis; document.getElementById('c-mark').innerText = mark;
+    }
+
+    function submitTest() {
+        if(!confirm("Are you sure you want to submit the test? / क्या आप टेस्ट सबमिट करना चाहते हैं?")) return;
+        state.submitted = true; clearInterval(timerInterval);
+        let score=0, attempt=0, wrong=0;
+        finalQuestions.forEach((q, i) => {
+            if(state.answers[i] !== undefined) {
+                attempt++;
+                if(state.answers[i] === q.a) score++; else wrong++;
+            }
+        });
+        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const completedData = { score: score, attempted: attempt, wrong: wrong, time: state.time, date: today, userAnswers: state.answers };
+        
+        safeSetItem(COMPLETED_KEY, JSON.stringify(completedData));
+        safeRemoveItem(STORAGE_KEY);
+        
+        renderResultUI(completedData);
+    }
+
+    function renderResultUI(data) {
+        showScreen('result-screen');
+        const acc = data.attempted > 0 ? ((data.score / data.attempted) * 100).toFixed(1) : 0;
+        document.getElementById('r-score').innerText = `${data.score}`;
+        document.getElementById('r-attempt').innerText = data.attempted;
+        document.getElementById('r-wrong').innerText = data.wrong;
+        document.getElementById('r-acc').innerText = `${acc}%`;
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(!data) return;
+
+        let html = '';
+        finalQuestions.forEach((q, i) => {
+            const uAns = data.userAnswers[i];
+            let optHtml = '';
+            q.o.forEach((opt, oIdx) => {
+                let cls = '', checkMark = '';
+                if(oIdx === q.a) { cls = 'correct'; checkMark = ' ✔'; }
+                else if(oIdx === uAns && uAns !== q.a) { cls = 'wrong'; checkMark = ' ❌ (Your Answer)'; }
+                optHtml += `<div class="glass-panel sol-opt ${cls}"><strong>${String.fromCharCode(65 + oIdx)}.</strong> <div style="flex:1;">${opt} <span style="float:right; font-weight:700;">${checkMark}</span></div></div>`;
+            });
+            let statusText = uAns !== undefined ? (uAns === q.a ? "हल किया (Correct)" : "हल किया (Incorrect)") : "हल नहीं किया (Unattempted)";
+            
+            let displayNo = i + 1;
+            let qTextHtml = q.q;
+            let qMatch = qTextHtml.match(/^(\d+)\./);
+            if(qMatch) {
+               displayNo = qMatch[1];
+               qTextHtml = qTextHtml.substring(qMatch[0].length).trim();
+            }
+
+            html += `<div class="glass-panel sol-card"><div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--primary);">Q${displayNo}. ${qTextHtml}</div>${optHtml}<div style="font-weight:bold; margin:15px 0; color:var(--text-muted);">Status: ${statusText}</div><div class="glass-panel sol-exp">${q.e}</div></div>`;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+
+    function downloadPDF() {
+        const element = document.getElementById('sol-container');
+        
+        const actionButtons = element.previousElementSibling;
+        actionButtons.style.display = 'none';
+
+        const opt = {
+            margin:       10,
+            filename:     'Computer_Set_11_Solutions.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) document.documentElement.setAttribute('data-theme', 'light');
+        
+        html2pdf().set(opt).from(element).save().then(() => {
+            if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
+            actionButtons.style.display = 'flex';
+        });
+    }
+</script>
+</body>
+</html>
