@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Computer Set Number 14</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg-grad-1: #4facfe; --bg-grad-2: #00f2fe; --bg-grad-3: #a18cd1; --bg-grad-4: #fbc2eb;
+            --glass-bg: rgba(255, 255, 255, 0.9); --glass-border: rgba(255, 255, 255, 0.6); --glass-shadow: rgba(31, 38, 135, 0.15);
+            --text-main: #1f2937; --text-muted: #64748b;
+            --primary: #2563eb; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --purple: #8b5cf6;
+            --option-bg: rgba(243, 244, 246, 0.8); --option-selected: rgba(219, 234, 254, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+        [data-theme="dark"] {
+            --bg-grad-1: #0f2027; --bg-grad-2: #203a43; --bg-grad-3: #2c5364; --bg-grad-4: #141e30;
+            --glass-bg: rgba(17, 25, 40, 0.85); --glass-border: rgba(255, 255, 255, 0.15); --glass-shadow: rgba(0, 0, 0, 0.5);
+            --text-main: #f9fafb; --text-muted: #94a3b8;
+            --primary: #3b82f6; 
+            --option-bg: rgba(55, 65, 81, 0.7); --option-selected: rgba(30, 58, 138, 0.8);
+            --card-bg: rgba(31, 41, 55, 0.95);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; touch-action: manipulation;}
+        
+        body { 
+            height: 100vh; height: 100dvh; 
+            background: linear-gradient(45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3), var(--bg-grad-4)); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+            color: var(--text-main); 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 var(--glass-shadow); border-radius: 12px; }
+        
+        .btn { font-family: 'Poppins', sans-serif; background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;}
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-warning { background: var(--warning); color: #fff;}
+        .btn-clear { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-mark { background: var(--purple); color: white; }
+        .btn-prev { background: var(--text-muted); color: white; }
+
+        .screen { display: none; flex-direction: column; height: 100%; width: 100vw; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; }
+
+        #dashboard-screen { overflow-y: auto; background: var(--card-bg); align-items: center; padding-bottom: 30px;}
+        .dash-header-top { background: #1e293b; color: white; width: 100%; padding: 15px 20px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 15px; position: sticky; top:0; z-index: 100;}
+        .dash-content { width: 100%; max-width: 800px; padding: 20px; }
+        .section-title { font-weight: 600; color: var(--primary); margin: 15px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 15px; }
+        .dash-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--glass-border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .test-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text-main);}
+        .test-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        .progress-container { width: 100%; height: 6px; background: var(--glass-border); border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #fbc02d; width: 0%; transition: width 0.5s ease;}
+        .dash-actions { display: flex; gap: 12px; margin-top: 15px; }
+        .dash-actions .btn { flex: 1; padding: 10px; font-size: 14px; border-radius: 8px;}
+        .syllabus-footer { display: flex; justify-content: space-between; font-size: 12px; color: var(--primary); border-top: 1px solid var(--glass-border); padding-top: 12px; margin-top: 15px; }
+
+        header.test-head { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-bottom: 10px; margin-inline: 10px; }
+        .header-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: 700; background: var(--card-bg); border: 1px solid var(--glass-border); color: var(--danger); padding: 5px 12px; border-radius: 20px; }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 0 10px 10px 10px; }
+        .question-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .q-header { padding: 10px 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
+        .q-body { flex: 1; padding: 15px; overflow-y: auto; font-size: 16px; line-height: 1.6; }
+        
+        .en-q { display: block; font-size: 0.90em; color: var(--text-muted); margin-top: 8px; font-weight: 500; font-family: 'Poppins', sans-serif;}
+
+        .options-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;}
+        .option { padding: 12px; border: 2px solid var(--glass-border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--option-bg); font-weight: 500; font-size: 15px;}
+        .option.selected { border-color: var(--primary); background: var(--option-selected); color: var(--primary); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--glass-border); display: flex; justify-content: center; align-items: center; font-weight: bold; }
+        .option.selected .opt-label { background: var(--primary); color: white; border-color: var(--primary);}
+        
+        .q-footer { padding: 10px; border-top: 1px solid var(--glass-border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-radius: 0 0 12px 12px; }
+
+        .palette-section { width: 320px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .palette-header { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; font-weight: bold; font-size: 15px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; font-size: 12px; border-bottom: 1px solid var(--glass-border); font-weight: 500;}
+        .stat-item { display: flex; align-items: center; gap: 6px;}
+        .badge { width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 10px; font-weight: bold;}
+        .s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);} 
+        .s-1 { background: var(--success); } .s-2 { background: var(--danger); } .s-3 { background: var(--purple); } 
+        .s-4 { background: var(--primary); position: relative; }
+        .s-4::after { content: '✔'; position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; background: white; color: var(--primary); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 8px; }
+        
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .p-btn.s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);}
+        .p-btn.active { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.1);}
+        .submit-area { padding: 10px; border-top: 1px solid var(--glass-border); border-radius: 0 0 12px 12px;}
+
+        #result-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        #solution-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        .sol-card { padding: 20px; margin-bottom: 15px; width: 100%; max-width: 800px; page-break-inside: avoid;}
+        .sol-opt { padding: 10px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; gap: 10px; align-items: center; font-size: 15px; background: var(--card-bg);}
+        .sol-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); text-decoration: line-through;}
+        .sol-exp { margin-top: 15px; padding: 15px; background: rgba(37, 99, 235, 0.05); border: 1px solid var(--glass-border); border-left: 4px solid var(--primary); border-radius: 8px; font-size: 14.5px; line-height: 1.6; }
+        .sol-exp ul { padding-left: 20px; margin-top: 8px; }
+        .sol-exp li { margin-bottom: 6px; }
+
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+
+        @media (max-width: 992px) {
+            .main-area { flex-direction: column; overflow-y: auto;}
+            .question-section { flex: none; min-height: 450px;}
+            .palette-section { width: 100%; flex: none; min-height: 350px;}
+            .q-footer .btn { padding: 10px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <div id="dashboard-screen" class="screen active">
+        <div class="dash-header-top">
+            <span style="cursor: pointer;" onclick="alert('Going Back')">&#8592;</span>
+            Mock Tests
+        </div>
+
+        <div class="dash-content">
+            <div id="dash-unattempted" style="display: none;">
+                <div class="section-title">Suggested Next Test</div>
+                <div class="dash-card">
+                    <div class="test-title">Computer Set Number 14</div>
+                    <div class="test-meta">
+                        <span>25 Qs • 25 mins • 25.0 Marks</span>
+                    </div>
+                    <div class="test-meta" style="justify-content: flex-end;">
+                        <button class="btn btn-outline" style="padding: 6px 20px; border-radius: 20px;" onclick="startTest()">Start Test 🚀</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span>Syllabus: Computer Fundamentals & Internet</span>
+                        <span style="color:var(--success);">🔗 Share</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dash-attempted" style="display: none;">
+                <div class="dash-card">
+                    <div class="test-title">Computer Set Number 14</div>
+                    <div class="test-meta" style="margin-bottom: 5px;">
+                        <span id="dash-score-text" style="font-size: 15px; color: var(--text-muted);">0/25.0 Marks</span>
+                    </div>
+                    <div class="progress-container"><div class="progress-fill" id="dash-progress-bar"></div></div>
+                    <div class="dash-actions">
+                        <button class="btn btn-outline" onclick="viewSavedResults()">View Results</button>
+                        <button class="btn btn-outline" onclick="reattemptTest()">Reattempt &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px; font-size: 2rem;">Test Paused ⏸️</h2>
+        <button class="btn btn-primary" style="font-size: 1.2rem; padding: 10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+    </div>
+
+    <div id="test-screen" class="screen">
+        <header class="glass-panel test-head">
+            <div class="header-title">Computer Set 14</div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="toggleTheme()">🌓 Theme</button>
+                <button class="btn btn-warning" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="togglePause()">⏸ Pause</button>
+                <div class="timer-box">⏱ <span id="timer-display">25:00</span></div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="glass-panel question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--success); font-weight:bold;">+1 <span style="color: var(--text-muted); font-weight:normal;">|</span> <span style="color: var(--danger);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <button class="btn btn-mark" onclick="markReview()">Mark & Next</button>
+                    <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                    <button class="btn btn-prev" onclick="changeQ(-1)">Previous</button>
+                    <button class="btn btn-primary" onclick="saveNext()">Save & Next</button>
+                </div>
+            </div>
+
+            <div class="glass-panel palette-section">
+                <div class="palette-header">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">25</div> Not Visit</div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn btn-primary" style="width: 100%; background: var(--success); font-size: 15px; padding: 10px;" onclick="submitTest()">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-screen" class="screen">
+        <div style="width: 100%; max-width: 800px; margin-bottom: 15px;"><button class="btn btn-clear" onclick="showDashboard()">&#8592; Back to Dashboard</button></div>
+        <div class="glass-panel" style="max-width: 800px; width: 100%; padding: 25px;">
+            <h1 style="color: var(--primary); text-align: center;">Test Submitted Successfully! 🎉</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 25px 0;">
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-score" style="color: var(--primary); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Score</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-attempt" style="color: var(--success); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Attempted</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-wrong" style="color: var(--danger); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Wrong</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-acc" style="color: var(--purple); font-size: 1.8rem;">0%</h2><p style="color: var(--text-muted); font-size:12px;">Accuracy</p></div>
+            </div>
+            <button class="btn btn-primary" style="width:100%; font-size: 15px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+        </div>
+    </div>
+
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%; margin:0 auto;">
+            <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 12px 15px; position: sticky; top: 5px; z-index: 10;">
+                <h3 style="color: var(--primary);">Detailed Solutions</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" style="padding: 5px 12px; font-size: 13px; background: var(--success);" onclick="downloadPDF()">📥 Download PDF</button>
+                    <button class="btn btn-clear" style="padding: 5px 12px; font-size: 13px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+                </div>
+            </div>
+            <div id="sol-container"></div>
+        </div>
+    </div>
+
+<script>
+    const MEMORY_STORE = {};
+    function safeGetItem(key) { try { return localStorage.getItem(key) || MEMORY_STORE[key] || null; } catch(e) { return MEMORY_STORE[key] || null; } }
+    function safeSetItem(key, value) { try { localStorage.setItem(key, value); } catch(e) {} MEMORY_STORE[key] = value; }
+    function safeRemoveItem(key) { try { localStorage.removeItem(key); } catch(e) {} delete MEMORY_STORE[key]; }
+
+    const STORAGE_KEY = 'comp_set_14_active'; 
+    const COMPLETED_KEY = 'comp_set_14_comp';
+
+    const finalQuestions = [
+    {
+        "q": "1. किसी संगठन के वेबसाइट का .com (डॉट कॉम) अंश सूचित करता है-<br><span class='en-q'>The .com part of an organization's website indicates-</span>",
+        "o": [
+            "कम्पनी / Company",
+            "कमाण्ड / Command",
+            "कम्यूनिकेशन / Communication",
+            "कमर्शियल / Commercial"
+        ],
+        "a": 3,
+        "e": "<b>हल:</b> किसी वेबसाइट के डोमेन नेम में '.com' अंश कमर्शियल (Commercial) यानी व्यावसायिक संगठन को सूचित करता है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>डोमेन नेम के अंतिम भाग को 'टॉप लेवल डोमेन' (TLD) कहा जाता है।</li><li>.edu डोमेन का उपयोग शैक्षणिक (Educational) संस्थानों के लिए किया जाता है।</li><li>.org डोमेन गैर-लाभकारी संगठनों (Organizations) को दर्शाता है।</li><li>.gov डोमेन सरकारी (Government) वेबसाइटों के लिए आरक्षित होता है।</li><li>.in, .us, .uk आदि कंट्री कोड टॉप-लेवल डोमेन (ccTLD) कहलाते हैं, जो देश को दर्शाते हैं।</li></ul>"
+    },
+    {
+        "q": "2. इनमें से कौन-सा सर्च इंजिन नहीं है-<br><span class='en-q'>Which of the following is not a search engine?</span>",
+        "o": [
+            "गूगल / Google",
+            "अल्टाविस्टा / AltaVista",
+            "साइंस डायरेक्ट / Science Direct",
+            "आरकुट / Orkut"
+        ],
+        "a": 2,
+        "e": "<b>हल:</b> दिए गए विकल्पों में से 'साइंस डायरेक्ट' (Science Direct) एक सर्च इंजन नहीं है, बल्कि यह वैज्ञानिक शोध और लेखों का एक बड़ा डेटाबेस है। (ध्यान दें: आरकुट एक सोशल नेटवर्किंग साइट थी)।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>सर्च इंजन एक ऐसा प्रोग्राम है जो इंटरनेट पर कीवर्ड्स के आधार पर जानकारी खोजता है।</li><li>गूगल (Google) वर्तमान में दुनिया का सबसे लोकप्रिय और बड़ा सर्च इंजन है।</li><li>अल्टाविस्टा (AltaVista) 1995 में लॉन्च किया गया एक प्रारंभिक और प्रसिद्ध सर्च इंजन था, जिसे बाद में याहू ने खरीद लिया।</li><li>सर्च इंजन जानकारी इकट्ठा करने के लिए 'वेब क्रॉलर' (Web Crawler) या 'स्पाइडर' का इस्तेमाल करते हैं।</li><li>बिंग (Bing), याहू (Yahoo) और डकडकगो (DuckDuckGo) अन्य प्रमुख सर्च इंजन के उदाहरण हैं।</li></ul>"
+    },
+    {
+        "q": "3. एक पॉइन्टर .......... पर पोजीशन किया जाता है, तब इसका आकार हाथ जैसा होता है-<br><span class='en-q'>When a pointer is positioned on .........., its shape becomes like a hand-</span>",
+        "o": [
+            "ग्रामर एरर / Grammar error",
+            "हाइपरलिंक / Hyperlink",
+            "स्क्रीन टिप / Screen tip",
+            "स्पेलिंग एरर / Spelling error"
+        ],
+        "a": 1,
+        "e": "<b>हल:</b> जब माउस पॉइन्टर को वेब पेज पर किसी 'हाइपरलिंक' (Hyperlink) के ऊपर ले जाया जाता है, तो उसका आकार एक 'हाथ' (Hand) जैसा हो जाता है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>हाइपरलिंक का उपयोग एक वेब पेज से दूसरे वेब पेज या फ़ाइल पर जाने के लिए किया जाता है।</li><li>डिफ़ॉल्ट रूप से, टेक्स्ट हाइपरलिंक नीले रंग का होता है और उसके नीचे एक रेखा (Underlined) होती है।</li><li>HTML में हाइपरलिंक बनाने के लिए एंकर टैग (&lt;a&gt;) का इस्तेमाल किया जाता है।</li><li>हाइपरलिंक टेक्स्ट के अलावा चित्र (Image) या बटन पर भी लगाया जा सकता है।</li><li>पहले से क्लिक किए गए (Visited) हाइपरलिंक का रंग आमतौर पर बैंगनी (Purple) हो जाता है।</li></ul>"
+    },
+    {
+        "q": "4. इन्टरनेट निम्नलिखित में से किसके द्वारा चलाया जाता है-<br><span class='en-q'>The Internet is run by which of the following?</span>",
+        "o": [
+            "I & B",
+            "IETF",
+            "Inter NIC",
+            "इनमें से कोई नहीं / None of these"
+        ],
+        "a": 3,
+        "e": "<b>हल:</b> इंटरनेट किसी एक संस्था या सरकार के द्वारा नहीं चलाया जाता है, इसलिए सही उत्तर 'इनमें से कोई नहीं' है। इंटरनेट एक विकेंद्रीकृत नेटवर्क है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>इंटरनेट का कोई एक मालिक या केंद्रीय नियंत्रण नहीं होता है।</li><li>IETF (Internet Engineering Task Force) इंटरनेट के तकनीकी मानकों (Standards) को विकसित और बढ़ावा देता है।</li><li>ICANN (Internet Corporation for Assigned Names and Numbers) डोमेन नेम और IP एड्रेस के आवंटन का प्रबंधन करता है।</li><li>ISP (Internet Service Provider) वे कंपनियाँ हैं जो आम लोगों को इंटरनेट सेवा प्रदान करती हैं (जैसे- Jio, Airtel)।</li><li>इंटरनेट 'क्लाइंट-सर्वर' मॉडल और 'TCP/IP' प्रोटोकॉल पर आधारित है।</li></ul>"
+    },
+    {
+        "q": "5. उच्च शोध परियोजना अभिकरण (Advance Research Project Agency) निम्नलिखित में से किसके विकास के लिए उत्तरदायी है-<br><span class='en-q'>Advanced Research Projects Agency (ARPA) is responsible for the development of which of the following?</span>",
+        "o": [
+            "वेबसाइट / Website",
+            "ऑनलाइन / Online",
+            "ई-मेल / E-mail",
+            "इन्टरनेट / Internet"
+        ],
+        "a": 3,
+        "e": "<b>हल:</b> अमेरिका की 'उच्च शोध परियोजना अभिकरण' (ARPA) इंटरनेट के प्रारंभिक रूप 'ARPANET' के विकास के लिए उत्तरदायी है, जो बाद में इंटरनेट बना।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>ARPANET (Advanced Research Projects Agency Network) दुनिया का पहला पैकेट-स्विचिंग नेटवर्क था।</li><li>इसकी शुरुआत 1969 में अमेरिकी रक्षा विभाग (DoD) द्वारा की गई थी।</li><li>इसका मुख्य उद्देश्य युद्ध या आपदा के समय भी संचार व्यवस्था को सुचारू रखना था।</li><li>ARPANET ने ही सबसे पहले TCP/IP प्रोटोकॉल का उपयोग करना शुरू किया था।</li><li>इसी नेटवर्क के आधार पर 1980 के दशक में आधुनिक इंटरनेट का विकास हुआ।</li></ul>"
+    },
+    {
+        "q": "6. वेब (Web) अस्तित्व में आया-<br><span class='en-q'>The Web came into existence in-</span>",
+        "o": [
+            "अमेरिका में / In America",
+            "भारत में / In India",
+            "स्विट्जरलैंड में / In Switzerland",
+            "जापान में / In Japan"
+        ],
+        "a": 0,
+        "e": "<b>हल:</b> पुस्तक के उत्तर कुंजी के अनुसार वेब (इंटरनेट के संदर्भ में) 'अमेरिका' में अस्तित्व में आया, क्योंकि इंटरनेट की नींव अमेरिकी रक्षा विभाग के ARPANET ने रखी थी।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>आधुनिक इंटरनेट की शुरुआत अमेरिका में 1969 में ARPANET प्रोजेक्ट के रूप में हुई थी।</li><li>हालाँकि, अगर हम 'वर्ल्ड वाइड वेब' (WWW) की बात करें, तो उसका आविष्कार 1989 में स्विट्जरलैंड (CERN) में टिम बर्नर्स-ली ने किया था।</li><li>इंटरनेट एक हार्डवेयर नेटवर्क है, जबकि वेब उस पर चलने वाली एक सॉफ्टवेयर आधारित सेवा है।</li><li>भारत में इंटरनेट की शुरुआत 15 अगस्त 1995 को VSNL द्वारा की गई थी।</li><li>वेब को एक्सेस करने के लिए वेब ब्राउज़र की आवश्यकता होती है।</li></ul>"
+    },
+    {
+        "q": "7. ........ वह डिवाइस है जो दो या अधिक नेटवर्कों को जोड़ता है-<br><span class='en-q'>........ is a device that connects two or more networks-</span>",
+        "o": [
+            "गेटवे / Gateway",
+            "पाथवे / Pathway",
+            "रोडवे / Roadway",
+            "बस / Bus"
+        ],
+        "a": 0,
+        "e": "<b>हल:</b> 'गेटवे' (Gateway) एक ऐसा नेटवर्किंग डिवाइस है जिसका उपयोग दो अलग-अलग प्रकार के नेटवर्कों (जो अलग-अलग प्रोटोकॉल का उपयोग करते हैं) को आपस में जोड़ने के लिए किया जाता है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>गेटवे को नेटवर्कों के बीच का 'दरवाजा' (Door) माना जाता है, जहाँ से डेटा प्रवेश करता या बाहर निकलता है।</li><li>यह OSI मॉडल की सभी 7 लेयर्स पर काम कर सकता है।</li><li>राउटर (Router) भी नेटवर्कों को जोड़ता है, लेकिन यह मुख्य रूप से समान प्रोटोकॉल वाले नेटवर्कों के बीच ट्रैफिक को रूट करता है।</li><li>ब्रिज (Bridge) का इस्तेमाल दो समान (Local Area Network) नेटवर्कों को जोड़ने के लिए होता है।</li><li>बस (Bus) नेटवर्क टोपोलॉजी का एक प्रकारComponent, जिसमें सभी कंप्यूटर एक ही केबल से जुड़े होते हैं।</li></ul>"
+    },
+    {
+        "q": "8. ........ HTTP का उपयोग करती है-<br><span class='en-q'>........ uses HTTP-</span>",
+        "o": [
+            "वेब पेज / Web page",
+            "सर्च इंजन / Search Engine",
+            "राउटर / Router",
+            "पी.सी. / P.C."
+        ],
+        "a": 0,
+        "e": "<b>हल:</b> 'वेब पेज' (Web page) इंटरनेट पर संचार करने और डेटा ट्रांसफर करने के लिए HTTP (Hyper Text Transfer Protocol) का उपयोग करते हैं।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>HTTP का पूरा नाम 'Hyper Text Transfer Protocol' है।</li><li>यह वर्ल्ड वाइड वेब (WWW) पर डेटा संचार का आधार है।</li><li>सुरक्षित संचार के लिए HTTP के साथ एन्क्रिप्शन जोड़कर 'HTTPS' (Secure) का उपयोग किया जाता है।</li><li>HTTPS पोर्ट नंबर 443 का उपयोग करता है, जबकि HTTP पोर्ट 80 का उपयोग करता है।</li><li>ब्राउज़र जब वेब सर्वर से वेब पेज की मांग करता है, तो वह HTTP रिक्वेस्ट भेजता है।</li></ul>"
+    },
+    {
+        "q": "9. यदि किसी डोमेन नेम के आखिर में .edu.us है, तो यह है-<br><span class='en-q'>If a domain name ends in .edu.us, then it is-</span>",
+        "o": [
+            "एक अंतर्राष्ट्रीय संस्था / An international organization",
+            "एक गैरलाभकारी संस्था / A non-profit organization",
+            "ऑस्ट्रेलिया की एक शैक्षणिक संस्था / An educational institution of Australia",
+            "यूएसए (अमेरिका) की एक शैक्षणिक संस्था / An educational institution of USA (America)"
+        ],
+        "a": 3,
+        "e": "<b>हल:</b> यदि किसी डोमेन के अंत में '.edu.us' लगा है, तो .edu 'शैक्षणिक' (Educational) संस्था को दर्शाता है और .us 'अमेरिका' (United States) का कंट्री कोड है। इसलिए यह अमेरिका की एक शैक्षणिक संस्था है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>डोमेन नेम में अंतिम दो अक्षर (जैसे .in, .us, .uk) 'कंट्री कोड टॉप-लेवल डोमेन' (ccTLD) कहलाते हैं।</li><li>.in भारत (India) के लिए, .uk यूनाइटेड किंगडम (UK) के लिए प्रयुक्त होता है।</li><li>.edu का उपयोग केवल मान्यता प्राप्त शैक्षणिक संस्थानों (विश्वविद्यालयों, कॉलेजों) द्वारा किया जा सकता है।</li><li>.gov.in का मतलब भारत सरकार की वेबसाइट से है।</li><li>डोमेन नेम सिस्टम (DNS) डोमेन नेम को IP एड्रेस में बदलने का काम करता है।</li></ul>"
+    },
+    {
+        "q": "10. सूचना राजपथ (Information Highway) किसे कहते हैं?<br><span class='en-q'>What is called Information Highway?</span>",
+        "o": [
+            "ई-मेल को / To E-mail",
+            "पेजर को / To Pager",
+            "सेल्युलर फोन को / To Cellular Phone",
+            "इंटरनेट को / To Internet"
+        ],
+        "a": 3,
+        "e": "<b>हल:</b> 'इंटरनेट' (Internet) को सूचना राजपथ (Information Superhighway) कहा जाता है क्योंकि यह दुनिया भर में सूचनाओं के तीव्र और निर्बाध आदान-प्रदान का मार्ग प्रशस्त करता है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>इस शब्द (Information Superhighway) को लोकप्रिय बनाने का श्रेय अमेरिका के पूर्व उप-राष्ट्रपति अल गोर (Al Gore) को जाता है।</li><li>इंटरनेट पर मौजूद विशाल डेटाबेस के कारण इसे सूचना का समुद्र भी कहा जाता है।</li><li>यह टेक्स्ट, ऑडियो, वीडियो और ग्राफिक्स जैसी मल्टीमीडिया सूचनाओं को संचारित करता है।</li><li>इंटरनेट की दुनिया में सूचनाओं का स्थानांतरण पैकेट (Packets) के रूप में होता है।</li><li>फाइबर ऑप्टिक केबल्स इस 'राजपथ' की मुख्य सड़कें हैं जिनसे डेटा प्रकाश की गति से गुजरता है।</li></ul>"
+    },
+    {
+        "q": "11. w.w.w. ........ प्रोटोकॉल का उपयोग करता है।<br><span class='en-q'>w.w.w. uses ........ protocol.</span>",
+        "o": [
+            "FTP",
+            "HTTP",
+            "WBC",
+            "MTP"
+        ],
+        "a": 1,
+        "e": "<b>हल:</b> वर्ल्ड वाइड वेब (w.w.w.) इंटरनेट पर वेब पेजों को ट्रांसफर और एक्सेस करने के लिए 'HTTP' (Hyper Text Transfer Protocol) का उपयोग करता है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>HTTP वेब क्लाइंट (ब्राउज़र) और वेब सर्वर के बीच संचार के नियम तय करता है।</li><li>FTP (File Transfer Protocol) का उपयोग इंटरनेट पर फाइलों को डाउनलोड और अपलोड करने के लिए किया जाता है।</li><li>SMTP (Simple Mail Transfer Protocol) का उपयोग ई-मेल भेजने के लिए होता है।</li><li>WWW का आविष्कार 1989 में टिम बर्नर्स-ली ने किया था।</li><li>URL के शुरुआत में हमेशा http:// या https:// लिखा होता है, जो प्रोटोकॉल को दर्शाता है।</li></ul>"
+    },
+    {
+        "q": "12. एक वेबसाइट समूह है.......... ।<br><span class='en-q'>A website is a collection of..........</span>",
+        "o": [
+            "वेब पेजेस या HTML डॉक्यूमेट का / Web pages or HTML documents",
+            "ग्राफिक फाइलों का / Graphic files",
+            "लॉक कुंजी / Lock key",
+            "इनमें से कोई कोई नहीं / None of these"
+        ],
+        "a": 0,
+        "e": "<b>हल:</b> एक वेबसाइट इंटरनेट पर मौजूद कई 'वेब पेजेस' (Web pages) या HTML डॉक्यूमेंट्स का एक समूह या संग्रह होती है, जो आपस में हाइपरलिंक द्वारा जुड़े होते हैं।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>वेबसाइट के वेब पेजों को एक ही डोमेन नेम के तहत होस्ट किया जाता है।</li><li>वेब पेज HTML (Hyper Text Markup Language) में लिखे जाते हैं।</li><li>किसी भी वेबसाइट का पहला या मुख्य पेज 'होम पेज' (Home Page) कहलाता है।</li><li>वेबसाइट को इंटरनेट पर उपलब्ध कराने के लिए 'वेब होस्टिंग' (Web Hosting) सर्वर की आवश्यकता होती है।</li><li>स्टेटिक (Static) वेबसाइट के पेज नहीं बदलते, जबकि डायनामिक (Dynamic) वेबसाइट के पेज यूज़र के अनुसार बदलते हैं।</li></ul>"
+    },
+    {
+        "q": "13. इंटरनेट पर प्रयुक्त स्टैण्डर्ड प्रोटोकाल है-<br><span class='en-q'>The standard protocol used on the internet is-</span>",
+        "o": [
+            "HTML",
+            "HTTP",
+            "TCP/IP",
+            "Java"
+        ],
+        "a": 2,
+        "e": "<b>हल:</b> इंटरनेट का सबसे मुख्य और स्टैण्डर्ड प्रोटोकॉल 'TCP/IP' (Transmission Control Protocol / Internet Protocol) है। इसी पर पूरा इंटरनेट आधारित है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>TCP (Transmission Control Protocol) डेटा को छोटे-छोटे पैकेट्स में बांटता है और उन्हें सही क्रम में जोड़ता है।</li><li>IP (Internet Protocol) डेटा पैकेट्स पर सही पता (Address) लगाता है ताकि वे सही जगह पहुँच सकें।</li><li>HTML वेब पेज बनाने की भाषा है, प्रोटोकॉल नहीं।</li><li>Java एक उच्च-स्तरीय प्रोग्रामिंग भाषा है।</li><li>TCP/IP मॉडल में मुख्य रूप से 4 लेयर्स (परतें) होती हैं (Application, Transport, Internet, Network Access)।</li></ul>"
+    },
+    {
+        "q": "14. एचटीएमएल (HTML) का पूरा रूप है-<br><span class='en-q'>The full form of HTML is-</span>",
+        "o": [
+            "High Transfer Markup language",
+            "Hyper Text Markup Language",
+            "High Text Machine Language",
+            "Hiper Text Machine Language"
+        ],
+        "a": 1,
+        "e": "<b>हल:</b> HTML का पूर्ण रूप 'Hyper Text Markup Language' है। यह वेब पेजों की संरचना बनाने के लिए सबसे अधिक इस्तेमाल की जाने वाली मानक मार्कअप भाषा है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>HTML का आविष्कार 1989-90 में टिम बर्नर्स-ली ने किया था।</li><li>यह भाषा वेब ब्राउज़र को बताती है कि टेक्स्ट, चित्र और लिंक को स्क्रीन पर कैसे प्रदर्शित करना है।</li><li>HTML में विभिन्न प्रकार के 'टैग्स' (Tags) का उपयोग किया जाता है (जैसे &lt;b&gt; बोल्ड के लिए, &lt;a&gt; लिंक के लिए)।</li><li>HTML पेजों की डिजाइनिंग को सुंदर बनाने के लिए CSS (Cascading Style Sheets) का प्रयोग किया जाता है।</li><li>वर्तमान में HTML का 5वां संस्करण (HTML5) उपयोग में है।</li></ul>"
+    },
+    {
+        "q": "15. \"स्पैम\" निम्नलिखित में से किसे कहते हैं-<br><span class='en-q'>Which of the following is called \"Spam\"-</span>",
+        "o": [
+            "डिलिटेड ई-मेल / Deleted E-mail",
+            "अनसॉलिसिटेड ई-मेल / Unsolicited E-mail",
+            "इनकमिंग ई-मेल / Incoming E-mail",
+            "व्यूड ई-मेल / Viewed E-mail"
+        ],
+        "a": 1,
+        "e": "<b>हल:</b> इंटरनेट पर बिना मांगे थोक में भेजे गए विज्ञापन वाले ई-मेल को 'अनसॉलिसिटेड ई-मेल' (Unsolicited bulk email) या 'स्पैम' (Spam) कहा जाता है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>स्पैम को जंक मेल (Junk Mail) के नाम से भी जाना जाता है।</li><li>स्पैम मेल का उद्देश्य अक्सर धोखाधड़ी, फ़िशिंग या वायरस फैलाना होता है।</li><li>ईमेल सेवा प्रदाता (जैसे जीमेल, याहू) स्पैम की पहचान करने के लिए 'स्पैम फिल्टर' का उपयोग करते हैं।</li><li>स्पैम शब्द की उत्पत्ति एक प्रसिद्ध डिब्बाबंद मांस के ब्रांड 'SPAM' से हुई है।</li><li>केवल ईमेल ही नहीं, मैसेज और कॉल पर आने वाले अनचाहे विज्ञापनों को भी स्पैम कहा जाता है।</li></ul>"
+    },
+    {
+        "q": "16. कोई वेबसाइट एक्सेस करने पर सबसे पहले जो पेज या मेन पेज दिखाई पड़ता है, उसे क्या कहते हैं-<br><span class='en-q'>The very first page or main page that appears when accessing a website is called-</span>",
+        "o": [
+            "Master Page / मास्टर पेज",
+            "Home Page / होम पेज",
+            "First Page / फर्स्ट पेज",
+            "Banner Page / बैनर पेज"
+        ],
+        "a": 1,
+        "e": "<b>हल:</b> जब हम किसी वेबसाइट का एड्रेस (URL) डालकर उसे खोलते हैं, तो सबसे पहले प्रदर्शित होने वाला मुख्य पेज 'होम पेज' (Home Page) कहलाता है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>होम पेज वेबसाइट का प्रवेश द्वार (Gateway) होता है।</li><li>यह वेबसाइट के अन्य सभी महत्वपूर्ण पेजों के लिंक (नेविगेशन मेनू) प्रदान करता है।</li><li>वेब सर्वर पर डिफ़ॉल्ट रूप से इस पेज का नाम अक्सर 'index.html' या 'default.html' रखा जाता है।</li><li>ब्राउज़र को स्टार्ट करने पर जो पहला पेज खुलता है (जैसे गूगल का पेज), उसे भी स्टार्ट पेज या होम पेज कहते हैं।</li><li>एक अच्छी वेबसाइट का होम पेज आकर्षक और यूजर-फ्रेंडली होना चाहिए।</li></ul>"
+    },
+    {
+        "q": "17. वेब पर किसी खास कम्प्यूटर और पूरी साइट के मेनपेज को पहचानता है-<br><span class='en-q'>What identifies a specific computer on the web and the main page of the entire site?</span>",
+        "o": [
+            "यूआरएल (URL)",
+            "वेब साइट एड्रेस / Web site address",
+            "हाइपर लिंक / Hyper link",
+            "डोमेन नेम / Domain name"
+        ],
+        "a": 0,
+        "e": "<b>हल:</b> 'यूआरएल' (URL - Uniform Resource Locator) वेब पर किसी भी संसाधन (वेबसाइट, पेज, या फाइल) का एक विशिष्ट पता होता है जो उस संसाधन को पहचानता है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>URL का पूरा नाम Uniform Resource Locator है।</li><li>इसका आविष्कार 1994 में टिम बर्नर्स-ली ने किया था।</li><li>एक URL के तीन मुख्य भाग होते हैं: प्रोटोकॉल (जैसे http://), डोमेन नेम (जैसे www.example.com), और पाथ/फाइल नाम।</li><li>IP एड्रेस कंप्यूटर को पहचानता है, और DNS उस IP एड्रेस को URL (डोमेन) में बदल देता है ताकि इंसान उसे आसानी से याद रख सकें।</li><li>URL ब्राउज़र के सबसे ऊपर 'एड्रेस बार' (Address Bar) में दिखाई देता है।</li></ul>"
+    },
+    {
+        "q": "18. कौन-सा ऐसा कम्यूनिकेशन प्रोटोकाल है जो वेब बेस्ड इनफार्मेशन को एक्सेस करने वाले प्रत्येक कम्प्यूटर द्वारा प्रयुक्त स्टैण्डर्ड सेट करता है?<br><span class='en-q'>Which communication protocol sets the standard used by every computer that accesses web-based information?</span>",
+        "o": [
+            "XML",
+            "DML",
+            "HTTP",
+            "HTML"
+        ],
+        "a": 2,
+        "e": "<b>हल:</b> 'HTTP' (Hyper Text Transfer Protocol) वह स्टैण्डर्ड कम्यूनिकेशन प्रोटोकॉल है जिसका उपयोग वेब-बेस्ड इंफॉर्मेशन (वेब पेजों) को एक्सेस करने और ट्रांसफर करने के लिए किया जाता है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>HTTP यह तय करता है कि वेब पर डेटा (टेक्स्ट, चित्र, वीडियो) को कैसे फॉर्मेट और ट्रांसमिट किया जाएगा।</li><li>यह 'रिक्वेस्ट-रिस्पांस' (Request-Response) मॉडल पर काम करता है (क्लाइंट रिक्वेस्ट भेजता है, सर्वर रिस्पांस देता है)।</li><li>XML (eXtensible Markup Language) डेटा स्टोर और ट्रांसपोर्ट करने के लिए उपयोग होती है।</li><li>HTML वेब पेज का डिज़ाइन और लेआउट बनाने के लिए उपयोग होती है।</li><li>HTTP स्टेटलेस प्रोटोकॉल है, यानी यह पिछले रिक्वेस्ट की जानकारी याद नहीं रखता (इसके लिए कुकीज़ का उपयोग होता है)।</li></ul>"
+    },
+    {
+        "q": "19. निम्नलिखित में से कौन-सा कथन सत्य है-<br><span class='en-q'>Which of the following statements is true?</span>",
+        "o": [
+            "इन्टरनेट से जुड़ा कोई कम्प्यूटर इन्टरनेट से जुड़े किसी अन्य कम्प्यूटर से जुड़ सकता है । / A computer connected to the internet can connect to any other computer connected to the internet.",
+            "हाइपरटेक्स्ट को हाइपरलिंक के नाम से भी जाना जाता है । / Hypertext is also known as hyperlink.",
+            "प्रोटोकॉल नियमों एवं कानूनों का एक सेट नहीं है । / Protocol is not a set of rules and laws.",
+            "इन्टरनेट एक Commercial Information Service भी है । / Internet is also a Commercial Information Service."
+        ],
+        "a": 0,
+        "e": "<b>हल:</b> दिए गए विकल्पों में सबसे सटीक सत्य कथन (A) है: इंटरनेट एक वैश्विक नेटवर्क है, अतः इंटरनेट से जुड़ा कोई भी कंप्यूटर किसी अन्य इंटरनेट से जुड़े कंप्यूटर से संचार (जुड़) कर सकता है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>इंटरनेट को 'नेटवर्कों का नेटवर्क' कहा जाता है जो TCP/IP प्रोटोकॉल से चलता है।</li><li>हाइपरटेक्स्ट और हाइपरलिंक दोनों अलग-अलग हैं (हाइपरटेक्स्ट वह टेक्स्ट है जिसमें लिंक होता है, जबकि लिंक वह एड्रेस है जहाँ जाना है)।</li><li>प्रोटोकॉल वास्तव में नेटवर्क पर डेटा संचार के 'नियमों का एक सेट' (Set of rules) ही होता है।</li><li>इंटरनेट केवल एक व्यावसायिक सेवा नहीं है; यह एक सार्वजनिक, शैक्षणिक और अनुसंधान का वैश्विक मंच है।</li><li>प्रत्येक कंप्यूटर जो इंटरनेट से जुड़ता है, उसे एक विशिष्ट IP (Internet Protocol) एड्रेस मिलता है।</li></ul>"
+    },
+    {
+        "q": "20. नेटवर्क पर दस्तावेजों की अदला-बदली के लिए जरूरी नहीं है-<br><span class='en-q'>What is not necessary for exchanging documents over a network?</span>",
+        "o": [
+            "फ्लॉपी / Floppy",
+            "टेलीफोन लाइन / Telephone line",
+            "कनेक्टर / Connector",
+            "उपग्रह / Satellite"
+        ],
+        "a": 0,
+        "e": "<b>हल:</b> नेटवर्क (जैसे इंटरनेट या लैन) पर दस्तावेजों (डेटा) के आदान-प्रदान के लिए 'फ्लॉपी' (Floppy Disk) की आवश्यकता नहीं होती, क्योंकि डेटा नेटवर्क केबल्स या वायरलेस माध्यम से भेजा जाता है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>फ्लॉपी डिस्क एक 'पोर्टेबल स्टोरेज डिवाइस' है जिसका उपयोग डेटा को भौतिक रूप से (हाथ से) एक कंप्यूटर से दूसरे कंप्यूटर में ले जाने के लिए होता था।</li><li>नेटवर्क संचार के लिए ट्रांसमिशन माध्यम (केबल, सैटेलाइट, टेलीफोन लाइन) आवश्यक होते हैं।</li><li>कंप्यूटर को नेटवर्क से जोड़ने के लिए नेटवर्क इंटरफेस कार्ड (NIC) और कनेक्टर्स (जैसे RJ-45) की जरूरत होती है।</li><li>टेलीफोन लाइनों का उपयोग ब्रॉडबैंड (DSL/Dial-up) नेटवर्क कनेक्टिविटी के लिए किया जाता है।</li><li>आजकल फ्लॉपी डिस्क का उपयोग पूरी तरह से बंद हो चुका है; इसकी जगह पेन ड्राइव और क्लाउड स्टोरेज ने ले ली है।</li></ul>"
+    },
+    {
+        "q": "21. ........ एक कम्प्यूटर है जो ऐसे इंटरनेट से जुड़ा होता है जो एक स्पेशल वेब सर्वर सॉफ्टवेयर चलाता है और इंटरनेट पर दूसरे कम्प्यूटरों को वेब पेज भेज सकता है-<br><span class='en-q'>........ is a computer connected to the internet that runs special web server software and can send web pages to other computers on the internet-</span>",
+        "o": [
+            "वेब क्लाइंट / Web client",
+            "वेब सिस्टम / Web system",
+            "वेब पेज / Web page",
+            "वेब सर्वर / Web server"
+        ],
+        "a": 3,
+        "e": "<b>हल:</b> 'वेब सर्वर' (Web server) एक विशेष कंप्यूटर (या सॉफ्टवेयर प्रोग्राम) होता है जो इंटरनेट से जुड़ा होता है और उपयोगकर्ताओं (क्लाइंट्स) द्वारा मांगे जाने पर उन्हें वेब पेज प्रदान करता है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>वेब सर्वर वेबसाइट के सभी डेटा (HTML फाइलें, चित्र, वीडियो) को स्टोर करके रखता है।</li><li>जब आप ब्राउज़र में URL दर्ज करते हैं, तो आपका कंप्यूटर एक 'वेब क्लाइंट' (Web Client) बन जाता है जो सर्वर से रिक्वेस्ट करता है।</li><li>सर्वर 24 घंटे और 7 दिन इंटरनेट से जुड़े रहते हैं ताकि वेबसाइट कभी भी एक्सेस की जा सके।</li><li>अपाचे (Apache) और माइक्रोसॉफ्ट IIS (Internet Information Services) लोकप्रिय वेब सर्वर सॉफ्टवेयर के उदाहरण हैं।</li><li>क्लाइंट और सर्वर के बीच संचार HTTP/HTTPS प्रोटोकॉल के माध्यम से होता है।</li></ul>"
+    },
+    {
+        "q": "22. यूआरएल (URL) http://www...... में http होता है-<br><span class='en-q'>In the URL http://www...... what is http?</span>",
+        "o": [
+            "होस्ट / Host",
+            "डोमेन नेम / Domain name",
+            "प्रोटोकॉल / Protocol",
+            "डोमेन ऐड्रेस / Domain address"
+        ],
+        "a": 2,
+        "e": "<b>हल:</b> किसी भी URL (Uniform Resource Locator) में सबसे पहले आने वाला शब्द (जैसे http या https) उस संचार 'प्रोटोकॉल' (Protocol) को दर्शाता है जिसका उपयोग डेटा मंगाने के लिए किया जाना है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>प्रोटोकॉल कंप्यूटर नेटवर्क में संचार के नियमों का समूह होता है।</li><li>HTTP का मतलब Hyper Text Transfer Protocol है, जो वेब पेजों के लिए इस्तेमाल होता है।</li><li>URL के मुख्य तीन भाग होते हैं: (1) Protocol, (2) Domain Name, और (3) File Path।</li><li>उदाहरण के लिए http://www.google.com/index.html में 'http' प्रोटोकॉल है और 'www.google.com' डोमेन नेम है।</li><li>फाइल ट्रांसफर करने के लिए 'ftp://' प्रोटोकॉल का उपयोग किया जाता है।</li></ul>"
+    },
+    {
+        "q": "23. कम्प्यूटर को इन्टरनेट में जोड़ने में मदद करता है-<br><span class='en-q'>What helps in connecting a computer to the internet (to browse)?</span>",
+        "o": [
+            "ब्राउजर / Browser",
+            "नेट फिट / Net fit",
+            "विंडोज-95 / Windows-95",
+            "केबल / Cable"
+        ],
+        "a": 0,
+        "e": "<b>हल:</b> दिए गए विकल्पों के अनुसार, इंटरनेट पर मौजूद सूचनाओं (वेबसाइट्स) से कंप्यूटर (उपयोगकर्ता) को जोड़ने या एक्सेस करने में 'ब्राउज़र' (Browser) सॉफ्टवेयर मदद करता है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>वेब ब्राउज़र एक एप्लीकेशन सॉफ्टवेयर है जिसका उपयोग वर्ल्ड वाइड वेब (WWW) को एक्सेस करने के लिए होता है।</li><li>दुनिया का पहला ग्राफिकल वेब ब्राउज़र 'Mosaic' था (बाद में Netscape Navigator आया)।</li><li>वर्तमान में गूगल क्रोम (Google Chrome), सफारी (Safari) और मोज़िला फायरफॉक्स (Firefox) सबसे लोकप्रिय ब्राउज़र हैं।</li><li>विंडोज-95 एक ऑपरेटिंग सिस्टम है, कोई इंटरनेट जोड़ने वाली चीज नहीं।</li><li>हालाँकि भौतिक रूप से जोड़ने के लिए मॉडेम और केबल आवश्यक हैं, लेकिन वेब सर्फिंग का मुख्य इंटरफ़ेस ब्राउज़र ही है।</li></ul>"
+    },
+    {
+        "q": "24. .org डोमेन किस क्षेत्र से संबंधित है?<br><span class='en-q'>Which field is the .org domain related to?</span>",
+        "o": [
+            "शिक्षा / Education",
+            "संगठन / Organization",
+            "व्यापार / Commercial",
+            "नेटवर्क / Network"
+        ],
+        "a": 1,
+        "e": "<b>हल:</b> '.org' डोमेन मुख्य रूप से गैर-लाभकारी संगठनों (Non-profit Organizations) और अन्य प्रकार के संस्थागत समूहों को दर्शाने के लिए उपयोग किया जाता है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>'.org' शब्द अंग्रेजी के 'Organization' (संगठन) का संक्षिप्त रूप है।</li><li>यह इंटरनेट के मूल शीर्ष-स्तरीय डोमेन (TLDs) में से एक है, जिसे 1985 में शुरू किया गया था।</li><li>'.com' का उपयोग व्यावसायिक (Commercial) वेबसाइटों के लिए किया जाता है।</li><li>'.net' का उपयोग नेटवर्क (Network) से संबंधित आधारभूत सेवाओं के लिए किया जाता है।</li><li>Wikipedia जैसी प्रसिद्ध गैर-लाभकारी वेबसाइट '.org' डोमेन (wikipedia.org) का ही उपयोग करती है।</li></ul>"
+    },
+    {
+        "q": "25. ई-मेल का जन्मदाता किसे माना जाता है?<br><span class='en-q'>Who is considered the father of E-mail?</span>",
+        "o": [
+            "बिल गेट्स / Bill Gates",
+            "टिम बर्नर्स-ली / Tim Berners-Lee",
+            "रे टॉमलिंसन / Ray Tomlinson",
+            "चार्ल्स बैबेज / Charles Babbage"
+        ],
+        "a": 2,
+        "e": "<b>हल:</b> अमेरिकी कंप्यूटर प्रोग्रामर 'रे टॉमलिंसन' (Ray Tomlinson) को ई-मेल (E-mail) का आविष्कारक या जन्मदाता माना जाता है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य:</b><ul><li>रे टॉमलिंसन ने 1971 में ARPANET पर पहला नेटवर्क ई-मेल भेजा था।</li><li>उन्होंने ही ई-मेल एड्रेस में उपयोगकर्ता (User) और कंप्यूटर (Host) के नाम को अलग करने के लिए '@' (एट द रेट) चिह्न का उपयोग शुरू किया था।</li><li>भारत में ई-मेल को लोकप्रिय बनाने का श्रेय हॉटमेल (Hotmail) के संस्थापक सबीर भाटिया को भी जाता है।</li><li>टिम बर्नर्स-ली ने 'वर्ल्ड वाइड वेब' (WWW) का आविष्कार किया था।</li><li>चार्ल्स बैबेज को 'कंप्यूटर का पिता' (Father of Computer) कहा जाता है।</li></ul>"
+    }
+];
+
+    let state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+    let timerInterval = null;
+    let isPaused = false;
+
+    window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+    function initDashboard() {
+        showScreen('dashboard-screen');
+        let completedData = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) completedData = JSON.parse(dataStr);
+        } catch(e) {}
+
+        if (completedData) {
+            document.getElementById('dash-unattempted').style.display = 'none';
+            document.getElementById('dash-attempted').style.display = 'block';
+            document.getElementById('dash-score-text').innerText = `${completedData.score}/25.0 Marks`;
+            document.getElementById('dash-progress-bar').style.width = `${(completedData.score / 25) * 100}%`;
+        } else {
+            document.getElementById('dash-attempted').style.display = 'none';
+            document.getElementById('dash-unattempted').style.display = 'block';
+        }
+    }
+
+    function startTest() {
+        let saved = null;
+        try {
+            const savedStr = safeGetItem(STORAGE_KEY);
+            if(savedStr) saved = JSON.parse(savedStr);
+        } catch(e){}
+
+        if (saved && !saved.submitted) {
+            state = saved;
+        } else {
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+        }
+        initTestEnv();
+    }
+
+    function reattemptTest() {
+        if(confirm("Are you sure you want to start a fresh test? Your active progress will be lost.")) {
+            safeRemoveItem(STORAGE_KEY);
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+            initTestEnv();
+        }
+    }
+
+    function initTestEnv() {
+        showScreen('test-screen');
+        renderQuestion();
+        renderPalette();
+        updateStats();
+        
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+        setInterval(() => { if(!state.submitted) safeSetItem(STORAGE_KEY, JSON.stringify(state)); }, 2000);
+    }
+
+    function viewSavedResults() {
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(data) renderResultUI(data);
+    }
+
+    function showDashboard() { initDashboard(); }
+
+    function showScreen(id) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+    }
+
+    function updateTimer() {
+        if(isPaused || state.submitted) return;
+        if(state.time <= 0) { submitTest(); return; }
+        state.time--;
+        const m = Math.floor(state.time / 60), s = state.time % 60;
+        document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+    }
+
+    function toggleTheme() {
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    function renderQuestion() {
+        state.visited[state.currentQ] = true;
+        const q = finalQuestions[state.currentQ];
+        
+        let displayNo = state.currentQ + 1;
+        let qTextHtml = q.q;
+        let qMatch = qTextHtml.match(/^(\d+)\./);
+        if(qMatch) {
+            displayNo = qMatch[1];
+            qTextHtml = qTextHtml.substring(qMatch[0].length).trim();
+        }
+
+        document.getElementById('q-no').innerText = `Question ${displayNo}`;
+        document.getElementById('q-text').innerHTML = qTextHtml;
+        let opts = '';
+        q.o.forEach((opt, i) => {
+            const isSel = state.answers[state.currentQ] === i;
+            const selClass = isSel ? 'selected' : '';
+            const charLabel = String.fromCharCode(65 + i);
+            opts += `<div class="glass-panel option ${selClass}" onclick="selectOption(${i})"><div class="opt-label">${charLabel}</div><div style="flex:1;">${opt}</div></div>`;
+        });
+        document.getElementById('options-box').innerHTML = opts;
+        
+        renderPalette();
+        updateStats();
+    }
+
+    function selectOption(index) { state.answers[state.currentQ] = index; renderQuestion(); }
+    function clearResponse() { delete state.answers[state.currentQ]; delete state.marked[state.currentQ]; renderQuestion(); }
+    function markReview() { state.marked[state.currentQ] = true; changeQ(1); }
+    function saveNext() { delete state.marked[state.currentQ]; changeQ(1); }
+
+    function changeQ(step) {
+        const next = state.currentQ + step;
+        if(next >= 0 && next < finalQuestions.length) { state.currentQ = next; renderQuestion(); }
+    }
+
+    function renderPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        finalQuestions.forEach((q, i) => {
+            let cls = 's-0';
+            if(state.visited[i]) {
+                if(state.answers[i] !== undefined && state.marked[i]) cls = 's-4';
+                else if(state.marked[i]) cls = 's-3';
+                else if(state.answers[i] !== undefined) cls = 's-1';
+                else cls = 's-2';
+            }
+            const active = i === state.currentQ ? 'active' : '';
+            
+            let displayNo = i + 1;
+            let qMatch = q.q.match(/^(\d+)\./);
+            if(qMatch) {
+                displayNo = qMatch[1];
+            }
+            grid.innerHTML += `<button class="p-btn ${cls} ${active}" onclick="state.currentQ = ${i}; renderQuestion();">${displayNo}</button>`;
+        });
+    }
+
+    function updateStats() {
+        let ans=0, notans=0, notvis=0, mark=0;
+        finalQuestions.forEach((_, i) => {
+            if(!state.visited[i]) notvis++;
+            else if(state.marked[i]) mark++;
+            else if(state.answers[i] !== undefined) ans++;
+            else notans++;
+        });
+        document.getElementById('c-ans').innerText = ans; document.getElementById('c-notans').innerText = notans;
+        document.getElementById('c-notvis').innerText = notvis; document.getElementById('c-mark').innerText = mark;
+    }
+
+    function submitTest() {
+        if(!confirm("Are you sure you want to submit the test? / क्या आप टेस्ट सबमिट करना चाहते हैं?")) return;
+        state.submitted = true; clearInterval(timerInterval);
+        let score=0, attempt=0, wrong=0;
+        finalQuestions.forEach((q, i) => {
+            if(state.answers[i] !== undefined) {
+                attempt++;
+                if(state.answers[i] === q.a) score++; else wrong++;
+            }
+        });
+        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const completedData = { score: score, attempted: attempt, wrong: wrong, time: state.time, date: today, userAnswers: state.answers };
+        
+        safeSetItem(COMPLETED_KEY, JSON.stringify(completedData));
+        safeRemoveItem(STORAGE_KEY);
+        
+        renderResultUI(completedData);
+    }
+
+    function renderResultUI(data) {
+        showScreen('result-screen');
+        const acc = data.attempted > 0 ? ((data.score / data.attempted) * 100).toFixed(1) : 0;
+        document.getElementById('r-score').innerText = `${data.score}`;
+        document.getElementById('r-attempt').innerText = data.attempted;
+        document.getElementById('r-wrong').innerText = data.wrong;
+        document.getElementById('r-acc').innerText = `${acc}%`;
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(!data) return;
+
+        let html = '';
+        finalQuestions.forEach((q, i) => {
+            const uAns = data.userAnswers[i];
+            let optHtml = '';
+            q.o.forEach((opt, oIdx) => {
+                let cls = '', checkMark = '';
+                if(oIdx === q.a) { cls = 'correct'; checkMark = ' ✔'; }
+                else if(oIdx === uAns && uAns !== q.a) { cls = 'wrong'; checkMark = ' ❌ (Your Answer)'; }
+                optHtml += `<div class="glass-panel sol-opt ${cls}"><strong>${String.fromCharCode(65 + oIdx)}.</strong> <div style="flex:1;">${opt} <span style="float:right; font-weight:700;">${checkMark}</span></div></div>`;
+            });
+            let statusText = uAns !== undefined ? (uAns === q.a ? "हल किया (Correct)" : "हल किया (Incorrect)") : "हल नहीं किया (Unattempted)";
+            
+            let displayNo = i + 1;
+            let qTextHtml = q.q;
+            let qMatch = qTextHtml.match(/^(\d+)\./);
+            if(qMatch) {
+               displayNo = qMatch[1];
+               qTextHtml = qTextHtml.substring(qMatch[0].length).trim();
+            }
+
+            html += `<div class="glass-panel sol-card"><div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--primary);">Q${displayNo}. ${qTextHtml}</div>${optHtml}<div style="font-weight:bold; margin:15px 0; color:var(--text-muted);">Status: ${statusText}</div><div class="glass-panel sol-exp">${q.e}</div></div>`;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+
+    function downloadPDF() {
+        const element = document.getElementById('sol-container');
+        
+        const actionButtons = element.previousElementSibling;
+        actionButtons.style.display = 'none';
+
+        const opt = {
+            margin:       10,
+            filename:     'Computer_Set_14_Solutions.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) document.documentElement.setAttribute('data-theme', 'light');
+        
+        html2pdf().set(opt).from(element).save().then(() => {
+            if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
+            actionButtons.style.display = 'flex';
+        });
+    }
+</script>
+</body>
+</html>
