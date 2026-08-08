@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Haryana GK Mock Test - Part 10</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg-grad-1: #4facfe; --bg-grad-2: #00f2fe; --bg-grad-3: #a18cd1; --bg-grad-4: #fbc2eb;
+            --glass-bg: rgba(255, 255, 255, 0.9); --glass-border: rgba(255, 255, 255, 0.6); --glass-shadow: rgba(31, 38, 135, 0.15);
+            --text-main: #1f2937; --text-muted: #64748b;
+            --primary: #2563eb; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --purple: #8b5cf6;
+            --option-bg: rgba(243, 244, 246, 0.8); --option-selected: rgba(219, 234, 254, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+        [data-theme="dark"] {
+            --bg-grad-1: #0f2027; --bg-grad-2: #203a43; --bg-grad-3: #2c5364; --bg-grad-4: #141e30;
+            --glass-bg: rgba(17, 25, 40, 0.85); --glass-border: rgba(255, 255, 255, 0.15); --glass-shadow: rgba(0, 0, 0, 0.5);
+            --text-main: #f9fafb; --text-muted: #94a3b8;
+            --primary: #3b82f6; 
+            --option-bg: rgba(55, 65, 81, 0.7); --option-selected: rgba(30, 58, 138, 0.8);
+            --card-bg: rgba(31, 41, 55, 0.95);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; touch-action: manipulation;}
+        
+        body { 
+            height: 100vh; height: 100dvh; 
+            background: linear-gradient(45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3), var(--bg-grad-4)); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+            color: var(--text-main); 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 var(--glass-shadow); border-radius: 12px; }
+        
+        .btn { font-family: 'Poppins', sans-serif; background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;}
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-warning { background: var(--warning); color: #fff;}
+        .btn-clear { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-mark { background: var(--purple); color: white; }
+        .btn-prev { background: var(--text-muted); color: white; }
+
+        .screen { display: none; flex-direction: column; height: 100%; width: 100vw; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; }
+
+        #dashboard-screen { overflow-y: auto; background: var(--card-bg); align-items: center; padding-bottom: 30px;}
+        .dash-header-top { background: #1e293b; color: white; width: 100%; padding: 15px 20px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 15px; position: sticky; top:0; z-index: 100;}
+        .dash-content { width: 100%; max-width: 800px; padding: 20px; }
+        .section-title { font-weight: 600; color: var(--primary); margin: 15px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 15px; }
+        .dash-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--glass-border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .test-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text-main);}
+        .test-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        .progress-container { width: 100%; height: 6px; background: var(--glass-border); border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #fbc02d; width: 0%; transition: width 0.5s ease;}
+        .dash-actions { display: flex; gap: 12px; margin-top: 15px; }
+        .dash-actions .btn { flex: 1; padding: 10px; font-size: 14px; border-radius: 8px;}
+        .syllabus-footer { display: flex; justify-content: space-between; font-size: 12px; color: var(--primary); border-top: 1px solid var(--glass-border); padding-top: 12px; margin-top: 15px; }
+
+        header.test-head { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-bottom: 10px; margin-inline: 10px; }
+        .header-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: 700; background: var(--card-bg); border: 1px solid var(--glass-border); color: var(--danger); padding: 5px 12px; border-radius: 20px; }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 0 10px 10px 10px; }
+        .question-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .q-header { padding: 10px 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
+        .q-body { flex: 1; padding: 15px; overflow-y: auto; font-size: 16px; line-height: 1.6; }
+        
+        .en-q { display: block; font-size: 0.90em; color: var(--text-muted); margin-top: 8px; font-weight: 500; font-family: 'Poppins', sans-serif;}
+
+        .options-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;}
+        .option { padding: 12px; border: 2px solid var(--glass-border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--option-bg); font-weight: 500; font-size: 15px;}
+        .option.selected { border-color: var(--primary); background: var(--option-selected); color: var(--primary); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--glass-border); display: flex; justify-content: center; align-items: center; font-weight: bold; }
+        .option.selected .opt-label { background: var(--primary); color: white; border-color: var(--primary);}
+        
+        .q-footer { padding: 10px; border-top: 1px solid var(--glass-border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-radius: 0 0 12px 12px; }
+
+        .palette-section { width: 320px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .palette-header { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; font-weight: bold; font-size: 15px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; font-size: 12px; border-bottom: 1px solid var(--glass-border); font-weight: 500;}
+        .stat-item { display: flex; align-items: center; gap: 6px;}
+        .badge { width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 10px; font-weight: bold;}
+        .s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);} 
+        .s-1 { background: var(--success); } .s-2 { background: var(--danger); } .s-3 { background: var(--purple); } 
+        .s-4 { background: var(--primary); position: relative; }
+        .s-4::after { content: '✔'; position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; background: white; color: var(--primary); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 8px; }
+        
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .p-btn.s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);}
+        .p-btn.active { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.1);}
+        .submit-area { padding: 10px; border-top: 1px solid var(--glass-border); border-radius: 0 0 12px 12px;}
+
+        #result-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        #solution-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        .sol-card { padding: 20px; margin-bottom: 15px; width: 100%; max-width: 800px; page-break-inside: avoid;}
+        .sol-opt { padding: 10px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; gap: 10px; align-items: center; font-size: 15px; background: var(--card-bg);}
+        .sol-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); text-decoration: line-through;}
+        .sol-exp { margin-top: 15px; padding: 15px; background: rgba(37, 99, 235, 0.05); border: 1px solid var(--glass-border); border-left: 4px solid var(--primary); border-radius: 8px; font-size: 14.5px; line-height: 1.6; }
+        .sol-exp ul { padding-left: 20px; margin-top: 8px; }
+        .sol-exp li { margin-bottom: 6px; }
+
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+
+        @media (max-width: 992px) {
+            .main-area { flex-direction: column; overflow-y: auto;}
+            .question-section { flex: none; min-height: 450px;}
+            .palette-section { width: 100%; flex: none; min-height: 350px;}
+            .q-footer .btn { padding: 10px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <div id="dashboard-screen" class="screen active">
+        <div class="dash-header-top">
+            <span style="cursor: pointer;" onclick="alert('Going Back')">&#8592;</span>
+            Mock Tests
+        </div>
+
+        <div class="dash-content">
+            <div id="dash-unattempted" style="display: none;">
+                <div class="section-title">Suggested Next Test</div>
+                <div class="dash-card">
+                    <div class="test-title">Haryana GK Mock Test - Part 10</div>
+                    <div class="test-meta">
+                        <span>25 Qs • 25 mins • 25.0 Marks</span>
+                    </div>
+                    <div class="test-meta" style="justify-content: flex-end;">
+                        <button class="btn btn-outline" style="padding: 6px 20px; border-radius: 20px;" onclick="startTest()">Start Test 🚀</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span>Syllabus: Haryana General Knowledge (Set 10)</span>
+                        <span style="color:var(--success);">🔗 Share</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dash-attempted" style="display: none;">
+                <div class="dash-card">
+                    <div class="test-title">Haryana GK Mock Test - Part 10</div>
+                    <div class="test-meta" style="margin-bottom: 5px;">
+                        <span id="dash-score-text" style="font-size: 15px; color: var(--text-muted);">0/25.0 Marks</span>
+                    </div>
+                    <div class="progress-container"><div class="progress-fill" id="dash-progress-bar"></div></div>
+                    <div class="dash-actions">
+                        <button class="btn btn-outline" onclick="viewSavedResults()">View Results</button>
+                        <button class="btn btn-outline" onclick="reattemptTest()">Reattempt &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px; font-size: 2rem;">Test Paused ⏸️</h2>
+        <button class="btn btn-primary" style="font-size: 1.2rem; padding: 10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+    </div>
+
+    <div id="test-screen" class="screen">
+        <header class="glass-panel test-head">
+            <div class="header-title">Haryana GK Part 10</div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="toggleTheme()">🌓 Theme</button>
+                <button class="btn btn-warning" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="togglePause()">⏸ Pause</button>
+                <div class="timer-box">⏱ <span id="timer-display">25:00</span></div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="glass-panel question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--success); font-weight:bold;">+1 <span style="color: var(--text-muted); font-weight:normal;">|</span> <span style="color: var(--danger);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <button class="btn btn-mark" onclick="markReview()">Mark & Next</button>
+                    <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                    <button class="btn btn-prev" onclick="changeQ(-1)">Previous</button>
+                    <button class="btn btn-primary" onclick="saveNext()">Save & Next</button>
+                </div>
+            </div>
+
+            <div class="glass-panel palette-section">
+                <div class="palette-header">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">25</div> Not Visit</div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn btn-primary" style="width: 100%; background: var(--success); font-size: 15px; padding: 10px;" onclick="submitTest()">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="result-screen" class="screen">
+        <div style="width: 100%; max-width: 800px; margin-bottom: 15px;"><button class="btn btn-clear" onclick="showDashboard()">&#8592; Back to Dashboard</button></div>
+        <div class="glass-panel" style="max-width: 800px; width: 100%; padding: 25px;">
+            <h1 style="color: var(--primary); text-align: center;">Test Submitted Successfully! 🎉</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 25px 0;">
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-score" style="color: var(--primary); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Score</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-attempt" style="color: var(--success); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Attempted</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-wrong" style="color: var(--danger); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Wrong</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-acc" style="color: var(--purple); font-size: 1.8rem;">0%</h2><p style="color: var(--text-muted); font-size:12px;">Accuracy</p></div>
+            </div>
+            <button class="btn btn-primary" style="width:100%; font-size: 15px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+        </div>
+    </div>
+
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%; margin:0 auto;">
+            <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 12px 15px; position: sticky; top: 5px; z-index: 10;">
+                <h3 style="color: var(--primary);">Detailed Solutions</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" style="padding: 5px 12px; font-size: 13px; background: var(--success);" onclick="downloadPDF()">📥 Download PDF</button>
+                    <button class="btn btn-clear" style="padding: 5px 12px; font-size: 13px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+                </div>
+            </div>
+            <div id="sol-container"></div>
+        </div>
+    </div>
+
+<script>
+    const MEMORY_STORE = {};
+    function safeGetItem(key) { try { return localStorage.getItem(key) || MEMORY_STORE[key] || null; } catch(e) { return MEMORY_STORE[key] || null; } }
+    function safeSetItem(key, value) { try { localStorage.setItem(key, value); } catch(e) {} MEMORY_STORE[key] = value; }
+    function safeRemoveItem(key) { try { localStorage.removeItem(key); } catch(e) {} delete MEMORY_STORE[key]; }
+
+    const STORAGE_KEY = 'haryana_gk_set_10_active'; 
+    const COMPLETED_KEY = 'haryana_gk_set_10_comp';
+
+    const finalQuestions = [
+  {
+    "q": "1. भगवान विश्वकर्मा के नाम पर स्थापित कौशल विकास विश्वविद्यालय स्थापित किया गया?<br><span class='en-q'>The Skill Development University established in the name of Lord Vishwakarma is located at?</span>",
+    "o": [
+      "कुरुक्षेत्र में / Kurukshetra",
+      "पलवल में / Palwal",
+      "भिवानी में / Bhiwani",
+      "जींद में / Jind"
+    ],
+    "a": 1,
+    "e": "<b>हल:</b> हरियाणा में भगवान विश्वकर्मा के नाम पर स्थापित कौशल विकास विश्वविद्यालय दुधौला (पलवल) में स्थित है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>यह भारत का पहला कौशल विश्वविद्यालय (Skill University) है।</li><li>यह पलवल जिले के दुधौला गाँव में स्थित है।</li><li>इसका नाम भगवान विश्वकर्मा के नाम पर रखा गया है, जिन्हें ब्रह्मांड का दिव्य वास्तुकार माना जाता है।</li><li>इसकी स्थापना का मुख्य उद्देश्य युवाओं को व्यावहारिक प्रशिक्षण और रोजगारोन्मुखी कौशल प्रदान करना है।</li><li>यह 'स्किल इंडिया मिशन' (Skill India Mission) के विजन को मजबूती प्रदान करता है।</li></ul>"
+  },
+  {
+    "q": "2. प्रसिद्ध भारतीय राजनीतिज्ञ श्रीमती सुषमा स्वराज का जन्म हरियाणा के किस जिले में हुआ था?<br><span class='en-q'>Famous Indian politician Smt. Sushma Swaraj was born in which district of Haryana?</span>",
+    "o": [
+      "अम्बाला / Ambala",
+      "रोहतक / Rohtak",
+      "पंचकुला / Panchkula",
+      "हिसार / Hisar"
+    ],
+    "a": 0,
+    "e": "<b>हल:</b> प्रसिद्ध भारतीय राजनीतिज्ञ श्रीमती सुषमा स्वराज का जन्म हरियाणा के अम्बाला (Ambala) जिले में हुआ था।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>उनका जन्म 14 फरवरी 1952 को अम्बाला कैंट में हुआ था।</li><li>वे भारत की पूर्व विदेश मंत्री (External Affairs Minister) रही हैं।</li><li>वे दिल्ली की पहली महिला मुख्यमंत्री (1998) भी थीं।</li><li>हरियाणा सरकार ने उनके नाम पर महिलाओं के लिए 'सुषमा स्वराज पुरस्कार' (Sushma Swaraj Award) शुरू किया है, जिसमें 5 लाख रुपये की राशि दी जाती है।</li><li>अम्बाला के सिटी बस स्टैंड का नाम बदलकर 'सुषमा स्वराज बस स्टैंड' कर दिया गया है।</li></ul>"
+  },
+  {
+    "q": "3. नाहर सिंह स्टेडियम हरियाणा के किस जिले में स्थित है?<br><span class='en-q'>Nahar Singh Stadium is located in which district of Haryana?</span>",
+    "o": [
+      "अम्बाला / Ambala",
+      "गुड़गाँव / Gurugram",
+      "फरीदाबाद / Faridabad",
+      "रोहतक / Rohtak"
+    ],
+    "a": 2,
+    "e": "<b>हल:</b> नाहर सिंह स्टेडियम हरियाणा के फरीदाबाद जिले में स्थित है, जिसे मयूर स्टेडियम के नाम से भी जाना जाता है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>इसे पहले 'मयूर स्टेडियम' (Mayur Stadium) कहा जाता था।</li><li>यह स्टेडियम 1981 में फरीदाबाद में बनकर तैयार हुआ था।</li><li>इसका नाम बल्लभगढ़ के अमर शहीद राजा नाहर सिंह के नाम पर रखा गया है।</li><li>यहाँ पहला रणजी मैच 1982 में हरियाणा और सर्विसेज़ के बीच खेला गया था।</li><li>इस मैदान पर पहला अंतर्राष्ट्रीय वनडे (ODI) मैच 19 जनवरी 1988 को भारत और वेस्टइंडीज के बीच हुआ था।</li></ul>"
+  },
+  {
+    "q": "4. हरियाणा पंचायती राज अधिनियम, 1994 किस तारीख से प्रभावी हुआ?<br><span class='en-q'>From which date did the Haryana Panchayati Raj Act, 1994 become effective?</span>",
+    "o": [
+      "22 अप्रैल, 1994 / 22 April 1994",
+      "25 अप्रैल, 1995 / 25 April 1995",
+      "22 जुलाई, 1994 / 22 July 1994",
+      "इनमें से कोई জৈন / None of these"
+    ],
+    "a": 0,
+    "e": "<b>हल:</b> संविधान के 73वें संशोधन के अनुरूप हरियाणा पंचायती राज अधिनियम 22 अप्रैल, 1994 को प्रभावी हुआ।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>यह अधिनियम संविधान के 73वें संशोधन (1992) के तहत लागू किया गया।</li><li>यह हरियाणा में त्रि-स्तरीय पंचायती राज (ग्राम पंचायत, पंचायत समिति, जिला परिषद) की स्थापना करता है।</li><li>इसका उद्देश्य ग्रामीण स्तर पर सत्ता का विकेंद्रीकरण करना है।</li><li>हरियाणा पंचायती राज नियमावली की रचना इसके बाद 1995 में की गई।</li><li>इसमें महिलाओं, अनुसूचित जातियों और पिछड़े वर्गों के लिए सीटों के आरक्षण का प्रावधान है।</li></ul>"
+  },
+  {
+    "q": "5. निम्न में से कौन सा एक शाल का प्रकार नहीं है?<br><span class='en-q'>Which of the following is not a type of shawl?</span>",
+    "o": [
+      "फुलकारी / Phulkari",
+      "बाग / Bagh",
+      "दुर्री / Durri",
+      "चोपे / Chope"
+    ],
+    "a": 2,
+    "e": "<b>हल:</b> दुर्री (Durri) शाल का प्रकार नहीं है, बल्कि यह फर्श पर बिछाने वाला एक प्रकार का कालीन या दरी है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>फुलकारी (Phulkari) एक पारंपरिक ओढ़नी/शाल है जिस पर फूलों की सुंदर कढ़ाई की जाती है।</li><li>बाग (Bagh) फुलकारी का ही एक भारी रूप है जिसमें कपड़े का बेस पूरी तरह से कढ़ाई से ढक जाता है।</li><li>चोपे (Chope) लाल रंग की एक विशेष शाल होती है जिसे विवाह के समय नानी द्वारा उपहार में दिया जाता है।</li><li>दुर्री सूत या ऊन से बनी एक मोटी चादर होती है जिसका उपयोग मुख्य रूप से बिछाने के लिए होता है।</li><li>ये सभी हस्तशिल्प हरियाणा और पंजाब की समृद्ध सांस्कृतिक विरासत का हिस्सा हैं।</li></ul>"
+  },
+  {
+    "q": "6. एक राजकीय घोषणा-पत्र 'जन एकता विज्ञप्ति' किसके द्वारा प्रकाशित किया गया था?<br><span class='en-q'>The political manifesto 'Jan Ekta Vigyapti' was published by whom?</span>",
+    "o": [
+      "मुबाशीर हसन / Mubashir Hasan",
+      "अभिनव / Abhinav",
+      "विष्णु दत्त / Vishnu Dutt",
+      "अल्ताफ हुसैन हाली / Altaf Hussain Hali"
+    ],
+    "a": 0,
+    "e": "<b>हल:</b> राजकीय घोषणा-पत्र 'जन एकता विज्ञप्ति' मुबाशीर हसन (Mubashir Hasan) द्वारा प्रकाशित किया गया था।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>डॉ. मुबाशीर हसन का जन्म 22 जनवरी 1922 को पानीपत में हुआ था।</li><li>1947 के विभाजन के दौरान वे भारत से पाकिस्तान चले गए थे।</li><li>वे पाकिस्तान पीपुल्स पार्टी (PPP) के सह-संस्थापक थे।</li><li>उन्होंने जुल्फिकार अली भुट्टो के साथ मिलकर इस पार्टी का गठन किया था।</li><li>वे एक प्रमुख मानवाधिकार कार्यकर्ता और पाकिस्तान के पूर्व वित्त मंत्री भी रहे।</li></ul>"
+  },
+  {
+    "q": "7. विद्वानों के अनुसार, 'हरियाणा' किसका अपभ्रंश है?<br><span class='en-q'>According to scholars, 'Haryana' is a corrupted form (Apabhramsha) of which word?</span>",
+    "o": [
+      "ढील्लिका / Dhillika",
+      "हरिनामा / Harinama",
+      "अहीराणा / Ahirana",
+      "इनमें से कोई नहीं / None of these"
+    ],
+    "a": 2,
+    "e": "<b>हल:</b> विद्वानों के मत में हरियाणा शब्द 'अहीराणा' (Ahirana) का अपभ्रंश है, क्योंकि यह क्षेत्र अहीरों (यादवों) का निवास स्थान रहा है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>प्राचीन काल में अच्छी चरागाह भूमि होने के कारण अहीरों (Ahirs) का यहाँ निवास रहा।</li><li>अहीर जाति की बहुलता के कारण इस क्षेत्र को अहीराणा/अहीरवाटी कहा जाने लगा।</li><li>कालांतर में उच्चारण बदलते-बदलते यह 'अहीराणा' से बिगड़कर 'हरियाणा' बन गया।</li><li>कुछ अन्य विद्वानों के अनुसार यह 'हरि' (भगवान) और 'अयण' (घर) से मिलकर बना है, अर्थात् 'ईश्वर का घर'।</li><li>ऋग्वेद में भी इस क्षेत्र के लिए 'रज हरियाणे' शब्द का उल्लेख मिलता है।</li></ul>"
+  },
+  {
+    "q": "8. हरियाणा राज्य के पुलिस कमिश्नरी के संदर्भ में बेमेल का चयन कीजिए।<br><span class='en-q'>Select the odd one out regarding Police Commissionerates in Haryana state.</span>",
+    "o": [
+      "पंचकुला / Panchkula",
+      "गुरुग्राम / Gurugram",
+      "फरीदाबाद / Faridabad",
+      "पलवल / Palwal"
+    ],
+    "a": 3,
+    "e": "<b>हल:</b> पलवल पुलिस कमिश्नरी नहीं है, अतः यह बेमेल है। (यह फरीदाबाद पुलिस रेंज के अंतर्गत आता है)।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>पलवल हरियाणा के दक्षिणी भाग में स्थित एक जिला है, जो पुलिस कमिश्नरी प्रणाली में नहीं आता।</li><li>हरियाणा के प्रमुख शहरी क्षेत्रों जैसे गुरुग्राम, फरीदाबाद और पंचकुला में पुलिस कमिश्नरी प्रणाली लागू है।</li><li>हाल ही में सोनीपत (Sonipat) को भी हरियाणा की नई पुलिस कमिश्नरी बनाया गया है।</li><li>पुलिस कमिश्नरी प्रणाली में पुलिस अधिकारियों को मजिस्ट्रियल शक्तियाँ (Magisterial powers) प्राप्त होती हैं।</li><li>यह व्यवस्था बड़े शहरों में कानून-व्यवस्था को तेजी से सँभालने के लिए लागू की जाती है।</li></ul>"
+  },
+  {
+    "q": "9. अशोक कालीन टोपरा अभिलेख को किसने दिल्ली के फिरोजशाह कोटला में स्थापित किया था?<br><span class='en-q'>Who established the Ashokan-era Topra pillar at Feroz Shah Kotla in Delhi?</span>",
+    "o": [
+      "फिरोजशाह तुगलक / Feroz Shah Tughlaq",
+      "सुल्तान नासिरुद्दीन / Sultan Nasiruddin",
+      "इब्राहिम लोदी / Ibrahim Lodi",
+      "इनमें से कोई नहीं / None of these"
+    ],
+    "a": 0,
+    "e": "<b>हल:</b> टोपरा अभिलेख को सुल्तान फिरोजशाह तुगलक (Feroz Shah Tughlaq) ने यमुनानगर (टोपरा) से लाकर दिल्ली के फिरोजशाह कोटला में स्थापित करवाया था।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>यह मूल रूप से टोपरा कलां गाँव (वर्तमान में हरियाणा के यमुनानगर जिले) में स्थित था।</li><li>14वीं शताब्दी में फिरोजशाह तुगलक इसे बड़ी सावधानी से 42 पहियों वाली गाड़ी में दिल्ली ले गया था।</li><li>इस स्तंभ पर सम्राट अशोक के सात (7) राजादेश (Edicts) खुदे हुए हैं।</li><li>यह भारत का एकमात्र ऐसा स्तंभ है जिस पर अशोक के सभी सात प्रमुख स्तंभ लेख मौजूद हैं।</li><li>इसकी लिपि ब्राह्मी (Brahmi) और भाषा प्राकृत (Prakrit) है।</li></ul>"
+  },
+  {
+    "q": "10. भारत के प्रसिद्ध शास्त्रीय गायक पं. जसराज का जन्म कहाँ हुआ?<br><span class='en-q'>Where was the famous Indian classical singer Pt. Jasraj born?</span>",
+    "o": [
+      "रोहतक / Rohtak",
+      "हिसार / Hisar",
+      "झज्जर / Jhajjar",
+      "जींद / Jind"
+    ],
+    "a": 1,
+    "e": "<b>हल:</b> प्रसिद्ध शास्त्रीय गायक पंडित जसराज का जन्म पीली मंदोरी गाँव में हुआ था, जो तत्कालीन हिसार (Hisar) जिले में था (वर्तमान में फतेहाबाद)।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>उनका जन्म 28 जनवरी 1930 को हुआ था।</li><li>वर्तमान भौगोलिक दृष्टि से उनका गाँव पीली मंदोरी फतेहाबाद जिले में आता है।</li><li>वे हिंदुस्तानी शास्त्रीय संगीत के मेवाती घराने (Mewati Gharana) से ताल्लुक रखते थे।</li><li>उन्हें भारत सरकार द्वारा पद्म श्री, पद्म भूषण और पद्म विभूषण (2000) से सम्मानित किया गया था।</li><li>अंतर्राष्ट्रीय खगोलीय संघ (IAU) ने 2006 में खोजे गए एक क्षुद्रग्रह (Asteroid 300128) का नाम उनके सम्मान में 'पंडितजसराज' रखा था।</li></ul>"
+  },
+  {
+    "q": "11. हरियाणा का कौन सा जिला चावल का कटोरा नाम से जाना जाता है?<br><span class='en-q'>Which district of Haryana is known as the 'Rice Bowl'?</span>",
+    "o": [
+      "करनाल / Karnal",
+      "भिवानी / Bhiwani",
+      "पानीपत / Panipat",
+      "अम्बाला / Ambala"
+    ],
+    "a": 0,
+    "e": "<b>हल:</b> हरियाणा के करनाल (Karnal) जिले को इसके उच्च गुणवत्ता वाले बासमती चावल के उत्पादन के कारण 'चावल का कटोरा' (Rice Bowl) कहा जाता है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>करनाल दुनिया भर में अपने सुगंधित बासमती चावल के निर्यात के लिए प्रसिद्ध है।</li><li>यमुना नदी के किनारे स्थित होने के कारण यहाँ की मिट्टी बहुत उपजाऊ है।</li><li>करनाल के साथ-साथ कुरुक्षेत्र, कैथल और जींद को मिलाकर हरियाणा का 'धान का कटोरा' कहा जाता है।</li><li>करनाल में ही राष्ट्रीय डेयरी अनुसंधान संस्थान (NDRI) स्थित है।</li><li>यहाँ का लिबर्टी जूता उद्योग (Liberty Shoes) भी विश्व स्तर पर विख्यात है।</li></ul>"
+  },
+  {
+    "q": "12. हरियाणा का ऐसा जिला जिसमें रेलवे लाइन नहीं है?<br><span class='en-q'>Which district in Haryana does not have a railway line?</span>",
+    "o": [
+      "चरखी दादरी / Charkhi Dadri",
+      "नूंह / Nuh",
+      "कैथल / Kaithal",
+      "इनमें से कोई नहीं / None of these"
+    ],
+    "a": 1,
+    "e": "<b>हल:</b> नूंह (Nuh), जिसे पहले मेवात कहा जाता था, हरियाणा का वह जिला है जहाँ लंबे समय तक कोई रेलवे लाइन नहीं थी (यद्यपि अब नई परियोजनाओं पर काम चल रहा है)।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>नूंह हरियाणा के सबसे दक्षिणी और सामाजिक-आर्थिक रूप से पिछड़े जिलों में से एक है।</li><li>रेलवे कनेक्टिविटी की कमी ने इस क्षेत्र के औद्योगिक विकास को धीमा किया।</li><li>नूंह अपनी अरावली पहाड़ियों और ऐतिहासिक स्मारकों (जैसे चूही मल का तालाब) के लिए जाना जाता है।</li><li>यह जिला मुख्य रूप से मेव (Mev) मुस्लिम बहुल क्षेत्र है, इसलिए इसे मेवात कहा जाता था।</li><li>हरियाणा सरकार और केंद्र सरकार अब इस क्षेत्र को रेलवे नेटवर्क से जोड़ने के लिए नई लाइनें बिछा रही हैं।</li></ul>"
+  },
+  {
+    "q": "13. कर्णम मल्लेश्वरी का नाम किस खेल से सुसंबद्ध है?<br><span class='en-q'>Karnam Malleswari's name is associated with which sport?</span>",
+    "o": [
+      "कुश्ती / Wrestling",
+      "भारोत्तोलन / Weightlifting",
+      "एथलेटिक्स / Athletics",
+      "जिम्नास्टिक्स / Gymnastics"
+    ],
+    "a": 1,
+    "e": "<b>हल:</b> कर्णम मल्लेश्वरी का नाम भारोत्तोलन (Weightlifting) से जुड़ा है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>वे ओलंपिक पदक जीतने वाली पहली भारतीय महिला हैं (सिडनी 2000 में कांस्य पदक)।</li><li>उन्होंने 69 किलोग्राम भार वर्ग में यह ऐतिहासिक उपलब्धि हासिल की थी।</li><li>हालाँकि उनका जन्म आंध्र प्रदेश में हुआ था, लेकिन वे हरियाणा के यमुनानगर में ब्याही गई हैं।</li><li>उन्हें 1995 में भारत के सर्वोच्च खेल सम्मान 'राजीव गांधी खेल रत्न' से सम्मानित किया गया था।</li><li>वर्तमान में वे दिल्ली खेल विश्वविद्यालय (DSU) की पहली कुलपति (Vice-Chancellor) हैं।</li></ul>"
+  },
+  {
+    "q": "14. कैथल की स्थापना कथित रूप से महाभारत के किस मिथकीय पात्र के द्वारा की गई थी?<br><span class='en-q'>Kaithal is said to have been founded by which mythical character from the Mahabharata?</span>",
+    "o": [
+      "भीम / Bhima",
+      "द्रोणाचार्य / Dronacharya",
+      "भीष्म पितामह / Bhishma Pitamah",
+      "युधिष्ठिर / Yudhishthira"
+    ],
+    "a": 3,
+    "e": "<b>हल:</b> पौराणिक मान्यताओं के अनुसार, कैथल की स्थापना पांडवों के सबसे बड़े भाई युधिष्ठिर (Yudhishthira) ने की थी।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>कैथल का प्राचीन संस्कृत नाम 'कपिस्थल' (Kapisthal) है, जिसका अर्थ है बंदरों का निवास स्थान।</li><li>इसे भगवान हनुमान का जन्मस्थान भी माना जाता है।</li><li>यहाँ नवग्रह कुंड (Navagraha Kund) स्थित हैं, जिनके कारण इसे हरियाणा की 'छोटी काशी' भी कहा जाता है।</li><li>दिल्ली की पहली महिला शासक रजिया सुल्ताना का मकबरा कैथल में ही स्थित है।</li><li>यह शहर ऐतिहासिक और पौराणिक दोनों दृष्टियों से अत्यधिक महत्त्वपूर्ण है।</li></ul>"
+  },
+  {
+    "q": "15. अस्सल बोहर पेंटिंग ....... शैली की हैं?<br><span class='en-q'>Asthal Bohar paintings belong to which style?</span>",
+    "o": [
+      "मुग़ल / Mughal",
+      "राजपूत / Rajput",
+      "काँगड़ा / Kangra",
+      "इनमें से कोई नहीं / None of these"
+    ],
+    "a": 1,
+    "e": "<b>हल:</b> अस्थल बोहर (रोहतक) में मिली चित्रकला (Paintings) मुख्य रूप से 'राजपूत शैली' (Rajput style) की हैं।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>अस्थल बोहर मठ रोहतक जिले में स्थित एक प्रमुख धार्मिक स्थल है।</li><li>इस मठ का पुनरुद्धार बाबा मस्तनाथ ने किया था (यह नाथ संप्रदाय का प्रमुख केंद्र है)।</li><li>यहाँ की कलाकृतियों में स्थानीय हरियाणवी संस्कृति और राजस्थानी (राजपूत) कला का सुंदर मिश्रण देखने को मिलता है।</li><li>इन चित्रों में धार्मिक और पौराणिक कथाओं (जैसे शिव-पार्वती, कृष्ण लीला) को दर्शाया गया है।</li><li>हरियाणा में राजपूत और पहाड़ी शैली का प्रभाव यहाँ की भित्ति चित्रों (Fresco) में आम है।</li></ul>"
+  },
+  {
+    "q": "16. हरियाणा की पहली महिला कुश्तीबाज जिसने राष्ट्रमण्डल खेलों में स्वर्ण पदक जीता है-<br><span class='en-q'>The first female wrestler from Haryana to win a gold medal in the Commonwealth Games:</span>",
+    "o": [
+      "बबिता फोगाट / Babita Phogat",
+      "गीता फोगाट / Geeta Phogat",
+      "साक्षी मलिक / Sakshi Malik",
+      "इनमें से कोई नहीं / None of these"
+    ],
+    "a": 1,
+    "e": "<b>हल:</b> गीता फोगाट (Geeta Phogat) हरियाणा (और भारत) की पहली महिला कुश्तीबाज हैं जिन्होंने 2010 के दिल्ली राष्ट्रमंडल खेलों में स्वर्ण पदक जीता था।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>गीता ने 2010 के दिल्ली कॉमनवेल्थ गेम्स में 55 किलोग्राम फ्रीस्टाइल कुश्ती में स्वर्ण जीता था।</li><li>वे हरियाणा के चरखी दादरी जिले के बलाली (Balali) गाँव की रहने वाली हैं।</li><li>उनके पिता और कोच महावीर सिंह फोगाट हैं (जिन पर द्रोणाचार्य पुरस्कार विजेता और 'दंगल' फिल्म आधारित है)।</li><li>गीता ओलंपिक (2012 लंदन) के लिए क्वालीफाई करने वाली पहली भारतीय महिला पहलवान भी हैं।</li><li>उनकी छोटी बहन बबिता फोगाट ने भी कुश्ती में कई अंतर्राष्ट्रीय पदक जीते हैं।</li></ul>"
+  },
+  {
+    "q": "17. सूरजकुंड क्राफ्ट मेला प्रथम बार किस वर्ष आरंभ हुआ था?<br><span class='en-q'>In which year did the Surajkund Craft Mela start for the first time?</span>",
+    "o": [
+      "1987",
+      "1991",
+      "2001",
+      "1961"
+    ],
+    "a": 0,
+    "e": "<b>हल:</b> विश्व प्रसिद्ध सूरजकुंड क्राफ्ट मेला (Surajkund Crafts Mela) पहली बार वर्ष 1987 में शुरू हुआ था।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>यह मेला हर साल फरवरी के महीने में फरीदाबाद (हरियाणा) में आयोजित किया जाता है।</li><li>यह दुनिया के सबसे बड़े शिल्प मेलों में से एक है, जो भारतीय हस्तशिल्प और हथकरघा का प्रदर्शन करता है।</li><li>वर्ष 2013 में इसे अंतर्राष्ट्रीय मेले (International level) का दर्जा दिया गया था।</li><li>इस मेले में हर साल एक 'थीम स्टेट' (Theme State) और एक 'पार्टनर देश' (Partner Nation) चुना जाता है।</li><li>इसका मुख्य उद्देश्य ग्रामीण शिल्पकारों की कला को बढ़ावा देना और पर्यटन को आकर्षित करना है।</li></ul>"
+  },
+  {
+    "q": "18. निम्न में से कौन-से जिले हरियाणा के दक्षिण क्षेत्र में आते हैं?<br><span class='en-q'>Which of the following districts fall in the southern region of Haryana?</span>",
+    "o": [
+      "मेवात / Mewat (Nuh)",
+      "पलवल / Palwal",
+      "महेंद्रगढ़ / Mahendragarh",
+      "यह सभी / All of these"
+    ],
+    "a": 3,
+    "e": "<b>हल:</b> मेवात (नूंह), पलवल और महेंद्रगढ़ - ये सभी जिले हरियाणा के दक्षिणी भौगोलिक क्षेत्र में आते हैं।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>हरियाणा का दक्षिणी क्षेत्र राजस्थान की सीमा से लगा हुआ है और यहाँ अरावली पर्वत शृंखला (Aravalli Range) की पहाड़ियाँ पाई जाती हैं।</li><li>यहाँ की जलवायु उत्तरी हरियाणा की तुलना में अधिक शुष्क (Dry) है।</li><li>महेंद्रगढ़ जिला अपने खनिज संसाधनों (Minerals) के लिए पूरे राज्य में प्रसिद्ध है।</li><li>मेवात (वर्तमान नाम नूंह) मेव संस्कृति का केंद्र है।</li><li>इस क्षेत्र में सिंचाई मुख्य रूप से नहरों और ट्यूबवेल पर निर्भर है।</li></ul>"
+  },
+  {
+    "q": "19. कैथल के फरल गाँव में किस मेले का आयोजन होता है?<br><span class='en-q'>Which fair is organized in Phalgu (Faral) village of Kaithal?</span>",
+    "o": [
+      "फल्गु मेला / Phalgu Mela",
+      "पेहोवा मेला / Pehowa Mela",
+      "कपाल मोचन मेला / Kapal Mochan Mela",
+      "ये सभी / All of these"
+    ],
+    "a": 0,
+    "e": "<b>हल:</b> कैथल जिले के फरल (Faral) गाँव में 'फल्गु मेला' (Phalgu Mela) का आयोजन होता है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>यह मेला सोमवती अमावस्या (Somavati Amavasya) के अवसर पर पितृ पक्ष (श्राद्ध) के दौरान लगता है।</li><li>लाखों लोग अपने पूर्वजों के पिंडदान (Pind Daan) और तर्पण के लिए इस फल्गु तीर्थ पर आते हैं।</li><li>महाभारत और वामन पुराण में भी फल्गु तीर्थ का विशेष उल्लेख मिलता है।</li><li>कपाल मोचन मेला यमुनानगर में और पेहोवा मेला कुरुक्षेत्र में लगता है।</li><li>मान्यता है कि यहाँ तर्पण करने से पूर्वजों को मोक्ष की प्राप्ति होती है।</li></ul>"
+  },
+  {
+    "q": "20. हरियाणा नागरिक उड्डयन संस्थान का विलय पूर्व करनाल उड्डयन क्लब, हिसार उड्डयन क्लब तथा पिंजौर उड्डयन क्लब के साथ कब किया गया था?<br><span class='en-q'>When was the Haryana Institute of Civil Aviation merged with the former Karnal, Hisar, and Pinjore Aviation Clubs?</span>",
+    "o": [
+      "1 अप्रैल, 1999 / 1 April 1999",
+      "11 नवंबर, 1999 / 11 November 1999",
+      "ये पृथक् निकाय हैं / They are separate bodies",
+      "इनमें से कोई नहीं / None of these"
+    ],
+    "a": 0,
+    "e": "<b>हल:</b> हरियाणा नागरिक उड्डयन संस्थान (HICA) का विलय करनाल, हिसार और पिंजौर के उड्डयन क्लबों के साथ 1 अप्रैल 1999 को किया गया था।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>इस विलय का उद्देश्य विमानन प्रशिक्षण (Aviation training) को एक ही छतरी के नीचे सुव्यवस्थित करना था।</li><li>HICA इच्छुक पायलटों को कमर्शियल और प्राइवेट पायलट लाइसेंस (CPL/PPL) के लिए उड़ान प्रशिक्षण प्रदान करता है।</li><li>करनाल, हिसार और पिंजौर राज्य के तीन प्रमुख नागरिक विमानन केंद्र (Civil Aviation Centres) हैं।</li><li>हिसार एयरपोर्ट को अब अंतर्राष्ट्रीय विमानन हब (International Aviation Hub) के रूप में विकसित किया जा रहा है।</li><li>हरियाणा सरकार इसके माध्यम से एयरो-स्पोर्ट्स और ग्लाइडिंग को भी बढ़ावा देती है।</li></ul>"
+  },
+  {
+    "q": "21. किस जिले को श्रीकंठ कहा जाता है?<br><span class='en-q'>Which district is historically called 'Shrikanth'?</span>",
+    "o": [
+      "पानीपत / Panipat",
+      "गुरुग्राम / Gurugram",
+      "कुरुक्षेत्र / Kurukshetra",
+      "भिवानी / Bhiwani"
+    ],
+    "a": 2,
+    "e": "<b>हल:</b> प्राचीन काल में कुरुक्षेत्र (थानेसर) के आसपास के क्षेत्र को 'श्रीकंठ जनपद' (Srikantha Janapada) कहा जाता था।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>बाणभट्ट द्वारा रचित 'हर्षचरित' (Harshacharita) में इस क्षेत्र को 'श्रीकंठ जनपद' कहा गया है।</li><li>यह वर्धन (पुष्यभूति) वंश के महान सम्राट हर्षवर्धन की प्रारंभिक राजधानी थी।</li><li>यह क्षेत्र अपनी अत्यधिक उर्वरता और समृद्धि के लिए प्रसिद्ध था।</li><li>कुरुक्षेत्र को दुनिया भर में 'महाभारत' के युद्ध स्थल और भगवद्गीता के जन्मस्थान के रूप में जाना जाता है।</li><li>इसका नाम राजा कुरु के नाम पर 'कुरुक्षेत्र' (कुरु का क्षेत्र) पड़ा था।</li></ul>"
+  },
+  {
+    "q": "22. स्वतंत्रता सेनानी, जो बाद में हरियाणा राज्य के मुख्यमंत्री बने-<br><span class='en-q'>The freedom fighter who later became the Chief Minister of Haryana state:</span>",
+    "o": [
+      "किशन लाल भट्ट / Kishan Lal Bhatt",
+      "रणबीर सिंह हुड्डा / Ranbir Singh Hooda",
+      "ओमप्रकाश चौटाला / Om Prakash Chautala",
+      "चौ. देवीलाल / Ch. Devi Lal"
+    ],
+    "a": 3,
+    "e": "<b>हल:</b> चौधरी देवीलाल (Ch. Devi Lal) एक प्रमुख स्वतंत्रता सेनानी थे जो बाद में हरियाणा के मुख्यमंत्री और भारत के उप-प्रधानमंत्री बने।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>उन्हें प्यार से 'ताऊ' (Tau) और 'किसानों का मसीहा' (Messiah of Farmers) कहा जाता है।</li><li>उन्होंने युवावस्था में ही महात्मा गांधी के आह्वान पर स्वतंत्रता आंदोलन में बढ़-चढ़कर भाग लिया था।</li><li>वे दो बार (1977-1979 और 1987-1989) हरियाणा के मुख्यमंत्री रहे।</li><li>वे भारत के छठे उप-प्रधानमंत्री (1989-1991) भी बने।</li><li>बुढ़ापा पेंशन योजना और किसानों की कर्ज माफी जैसी ऐतिहासिक योजनाएँ उन्हीं की देन हैं।</li></ul>"
+  },
+  {
+    "q": "23. बाबर और इब्राहिम लोदी के बीच 1526 में प्रसिद्ध लड़ाई कहाँ लड़ी गई?<br><span class='en-q'>Where was the famous battle of 1526 fought between Babur and Ibrahim Lodi?</span>",
+    "o": [
+      "पानीपत / Panipat",
+      "रेवाड़ी / Rewari",
+      "कुरुक्षेत्र / Kurukshetra",
+      "इनमें से कोई नहीं / None of these"
+    ],
+    "a": 0,
+    "e": "<b>हल:</b> बाबर और इब्राहिम लोदी के बीच 21 अप्रैल 1526 को 'पानीपत की पहली लड़ाई' (First Battle of Panipat) लड़ी गई थी।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>इस लड़ाई में बाबर की जीत हुई और भारत में मुग़ल साम्राज्य (Mughal Empire) की नींव रखी गई।</li><li>इब्राहिम लोदी युद्ध के मैदान में मारा जाने वाला दिल्ली सल्तनत का पहला और एकमात्र सुल्तान था।</li><li>बाबर ने इस युद्ध में 'तुलुगमा युद्ध नीति' (Tulughma tactic) और तोपखाने (Artillery) का सफल प्रयोग किया था।</li><li>पानीपत में तीन ऐतिहासिक युद्ध हुए हैं (1526, 1556 और 1761)।</li><li>पानीपत को 'बुनकरों का शहर' (City of Weavers) भी कहा जाता है।</li></ul>"
+  },
+  {
+    "q": "24. पंजाब और हरियाणा उच्च न्यायालय का प्रथम मुख्य न्यायाधीश कौन था?<br><span class='en-q'>Who was the first Chief Justice of the Punjab and Haryana High Court (post-independence)?</span>",
+    "o": [
+      "न्यायमूर्ति रामलाल / Justice Ram Lall",
+      "न्यायमूर्ति हरबंस सिंह / Justice Harbans Singh",
+      "न्यायमूर्ति सुधीर रंजन दास / Justice Sudhir Ranjan Das",
+      "इनमें से कोई नहीं / None of these"
+    ],
+    "a": 0,
+    "e": "<b>हल:</b> 1947 में भारत की स्वतंत्रता के बाद पंजाब (और वर्तमान हरियाणा) उच्च न्यायालय के पहले मुख्य न्यायाधीश न्यायमूर्ति रामलाल (Justice Ram Lall) थे।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>15 अगस्त 1947 को भारत विभाजन के बाद शिमला में एक नया उच्च न्यायालय स्थापित किया गया, जिसके पहले मुख्य न्यायाधीश रामलाल बने।</li><li>बाद में 17 जनवरी 1955 को इस न्यायालय को चंडीगढ़ (Chandigarh) में स्थानांतरित कर दिया गया।</li><li>चंडीगढ़ में इस हाई कोर्ट के भवन का डिजाइन प्रसिद्ध फ्रांसीसी वास्तुकार 'ली कार्बूजिए' (Le Corbusier) ने तैयार किया था।</li><li>1966 में हरियाणा के गठन के बाद इसका नाम 'पंजाब और हरियाणा उच्च न्यायालय' कर दिया गया।</li><li>इस न्यायालय के अधिकार क्षेत्र में पंजाब, हरियाणा और केंद्र शासित प्रदेश चंडीगढ़ आते हैं।</li></ul>"
+  },
+  {
+    "q": "25. सुप्रसिद्ध मनसा देवी का मंदिर हरियाणा के किस जिले में है?<br><span class='en-q'>The famous Mansa Devi temple is in which district of Haryana?</span>",
+    "o": [
+      "फरीदाबाद / Faridabad",
+      "अम्बाला / Ambala",
+      "झज्जर / Jhajjar",
+      "पंचकुला / Panchkula"
+    ],
+    "a": 3,
+    "e": "<b>हल:</b> प्रसिद्ध माता मनसा देवी (Mata Mansa Devi) का मंदिर हरियाणा के पंचकुला (Panchkula) जिले में स्थित है।<br><br>💡 <b>महत्त्वपूर्ण तथ्य (Facts):</b><ul><li>यह मंदिर शिवालिक पर्वतमाला (Shivalik Hills) की तलहटी में स्थित है।</li><li>यह उत्तर भारत के प्रमुख शक्तिपीठों में से एक माना जाता है।</li><li>चैत्र (मार्च-अप्रैल) और आश्विन (सितंबर-अक्टूबर) के नवरात्रों के दौरान यहाँ विशाल मेला लगता है।</li><li>पटियाला के महाराजा द्वारा 1840 में मुख्य मंदिर के पास एक अन्य भव्य मंदिर बनवाया गया था।</li><li>हरियाणा सरकार के 'श्री माता मनसा देवी श्राइन बोर्ड' (SMMDSB) द्वारा इस मंदिर का प्रबंधन किया जाता है।</li></ul>"
+  }
+];
+
+    let state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+    let timerInterval = null;
+    let isPaused = false;
+
+    window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+    function initDashboard() {
+        showScreen('dashboard-screen');
+        let completedData = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) completedData = JSON.parse(dataStr);
+        } catch(e) {}
+
+        if (completedData) {
+            document.getElementById('dash-unattempted').style.display = 'none';
+            document.getElementById('dash-attempted').style.display = 'block';
+            document.getElementById('dash-score-text').innerText = `${completedData.score}/25.0 Marks`;
+            document.getElementById('dash-progress-bar').style.width = `${(completedData.score / 25) * 100}%`;
+        } else {
+            document.getElementById('dash-attempted').style.display = 'none';
+            document.getElementById('dash-unattempted').style.display = 'block';
+        }
+    }
+
+    function startTest() {
+        let saved = null;
+        try {
+            const savedStr = safeGetItem(STORAGE_KEY);
+            if(savedStr) saved = JSON.parse(savedStr);
+        } catch(e){}
+
+        if (saved && !saved.submitted) {
+            state = saved;
+        } else {
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+        }
+        initTestEnv();
+    }
+
+    function reattemptTest() {
+        if(confirm("Are you sure you want to start a fresh test? Your active progress will be lost.")) {
+            safeRemoveItem(STORAGE_KEY);
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+            initTestEnv();
+        }
+    }
+
+    function initTestEnv() {
+        showScreen('test-screen');
+        renderQuestion();
+        renderPalette();
+        updateStats();
+        
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+        setInterval(() => { if(!state.submitted) safeSetItem(STORAGE_KEY, JSON.stringify(state)); }, 2000);
+    }
+
+    function viewSavedResults() {
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(data) renderResultUI(data);
+    }
+
+    function showDashboard() { initDashboard(); }
+
+    function showScreen(id) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+    }
+
+    function updateTimer() {
+        if(isPaused || state.submitted) return;
+        if(state.time <= 0) { submitTest(); return; }
+        state.time--;
+        const m = Math.floor(state.time / 60), s = state.time % 60;
+        document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+    }
+
+    function toggleTheme() {
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    function renderQuestion() {
+        state.visited[state.currentQ] = true;
+        const q = finalQuestions[state.currentQ];
+        
+        let displayNo = state.currentQ + 1;
+        let qTextHtml = q.q;
+        let qMatch = qTextHtml.match(/^(\d+)\./);
+        if(qMatch) {
+            displayNo = qMatch[1];
+            qTextHtml = qTextHtml.substring(qMatch[0].length).trim();
+        }
+
+        document.getElementById('q-no').innerText = `Question ${displayNo}`;
+        document.getElementById('q-text').innerHTML = qTextHtml;
+        let opts = '';
+        q.o.forEach((opt, i) => {
+            const isSel = state.answers[state.currentQ] === i;
+            const selClass = isSel ? 'selected' : '';
+            const charLabel = String.fromCharCode(65 + i);
+            opts += `<div class="glass-panel option ${selClass}" onclick="selectOption(${i})"><div class="opt-label">${charLabel}</div><div style="flex:1;">${opt}</div></div>`;
+        });
+        document.getElementById('options-box').innerHTML = opts;
+        
+        renderPalette();
+        updateStats();
+    }
+
+    function selectOption(index) { state.answers[state.currentQ] = index; renderQuestion(); }
+    function clearResponse() { delete state.answers[state.currentQ]; delete state.marked[state.currentQ]; renderQuestion(); }
+    function markReview() { state.marked[state.currentQ] = true; changeQ(1); }
+    function saveNext() { delete state.marked[state.currentQ]; changeQ(1); }
+
+    function changeQ(step) {
+        const next = state.currentQ + step;
+        if(next >= 0 && next < finalQuestions.length) { state.currentQ = next; renderQuestion(); }
+    }
+
+    function renderPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        finalQuestions.forEach((q, i) => {
+            let cls = 's-0';
+            if(state.visited[i]) {
+                if(state.answers[i] !== undefined && state.marked[i]) cls = 's-4';
+                else if(state.marked[i]) cls = 's-3';
+                else if(state.answers[i] !== undefined) cls = 's-1';
+                else cls = 's-2';
+            }
+            const active = i === state.currentQ ? 'active' : '';
+            
+            let displayNo = i + 1;
+            let qMatch = q.q.match(/^(\d+)\./);
+            if(qMatch) {
+                displayNo = qMatch[1];
+            }
+            grid.innerHTML += `<button class="p-btn ${cls} ${active}" onclick="state.currentQ = ${i}; renderQuestion();">${displayNo}</button>`;
+        });
+    }
+
+    function updateStats() {
+        let ans=0, notans=0, notvis=0, mark=0;
+        finalQuestions.forEach((_, i) => {
+            if(!state.visited[i]) notvis++;
+            else if(state.marked[i]) mark++;
+            else if(state.answers[i] !== undefined) ans++;
+            else notans++;
+        });
+        document.getElementById('c-ans').innerText = ans; document.getElementById('c-notans').innerText = notans;
+        document.getElementById('c-notvis').innerText = notvis; document.getElementById('c-mark').innerText = mark;
+    }
+
+    function submitTest() {
+        if(!confirm("Are you sure you want to submit the test? / क्या आप टेस्ट सबमिट करना चाहते हैं?")) return;
+        state.submitted = true; clearInterval(timerInterval);
+        let score=0, attempt=0, wrong=0;
+        finalQuestions.forEach((q, i) => {
+            if(state.answers[i] !== undefined) {
+                attempt++;
+                if(state.answers[i] === q.a) score++; else wrong++;
+            }
+        });
+        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const completedData = { score: score, attempted: attempt, wrong: wrong, time: state.time, date: today, userAnswers: state.answers };
+        
+        safeSetItem(COMPLETED_KEY, JSON.stringify(completedData));
+        safeRemoveItem(STORAGE_KEY);
+        
+        renderResultUI(completedData);
+    }
+
+    function renderResultUI(data) {
+        showScreen('result-screen');
+        const acc = data.attempted > 0 ? ((data.score / data.attempted) * 100).toFixed(1) : 0;
+        document.getElementById('r-score').innerText = `${data.score}`;
+        document.getElementById('r-attempt').innerText = data.attempted;
+        document.getElementById('r-wrong').innerText = data.wrong;
+        document.getElementById('r-acc').innerText = `${acc}%`;
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(!data) return;
+
+        let html = '';
+        finalQuestions.forEach((q, i) => {
+            const uAns = data.userAnswers[i];
+            let optHtml = '';
+            q.o.forEach((opt, oIdx) => {
+                let cls = '', checkMark = '';
+                if(oIdx === q.a) { cls = 'correct'; checkMark = ' ✔'; }
+                else if(oIdx === uAns && uAns !== q.a) { cls = 'wrong'; checkMark = ' ❌ (Your Answer)'; }
+                optHtml += `<div class="glass-panel sol-opt ${cls}"><strong>${String.fromCharCode(65 + oIdx)}.</strong> <div style="flex:1;">${opt} <span style="float:right; font-weight:700;">${checkMark}</span></div></div>`;
+            });
+            let statusText = uAns !== undefined ? (uAns === q.a ? "हल किया (Correct)" : "हल किया (Incorrect)") : "हल नहीं किया (Unattempted)";
+            
+            let displayNo = i + 1;
+            let qTextHtml = q.q;
+            let qMatch = qTextHtml.match(/^(\d+)\./);
+            if(qMatch) {
+               displayNo = qMatch[1];
+               qTextHtml = qTextHtml.substring(qMatch[0].length).trim();
+            }
+
+            html += `<div class="glass-panel sol-card"><div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--primary);">Q${displayNo}. ${qTextHtml}</div>${optHtml}<div style="font-weight:bold; margin:15px 0; color:var(--text-muted);">Status: ${statusText}</div><div class="glass-panel sol-exp">${q.e}</div></div>`;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+
+    function downloadPDF() {
+        const element = document.getElementById('sol-container');
+        
+        const actionButtons = element.previousElementSibling;
+        actionButtons.style.display = 'none';
+
+        const opt = {
+            margin:       10,
+            filename:     'Haryana_GK_Part_10_Solutions.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) document.documentElement.setAttribute('data-theme', 'light');
+        
+        html2pdf().set(opt).from(element).save().then(() => {
+            if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
+            actionButtons.style.display = 'flex';
+        });
+    }
+</script>
+</body>
+</html>
