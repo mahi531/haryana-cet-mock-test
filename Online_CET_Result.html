@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Haryana CET 2025 - Online Result & Rank Checker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .loader { border-top-color: #3b82f6; -webkit-animation: spinner 1s linear infinite; animation: spinner 1s linear infinite; }
+        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans p-2 md:p-8">
+
+    <div class="max-w-4xl mx-auto space-y-4">
+        
+        <!-- Header -->
+        <header class="bg-blue-900 text-white p-5 rounded-lg shadow-xl text-center relative">
+            <h1 class="text-2xl md:text-3xl font-black mb-1">Haryana CET 2025 Rank Checker</h1>
+            <p class="text-blue-200 text-xs md:text-sm font-bold">Cloud Auto-Merge • 14 Lakh+ Candidates Data</p>
+        </header>
+
+        <!-- Loading Screen -->
+        <div id="loadingScreen" class="bg-white p-8 rounded-lg shadow-xl text-center border-2 border-blue-500">
+            <div class="flex justify-center items-center gap-3 mb-4">
+                <div class="loader w-8 h-8 border-4 border-blue-200 rounded-full"></div>
+                <h2 class="text-xl font-bold text-blue-700" id="loadingText">Connecting to Database...</h2>
+            </div>
+            <p class="text-sm text-gray-500 font-bold" id="subLoadingText">कृपया इंतज़ार करें, फाइल डाउनलोड हो रही है...</p>
+        </div>
+
+        <!-- Main Search UI -->
+        <div id="mainUI" class="hidden space-y-4">
+            
+            <div class="bg-green-100 border-l-4 border-green-600 p-3 rounded shadow-sm flex items-center justify-between">
+                <span class="font-black text-green-800 text-sm"><i class="fa-solid fa-cloud-arrow-down mr-1"></i> Data Fetched & Ranked!</span>
+                <span class="font-bold text-green-700 text-xs">Total Records: <span id="totalCount">0</span></span>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="bg-white p-4 rounded-lg shadow-lg">
+                <div class="relative">
+                    <i class="fa-solid fa-search absolute left-4 top-3.5 text-gray-400 text-lg"></i>
+                    <input type="text" id="searchInput" placeholder="Enter Roll No, Reg No or Name..." class="w-full pl-12 pr-4 py-3 border-2 border-blue-300 rounded-lg text-lg font-black focus:ring-4 focus:ring-blue-200 focus:outline-none transition" oninput="searchData()">
+                </div>
+            </div>
+
+            <!-- Search Results -->
+            <div id="resultsContainer" class="space-y-4"></div>
+            
+            <div id="noResult" class="hidden text-center p-6 bg-white rounded-lg shadow">
+                <p class="text-red-500 font-bold text-lg"><i class="fa-solid fa-triangle-exclamation mr-2"></i>No candidate found!</p>
+            </div>
+            <div id="typeMore" class="text-center p-6 bg-white rounded-lg shadow">
+                <p class="text-gray-500 font-bold"><i class="fa-solid fa-keyboard mr-2"></i>ऊपर सर्च बॉक्स में अपना रोल नंबर या नाम टाइप करें</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN LOGIC -->
+    <script>
+        // =========================================================
+        // AAPKE GITHUB KE FINAL 4 CSV LINKS YAHAN HAIN
+        // =========================================================
+        const CLOUD_CSV_URLS = [
+            "https://raw.githubusercontent.com/mahi531/haryana-cet-mock-test/refs/heads/main/part1.csv",
+            "https://raw.githubusercontent.com/mahi531/haryana-cet-mock-test/refs/heads/main/part2.csv",
+            "https://raw.githubusercontent.com/mahi531/haryana-cet-mock-test/refs/heads/main/part3.csv",
+            "https://raw.githubusercontent.com/mahi531/haryana-cet-mock-test/refs/heads/main/part4.csv"
+        ]; 
+        
+        let records = [];
+        let isLoaded = false;
+        const catNames = ['GEN', 'SC', 'BCA', 'BCB', 'EWS', 'OTHER'];
+
+        window.onload = function() {
+            fetchAndMergeData();
+        };
+
+        async function fetchAndMergeData() {
+            let tempMap = new Map();
+            let totalProcessed = 0;
+
+            try {
+                // Loop to download all 4 parts
+                for (let i = 0; i < CLOUD_CSV_URLS.length; i++) {
+                    let url = CLOUD_CSV_URLS[i];
+                    
+                    document.getElementById('loadingText').innerText = `Downloading File ${i+1} of 4...`;
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error("Network Problem in File " + (i+1));
+                    
+                    document.getElementById('subLoadingText').innerText = `File ${i+1} Extracting...`;
+                    const rawData = await response.text();
+                    let lines = rawData.split('\n');
+
+                    // Data extraction and duplicate removal
+                    for(let j=1; j<lines.length; j++) {
+                        let line = lines[j].trim();
+                        if(!line) continue;
+                        
+                        let cols = line.split(',');
+                        if(cols.length < 7) continue;
+                        
+                        let name = cols[2];
+                        let r = parseInt(cols[3], 10);
+                        let g = parseInt(cols[4], 10);
+                        let catStr = cols[5];
+                        let marksStr = cols[6];
+
+                        let cCode = catNames.indexOf(catStr);
+                        if(cCode === -1) cCode = 5;
+                        let m = (marksStr === 'Absent') ? -999 : parseFloat(marksStr);
+
+                        // Save in map (keeps highest marks if duplicate exists)
+                        if(!tempMap.has(r) || tempMap.get(r).m < m) {
+                            tempMap.set(r, { n: name.toLowerCase(), no: name, g: g, c: cCode, m: m });
+                            totalProcessed++;
+                        }
+                    }
+                }
+
+                document.getElementById('loadingText').innerText = "Calculating Final Ranks...";
+                document.getElementById('subLoadingText').innerText = "सभी फाइलों को मिलाकर लाइव रैंक बन रही है...";
+
+                // Convert map to array for sorting
+                records = Array.from(tempMap, ([r, v]) => ({
+                    r: r, g: v.g, c: v.c, m: v.m, n: v.n, no: v.no, or: 0, cr: 0
+                }));
+                tempMap.clear(); // Free RAM
+
+                // ==========================================
+                // RE-CALCULATE OVERALL & CATEGORY RANKS
+                // ==========================================
+                records.sort((a,b) => b.m - a.m);
+                
+                let oRank = 1, actualORank = 1, prevOMarks = null;
+                records.forEach(rec => {
+                    if(prevOMarks !== null && rec.m !== prevOMarks) oRank = actualORank;
+                    rec.or = oRank;
+                    prevOMarks = rec.m;
+                    actualORank++;
+                });
+
+                let catGroups = [[],[],[],[],[],[]];
+                records.forEach(rec => catGroups[rec.c].push(rec));
+
+                for(let cat=0; cat<6; cat++) {
+                    let cRank = 1, actualCRank = 1, prevCMarks = null;
+                    catGroups[cat].forEach(rec => {
+                        if(prevCMarks !== null && rec.m !== prevCMarks) cRank = actualCRank;
+                        rec.cr = cRank;
+                        prevCMarks = rec.m;
+                        actualCRank++;
+                    });
+                }
+
+                // Finish
+                isLoaded = true;
+                document.getElementById('totalCount').innerText = records.length.toLocaleString();
+                document.getElementById('loadingScreen').classList.add('hidden');
+                document.getElementById('mainUI').classList.remove('hidden');
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('loadingScreen').innerHTML = `
+                    <h2 class="text-red-600 font-bold text-xl"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Download Failed!</h2>
+                    <p class="text-sm mt-2 font-bold text-gray-700 mb-4">Cloud file load nahi ho paayi. Error aagaya.</p>
+                    <p class="text-xs text-gray-500">Error: ${error.message}</p>
+                `;
+            }
+        }
+
+        function searchData() {
+            if(!isLoaded) return;
+            
+            let q = document.getElementById('searchInput').value.toLowerCase().trim();
+            let container = document.getElementById('resultsContainer');
+            let noRes = document.getElementById('noResult');
+            let typeMore = document.getElementById('typeMore');
+            
+            container.innerHTML = '';
+            
+            if(q.length < 4) {
+                typeMore.classList.remove('hidden');
+                noRes.classList.add('hidden');
+                return;
+            }
+            
+            typeMore.classList.add('hidden');
+            let matches = records.filter(x => x.r.toString().includes(q) || x.g.toString().includes(q) || x.n.includes(q)).slice(0, 5);
+
+            if(matches.length === 0) {
+                noRes.classList.remove('hidden');
+                return;
+            }
+
+            noRes.classList.add('hidden');
+
+            matches.forEach(r => {
+                let card = document.createElement('div');
+                card.className = "bg-white border-2 border-indigo-700 p-4 rounded-xl shadow-xl relative overflow-hidden";
+                let nameDisplay = r.no === 'N/A' || !r.no ? 'Not Provided' : r.no;
+                let marksStr = r.m === -999 ? 'Absent' : r.m;
+
+                card.innerHTML = `
+                    <div class="absolute top-0 right-0 bg-indigo-700 text-white px-2 py-1 rounded-bl-lg font-bold text-[10px]">CET RANK CARD</div>
+                    <div class="flex justify-between border-b pb-1 mb-2 mt-3">
+                        <span class="text-gray-500 text-xs font-black uppercase">Name:</span>
+                        <span class="text-lg font-black text-indigo-900">${nameDisplay}</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="space-y-1">
+                            <p class="text-gray-500 text-[10px] font-bold">ROLL NO</p>
+                            <p class="text-sm font-black text-gray-900">${r.r}</p>
+                        </div>
+                        <div class="space-y-1">
+                            <p class="text-gray-500 text-[10px] font-bold">REG NO</p>
+                            <p class="text-sm font-black text-gray-900">${r.g}</p>
+                        </div>
+                        <div class="space-y-1">
+                            <p class="text-gray-500 text-[10px] font-bold">CATEGORY</p>
+                            <p class="text-sm font-black text-gray-900">${catNames[r.c]}</p>
+                        </div>
+                        <div class="space-y-1 border-t pt-1 border-gray-100">
+                            <p class="text-gray-500 text-[10px] font-bold">CET MARKS</p>
+                            <p class="text-xl font-black text-blue-700">${marksStr}</p>
+                        </div>
+                    </div>
+                    <div class="mt-3 bg-indigo-50 border border-indigo-100 p-2 rounded grid grid-cols-2 gap-2">
+                        <div class="text-center border-r border-indigo-200">
+                            <p class="text-[10px] font-bold text-gray-500">OVERALL RANK</p>
+                            <p class="text-3xl font-black text-indigo-700">${r.or}</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-[10px] font-bold text-gray-500">${catNames[r.c]} RANK</p>
+                            <p class="text-3xl font-black text-green-700">${r.cr}</p>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
