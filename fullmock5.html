@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Haryana CET Mock Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-grad-1: #4facfe; --bg-grad-2: #00f2fe; --bg-grad-3: #a18cd1; --bg-grad-4: #fbc2eb;
+            --glass-bg: rgba(255, 255, 255, 0.9); --glass-border: rgba(255, 255, 255, 0.6); --glass-shadow: rgba(31, 38, 135, 0.15);
+            --text-main: #1f2937; --text-muted: #64748b;
+            --primary: #2563eb; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --purple: #8b5cf6;
+            --option-bg: rgba(243, 244, 246, 0.8); --option-selected: rgba(219, 234, 254, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+        [data-theme="dark"] {
+            --bg-grad-1: #0f2027; --bg-grad-2: #203a43; --bg-grad-3: #2c5364; --bg-grad-4: #141e30;
+            --glass-bg: rgba(17, 25, 40, 0.85); --glass-border: rgba(255, 255, 255, 0.15); --glass-shadow: rgba(0, 0, 0, 0.5);
+            --text-main: #f9fafb; --text-muted: #94a3b8;
+            --primary: #3b82f6; 
+            --option-bg: rgba(55, 65, 81, 0.7); --option-selected: rgba(30, 58, 138, 0.8);
+            --card-bg: rgba(31, 41, 55, 0.95);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; touch-action: manipulation;}
+        
+        body { 
+            height: 100vh; height: 100dvh; 
+            background: linear-gradient(45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3), var(--bg-grad-4)); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+            color: var(--text-main); 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 var(--glass-shadow); border-radius: 12px; }
+        
+        .btn { font-family: 'Poppins', sans-serif; background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;}
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-warning { background: var(--warning); color: #fff;}
+        .btn-clear { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+
+        .lang-btn {
+            background: rgba(255,255,255,0.25);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .lang-btn:active { transform: scale(0.95); }
+
+        .screen { display: none; flex-direction: column; height: 100%; width: 100vw; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; }
+
+        #dashboard-screen { overflow-y: auto; background: var(--card-bg); align-items: center; padding-bottom: 30px;}
+        .dash-header-top { background: #1e293b; color: white; width: 100%; padding: 15px 20px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 15px; position: sticky; top:0; z-index: 100;}
+        .dash-content { width: 100%; max-width: 800px; padding: 20px; }
+        .section-title { font-weight: 600; color: var(--primary); margin: 15px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 15px; }
+        .dash-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--glass-border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .test-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text-main);}
+        .test-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        .progress-container { width: 100%; height: 5px; background: var(--glass-border); border-radius: 3px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #f59e0b; width: 0%; transition: width 0.5s ease;}
+        .dash-actions { display: flex; gap: 12px; margin-top: 15px; }
+        .dash-actions .btn { flex: 1; padding: 10px; font-size: 13px; border-radius: 6px;}
+        .syllabus-footer { display: flex; justify-content: space-between; font-size: 12px; color: var(--primary); border-top: 1px solid var(--glass-border); padding-top: 12px; margin-top: 15px; }
+
+        header.test-head { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-bottom: 10px; margin-inline: 10px; }
+        .header-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: 700; background: var(--card-bg); border: 1px solid var(--glass-border); color: var(--danger); padding: 5px 12px; border-radius: 20px; }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 0 10px 10px 10px; }
+        .question-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .q-header { padding: 10px 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
+        .q-body { flex: 1; padding: 15px; overflow-y: auto; font-size: 16px; line-height: 1.6; }
+        .options-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;}
+        .option { padding: 12px; border: 2px solid var(--glass-border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--option-bg); font-weight: 500; font-size: 15px;}
+        .option.selected { border-color: var(--primary); background: var(--option-selected); color: var(--primary); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--glass-border); display: flex; justify-content: center; align-items: center; font-weight: bold; }
+        .option.selected .opt-label { background: var(--primary); color: white; border-color: var(--primary);}
+        .q-footer { padding: 10px; border-top: 1px solid var(--glass-border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-radius: 0 0 12px 12px; }
+
+        .palette-section { width: 320px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .palette-header { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; font-weight: bold; font-size: 15px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; font-size: 12px; border-bottom: 1px solid var(--glass-border); font-weight: 500;}
+        .stat-item { display: flex; align-items: center; gap: 6px;}
+        .badge { width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 10px; font-weight: bold;}
+        .s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);} 
+        .s-1 { background: var(--success); } .s-2 { background: var(--danger); } .s-3 { background: var(--purple); } 
+        .s-4 { background: var(--primary); position: relative; }
+        .s-4::after { content: '✔'; position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; background: white; color: var(--primary); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 8px; }
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .p-btn.s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);}
+        .p-btn.active { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.1);}
+        .submit-area { padding: 10px; border-top: 1px solid var(--glass-border); border-radius: 0 0 12px 12px;}
+
+        #result-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        #solution-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        .sol-card { padding: 20px; margin-bottom: 15px; width: 100%; max-width: 800px; }
+        .sol-opt { padding: 10px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; gap: 10px; align-items: center; font-size: 15px; background: var(--card-bg);}
+        .sol-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); text-decoration: line-through;}
+        .sol-exp { margin-top: 15px; padding: 15px; background: rgba(37, 99, 235, 0.05); border: 1px solid var(--glass-border); border-left: 4px solid var(--primary); border-radius: 8px; font-size: 14.5px; line-height: 1.6; }
+
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+
+        @media (max-width: 992px) {
+            .main-area { flex-direction: column; overflow-y: auto;}
+            .question-section { flex: none; min-height: 450px;}
+            .palette-section { width: 100%; flex: none; min-height: 350px;}
+            .q-footer .btn { padding: 10px; font-size: 13px; }
+        }
+        @media (max-width: 420px) {
+            .header-controls { gap: 4px; }
+            .header-controls .btn { padding: 3px 7px !important; font-size: 11px !important; }
+            .timer-box { padding: 3px 8px !important; font-size: 12px !important; }
+            .header-title { font-size: 14px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="dashboard-screen" class="screen active">
+        <div class="dash-header-top">
+            <span style="cursor: pointer;" onclick="alert('Going Back')">&#8592;</span>
+            <span id="dash-title">Haryana CET Group D Mock Test Series 2026</span>
+            <button class="lang-btn" style="margin-left:auto;" onclick="toggleLang()" id="dash-lang-btn">EN</button>
+        </div>
+
+        <div class="dash-content">
+            <div id="dash-unattempted" style="display: none;">
+                <div class="section-title" id="lbl-suggested">Suggested Next Test</div>
+                <div class="dash-card">
+                    <div class="test-title" id="lbl-test-name">Haryana CET Group D Full Test 1</div>
+                    <div class="test-meta">
+                        <span id="lbl-test-meta">100 Qs • 105 mins • 100.0 Marks</span>
+                    </div>
+                    <div class="test-meta" style="justify-content: flex-end;">
+                        <button class="btn btn-outline" style="padding: 6px 20px; border-radius: 20px;" onclick="startTest()" id="lbl-start">Start Test</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span id="lbl-syllabus">Syllabus: English, Hindi, Math, Reasoning, GK...</span>
+                        <span style="color:var(--success);">🔗 <span id="lbl-share">Share</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="dash-attempted" style="display: none;">
+                <div class="section-title" id="lbl-previous">Previously Attempted</div>
+                <div class="dash-card">
+                    <div class="test-title" id="lbl-test-name2">Haryana CET Group D Full Test 1</div>
+                    <div class="test-meta" style="margin-bottom: 5px;">
+                        <span id="dash-score-text" style="font-weight: 600; color: var(--text-main);">0/100.0 Marks</span>
+                    </div>
+                    <div class="progress-container"><div class="progress-fill" id="dash-progress-bar"></div></div>
+                    <div class="dash-actions">
+                        <button class="btn btn-outline" onclick="viewSavedResults()" id="lbl-view">View Results</button>
+                        <button class="btn btn-outline" onclick="reattemptTest()" id="lbl-reattempt">Reattempt &#8594;</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span style="color: var(--primary);" id="lbl-syllabus2">Syllabus</span>
+                        <span style="color:var(--text-muted);" id="dash-date-text">Attempted on...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAUSE OVERLAY -->
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px; font-size: 2rem;" id="lbl-paused">Test Paused</h2>
+        <button class="btn btn-primary" style="font-size: 1.2rem; padding: 10px 30px;" onclick="togglePause()" id="lbl-resume">Resume Test</button>
+    </div>
+
+    <!-- TEST SCREEN -->
+    <div id="test-screen" class="screen">
+        <header class="glass-panel test-head">
+            <div class="header-title" id="lbl-mock">Mock Test</div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding: 4px 8px; font-size: 12px; border-radius: 20px;" onclick="toggleLang()" id="test-lang-btn">EN</button>
+                <button class="btn btn-clear" style="padding: 4px 8px; font-size: 12px; border-radius: 20px;" onclick="toggleTheme()">🌓</button>
+                <button class="btn btn-warning" style="padding: 4px 8px; font-size: 12px; border-radius: 20px;" onclick="togglePause()">⏸</button>
+                <div class="timer-box">⏱ <span id="timer-display">105:00</span></div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="glass-panel question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--success); font-weight:bold;">+1 <span style="color: var(--text-muted); font-weight:normal;">|</span> <span style="color: var(--danger);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <button class="btn btn-mark" onclick="markReview()" id="btn-mark">Mark for Review</button>
+                    <button class="btn btn-clear" onclick="clearResponse()" id="btn-clear">Clear Response</button>
+                    <button class="btn btn-prev" onclick="changeQ(-1)" id="btn-prev">Previous</button>
+                    <button class="btn btn-primary" onclick="saveNext()" id="btn-save">Save & Next</button>
+                </div>
+            </div>
+
+            <div class="glass-panel palette-section">
+                <div class="palette-header" id="lbl-palette">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> <span id="lbl-ans">Ans</span></div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> <span id="lbl-notans">Not Ans</span></div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">100</div> <span id="lbl-notvis">Not Visit</span></div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> <span id="lbl-marked">Marked</span></div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn btn-primary" style="width: 100%; background: var(--success); font-size: 15px; padding: 10px;" onclick="submitTest()" id="btn-submit">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen" class="screen">
+        <div style="width: 100%; max-width: 800px; margin-bottom: 15px;"><button class="btn btn-clear" onclick="showDashboard()" id="btn-res-back">&#8592; Back to Dashboard</button></div>
+        <div class="glass-panel" style="max-width: 800px; width: 100%; padding: 25px;">
+            <h1 style="color: var(--primary); text-align: center;" id="lbl-scorecard">Test Scorecard</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 25px 0;">
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-score" style="color: var(--primary); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;" id="lbl-score">Score</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-attempt" style="color: var(--success); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;" id="lbl-attempted">Attempted</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-wrong" style="color: var(--danger); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;" id="lbl-wrong">Wrong</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-acc" style="color: var(--purple); font-size: 1.8rem;">0%</h2><p style="color: var(--text-muted); font-size:12px;" id="lbl-accuracy">Accuracy</p></div>
+            </div>
+            <button class="btn btn-primary" style="width:100%; font-size: 15px;" onclick="viewSolutions()" id="lbl-sol-btn">📝 Detailed Solutions</button>
+        </div>
+    </div>
+
+    <!-- SOLUTION SCREEN -->
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%;">
+            <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 12px 15px; position: sticky; top: 5px; z-index: 10;">
+                <h3 style="color: var(--primary);" id="lbl-sol-title">Detailed Solutions</h3>
+                <button class="btn btn-clear" style="padding: 5px 10px;" onclick="showScreen('result-screen')" id="lbl-sol-back">&#8592; Back</button>
+            </div>
+            <div id="sol-container"></div>
+        </div>
+    </div>
+
+<script>
+    /* ===== STORAGE HELPERS ===== */
+    const MEMORY_STORE = {};
+    function safeGetItem(key) {
+        try { return localStorage.getItem(key) || MEMORY_STORE[key] || null; }
+        catch(e) { return MEMORY_STORE[key] || null; }
+    }
+    function safeSetItem(key, value) {
+        try { localStorage.setItem(key, value); } catch(e) {}
+        MEMORY_STORE[key] = value;
+    }
+    function safeRemoveItem(key) {
+        try { localStorage.removeItem(key); } catch(e) {}
+        delete MEMORY_STORE[key];
+    }
+
+    const STORAGE_KEY = 'hssc_cet_active_v10_bilingual'; 
+    const COMPLETED_KEY = 'hssc_cet_completed_v10_bilingual';
+    const LANG_KEY = 'hssc_cet_lang_v10';
+
+    /* ===== LANGUAGE STATE ===== */
+    let currentLang = safeGetItem(LANG_KEY) || 'hi';
+
+    const UI = {
+        hi: {
+            dashTitle: "Haryana CET Group D Mock Test Series 2026",
+            suggested: "सुझावित अगला टेस्ट",
+            previous: "पहले प्रयास किया गया",
+            testName: "Haryana CET Group D Full Test 1",
+            testMeta: "100 प्रश्न • 105 मिनट • 100.0 अंक",
+            start: "टेस्ट शुरू करें",
+            syllabus: "पाठ्यक्रम: English, Hindi, Math, Reasoning, GK...",
+            syllabusShort: "पाठ्यक्रम",
+            share: "शेयर",
+            view: "परिणाम देखें",
+            reattempt: "पुनः प्रयास →",
+            attemptedOn: "प्रयास: ",
+            paused: "टेस्ट रुका हुआ",
+            resume: "टेस्ट जारी रखें",
+            mock: "मॉक टेस्ट",
+            question: "प्रश्न",
+            mark: "समीक्षा के लिए चिह्नित",
+            clear: "उत्तर साफ़ करें",
+            prev: "पिछला",
+            save: "सहेजें और अगला",
+            palette: "प्रश्न पैलेट",
+            ans: "उत्तर",
+            notans: "उत्तर नहीं",
+            notvis: "नहीं देखा",
+            marked: "चिह्नित",
+            submit: "टेस्ट सबमिट करें",
+            scorecard: "टेस्ट स्कोरकार्ड",
+            score: "स्कोर",
+            attempted: "प्रयास किया",
+            wrong: "गलत",
+            accuracy: "सटीकता",
+            solBtn: "📝 विस्तृत समाधान",
+            solTitle: "विस्तृत समाधान",
+            back: "← वापस",
+            status: "स्थिति",
+            correct: "सही",
+            incorrect: "गलत",
+            unattempted: "हल नहीं किया",
+            yourAnswer: "(आपका उत्तर)",
+            submitConfirm: "क्या आप वाकई टेस्ट सबमिट करना चाहते हैं?",
+            reattemptConfirm: "क्या आप निश्चित हैं कि आप एक नया टेस्ट शुरू करना चाहते हैं? आपकी सक्रिय प्रगति खो जाएगी।",
+            backToDash: "← डैशबोर्ड पर वापस",
+        },
+        en: {
+            dashTitle: "Haryana CET Group D Mock Test Series 2026",
+            suggested: "Suggested Next Test",
+            previous: "Previously Attempted",
+            testName: "Haryana CET Group D Full Test 1",
+            testMeta: "100 Qs • 105 mins • 100.0 Marks",
+            start: "Start Test",
+            syllabus: "Syllabus: English, Hindi, Math, Reasoning, GK...",
+            syllabusShort: "Syllabus",
+            share: "Share",
+            view: "View Results",
+            reattempt: "Reattempt →",
+            attemptedOn: "Attempted on ",
+            paused: "Test Paused",
+            resume: "Resume Test",
+            mock: "Mock Test",
+            question: "Question",
+            mark: "Mark for Review",
+            clear: "Clear Response",
+            prev: "Previous",
+            save: "Save & Next",
+            palette: "Question Palette",
+            ans: "Ans",
+            notans: "Not Ans",
+            notvis: "Not Visit",
+            marked: "Marked",
+            submit: "Submit Test",
+            scorecard: "Test Scorecard",
+            score: "Score",
+            attempted: "Attempted",
+            wrong: "Wrong",
+            accuracy: "Accuracy",
+            solBtn: "📝 Detailed Solutions",
+            solTitle: "Detailed Solutions",
+            back: "← Back",
+            status: "Status",
+            correct: "Correct",
+            incorrect: "Incorrect",
+            unattempted: "Unattempted",
+            yourAnswer: "(Your Answer)",
+            submitConfirm: "Are you sure you want to submit the test?",
+            reattemptConfirm: "Are you sure you want to start a fresh test? Your active progress will be lost.",
+            backToDash: "← Back to Dashboard",
+        }
+    };
+    const ui = () => UI[currentLang];
+
+    /* ===== BILINGUAL QUESTIONS ===== */
+    const questions = [
+        // Haryana GK & General Knowledge (1-25)
+        {q:{hi:"2011 की जनगणना के अनुसार, हरियाणा में महिला साक्षरता प्रतिशत कितना है?",en:"According to the 2011 census, what is the female literacy percentage in Haryana?"},o:{hi:["85%","65.94%","74.45%","69.85%"],en:["85%","65.94%","74.45%","69.85%"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>2011 की जनगणना के अनुसार हरियाणा की कुल साक्षरता दर 76.64% है।</li><li>पुरुष साक्षरता दर 85.38% और <b>महिला साक्षरता दर 65.94%</b> है।</li><li>हरियाणा में सबसे अधिक साक्षरता वाला जिला <b>गुरुग्राम (84.70%)</b> है।</li><li>सबसे कम साक्षरता वाला जिला <b>नूंह/मेवात (54.08%)</b> है।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li>As per 2011 census, Haryana's total literacy rate is 76.64%.</li><li>Male literacy is 85.38% and <b>female literacy is 65.94%</b>.</li><li>District with highest literacy is <b>Gurugram (84.70%)</b>.</li><li>Lowest literacy district is <b>Nuh/Mewat (54.08%)</b>.</li></ul>"}},
+        {q:{hi:"हरियाणा और उत्तर भारत का सबसे बड़ा औद्योगिक शहर कौन-सा है?",en:"Which is the largest industrial city of Haryana and North India?"},o:{hi:["खेड़ी","गुरुग्राम","फरीदाबाद","रोहतक"],en:["Kheri","Gurugram","Faridabad","Rohtak"]},a:2,
+         e:{hi:"<b>उत्तर: C</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li><b>फरीदाबाद</b> हरियाणा और उत्तर भारत का सबसे बड़ा औद्योगिक नगर है।</li><li>यहाँ मुख्य रूप से ट्रैक्टर (एस्कॉर्ट्स), मोटरसाइकिल (राजदूत), और टायर (गुड ईयर) का निर्माण होता है।</li><li>फरीदाबाद का निर्माण 1607 ई. में शेख फरीद (जहाँगीर के खजांची) ने करवाया था।</li></ul>",en:"<b>Answer: C</b><br><br>💡 <b>Key Facts:</b><ul><li><b>Faridabad</b> is the largest industrial city of Haryana and North India.</li><li>Main products: Tractors (Escorts), Motorcycles (Rajdoot), Tyres (Good Year).</li><li>Faridabad was founded in 1607 AD by Sheikh Farid (treasurer of Jahangir).</li></ul>"}},
+        {q:{hi:"हरियाणा के बल्लभगढ़ में स्थित 'गुड ईयर' कंपनी में किस वस्तु का उत्पादन किया जाता है?",en:"What is produced by the 'Good Year' company located in Ballabgarh, Haryana?"},o:{hi:["बैटरी","टायर","कार","साइकिल"],en:["Battery","Tyre","Car","Bicycle"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>बल्लभगढ़ (जिसका नया नाम बलरामगढ़ है) फरीदाबाद जिले में स्थित है।</li><li>यहाँ स्थित <b>गुड ईयर</b> कंपनी विश्व स्तर पर अपने उच्च गुणवत्ता वाले टायरों के लिए प्रसिद्ध है।</li><li>बल्लभगढ़ राजा नाहर सिंह की रियासत थी (1857 की क्रांति के नायक)।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li>Ballabgarh (now Balramgarh) is in Faridabad district.</li><li><b>Good Year</b> company is famous worldwide for its high-quality tyres.</li><li>Ballabgarh was the princely state of Raja Nahar Singh (hero of 1857 revolt).</li></ul>"}},
+        {q:{hi:"1526 ई. में बाबर और इब्राहिम लोदी के बीच प्रसिद्ध युद्ध कहाँ लड़ा गया था?",en:"Where was the famous battle between Babar and Ibrahim Lodi fought in 1526 AD?"},o:{hi:["पानीपत","करनाल","कुरुक्षेत्र","खेड़ी"],en:["Panipat","Karnal","Kurukshetra","Kheri"]},a:0,
+         e:{hi:"<b>उत्तर: A</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>21 अप्रैल 1526 को <b>पानीपत का प्रथम युद्ध</b> लड़ा गया था।</li><li>इस युद्ध में बाबर ने इब्राहिम लोदी को हराकर भारत में मुगल साम्राज्य की स्थापना की थी।</li><li>बाबर ने इस युद्ध में पहली बार 'तुलगुमा युद्ध नीति' और तोपखाने का प्रयोग किया।</li><li>जीत की खुशी में बाबर ने पानीपत में <b>काबुली बाग मस्जिद</b> का निर्माण करवाया।</li></ul>",en:"<b>Answer: A</b><br><br>💡 <b>Key Facts:</b><ul><li>First Battle of Panipat was fought on 21 April 1526.</li><li>Babar defeated Ibrahim Lodi and established the Mughal Empire in India.</li><li>Babar first used the 'Tulugma war tactic' and artillery in this battle.</li><li>To celebrate victory, Babar built <b>Kabuli Bagh Mosque</b> in Panipat.</li></ul>"}},
+        {q:{hi:"हरियाणा के किस मुख्यमंत्री को भारत का उप-प्रधानमंत्री बनाया गया था?",en:"Which Chief Minister of Haryana was made the Deputy Prime Minister of India?"},o:{hi:["बी.डी. शर्मा","चौधरी देवीलाल","बंसीलाल","भजनलाल"],en:["B.D. Sharma","Chaudhary Devi Lal","Bansi Lal","Bhajan Lal"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li><b>चौधरी देवीलाल</b> (जिन्हें 'ताऊ' और 'किसानों का मसीहा' कहा जाता है) भारत के 6वें उप-प्रधानमंत्री (1989-1991) बने थे।</li><li>वे दो बार हरियाणा के मुख्यमंत्री (1977-1979 और 1987-1989) रहे।</li><li>इन्होंने 1987 में हरियाणा में <b>'बुढ़ापा पेंशन'</b> योजना की शुरुआत की।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li><b>Chaudhary Devi Lal</b> (known as 'Tau' and 'Messiah of Farmers') became India's 6th Deputy Prime Minister (1989-1991).</li><li>He served twice as Haryana CM (1977-1979 and 1987-1989).</li><li>He launched the <b>'Old Age Pension'</b> scheme in Haryana in 1987.</li></ul>"}},
+        {q:{hi:"मध्य निषेध अधिनियम (शराब बंदी) 1 जुलाई 1996 को लागू किया गया था। बाद में इसे कब वापस लिया गया?",en:"The Prohibition Act (liquor ban) was implemented on 1 July 1996. When was it later withdrawn?"},o:{hi:["1 अप्रैल 1999","1 अप्रैल 1997","1 अगस्त 1996","1 अप्रैल 1998"],en:["1 April 1999","1 April 1997","1 August 1996","1 April 1998"]},a:3,
+         e:{hi:"<b>उत्तर: D</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>हरियाणा में शराब बंदी 1 जुलाई 1996 को तत्कालीन मुख्यमंत्री <b>चौधरी बंसीलाल</b> द्वारा लागू की गई थी।</li><li>भारी विरोध और राजस्व नुकसान के कारण इसे <b>1 अप्रैल 1998</b> को वापस ले लिया गया।</li><li>चौधरी बंसीलाल को 'हरियाणा का लौह पुरुष' कहा जाता है।</li></ul>",en:"<b>Answer: D</b><br><br>💡 <b>Key Facts:</b><ul><li>Liquor ban in Haryana was implemented on 1 July 1996 by then CM <b>Chaudhary Bansi Lal</b>.</li><li>Due to heavy opposition and revenue loss, it was withdrawn on <b>1 April 1998</b>.</li><li>Chaudhary Bansi Lal is called the 'Iron Man of Haryana'.</li></ul>"}},
+        {q:{hi:"हरियाणा का पहला पूर्ण साक्षर जिला कौन-सा माना जाता है?",en:"Which is considered the first fully literate district of Haryana?"},o:{hi:["गुरुग्राम","पंचकूला","रेवाड़ी","महेंद्रगढ़"],en:["Gurugram","Panchkula","Rewari","Mahendragarh"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li><b>पंचकूला</b> को हरियाणा का पहला पूर्ण साक्षर (100% Literate) जिला घोषित किया गया था।</li><li>हालांकि 2011 की जनगणना में सर्वाधिक साक्षरता प्रतिशत गुरुग्राम (84.70%) का है।</li><li>पंचकूला में प्रसिद्ध मनसा देवी मंदिर और यादवेंद्र गार्डन (पिंजौर) स्थित हैं।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li><b>Panchkula</b> was declared the first fully literate district of Haryana.</li><li>However, as per 2011 census, Gurugram has highest literacy (84.70%).</li><li>Famous Mansa Devi Temple and Yadavindra Gardens (Pinjore) are in Panchkula.</li></ul>"}},
+        {q:{hi:"हरियाणा का पहला महिला विश्वविद्यालय कहाँ स्थित है?",en:"Where is the first women's university of Haryana located?"},o:{hi:["रोहतक","सोनीपत","खानपुर कलां","हिसार"],en:["Rohtak","Sonipat","Khanpur Kalan","Hisar"]},a:2,
+         e:{hi:"<b>उत्तर: C</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li><b>भगत फूल सिंह महिला विश्वविद्यालय</b>, खानपुर कलां (सोनीपत) हरियाणा और उत्तर भारत का पहला महिला विश्वविद्यालय है।</li><li>इसकी स्थापना अगस्त 2006 में की गई थी।</li><li>सोनीपत को 'एजुकेशन सिटी' (स्वर्णप्रस्थ) कहा जाता है।</li></ul>",en:"<b>Answer: C</b><br><br>💡 <b>Key Facts:</b><ul><li><b>Bhagat Phool Singh Women's University</b>, Khanpur Kalan (Sonipat) is the first women's university of Haryana and North India.</li><li>It was established in August 2006.</li><li>Sonipat is called 'Education City' (Swarnprasth).</li></ul>"}},
+        {q:{hi:"हरियाणा दिवस कब मनाया जाता है?",en:"When is Haryana Day celebrated?"},o:{hi:["1 नवंबर","15 अगस्त","26 जनवरी","2 अक्टूबर"],en:["1 November","15 August","26 January","2 October"]},a:0,
+         e:{hi:"<b>उत्तर: A</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li><b>1 नवंबर 1966</b> को पंजाब पुनर्गठन अधिनियम के तहत हरियाणा भारत का 17वां राज्य बना।</li><li>राज्य के गठन के लिए 'शाह आयोग' का गठन किया गया था।</li><li>गठन के समय हरियाणा में केवल 7 जिले थे।</li></ul>",en:"<b>Answer: A</b><br><br>💡 <b>Key Facts:</b><ul><li>On <b>1 November 1966</b>, Haryana became India's 17th state under the Punjab Reorganisation Act.</li><li>The 'Shah Commission' was formed for the state's creation.</li><li>At the time of formation, Haryana had only 7 districts.</li></ul>"}},
+        {q:{hi:"हरियाणा की राजकीय भाषा कौन-सी है?",en:"What is the official language of Haryana?"},o:{hi:["पंजाबी","हिंदी","उर्दू","संस्कृत"],en:["Punjabi","Hindi","Urdu","Sanskrit"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>हरियाणा की प्रथम और मुख्य राजकीय भाषा <b>हिंदी</b> है।</li><li>2010 में भूपिंदर सिंह हुड्डा सरकार ने <b>पंजाबी</b> को राज्य की दूसरी आधिकारिक भाषा का दर्जा दिया।</li><li>हरियाणवी (बांगरू) मुख्य बोली है।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li>The primary official language of Haryana is <b>Hindi</b>.</li><li>In 2010, Bhupinder Singh Hooda government gave <b>Punjabi</b> the status of second official language.</li><li>Haryanvi (Bangru) is the main dialect.</li></ul>"}},
+        {q:{hi:"हरियाणा का सबसे बड़ा जिला (क्षेत्रफल की दृष्टि से) कौन-सा है?",en:"Which is the largest district of Haryana by area?"},o:{hi:["हिसार","भिवानी","सिरसा","फतेहाबाद"],en:["Hisar","Bhiwani","Sirsa","Fatehabad"]},a:2,
+         e:{hi:"<b>उत्तर: C</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>2016 में भिवानी से 'चरखी दादरी' अलग होने के बाद, वर्तमान में <b>सिरसा (4277 वर्ग किमी)</b> हरियाणा का सबसे बड़ा जिला है।</li><li>क्षेत्रफल के आधार पर दूसरा सबसे बड़ा जिला <b>हिसार</b> है।</li><li>सिरसा में हरियाणा का सबसे बड़ा वन्यजीव अभयारण्य 'अबूबशहर' स्थित है।</li></ul>",en:"<b>Answer: C</b><br><br>💡 <b>Key Facts:</b><ul><li>After Charkhi Dadri separated from Bhiwani in 2016, <b>Sirsa (4277 sq km)</b> is currently the largest district.</li><li>Second largest by area is <b>Hisar</b>.</li><li>Haryana's largest wildlife sanctuary 'Abubshahar' is in Sirsa.</li></ul>"}},
+        {q:{hi:"हरियाणा का सबसे छोटा जिला (क्षेत्रफल की दृष्टि से) कौन-सा है?",en:"Which is the smallest district of Haryana by area?"},o:{hi:["फरीदाबाद","पंचकूला","गुरुग्राम","पलवल"],en:["Faridabad","Panchkula","Gurugram","Palwal"]},a:0,
+         e:{hi:"<b>उत्तर: A</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li><b>फरीदाबाद</b> हरियाणा का क्षेत्रफल की दृष्टि से सबसे छोटा जिला है (मात्र 741 वर्ग किमी)।</li><li>दूसरा सबसे छोटा जिला पंचकूला (898 वर्ग किमी) है।</li><li>सबसे छोटा होने के बावजूद, फरीदाबाद की जनसंख्या घनत्व (2442 व्यक्ति/वर्ग किमी) सर्वाधिक है।</li></ul>",en:"<b>Answer: A</b><br><br>💡 <b>Key Facts:</b><ul><li><b>Faridabad</b> is the smallest district of Haryana by area (only 741 sq km).</li><li>Second smallest is Panchkula (898 sq km).</li><li>Despite being smallest, Faridabad has highest population density (2442 persons/sq km).</li></ul>"}},
+        {q:{hi:"हरियाणा का राज्य पशु कौन-सा है?",en:"What is the state animal of Haryana?"},o:{hi:["नीलगाय","काला हिरण","बारहसिंगा","चिंकारा"],en:["Nilgai","Blackbuck","Barasingha","Chinkara"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>हरियाणा का राजकीय पशु <b>काला हिरण (Blackbuck)</b> है।</li><li>यह मुख्यतः खुले मैदानी और घास के इलाकों में पाया जाता है।</li><li>वन्यजीव संरक्षण अधिनियम 1972 के तहत इसे अनुसूची-I में रखा गया है।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li>Haryana's state animal is <b>Blackbuck</b>.</li><li>It is mainly found in open plains and grasslands.</li><li>It is listed in Schedule-I of Wildlife Protection Act 1972.</li></ul>"}},
+        {q:{hi:"हरियाणा का राज्य पक्षी कौन-सा है?",en:"What is the state bird of Haryana?"},o:{hi:["मोर","काला तीतर","सारस","तोता"],en:["Peacock","Black Francolin","Sarus Crane","Parrot"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>हरियाणा का राजकीय पक्षी <b>काला तीतर (Black Francolin)</b> है।</li><li>स्थानीय भाषा में इसे 'कालियो तीतर' कहा जाता है।</li><li>काले तीतर के संरक्षण के लिए सिरसा का 'अबूबशहर वन्यजीव अभयारण्य' महत्वपूर्ण है।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li>Haryana's state bird is <b>Black Francolin</b>.</li><li>Locally called 'Kaliyo Teetar'.</li><li>'Abubshahar Wildlife Sanctuary' in Sirsa is important for its conservation.</li></ul>"}},
+        {q:{hi:"हरियाणा का राज्य वृक्ष कौन-सा है?",en:"What is the state tree of Haryana?"},o:{hi:["नीम","पीपल","बरगद","शीशम"],en:["Neem","Peepal","Banyan","Shisham"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>हरियाणा का राजकीय वृक्ष <b>पीपल (Ficus religiosa)</b> है।</li><li>हिन्दू धर्म में इसे पवित्र माना जाता है। कुरुक्षेत्र के ज्योतिसर में कृष्ण ने पीपल के नीचे गीता का उपदेश दिया था।</li><li>यह रात में भी ऑक्सीजन छोड़ने वाले गिने-चुने पेड़ों में से एक है।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li>Haryana's state tree is <b>Peepal (Ficus religiosa)</b>.</li><li>It is sacred in Hinduism. Krishna gave the Gita sermon under a Peepal tree at Jyotisar, Kurukshetra.</li><li>It is one of the few trees that releases oxygen even at night.</li></ul>"}},
+        {q:{hi:"हरियाणा का राजकीय पुष्प कौन-सा है?",en:"What is the state flower of Haryana?"},o:{hi:["कमल","गुलाब","सूरजमुखी","गेंदा"],en:["Lotus","Rose","Sunflower","Marigold"]},a:0,
+         e:{hi:"<b>उत्तर: A</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>हरियाणा का राजकीय पुष्प <b>कमल (Lotus)</b> है।</li><li>कमल भारत का राष्ट्रीय पुष्प भी है।</li><li>कमल पवित्रता, ज्ञान और आध्यात्मिक जागृति का प्रतीक है।</li></ul>",en:"<b>Answer: A</b><br><br>💡 <b>Key Facts:</b><ul><li>Haryana's state flower is <b>Lotus</b>.</li><li>Lotus is also India's national flower.</li><li>Lotus symbolizes purity, knowledge and spiritual awakening.</li></ul>"}},
+        {q:{hi:"हरियाणा में प्रथम पानीपत का युद्ध कब लड़ा गया था?",en:"When was the First Battle of Panipat fought in Haryana?"},o:{hi:["1525 ई.","1526 ई.","1556 ई.","1761 ई."],en:["1525 AD","1526 AD","1556 AD","1761 AD"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li><b>21 अप्रैल 1526</b> को बाबर और इब्राहिम लोदी के बीच पानीपत का पहला युद्ध लड़ा गया।</li><li>पानीपत का द्वितीय युद्ध <b>1556 ई.</b> में अकबर (बैरम खान) और हेमू के बीच हुआ।</li><li>पानीपत का तृतीय युद्ध <b>1761 ई.</b> में मराठों और अहमद शाह अब्दाली के बीच हुआ।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li>First Battle of Panipat was fought on <b>21 April 1526</b> between Babar and Ibrahim Lodi.</li><li>Second Battle of Panipat in <b>1556 AD</b> was between Akbar (Bairam Khan) and Hemu.</li><li>Third Battle of Panipat in <b>1761 AD</b> was between Marathas and Ahmad Shah Abdali.</li></ul>"}},
+        {q:{hi:"हरियाणा का सबसे बड़ा औद्योगिक नगर कौन-सा है?",en:"Which is the largest industrial city of Haryana?"},o:{hi:["हिसार","गुरुग्राम","फरीदाबाद","पानीपत"],en:["Hisar","Gurugram","Faridabad","Panipat"]},a:2,
+         e:{hi:"<b>उत्तर: C</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li><b>फरीदाबाद</b> को हरियाणा की औद्योगिक राजधानी माना जाता है।</li><li>गुरुग्राम को 'मिलेनियम सिटी' और 'वित्तीय राजधानी' कहा जाता है (IT और BPO के कारण)।</li><li>हिसार को 'स्टील सिटी' (जिंदल स्टील) कहा जाता है।</li><li>पानीपत को 'पेट्रोकेमिकल हब' (IOCL रिफाइनरी) कहा जाता है।</li></ul>",en:"<b>Answer: C</b><br><br>💡 <b>Key Facts:</b><ul><li><b>Faridabad</b> is considered the industrial capital of Haryana.</li><li>Gurugram is called 'Millennium City' and 'Financial Capital' (due to IT and BPO).</li><li>Hisar is called 'Steel City' (Jindal Steel).</li><li>Panipat is called 'Petrochemical Hub' (IOCL Refinery).</li></ul>"}},
+        {q:{hi:"हरियाणा की राजधानी कौन-सी है?",en:"What is the capital of Haryana?"},o:{hi:["पंचकूला","चंडीगढ़","रोहतक","गुरुग्राम"],en:["Panchkula","Chandigarh","Rohtak","Gurugram"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li><b>चंडीगढ़</b> हरियाणा और पंजाब की संयुक्त राजधानी है, जो एक केंद्र शासित प्रदेश भी है।</li><li>चंडीगढ़ का मास्टर प्लान फ्रांसीसी वास्तुकार <b>ली कार्बूजियर</b> ने तैयार किया।</li><li>चंडीगढ़ को 'द सिटी ब्यूटीफुल' कहा जाता है।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li><b>Chandigarh</b> is the joint capital of Haryana and Punjab, and also a Union Territory.</li><li>Its master plan was designed by French architect <b>Le Corbusier</b>.</li><li>Chandigarh is called 'The City Beautiful'.</li></ul>"}},
+        {q:{hi:"हरियाणा राज्य का गठन कब हुआ?",en:"When was the state of Haryana formed?"},o:{hi:["1 नवंबर 1966","1 नवंबर 1965","15 अगस्त 1947","26 जनवरी 1950"],en:["1 November 1966","1 November 1965","15 August 1947","26 January 1950"]},a:0,
+         e:{hi:"<b>उत्तर: A</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li><b>1 नवंबर 1966</b> को सरदार हुकम सिंह संसदीय समिति की सिफारिश पर हरियाणा का गठन हुआ।</li><li>भाषाई आधार पर पंजाब का विभाजन कर <b>17वें राज्य</b> के रूप में हरियाणा अस्तित्व में आया।</li><li>संविधान के <b>18वें संशोधन (1966)</b> के तहत हरियाणा राज्य बना।</li></ul>",en:"<b>Answer: A</b><br><br>💡 <b>Key Facts:</b><ul><li>Haryana was formed on <b>1 November 1966</b> on the recommendation of the Sardar Hukam Singh Parliamentary Committee.</li><li>Punjab was divided on linguistic basis and Haryana emerged as the <b>17th state</b>.</li><li>Haryana was formed under the <b>18th Constitutional Amendment (1966)</b>.</li></ul>"}},
+        {q:{hi:"हरियाणा में प्रसिद्ध सूरजकुंड मेला किस जिले में आयोजित होता है?",en:"In which district is the famous Surajkund Fair held in Haryana?"},o:{hi:["गुरुग्राम","फरीदाबाद","रोहतक","करनाल"],en:["Gurugram","Faridabad","Rohtak","Karnal"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>सूरजकुंड अंतर्राष्ट्रीय हस्तशिल्प मेला हर साल फरवरी में <b>फरीदाबाद</b> में आयोजित होता है।</li><li>यह दुनिया के सबसे बड़े शिल्प मेलों में से एक है, जिसकी शुरुआत 1987 में हुई।</li><li>सूरजकुंड का निर्माण तोमर राजा <b>सूरजपाल तोमर</b> ने करवाया था।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li>Surajkund International Crafts Fair is held in <b>Faridabad</b> every February.</li><li>It is one of the world's largest craft fairs, started in 1987.</li><li>Surajkund was built by Tomar king <b>Surajpal Tomar</b>.</li></ul>"}},
+        {q:{hi:"हरियाणा का राज्य खेल कौन-सा है?",en:"What is the state sport of Haryana?"},o:{hi:["कबड्डी","कुश्ती","हॉकी","बॉक्सिंग"],en:["Kabaddi","Wrestling","Hockey","Boxing"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>हरियाणा का आधिकारिक राजकीय खेल <b>कुश्ती (Wrestling)</b> है।</li><li>हरियाणा को भारत में 'पहलवानों की खान' कहा जाता है।</li><li>प्रसिद्ध पहलवान: योगेश्वर दत्त, सुशील कुमार, बजरंग पूनिया, विनेश फोगट, साक्षी मलिक।</li><li>भिवानी को मुक्केबाजी के कारण 'भारत का मिनी क्यूबा' कहा जाता है।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li>Haryana's official state sport is <b>Wrestling</b>.</li><li>Haryana is called the 'mine of wrestlers' in India.</li><li>Famous wrestlers: Yogeshwar Dutt, Sushil Kumar, Bajrang Punia, Vinesh Phogat, Sakshi Malik.</li><li>Bhiwani is called 'Mini Cuba of India' for boxing.</li></ul>"}},
+        {q:{hi:"हरियाणा में सबसे अधिक गेहूँ उत्पादन वाला जिला कौन-सा माना जाता है?",en:"Which district is considered the highest wheat producer in Haryana?"},o:{hi:["करनाल","हिसार","सिरसा","कैथल"],en:["Karnal","Hisar","Sirsa","Kaithal"]},a:0,
+         e:{hi:"<b>उत्तर: A</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>करनाल (और उसका बेल्ट) गेहूं और धान के उत्कृष्ट उत्पादन के लिए जाना जाता है।</li><li>करनाल को 'धान का कटोरा' भी कहा जाता है।</li><li>राष्ट्रीय डेयरी अनुसंधान संस्थान (NDRI) करनाल में स्थित है।</li></ul>",en:"<b>Answer: A</b><br><br>💡 <b>Key Facts:</b><ul><li>Karnal (and its belt) is known for excellent wheat and paddy production.</li><li>Karnal is also called 'Rice Bowl'.</li><li>National Dairy Research Institute (NDRI) is in Karnal.</li></ul>"}},
+        {q:{hi:"हरियाणा के पहले मुख्यमंत्री कौन थे?",en:"Who was the first Chief Minister of Haryana?"},o:{hi:["चौधरी देवीलाल","बंसीलाल","पंडित भगवत दयाल शर्मा","भजनलाल"],en:["Chaudhary Devi Lal","Bansi Lal","Pandit Bhagwat Dayal Sharma","Bhajan Lal"]},a:2,
+         e:{hi:"<b>उत्तर: C</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li><b>पंडित भगवत दयाल शर्मा (B.D. Sharma)</b> हरियाणा के पहले मुख्यमंत्री (1966-1967) थे।</li><li>इनका जन्म झज्जर के बेरी गाँव में हुआ था।</li><li>राव बीरेंद्र सिंह हरियाणा के पहले 'गैर-कांग्रेसी' मुख्यमंत्री थे।</li></ul>",en:"<b>Answer: C</b><br><br>💡 <b>Key Facts:</b><ul><li><b>Pandit Bhagwat Dayal Sharma (B.D. Sharma)</b> was the first CM of Haryana (1966-1967).</li><li>He was born in Beri village, Jhajjar.</li><li>Rao Birendra Singh was the first 'non-Congress' CM of Haryana.</li></ul>"}},
+        {q:{hi:"हरियाणा की प्रसिद्ध हस्तशिल्प नगरी सूरजकुंड किस जिले में स्थित है?",en:"The famous handicraft town Surajkund is located in which district of Haryana?"},o:{hi:["गुरुग्राम","पलवल","फरीदाबाद","सोनीपत"],en:["Gurugram","Palwal","Faridabad","Sonipat"]},a:2,
+         e:{hi:"<b>उत्तर: C</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>सूरजकुंड <b>फरीदाबाद</b> जिले में अरावली पहाड़ियों की पृष्ठभूमि में स्थित है।</li><li>यह स्थान तोमर राजवंश द्वारा बनाए गए सूर्य आकार के कुंड के लिए जाना जाता है।</li><li>फरीदाबाद में बड़खल झील भी एक प्रमुख पर्यटन स्थल है।</li></ul>",en:"<b>Answer: C</b><br><br>💡 <b>Key Facts:</b><ul><li>Surajkund is in <b>Faridabad</b> district with Aravalli hills in the background.</li><li>This place is known for the sun-shaped reservoir built by the Tomar dynasty.</li><li>Badkhal Lake in Faridabad is also a major tourist spot.</li></ul>"}},
+
+        // English (26-35)
+        {q:{hi:"त्रुटि खोजें: In India (a) / working woman lead (b) / a life of dual responsibilities (c) / No error (d)",en:"Find the error: In India (a) / working woman lead (b) / a life of dual responsibilities (c) / No error (d)"},o:{hi:["(a)","(b)","(c)","(d)"],en:["(a)","(b)","(c)","(d)"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>व्याकरण नियम (Subject-Verb Agreement):</b><br>यहाँ Subject 'working woman' <b>एकवचन (Singular)</b> है।<br>नियम के अनुसार, एकवचन कर्ता के साथ Present Tense में क्रिया के साथ 's' या 'es' लगता है।<br>इसलिए 'lead' की जगह <b>'leads'</b> का प्रयोग होगा।",en:"<b>Answer: B</b><br><br>💡 <b>Grammar Rule (Subject-Verb Agreement):</b><br>Here the subject 'working woman' is <b>Singular</b>.<br>According to the rule, with a singular subject in present tense, the verb takes 's' or 'es'.<br>So 'lead' should be <b>'leads'</b>."}},
+        {q:{hi:"रिक्त स्थान भरें: Student-parking should be ____; students should not be charged to buy parking stickers.",en:"Fill in the blank: Student-parking should be ____; students should not be charged to buy parking stickers."},o:{hi:["fined","free","costly","cheap"],en:["fined","free","costly","cheap"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>वाक्य संदर्भ (Context Clue):</b><br>वाक्य के दूसरे भाग में स्पष्ट है 'students should not be charged' (छात्रों से पैसे नहीं लिए जाने चाहिए)।<br>इसका सीधा मतलब है कि पार्किंग <b>मुफ़्त (free)</b> होनी चाहिए।",en:"<b>Answer: B</b><br><br>💡 <b>Context Clue:</b><br>The second part clearly says 'students should not be charged'.<br>This means parking should be <b>free</b>."}},
+        {q:{hi:"सही वर्तनी वाला शब्द चुनें: If you have roses growing in your garden, you can make a lovely ____ of flowers at home.",en:"Choose the correctly spelt word: If you have roses growing in your garden, you can make a lovely ____ of flowers at home."},o:{hi:["boquutte","bucquete","boquete","bouquet"],en:["boquutte","bucquete","boquete","bouquet"]},a:3,
+         e:{hi:"<b>उत्तर: D</b><br><br>💡 <b>शब्द ज्ञान (Spelling):</b><br>सही स्पेलिंग <b>Bouquet</b> होती है।<br><b>अर्थ:</b> फूलों का गुलदस्ता।<br>यह शब्द फ्रेंच भाषा से आया है, इसलिए इसके अंत में 't' साइलेंट रहता है।",en:"<b>Answer: D</b><br><br>💡 <b>Spelling:</b><br>Correct spelling is <b>Bouquet</b>.<br><b>Meaning:</b> A bunch of flowers.<br>It is a French word, so the final 't' is silent."}},
+        {q:{hi:"शब्दावली: 'PARSIMONY' का सटीक समानार्थी शब्द चुनें।",en:"Vocabulary: Find the exact synonym of 'PARSIMONY'."},o:{hi:["Expenditure","Bankruptcy","Bribery","Miserliness"],en:["Expenditure","Bankruptcy","Bribery","Miserliness"]},a:3,
+         e:{hi:"<b>उत्तर: D</b><br><br>💡 <b>शब्द ज्ञान (Synonyms):</b><br><b>Parsimony</b> का अर्थ है अत्यधिक कंजूसी।<br>इसका सटीक समानार्थी <b>Miserliness</b> (कंजूसी) है।<br>• Expenditure (खर्च), Bankruptcy (दिवालियापन), Bribery (रिश्वतखोरी)।",en:"<b>Answer: D</b><br><br>💡 <b>Synonyms:</b><br><b>Parsimony</b> means extreme stinginess.<br>Its exact synonym is <b>Miserliness</b>.<br>• Expenditure, Bankruptcy, Bribery."}},
+        {q:{hi:"'LUNACY' का सटीक विलोम शब्द चुनें।",en:"Find the exact opposite (antonym) of 'LUNACY'."},o:{hi:["Sanity","Stupidity","Sensibility","Insanity"],en:["Sanity","Stupidity","Sensibility","Insanity"]},a:0,
+         e:{hi:"<b>उत्तर: A</b><br><br>💡 <b>शब्द ज्ञान (Antonyms):</b><br><b>Lunacy</b> का अर्थ है पागलपन या मानसिक विक्षिप्तता।<br>इसका सटीक विलोम <b>Sanity</b> (मानसिक संतुलन) है।<br>Insanity और Stupidity इसके समानार्थी हैं।",en:"<b>Answer: A</b><br><br>💡 <b>Antonyms:</b><br><b>Lunacy</b> means madness or mental derangement.<br>Its exact antonym is <b>Sanity</b> (mental soundness).<br>Insanity and Stupidity are synonyms."}},
+        {q:{hi:"मुहावरे का अर्थ: 'Egged you on' का अर्थ है-",en:"Meaning of the idiom: 'Egged you on' means-"},o:{hi:["urged","dampened","hindered","discouraged"],en:["urged","dampened","hindered","discouraged"]},a:0,
+         e:{hi:"<b>उत्तर: A</b><br><br>💡 <b>मुहावरे का अर्थ:</b><br><b>'To egg someone on'</b> का अर्थ है किसी को काम करने के लिए उकसाना या प्रोत्साहित करना।<br>इसका समानार्थी <b>'Urged'</b> (आग्रह करना / उकसाना) है।<br>Hindered और Discouraged का अर्थ रोकना या हतोत्साहित करना है।",en:"<b>Answer: A</b><br><br>💡 <b>Idiom Meaning:</b><br><b>'To egg someone on'</b> means to urge or encourage someone to do something.<br>Its synonym is <b>'Urged'</b>.<br>Hindered and Discouraged mean to obstruct or dishearten."}},
+        {q:{hi:"मुहावरे का अर्थ: 'To hold a candle to' का अर्थ है-",en:"Meaning of the idiom: 'To hold a candle to' means-"},o:{hi:["superior","equal","inferior","indifferent"],en:["superior","equal","inferior","indifferent"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>मुहावरे का अर्थ:</b><br>मुहावरा <b>'cannot hold a candle to someone'</b> का अर्थ है किसी की तुलना में बहुत कमतर होना।<br>इसलिए 'hold a candle to' का अर्थ होगा किसी के <b>बराबर (equal)</b> होना।",en:"<b>Answer: B</b><br><br>💡 <b>Idiom Meaning:</b><br>The idiom <b>'cannot hold a candle to someone'</b> means to be far inferior to someone.<br>So 'hold a candle to' means to be <b>equal</b> to someone."}},
+        {q:{hi:"रेखांकित भाग बदलें: It became clear that the strangers were <u>heading along</u> a serious disaster.",en:"Replace the underlined part: It became clear that the strangers were <u>heading along</u> a serious disaster."},o:{hi:["along","towards","on","No improvement"],en:["along","towards","on","No improvement"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>व्याकरण नियम (Phrasal Verbs):</b><br>जब कोई व्यक्ति या चीज़ किसी निश्चित दिशा या परिणाम की ओर बढ़ रही हो, तो <b>'heading towards'</b> का प्रयोग किया जाता है।<br>यहाँ अजनबी एक गंभीर आपदा की ओर बढ़ रहे थे, इसलिए 'heading towards' सही होगा।",en:"<b>Answer: B</b><br><br>💡 <b>Grammar Rule (Phrasal Verbs):</b><br>When someone or something is moving in a definite direction or towards a result, <b>'heading towards'</b> is used.<br>Here the strangers were heading towards a serious disaster, so 'heading towards' is correct."}},
+        {q:{hi:"वाक्य सुधार: <u>Twenty kms. Are not a great distance</u> to travel by car.",en:"Sentence Improvement: <u>Twenty kms. Are not a great distance</u> to travel by car."},o:{hi:["is not a great distance","are not too great a distance","aren't proving a great distance","No improvement"],en:["is not a great distance","are not too great a distance","aren't proving a great distance","No improvement"]},a:0,
+         e:{hi:"<b>उत्तर: A</b><br><br>💡 <b>व्याकरण नियम (Subject-Verb Agreement):</b><br>जब किसी बहुवचन संख्या का प्रयोग <b>दूरी, समय, वजन या धनराशि की एक निश्चित इकाई</b> के रूप में किया जाता है, तो उसके साथ <b>एकवचन क्रिया</b> का प्रयोग होता है।<br>चूंकि 20 किलोमीटर को एक 'great distance' माना गया है, इसलिए 'Are' की जगह <b>'Is'</b> आएगा।",en:"<b>Answer: A</b><br><br>💡 <b>Grammar Rule (Subject-Verb Agreement):</b><br>When a plural number is used as a single unit of <b>distance, time, weight, or money</b>, a <b>singular verb</b> is used.<br>Since 20 kms is considered a single 'great distance', 'Are' should be replaced by <b>'Is'</b>."}},
+        {q:{hi:"वाक्य सुधार: I <u>adapted</u> a new method to solve the problem.",en:"Sentence Improvement: I <u>adapted</u> a new method to solve the problem."},o:{hi:["I have been adopted","I adopted","I was adapted","No improvement"],en:["I have been adopted","I adopted","I was adapted","No improvement"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>शब्द ज्ञान (Confusing Words):</b><br>• <b>Adapt:</b> अनुकूल बनाना (खुद को ढालना)।<br>• <b>Adopt:</b> अपनाना / गोद लेना।<br>यहाँ एक नया तरीका 'अपनाने' की बात है, इसलिए 'adapted' की जगह <b>'adopted'</b> सही होगा।",en:"<b>Answer: B</b><br><br>💡 <b>Confusing Words:</b><br>• <b>Adapt:</b> To adjust oneself.<br>• <b>Adopt:</b> To accept or take as one's own.<br>Here, a new method is being 'adopted', so <b>'adopted'</b> is correct."}},
+
+        // Reasoning (36-45)
+        {q:{hi:"पाँच वस्तुएँ - बल्ला, गेंद, पंखा, मेज तथा कुर्सी एक के ऊपर एक रखी गई हैं। बल्ला, पंखे से चार स्थान ऊपर है। मेज, गेंद और कुर्सी के बीच में है। कुर्सी, बल्ले से तीन स्थान नीचे है। ऊपर से दूसरे स्थान पर कौन-सी वस्तु होगी?",en:"Five objects - bat, ball, fan, table and chair are placed one above the other. The bat is four places above the fan. The table is between the ball and the chair. The chair is three places below the bat. Which object is at the second place from the top?"},o:{hi:["पंखा","मेज","गेंद","कुर्सी"],en:["Fan","Table","Ball","Chair"]},a:2,
+         e:{hi:"<b>उत्तर: C</b><br><br>💡 <b>विस्तृत हल (रैंकिंग व्यवस्था):</b><br>शर्त 1: बल्ला पंखे से 4 स्थान ऊपर है। ➔ (1. बल्ला, 2. _, 3. _, 4. _, 5. पंखा)<br>शर्त 2: कुर्सी, बल्ले से 3 स्थान नीचे है। ➔ (कुर्सी चौथे स्थान पर)<br>शर्त 3: मेज, गेंद और कुर्सी के बीच में है। ➔ (मेज तीसरे, गेंद दूसरे स्थान पर)<br><br>अंतिम क्रम (ऊपर से नीचे): <b>बल्ला ➔ गेंद ➔ मेज ➔ कुर्सी ➔ पंखा</b>।<br>अतः ऊपर से दूसरे स्थान पर <b>गेंद</b> होगी।",en:"<b>Answer: C</b><br><br>💡 <b>Detailed Solution (Ranking):</b><br>Condition 1: Bat is 4 places above fan. ➔ (1. Bat, 2. _, 3. _, 4. _, 5. Fan)<br>Condition 2: Chair is 3 places below bat. ➔ (Chair at 4th position)<br>Condition 3: Table is between ball and chair. ➔ (Table at 3rd, Ball at 2nd)<br><br>Final order (top to bottom): <b>Bat ➔ Ball ➔ Table ➔ Chair ➔ Fan</b>.<br>So, the object at second place from the top is <b>Ball</b>."}},
+        {q:{hi:"पाँच शिक्षक H, K, P, R और T केंद्र की ओर मुख करके वृत्ताकार मेज के चारों ओर बैठे हैं। T, H और R के बीच में है। P, R के दाईं ओर दूसरे स्थान पर है। H, T के तुरंत बाईं ओर है। K के तुरंत बाईं ओर कौन बैठा है?",en:"Five teachers H, K, P, R and T are sitting around a circular table facing the centre. T is between H and R. P is second to the right of R. H is immediately to the left of T. Who is immediately to the left of K?"},o:{hi:["T","H","P","R"],en:["T","H","P","R"]},a:3,
+         e:{hi:"<b>उत्तर: D</b><br><br>💡 <b>विस्तृत हल (सिटिंग अरेंजमेंट):</b><br>शर्त 1: H, T के तुरंत बाईं ओर है। ➔ (H - T)<br>शर्त 2: T, H और R के बीच में है। ➔ (H - T - R)<br>शर्त 3: P, R के दाईं ओर दूसरे स्थान पर है। ➔ (H - T - R - _ - P)<br>अब K बचा है जो खाली जगह पर बैठेगा।<br>अंतिम क्रम (Clockwise): <b>H - T - R - K - P</b><br>प्रश्न: K के तुरंत बाईं ओर कौन है? ➔ <b>R</b> बैठा है।",en:"<b>Answer: D</b><br><br>💡 <b>Detailed Solution (Circular Arrangement):</b><br>Condition 1: H is immediately left of T. ➔ (H - T)<br>Condition 2: T is between H and R. ➔ (H - T - R)<br>Condition 3: P is second to the right of R. ➔ (H - T - R - _ - P)<br>Now K sits in the empty place.<br>Final order (Clockwise): <b>H - T - R - K - P</b><br>Question: Who is immediately left of K? ➔ <b>R</b> is sitting there."}},
+        {q:{hi:"यदि किसी कूट भाषा में 'RIGIDS' को 'TFIFFP' लिखा जाता है, तो 'CORNET' का कूट क्या होगा?",en:"If in a code language 'RIGIDS' is written as 'TFIFFP', what will be the code for 'CORNET'?"},o:{hi:["GNVMIS","FMULHR","ELTKRQ","ELTKGQ"],en:["GNVMIS","FMULHR","ELTKRQ","ELTKGQ"]},a:3,
+         e:{hi:"<b>उत्तर: D</b><br><br>💡 <b>विस्तृत हल (कोडिंग-डिकोडिंग):</b><br>R(+2)=T, I(-3)=F, G(+2)=I, I(-3)=F, D(+2)=F, S(-3)=P<br>पैटर्न: <b>+2, -3, +2, -3, +2, -3</b><br><br>CORNET पर लागू करें:<br>C(+2)=E, O(-3)=L, R(+2)=T, N(-3)=K, E(+2)=G, T(-3)=Q<br>अतः सही कूट <b>ELTKGQ</b> होगा।",en:"<b>Answer: D</b><br><br>💡 <b>Detailed Solution (Coding-Decoding):</b><br>R(+2)=T, I(-3)=F, G(+2)=I, I(-3)=F, D(+2)=F, S(-3)=P<br>Pattern: <b>+2, -3, +2, -3, +2, -3</b><br><br>Apply to CORNET:<br>C(+2)=E, O(-3)=L, R(+2)=T, N(-3)=K, E(+2)=G, T(-3)=Q<br>Hence the correct code is <b>ELTKGQ</b>."}},
+        {q:{hi:"कथन: कोई A, B नहीं है। सभी C, D हैं। कुछ C, B हैं।<br>निष्कर्ष: I. कुछ D, B हैं। II. कुछ B, C हैं। III. सभी C, B हैं।",en:"Statements: No A is B. All C are D. Some C are B.<br>Conclusions: I. Some D are B. II. Some B are C. III. All C are B."},o:{hi:["केवल I और II सही हैं।","केवल I और III सही हैं।","केवल III सही है।","केवल II सही है।"],en:["Only I and II are correct.","Only I and III are correct.","Only III is correct.","Only II is correct."]},a:0,
+         e:{hi:"<b>उत्तर: A</b><br><br>💡 <b>विस्तृत हल (Syllogism):</b><br>'कुछ C, B हैं' ➔ (C और B का कुछ हिस्सा कॉमन)।<br>'सभी C, D हैं' ➔ (पूरा C, D के अंदर)।<br>चूंकि पूरा C, D में है और C का कुछ हिस्सा B में है, तो D का कुछ हिस्सा निश्चित रूप से B में होगा। ➔ <b>निष्कर्ष I सत्य</b>।<br>'कुछ C, B हैं' का उल्टा <b>निष्कर्ष II (कुछ B, C हैं) भी सत्य</b> है।<br>निष्कर्ष III गलत है क्योंकि केवल 'कुछ' कहा गया है। अतः केवल I और II सही हैं।",en:"<b>Answer: A</b><br><br>💡 <b>Detailed Solution (Syllogism):</b><br>'Some C are B' → Some part of C is common with B.<br>'All C are D' → All of C is inside D.<br>Since all C is in D and some C is in B, some part of D must be in B. → <b>Conclusion I is true</b>.<br>The reverse of 'Some C are B' is <b>Conclusion II (Some B are C), which is also true</b>.<br>Conclusion III is false as only 'some' is stated. Hence only I and II are correct."}},
+        {q:{hi:"यदि 'ROK' = 44 तथा 'MIG' = 29 है, तो 'TAL' का कूट क्या होगा?",en:"If 'ROK' = 44 and 'MIG' = 29, what will be the code for 'TAL'?"},o:{hi:["33","34","41","43"],en:["33","34","41","43"]},a:0,
+         e:{hi:"<b>उत्तर: A</b><br><br>💡 <b>विस्तृत हल (Coding):</b><br>अक्षरों के स्थानीय मान का योग करें:<br>R(18)+O(15)+K(11) = 44<br>M(13)+I(9)+G(7) = 29<br><br>TAL के लिए: T(20)+A(1)+L(12) = <b>33</b>।",en:"<b>Answer: A</b><br><br>💡 <b>Detailed Solution (Coding):</b><br>Sum of alphabetical place values:<br>R(18)+O(15)+K(11) = 44<br>M(13)+I(9)+G(7) = 29<br><br>For TAL: T(20)+A(1)+L(12) = <b>33</b>."}},
+        {q:{hi:"समीकरण को सही बनाने के लिए किन दो चिह्नों को बदलना होगा? 73 - 13 × 42 ÷ 14 + 56 = 56",en:"Which two signs should be interchanged to make the equation correct? 73 - 13 × 42 ÷ 14 + 56 = 56"},o:{hi:["+ और ×","× और ÷","- और +","- और ×"],en:["+ and ×","× and ÷","- and +","- and ×"]},a:2,
+         e:{hi:"<b>उत्तर: C</b><br><br>💡 <b>विस्तृत हल:</b><br>विकल्प C (- और +) बदलकर देखें:<br>नया समीकरण: 73 + 13 × 42 ÷ 14 - 56<br>BODMAS:<br>42 ÷ 14 = 3<br>13 × 3 = 39<br>73 + 39 - 56 = 112 - 56 = <b>56</b>।<br>LHS = RHS सिद्ध हुआ।",en:"<b>Answer: C</b><br><br>💡 <b>Detailed Solution:</b><br>Try option C (swap - and +):<br>New equation: 73 + 13 × 42 ÷ 14 - 56<br>BODMAS:<br>42 ÷ 14 = 3<br>13 × 3 = 39<br>73 + 39 - 56 = 112 - 56 = <b>56</b>.<br>LHS = RHS verified."}},
+        {q:{hi:"संख्या सादृश्य: 35 : 66 :: 29 : ?",en:"Number Analogy: 35 : 66 :: 29 : ?"},o:{hi:["63","62","60","57"],en:["63","62","60","57"]},a:2,
+         e:{hi:"<b>उत्तर: C</b><br><br>💡 <b>विस्तृत हल:</b><br>35 + 31 = 66<br>इसी प्रकार: 29 + 31 = <b>60</b>।",en:"<b>Answer: C</b><br><br>💡 <b>Detailed Solution:</b><br>35 + 31 = 66<br>Similarly: 29 + 31 = <b>60</b>."}},
+        {q:{hi:"यदि 'PING' = 4 तथा 'METAL' = 5 है, तो 'STEADYS' का कूट क्या होगा?",en:"If 'PING' = 4 and 'METAL' = 5, what will be the code for 'STEADYS'?"},o:{hi:["8","7","5","6"],en:["8","7","5","6"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>विस्तृत हल:</b><br>शब्द में मौजूद <b>अक्षरों की संख्या</b> को गिना गया है।<br>P-I-N-G = 4 अक्षर ➔ 4<br>M-E-T-A-L = 5 अक्षर ➔ 5<br>S-T-E-A-D-Y-S में <b>7 अक्षर</b> हैं ➔ 7।",en:"<b>Answer: B</b><br><br>💡 <b>Detailed Solution:</b><br>This coding uses the <b>number of letters</b> in the word.<br>P-I-N-G = 4 letters → 4<br>M-E-T-A-L = 5 letters → 5<br>S-T-E-A-D-Y-S has <b>7 letters</b> → 7."}},
+        {q:{hi:"कथन: I. कुछ Red, Rat हैं। II. कुछ Rat, Wild हैं।<br>निष्कर्ष: I. कुछ Wild, Rat हैं। II. सभी Wild, Rat हैं। III. कुछ Red, Wild हैं।",en:"Statements: I. Some Red are Rat. II. Some Rat are Wild.<br>Conclusions: I. Some Wild are Rat. II. All Wild are Rat. III. Some Red are Wild."},o:{hi:["कोई भी निष्कर्ष सही नहीं है।","केवल निष्कर्ष I सही है।","केवल निष्कर्ष III सही है।","केवल निष्कर्ष II सही है।"],en:["No conclusion is correct.","Only conclusion I is correct.","Only conclusion III is correct.","Only conclusion II is correct."]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>विस्तृत हल (Syllogism):</b><br>'कुछ Rat, Wild हैं' का उल्टा 'कुछ Wild, Rat हैं' होता है। ➔ <b>निष्कर्ष I सत्य</b>।<br>निष्कर्ष II गलत है क्योंकि 'कुछ' से 'सभी' नहीं निकलता।<br>निष्कर्ष III (Red और Wild) का कोई सीधा संबंध नहीं दिया गया। अतः केवल I सही है।",en:"<b>Answer: B</b><br><br>💡 <b>Detailed Solution (Syllogism):</b><br>The reverse of 'Some Rat are Wild' is 'Some Wild are Rat'. → <b>Conclusion I is true</b>.<br>Conclusion II is false as 'some' does not imply 'all'.<br>There is no direct relation given between Red and Wild (Conclusion III). Hence only I is correct."}},
+        {q:{hi:"श्रृंखला में प्रश्नवाचक चिन्ह (?) के स्थान पर कौन-सी संख्या आएगी? 16, 20, 29, 45, 70, ?",en:"Which number will replace the question mark (?) in the series? 16, 20, 29, 45, 70, ?"},o:{hi:["106","116","96","126"],en:["106","116","96","126"]},a:0,
+         e:{hi:"<b>उत्तर: A</b><br><br>💡 <b>विस्तृत हल (Number Series):</b><br>अंतर निकालें:<br>20-16 = 4 = 2²<br>29-20 = 9 = 3²<br>45-29 = 16 = 4²<br>70-45 = 25 = 5²<br><br>अगला अंतर 6² = 36 होगा।<br>70 + 36 = <b>106</b>।",en:"<b>Answer: A</b><br><br>💡 <b>Detailed Solution (Number Series):</b><br>Find differences:<br>20-16 = 4 = 2²<br>29-20 = 9 = 3²<br>45-29 = 16 = 4²<br>70-45 = 25 = 5²<br><br>Next difference will be 6² = 36.<br>70 + 36 = <b>106</b>."}},
+
+        // Math (46-60)
+        {q:{hi:"एक यात्री 15 किमी की दूरी 30 किमी/घंटा की गति से तथा अगली 25 किमी की दूरी 10 किमी/घंटा की गति से तय करता है। उसकी औसत चाल कितनी होगी?",en:"A traveller covers 15 km at 30 km/h and the next 25 km at 10 km/h. What will be his average speed?"},o:{hi:["13 1/3 किमी/घंटा","26 2/3 किमी/घंटा","20 किमी/घंटा","12 किमी/घंटा"],en:["13 1/3 km/h","26 2/3 km/h","20 km/h","12 km/h"]},a:0,
+         e:{hi:"<b>उत्तर: A</b><br><br>💡 <b>हल:</b><br>कुल दूरी = 15 + 25 = 40 किमी<br>समय 1 = 15/30 = 0.5 घंटा<br>समय 2 = 25/10 = 2.5 घंटा<br>कुल समय = 3 घंटे<br>औसत चाल = 40/3 = <b>13⅓ किमी/घंटा</b>।",en:"<b>Answer: A</b><br><br>💡 <b>Solution:</b><br>Total distance = 15 + 25 = 40 km<br>Time 1 = 15/30 = 0.5 hr<br>Time 2 = 25/10 = 2.5 hr<br>Total time = 3 hrs<br>Average speed = 40/3 = <b>13⅓ km/h</b>."}},
+        {q:{hi:"यदि P:Q = 5:2, तो (2P-3Q) : (3P-5Q) का मान ज्ञात कीजिए।",en:"If P:Q = 5:2, find the value of (2P-3Q) : (3P-5Q)."},o:{hi:["5:6","2:7","4:5","3:4"],en:["5:6","2:7","4:5","3:4"]},a:2,
+         e:{hi:"<b>उत्तर: C</b><br><br>💡 <b>हल:</b><br>P=5, Q=2 रखें:<br>अंश = 2(5) - 3(2) = 10 - 6 = 4<br>हर = 3(5) - 5(2) = 15 - 10 = 5<br>अतः <b>4 : 5</b>।",en:"<b>Answer: C</b><br><br>💡 <b>Solution:</b><br>Put P=5, Q=2:<br>Numerator = 2(5) - 3(2) = 10 - 6 = 4<br>Denominator = 3(5) - 5(2) = 15 - 10 = 5<br>Hence <b>4 : 5</b>."}},
+        {q:{hi:"सात विषयों की पुस्तकों की संख्या क्रमशः 26, 29, 31, 34, 36, 38 और 44 है। S1 विषय (पहली संख्या) की पुस्तकों तथा प्रति विषय औसत पुस्तकों की संख्या का अनुपात ज्ञात कीजिए।",en:"The number of books in seven subjects is 26, 29, 31, 34, 36, 38 and 44 respectively. Find the ratio of books of S1 subject (first number) to the average number of books per subject."},o:{hi:["13:17","18:13","14:17","14:13"],en:["13:17","18:13","14:17","14:13"]},a:0,
+         e:{hi:"<b>उत्तर: A</b><br><br>💡 <b>हल:</b><br>योग = 26+29+31+34+36+38+44 = 238<br>औसत = 238/7 = 34<br>S1 = 26<br>अनुपात = 26:34 = <b>13:17</b>।",en:"<b>Answer: A</b><br><br>💡 <b>Solution:</b><br>Sum = 26+29+31+34+36+38+44 = 238<br>Average = 238/7 = 34<br>S1 = 26<br>Ratio = 26:34 = <b>13:17</b>."}},
+        {q:{hi:"₹1200 की राशि पर 20% वार्षिक दर से 2 वर्ष का चक्रवृद्धि ब्याज ज्ञात कीजिए।",en:"Find the compound interest on ₹1200 at 20% per annum for 2 years."},o:{hi:["₹624","₹504","₹576","₹528"],en:["₹624","₹504","₹576","₹528"]},a:3,
+         e:{hi:"<b>उत्तर: D</b><br><br>💡 <b>हल (Successive Percentage):</b><br>2 वर्ष के लिए 20% की प्रभावी दर = 20+20+(400/100) = 44%<br>ब्याज = 1200 × 44/100 = <b>₹528</b>।",en:"<b>Answer: D</b><br><br>💡 <b>Solution (Successive Percentage):</b><br>Effective rate for 20% over 2 years = 20+20+(400/100) = 44%<br>Interest = 1200 × 44/100 = <b>₹528</b>."}},
+        {q:{hi:"यदि किसी धनराशि पर साधारण ब्याज, ब्याज की दर (%) के बराबर वर्षों के लिए मूलधन के बराबर हो जाए, तो समय कितना होगा?",en:"If the simple interest on a sum equals the principal for a number of years equal to the rate (%), what will be the time?"},o:{hi:["5 वर्ष","10 वर्ष","8 वर्ष","1 वर्ष"],en:["5 years","10 years","8 years","1 year"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>हल:</b><br>SI = P, T = R<br>P = (P × T × T)/100<br>T² = 100 ➔ <b>T = 10 वर्ष</b>।",en:"<b>Answer: B</b><br><br>💡 <b>Solution:</b><br>SI = P, T = R<br>P = (P × T × T)/100<br>T² = 100 → <b>T = 10 years</b>."}},
+        {q:{hi:"एक पाइप A किसी टंकी को 6 घंटे में तथा पाइप B उसी टंकी को 8 घंटे में भरता है। तीनों पाइप A, B तथा C मिलकर उसी टंकी को 2 घंटे में भरते हैं। पाइप C अकेला क्या करेगा?",en:"Pipe A fills a tank in 6 hours and pipe B fills it in 8 hours. All three pipes A, B and C together fill the tank in 2 hours. What will pipe C alone do?"},o:{hi:["4 घंटे 40 मिनट में भरेगा","4 घंटे 48 मिनट में भरेगा","4 घंटे 48 मिनट में खाली करेगा","4 घंटे 40 मिनट में खाली करेगा"],en:["Fill in 4 hr 40 min","Fill in 4 hr 48 min","Empty in 4 hr 48 min","Empty in 4 hr 40 min"]},a:2,
+         e:{hi:"<b>उत्तर: C</b><br><br>💡 <b>हल (LCM Method):</b><br>कुल कार्य = 24 यूनिट<br>A = 4, B = 3, (A+B+C) = 12<br>C की दक्षता = 12 - 4 - 3 = 5 यूनिट/घंटा<br>समय = 24/5 = 4.8 घंटे = <b>4 घंटे 48 मिनट</b>।",en:"<b>Answer: C</b><br><br>💡 <b>Solution (LCM Method):</b><br>Total work = 24 units<br>A = 4, B = 3, (A+B+C) = 12<br>C's efficiency = 12 - 4 - 3 = 5 units/hr<br>Time = 24/5 = 4.8 hrs = <b>4 hr 48 min</b>."}},
+        {q:{hi:"एक व्यक्ति ₹320 में कोई वस्तु बेचने पर 20% की हानि उठाता है। उसे 20% का लाभ प्राप्त करने के लिए वस्तु का विक्रय मूल्य कितना होना चाहिए?",en:"A person suffers a 20% loss by selling an item for ₹320. What should be the selling price to gain 20%?"},o:{hi:["₹450","₹480","₹420","₹500"],en:["₹450","₹480","₹420","₹500"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>हल:</b><br>80% = ₹320 ➔ 1% = ₹4<br>120% = 120 × 4 = <b>₹480</b>।",en:"<b>Answer: B</b><br><br>💡 <b>Solution:</b><br>80% = ₹320 → 1% = ₹4<br>120% = 120 × 4 = <b>₹480</b>."}},
+        {q:{hi:"0.1 प्रतिशत × 1.728 × 10^6 जल की छोटी-छोटी गोलाकार बूंदें, जिनमें प्रत्येक का व्यास 2 मिमी है, मिलकर एक बड़ा गोला बनाती हैं। बड़े गोले का व्यास (सेमी में) कितना होगा?",en:"0.1 percent of 1.728 × 10^6 small spherical water drops, each of diameter 2 mm, combine to form a big sphere. What will be the diameter (in cm) of the big sphere?"},o:{hi:["1.2 सेमी","1.6 सेमी","1.8 सेमी","2.4 सेमी"],en:["1.2 cm","1.6 cm","1.8 cm","2.4 cm"]},a:3,
+         e:{hi:"<b>उत्तर: D</b><br><br>💡 <b>हल (Volume Conservation):</b><br>N = 0.1% of 1728000 = 1728<br>छोटी बूंद त्रिज्या r = 0.1 सेमी<br>1728 × (0.1)³ = R³<br>R³ = 1.728 ➔ R = 1.2 सेमी<br>व्यास = 2R = <b>2.4 सेमी</b>।",en:"<b>Answer: D</b><br><br>💡 <b>Solution (Volume Conservation):</b><br>N = 0.1% of 1728000 = 1728<br>Small drop radius r = 0.1 cm<br>1728 × (0.1)³ = R³<br>R³ = 1.728 → R = 1.2 cm<br>Diameter = 2R = <b>2.4 cm</b>."}},
+        {q:{hi:"पवन और सुनील की मासिक आय का अनुपात 4:3 तथा उनके व्यय का अनुपात 3:2 है। यदि दोनों क्रमशः ₹4000 और ₹6000 प्रति माह बचाते हैं, तो उनकी कुल मासिक आय कितनी है?",en:"The monthly income ratio of Pawan and Sunil is 4:3 and expenditure ratio is 3:2. If they save ₹4000 and ₹6000 per month respectively, what is their total monthly income?"},o:{hi:["₹60,000","₹70,000","₹50,000","₹36,000"],en:["₹60,000","₹70,000","₹50,000","₹36,000"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>हल (Cross-Multiplication):</b><br>आय 4:3, व्यय 3:2, बचत 4000:6000<br>(4×2)-(3×3) = -1 यूनिट<br>(3×6000)-(2×4000) = 10000<br>1 यूनिट = 10,000<br>कुल आय = 7 × 10,000 = <b>₹70,000</b>।",en:"<b>Answer: B</b><br><br>💡 <b>Solution (Cross-Multiplication):</b><br>Income 4:3, Exp 3:2, Saving 4000:6000<br>(4×2)-(3×3) = -1 unit<br>(3×6000)-(2×4000) = 10000<br>1 unit = 10,000<br>Total income = 7 × 10,000 = <b>₹70,000</b>."}},
+        {q:{hi:"व्यंजक का मान ज्ञात कीजिए: 32 ÷ 4 of 2 × 3 + [5 of 6 - 7 of 8 (10 + 6 of 5/6 - 1) + 80] - 7 × 3 ÷ 2",en:"Find the value of: 32 ÷ 4 of 2 × 3 + [5 of 6 - 7 of 8 (10 + 6 of 5/6 - 1) + 80] - 7 × 3 ÷ 2"},o:{hi:["7.5","17.5","12.5","24.5"],en:["7.5","17.5","12.5","24.5"]},a:3,
+         e:{hi:"<b>उत्तर: D</b><br><br>💡 <b>हल (BODMAS):</b><br>Bracket ➔ Of ➔ Divide ➔ Multiply ➔ Add ➔ Subtract के क्रम में हल करने पर अंतिम मान <b>24.5</b> प्राप्त होगा।",en:"<b>Answer: D</b><br><br>💡 <b>Solution (BODMAS):</b><br>Solving in order: Bracket → Of → Divide → Multiply → Add → Subtract gives the final value <b>24.5</b>."}},
+        {q:{hi:"यदि A किसी कार्य को 12 दिनों में तथा B उसी कार्य को 18 दिनों में पूरा करता है, तो दोनों मिलकर उस कार्य को कितने दिनों में पूरा करेंगे?",en:"If A completes a work in 12 days and B in 18 days, in how many days will they complete it together?"},o:{hi:["6 दिन","7.2 दिन","8 दिन","9 दिन"],en:["6 days","7.2 days","8 days","9 days"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>हल (LCM Method):</b><br>कुल कार्य = 36 यूनिट<br>A = 3, B = 2 ➔ (A+B) = 5<br>समय = 36/5 = <b>7.2 दिन</b>।",en:"<b>Answer: B</b><br><br>💡 <b>Solution (LCM Method):</b><br>Total work = 36 units<br>A = 3, B = 2 → (A+B) = 5<br>Time = 36/5 = <b>7.2 days</b>."}},
+        {q:{hi:"एक विद्यार्थी ने 800 अंकों में से 632 अंक प्राप्त किए। उसके प्राप्तांकों का प्रतिशत कितना है?",en:"A student scored 632 out of 800. What is the percentage of his marks?"},o:{hi:["78%","79%","80%","81%"],en:["78%","79%","80%","81%"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>हल:</b><br>प्रतिशत = (632/800) × 100 = 632/8 = <b>79%</b>।",en:"<b>Answer: B</b><br><br>💡 <b>Solution:</b><br>Percentage = (632/800) × 100 = 632/8 = <b>79%</b>."}},
+        {q:{hi:"यदि A:B = 7:5 तथा B:C = 3:2 हो, तो A:B:C का अनुपात क्या होगा?",en:"If A:B = 7:5 and B:C = 3:2, what is the ratio A:B:C?"},o:{hi:["21:15:10","14:10:6","7:5:2","42:30:20"],en:["21:15:10","14:10:6","7:5:2","42:30:20"]},a:0,
+         e:{hi:"<b>उत्तर: A</b><br><br>💡 <b>हल (Inverse N):</b><br>A = 7×3 = 21<br>B = 5×3 = 15<br>C = 5×2 = 10<br>अतः <b>21:15:10</b>।",en:"<b>Answer: A</b><br><br>💡 <b>Solution (Inverse N):</b><br>A = 7×3 = 21<br>B = 5×3 = 15<br>C = 5×2 = 10<br>Hence <b>21:15:10</b>."}},
+        {q:{hi:"₹6000 पर 8% वार्षिक दर से 2 वर्ष का साधारण ब्याज कितना होगा?",en:"What is the simple interest on ₹6000 at 8% per annum for 2 years?"},o:{hi:["₹860","₹920","₹960","₹980"],en:["₹860","₹920","₹960","₹980"]},a:2,
+         e:{hi:"<b>उत्तर: C</b><br><br>💡 <b>हल:</b><br>SI = (6000 × 8 × 2)/100 = 60 × 16 = <b>₹960</b>।",en:"<b>Answer: C</b><br><br>💡 <b>Solution:</b><br>SI = (6000 × 8 × 2)/100 = 60 × 16 = <b>₹960</b>."}},
+        {q:{hi:"एक दुकानदार किसी वस्तु को ₹1500 में खरीदता है और उसे ₹1800 में बेच देता है। उसका लाभ प्रतिशत कितना होगा?",en:"A shopkeeper buys an item for ₹1500 and sells it for ₹1800. What is his profit percentage?"},o:{hi:["15%","18%","20%","25%"],en:["15%","18%","20%","25%"]},a:2,
+         e:{hi:"<b>उत्तर: C</b><br><br>💡 <b>हल:</b><br>CP:SP = 15:18 = 5:6<br>लाभ = 1 यूनिट (5 पर)<br>लाभ% = (1/5) × 100 = <b>20%</b>।",en:"<b>Answer: C</b><br><br>💡 <b>Solution:</b><br>CP:SP = 15:18 = 5:6<br>Profit = 1 unit (on 5)<br>Profit% = (1/5) × 100 = <b>20%</b>."}},
+
+        // India GK / Static GK (61-75)
+        {q:{hi:"भारतीय संविधान को अपनाया (Adopt) कब गया था?",en:"When was the Indian Constitution adopted?"},o:{hi:["15 अगस्त 1947","26 जनवरी 1950","26 नवम्बर 1949","24 जनवरी 1950"],en:["15 August 1947","26 January 1950","26 November 1949","24 January 1950"]},a:2,
+         e:{hi:"<b>उत्तर: C</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>संविधान <b>26 नवम्बर 1949</b> को अपनाया गया (संविधान दिवस)।</li><li>यह <b>26 जनवरी 1950</b> को लागू हुआ।</li><li>संविधान बनने में 2 वर्ष 11 महीने 18 दिन लगे।</li></ul>",en:"<b>Answer: C</b><br><br>💡 <b>Key Facts:</b><ul><li>Constitution was adopted on <b>26 November 1949</b> (Constitution Day).</li><li>It came into force on <b>26 January 1950</b>.</li><li>It took 2 years, 11 months and 18 days to draft.</li></ul>"}},
+        {q:{hi:"हड़प्पा सभ्यता का प्रमुख बंदरगाह कौन-सा था?",en:"Which was the major port of the Harappan civilization?"},o:{hi:["कालीबंगन","लोथल","धौलावीरा","राखीगढ़ी"],en:["Kalibangan","Lothal","Dholavira","Rakhigarhi"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li><b>लोथल</b> (गुजरात) सिंधु घाटी सभ्यता का एकमात्र डॉकयार्ड (बंदरगाह) शहर था।</li><li>राखीगढ़ी (हिसार) भारत में हड़प्पा सभ्यता का सबसे बड़ा स्थल है।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li><b>Lothal</b> (Gujarat) was the only dockyard (port) city of the Indus Valley Civilization.</li><li>Rakhigarhi (Hisar) is the largest Harappan site in India.</li></ul>"}},
+        {q:{hi:"भारत का सबसे बड़ा राज्य (क्षेत्रफल की दृष्टि से) कौन-सा है?",en:"Which is the largest state of India by area?"},o:{hi:["मध्य प्रदेश","उत्तर प्रदेश","राजस्थान","महाराष्ट्र"],en:["Madhya Pradesh","Uttar Pradesh","Rajasthan","Maharashtra"]},a:2,
+         e:{hi:"<b>उत्तर: C</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li><b>राजस्थान</b> क्षेत्रफल के आधार पर सबसे बड़ा राज्य है (3,42,239 वर्ग किमी)।</li><li>जनसंख्या में उत्तर प्रदेश सबसे बड़ा राज्य है।</li><li>गोवा क्षेत्रफल में सबसे छोटा राज्य है।</li></ul>",en:"<b>Answer: C</b><br><br>💡 <b>Key Facts:</b><ul><li><b>Rajasthan</b> is the largest state by area (3,42,239 sq km).</li><li>Uttar Pradesh is the largest by population.</li><li>Goa is the smallest state by area.</li></ul>"}},
+        {q:{hi:"भारतीय संसद के उच्च सदन को क्या कहा जाता है?",en:"What is the Upper House of the Indian Parliament called?"},o:{hi:["लोकसभा","राज्यसभा","विधानसभा","विधान परिषद"],en:["Lok Sabha","Rajya Sabha","Vidhan Sabha","Vidhan Parishad"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>उच्च सदन को <b>राज्यसभा (Council of States)</b> कहा जाता है।</li><li>यह एक स्थायी सदन है जिसे कभी भंग नहीं किया जा सकता।</li><li>उपराष्ट्रपति राज्यसभा के पदेन सभापति होते हैं।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li>The Upper House is called <b>Rajya Sabha (Council of States)</b>.</li><li>It is a permanent house that can never be dissolved.</li><li>The Vice President is the ex-officio Chairman of Rajya Sabha.</li></ul>"}},
+        {q:{hi:"भारतीय रिज़र्व बैंक (RBI) की स्थापना किस वर्ष हुई थी?",en:"In which year was the Reserve Bank of India (RBI) established?"},o:{hi:["1932","1935","1947","1950"],en:["1932","1935","1947","1950"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>RBI की स्थापना <b>1 अप्रैल 1935</b> को हुई।</li><li>इसका राष्ट्रीयकरण 1 जनवरी 1949 को किया गया।</li><li>इसका मुख्यालय मुंबई में है।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li>RBI was established on <b>1 April 1935</b>.</li><li>It was nationalized on 1 January 1949.</li><li>Its headquarters is in Mumbai.</li></ul>"}},
+        {q:{hi:"दिल्ली सल्तनत का प्रथम शासक कौन था?",en:"Who was the first ruler of the Delhi Sultanate?"},o:{hi:["इल्तुतमिश","कुतुबुद्दीन ऐबक","बलबन","रज़िया सुल्तान"],en:["Iltutmish","Qutubuddin Aibak","Balban","Razia Sultan"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li><b>कुतुबुद्दीन ऐबक</b> ने 1206 ई. में गुलाम वंश की स्थापना की।</li><li>उसे 'लाखबख्श' कहा जाता था।</li><li>उसने कुतुब मीनार का निर्माण शुरू करवाया।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li><b>Qutubuddin Aibak</b> founded the Slave Dynasty in 1206 AD.</li><li>He was called 'Lakhbaksh' (giver of lakhs).</li><li>He started the construction of Qutub Minar.</li></ul>"}},
+        {q:{hi:"भारतीय संविधान में मौलिक कर्तव्यों का उल्लेख किस अनुच्छेद में किया गया है?",en:"In which Article of the Indian Constitution are Fundamental Duties mentioned?"},o:{hi:["अनुच्छेद 32","अनुच्छेद 51A","अनुच्छेद 356","अनुच्छेद 370"],en:["Article 32","Article 51A","Article 356","Article 370"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>मौलिक कर्तव्य <b>अनुच्छेद 51A</b> में हैं (42वें संशोधन 1976 द्वारा जोड़े गए)।</li><li>ये रूस (USSR) के संविधान से लिए गए हैं।</li><li>वर्तमान में 11 मौलिक कर्तव्य हैं।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li>Fundamental Duties are in <b>Article 51A</b> (added by 42nd Amendment 1976).</li><li>These are borrowed from the Constitution of USSR (Russia).</li><li>Currently there are 11 Fundamental Duties.</li></ul>"}},
+        {q:{hi:"भारत का दक्षिणतम बिंदु कौन-सा है?",en:"Which is the southernmost point of India?"},o:{hi:["कन्याकुमारी","इंदिरा प्वाइंट","केप कोमोरिन","रामेश्वरम"],en:["Kanyakumari","Indira Point","Cape Comorin","Rameswaram"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li><b>इंदिरा प्वाइंट</b> ग्रेट निकोबार द्वीप में भारत का सबसे दक्षिणी बिंदु है।</li><li>मुख्य भूमि का सबसे दक्षिणी बिंदु कन्याकुमारी है।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li><b>Indira Point</b> in Great Nicobar Island is the southernmost point of India.</li><li>Kanyakumari is the southernmost point of mainland India.</li></ul>"}},
+        {q:{hi:"भारत में दशमलव मुद्रा प्रणाली कब लागू की गई थी?",en:"When was the decimal currency system introduced in India?"},o:{hi:["1947","1950","1957","1962"],en:["1947","1950","1957","1962"]},a:2,
+         e:{hi:"<b>उत्तर: C</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>भारत में <b>1 अप्रैल 1957</b> से दशमलव मुद्रा प्रणाली लागू हुई।</li><li>इससे पहले 1 रुपया 16 आना का होता था।</li></ul>",en:"<b>Answer: C</b><br><br>💡 <b>Key Facts:</b><ul><li>Decimal currency system was introduced in India on <b>1 April 1957</b>.</li><li>Earlier, 1 Rupee = 16 Annas.</li></ul>"}},
+        {q:{hi:"भरतनाट्यम नृत्य का उद्‌गम किस राज्य में हुआ है?",en:"Bharatanatyam dance originated in which state?"},o:{hi:["केरल","तमिलनाडु","कर्नाटक","आंध्र प्रदेश"],en:["Kerala","Tamil Nadu","Karnataka","Andhra Pradesh"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>भरतनाट्यम का उद्गम <b>तमिलनाडु</b> के मंदिरों में हुआ।</li><li>यह भारत का सबसे पुराना शास्त्रीय नृत्य है।</li><li>केरल के प्रमुख नृत्य कथकली और मोहिनीअट्टम हैं।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li>Bharatanatyam originated in the temples of <b>Tamil Nadu</b>.</li><li>It is the oldest classical dance of India.</li><li>Major dances of Kerala are Kathakali and Mohiniyattam.</li></ul>"}},
+        {q:{hi:"'ग्रैंड ट्रंक रोड' का निर्माण किस शासक ने करवाया था?",en:"Which ruler built the 'Grand Trunk Road'?"},o:{hi:["अकबर","शेरशाह सूरी","बाबर","औरंगज़ेब"],en:["Akbar","Sher Shah Suri","Babar","Aurangzeb"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li><b>शेरशाह सूरी</b> ने ग्रैंड ट्रंक रोड का पुनर्निर्माण करवाया।</li><li>यह सड़क पेशावर से कलकत्ता तक जाती थी।</li><li>शेरशाह ने 'रुपया' (चांदी का सिक्का) भी चलाया।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li><b>Sher Shah Suri</b> rebuilt the Grand Trunk Road.</li><li>This road stretched from Peshawar to Calcutta.</li><li>Sher Shah also introduced the silver 'Rupaya' coin.</li></ul>"}},
+        {q:{hi:"भारतीय संविधान का कौन-सा भाग राज्य के नीति-निर्देशक तत्वों से संबंधित है?",en:"Which Part of the Indian Constitution deals with Directive Principles of State Policy?"},o:{hi:["भाग-II","भाग-III","भाग-IV","भाग-V"],en:["Part-II","Part-III","Part-IV","Part-V"]},a:2,
+         e:{hi:"<b>उत्तर: C</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>भाग-IV (अनुच्छेद 36-51) में DPSP हैं।</li><li>ये आयरलैंड के संविधान से लिए गए हैं।</li><li>ये अदालत में लागू नहीं कराए जा सकते।</li></ul>",en:"<b>Answer: C</b><br><br>💡 <b>Key Facts:</b><ul><li>Part-IV (Articles 36-51) contains DPSP.</li><li>These are borrowed from the Constitution of Ireland.</li><li>They cannot be enforced in court.</li></ul>"}},
+        {q:{hi:"भारत की सबसे बड़ी मीठे पानी की झील कौन-सी है?",en:"Which is the largest freshwater lake in India?"},o:{hi:["डल झील","वुलर झील","चिल्का झील","सांभर झील"],en:["Dal Lake","Wular Lake","Chilika Lake","Sambhar Lake"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li><b>वुलर झील</b> (जम्मू-कश्मीर) भारत की सबसे बड़ी मीठे पानी की प्राकृतिक झील है।</li><li>चिल्का झील भारत की सबसे बड़ी खारे पानी की झील है।</li><li>सांभर झील सबसे बड़ी अंतर्देशीय खारे पानी की झील है।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li><b>Wular Lake</b> (J&K) is the largest freshwater natural lake in India.</li><li>Chilika Lake is the largest saltwater lake in India.</li><li>Sambhar Lake is the largest inland saltwater lake.</li></ul>"}},
+        {q:{hi:"भारत में योजना आयोग (Planning Commission) का गठन किस वर्ष किया गया था?",en:"In which year was the Planning Commission formed in India?"},o:{hi:["1947","1950","1952","1955"],en:["1947","1950","1952","1955"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>योजना आयोग का गठन <b>15 मार्च 1950</b> को हुआ।</li><li>1 जनवरी 2015 को इसकी जगह <b>नीति आयोग</b> बना।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li>Planning Commission was formed on <b>15 March 1950</b>.</li><li>It was replaced by <b>NITI Aayog</b> on 1 January 2015.</li></ul>"}},
+        {q:{hi:"'कथक' शास्त्रीय नृत्य शैली का प्रमुख उद्‌गम क्षेत्र कौन-सा है?",en:"What is the main origin region of 'Kathak' classical dance style?"},o:{hi:["तमिलनाडु","उत्तर प्रदेश","केरल","ओडिशा"],en:["Tamil Nadu","Uttar Pradesh","Kerala","Odisha"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li><b>कथक</b> उत्तर भारत (मुख्यतः उत्तर प्रदेश के लखनऊ और वाराणसी) का प्रमुख शास्त्रीय नृत्य है।</li><li>यह 'कथा' (Story) शब्द से बना है।</li><li>यह एकमात्र ऐसा नृत्य है जिस पर हिंदू और मुस्लिम दोनों संस्कृतियों का प्रभाव है।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li><b>Kathak</b> is the major classical dance of North India (mainly Lucknow and Varanasi, UP).</li><li>The word is derived from 'Katha' (story).</li><li>It is the only dance influenced by both Hindu and Muslim cultures.</li></ul>"}},
+
+        // Science (76-90)
+        {q:{hi:"मनुष्य के शरीर में सबसे बड़ी अंतःस्रावी (Endocrine) ग्रंथि कौन-सी है?",en:"Which is the largest endocrine gland in the human body?"},o:{hi:["पीयूष ग्रंथि (Pituitary)","थायरॉयड ग्रंथि","अधिवृक्क ग्रंथि","अग्न्याशय"],en:["Pituitary gland","Thyroid gland","Adrenal gland","Pancreas"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li><b>थायरॉयड ग्रंथि</b> सबसे बड़ी अंतःस्रावी ग्रंथि है (गले में 'H' आकार की)।</li><li>आयोडीन की कमी से घेंघा रोग होता है।</li><li>शरीर की सबसे बड़ी ग्रंथि यकृत (Liver) है, लेकिन वह बहिस्रावी है।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li><b>Thyroid gland</b> is the largest endocrine gland ('H' shaped in the neck).</li><li>Iodine deficiency causes Goitre.</li><li>The largest gland in the body is the Liver, but it is exocrine.</li></ul>"}},
+        {q:{hi:"लाल रक्त कणिकाओं (RBC) का निर्माण मुख्यतः कहाँ होता है?",en:"Where are red blood cells (RBCs) mainly produced?"},o:{hi:["हृदय","अस्थि मज्जा","यकृत","प्लीहा"],en:["Heart","Bone Marrow","Liver","Spleen"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>वयस्कों में RBC का निर्माण <b>लाल अस्थि मज्जा</b> में होता है।</li><li>RBC का जीवनकाल 120 दिन होता है।</li><li>प्लीहा को 'RBC का कब्रिस्तान' कहा जाता है।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li>In adults, RBCs are produced in <b>red bone marrow</b>.</li><li>Lifespan of RBC is 120 days.</li><li>The spleen is called the 'graveyard of RBCs'.</li></ul>"}},
+        {q:{hi:"विटामिन C की कमी से कौन-सा रोग होता है?",en:"Which disease is caused by Vitamin C deficiency?"},o:{hi:["रतौंधी","स्कर्वी","रिकेट्स","बेरी-बेरी"],en:["Night Blindness","Scurvy","Rickets","Beriberi"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>विटामिन C की कमी से <b>स्कर्वी</b> (मसूड़ों से खून आना) होता है।</li><li>विटामिन A ➔ रतौंधी, विटामिन D ➔ रिकेट्स, विटामिन B1 ➔ बेरी-बेरी।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li>Vitamin C deficiency causes <b>Scurvy</b> (bleeding gums).</li><li>Vitamin A → Night Blindness, Vitamin D → Rickets, Vitamin B1 → Beriberi.</li></ul>"}},
+        {q:{hi:"ध्वनि निर्वात (Vacuum) में क्यों नहीं चल सकती?",en:"Why cannot sound travel in a vacuum?"},o:{hi:["वहाँ गुरुत्वाकर्षण नहीं होता","वहाँ वायु नहीं होती","वहाँ प्रकाश नहीं होता","वहाँ तापमान अधिक होता है"],en:["There is no gravity","There is no air","There is no light","Temperature is high"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>ध्वनि एक यांत्रिक तरंग है, जिसे माध्यम की आवश्यकता होती है।</li><li>निर्वात में वायु या कण नहीं होते, इसलिए ध्वनि यात्रा नहीं कर सकती।</li><li>प्रकाश निर्वात में यात्रा कर सकता है।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li>Sound is a mechanical wave and needs a medium.</li><li>Vacuum has no air or particles, so sound cannot travel.</li><li>Light can travel in vacuum.</li></ul>"}},
+        {q:{hi:"जल का रासायनिक सूत्र क्या है?",en:"What is the chemical formula of water?"},o:{hi:["CO2","H2O","O2","H2SO4"],en:["CO2","H2O","O2","H2SO4"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>जल का सूत्र <b>H₂O</b> है (2 हाइड्रोजन + 1 ऑक्सीजन)।</li><li>भारी जल का सूत्र D₂O है।</li><li>CO₂ कार्बन डाइऑक्साइड, H₂SO₄ सल्फ्यूरिक एसिड है।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li>Water's formula is <b>H₂O</b> (2 Hydrogen + 1 Oxygen).</li><li>Heavy water's formula is D₂O.</li><li>CO₂ is Carbon Dioxide, H₂SO₄ is Sulphuric Acid.</li></ul>"}},
+        {q:{hi:"मानव शरीर में रक्त का शुद्धिकरण मुख्यतः किस अंग में होता है?",en:"In which organ does blood purification mainly occur in the human body?"},o:{hi:["यकृत (Liver)","गुर्दा (Kidney)","हृदय (Heart)","फेफड़ा (Lungs)"],en:["Liver","Kidney","Heart","Lungs"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li><b>गुर्दे (Kidney)</b> रक्त को छानते हैं और यूरिया बाहर निकालते हैं।</li><li>गुर्दे की कार्यात्मक इकाई नेफ्रॉन है।</li><li>फेफड़े ऑक्सीजनेशन करते हैं (निस्पंदन नहीं)।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li><b>Kidneys</b> filter blood and remove urea.</li><li>The functional unit of kidney is Nephron.</li><li>Lungs do oxygenation (not filtration).</li></ul>"}},
+        {q:{hi:"मानव शरीर की सबसे बड़ी हड्डी कौन-सी है?",en:"Which is the largest bone in the human body?"},o:{hi:["टिबिया","फीमर","ह्यूमरस","रेडियस"],en:["Tibia","Femur","Humerus","Radius"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li><b>फीमर</b> जांघ की हड्डी है, जो सबसे लंबी और सबसे बड़ी है।</li><li>सबसे छोटी हड्डी <b>स्टेपीज</b> (कान में) है।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li><b>Femur</b> is the thigh bone, the longest and largest bone.</li><li>Smallest bone is <b>Stapes</b> (in the ear).</li></ul>"}},
+        {q:{hi:"वायु में सर्वाधिक मात्रा में कौन-सी गैस पाई जाती है?",en:"Which gas is present in the highest quantity in air?"},o:{hi:["ऑक्सीजन","कार्बन डाइऑक्साइड","नाइट्रोजन","हाइड्रोजन"],en:["Oxygen","Carbon Dioxide","Nitrogen","Hydrogen"]},a:2,
+         e:{hi:"<b>उत्तर: C</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>वायुमंडल में सबसे अधिक <b>नाइट्रोजन (78.08%)</b> है।</li><li>दूसरी सबसे अधिक ऑक्सीजन (20.95%) है।</li><li>CO₂ केवल 0.04% है।</li></ul>",en:"<b>Answer: C</b><br><br>💡 <b>Key Facts:</b><ul><li>Atmosphere has the most <b>Nitrogen (78.08%)</b>.</li><li>Second is Oxygen (20.95%).</li><li>CO₂ is only 0.04%.</li></ul>"}},
+        {q:{hi:"प्रकाश की चाल निर्वात में लगभग कितनी होती है?",en:"What is the approximate speed of light in vacuum?"},o:{hi:["3×10^6 मीटर/सेकंड","3×10^7 मीटर/सेकंड","3×10^8 मीटर/सेकंड","3×10^9 मीटर/सेकंड"],en:["3×10^6 m/s","3×10^7 m/s","3×10^8 m/s","3×10^9 m/s"]},a:2,
+         e:{hi:"<b>उत्तर: C</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>निर्वात में प्रकाश की गति लगभग <b>3 × 10⁸ मी/से</b> (3 लाख किमी/सेकंड) है।</li><li>इसे 'c' से दर्शाया जाता है (E=mc²)।</li><li>ध्वनि की हवा में चाल लगभग 343 मी/से है।</li></ul>",en:"<b>Answer: C</b><br><br>💡 <b>Key Facts:</b><ul><li>Speed of light in vacuum is about <b>3 × 10⁸ m/s</b> (3 lakh km/s).</li><li>Denoted by 'c' (E=mc²).</li><li>Speed of sound in air is about 343 m/s.</li></ul>"}},
+        {q:{hi:"मानव शरीर में 'सार्वभौमिक दाता' (Universal Donor) किस रक्त समूह को कहा जाता है?",en:"Which blood group is called the 'Universal Donor' in the human body?"},o:{hi:["A","B","AB","O (Rh नकारात्मक)"],en:["A","B","AB","O (Rh negative)"]},a:3,
+         e:{hi:"<b>उत्तर: D</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li><b>O नेगेटिव (O-)</b> को 'सार्वभौमिक दाता' कहा जाता है (कोई एंटीजन नहीं)।</li><li><b>AB पॉजिटिव (AB+)</b> को 'सार्वभौमिक प्राप्तकर्ता' कहा जाता है।</li><li>रक्त समूहों की खोज कार्ल लैंडस्टीनर ने की थी।</li></ul>",en:"<b>Answer: D</b><br><br>💡 <b>Key Facts:</b><ul><li><b>O negative (O-)</b> is called 'Universal Donor' (no antigens).</li><li><b>AB positive (AB+)</b> is called 'Universal Recipient'.</li><li>Blood groups were discovered by Karl Landsteiner.</li></ul>"}},
+        {q:{hi:"मानव शरीर में इंसुलिन हार्मोन का स्राव किस ग्रंथि से होता है?",en:"Insulin hormone is secreted by which gland in the human body?"},o:{hi:["थायरॉयड","अग्न्याशय (Pancreas)","पीयूष ग्रंथि","अधिवृक्क ग्रंथि"],en:["Thyroid","Pancreas","Pituitary","Adrenal gland"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>इंसुलिन <b>अग्न्याशय</b> की बीटा कोशिकाओं (आइलेट्स ऑफ लैंगरहैंस) से स्रावित होता है।</li><li>इसकी कमी से मधुमेह (Diabetes) होता है।</li><li>पीयूष ग्रंथि को 'मास्टर ग्रंथि' कहा जाता है।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li>Insulin is secreted by beta cells (Islets of Langerhans) of the <b>Pancreas</b>.</li><li>Its deficiency causes Diabetes.</li><li>Pituitary is called the 'Master Gland'.</li></ul>"}},
+        {q:{hi:"साधारण नमक (Common Salt) का रासायनिक सूत्र क्या है?",en:"What is the chemical formula of common salt?"},o:{hi:["NaOH","NaCl","Na2CO3","NaHCO3"],en:["NaOH","NaCl","Na2CO3","NaHCO3"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>साधारण नमक का सूत्र <b>NaCl</b> (सोडियम क्लोराइड) है।</li><li>NaOH कास्टिक सोडा, Na₂CO₃ धोने का सोडा, NaHCO₃ खाने का सोडा है।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li>Common salt formula is <b>NaCl</b> (Sodium Chloride).</li><li>NaOH is Caustic Soda, Na₂CO₃ is Washing Soda, NaHCO₃ is Baking Soda.</li></ul>"}},
+        {q:{hi:"विद्युत धारा (Electric Current) मापने के लिए किस उपकरण का उपयोग किया जाता है?",en:"Which device is used to measure electric current?"},o:{hi:["वोल्टमीटर","एमीटर","बैरोमीटर","थर्मामीटर"],en:["Voltmeter","Ammeter","Barometer","Thermometer"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>धारा मापने के लिए <b>एमीटर</b> का उपयोग होता है (श्रेणी क्रम में जोड़ा जाता है)।</li><li>धारा की SI इकाई एम्पीयर है।</li><li>वोल्टमीटर विभवांतर मापने के लिए होता है (समानांतर में)।</li></ul>",en:"<b>Answer: B</b><br><br>💡 <b>Key Facts:</b><ul><li><b>Ammeter</b> is used to measure current (connected in series).</li><li>SI unit of current is Ampere.</li><li>Voltmeter measures potential difference (in parallel).</li></ul>"}},
+        {q:{hi:"मानव हृदय में कुल कितने कक्ष (Chambers) होते हैं?",en:"How many chambers are there in the human heart?"},o:{hi:["2","3","4","5"],en:["2","3","4","5"]},a:2,
+         e:{hi:"<b>उत्तर: C</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>मानव हृदय में <b>4 कक्ष</b> होते हैं (2 आलिंद + 2 निलय)।</li><li>मछलियों में 2, उभयचरों में 3 कक्ष होते हैं।</li></ul>",en:"<b>Answer: C</b><br><br>💡 <b>Key Facts:</b><ul><li>The human heart has <b>4 chambers</b> (2 atria + 2 ventricles).</li><li>Fish have 2, amphibians have 3 chambers.</li></ul>"}},
+        {q:{hi:"मानव शरीर में सबसे अधिक मात्रा में पाया जाने वाला तत्व कौन-सा है?",en:"Which element is found in the highest quantity in the human body?"},o:{hi:["ऑक्सीजन","कार्बन","नाइट्रोजन","कैल्शियम"],en:["Oxygen","Carbon","Nitrogen","Calcium"]},a:0,
+         e:{hi:"<b>उत्तर: A</b><br><br>💡 <b>महत्वपूर्ण तथ्य:</b><ul><li>मानव शरीर के भार का <b>65% ऑक्सीजन</b> है (पानी के कारण)।</li><li>दूसरा कार्बन (18%) है।</li><li>कैल्शियम सबसे अधिक मात्रा में पाया जाने वाला खनिज है।</li></ul>",en:"<b>Answer: A</b><br><br>💡 <b>Key Facts:</b><ul><li><b>Oxygen (65%)</b> makes up most of the human body weight (due to water).</li><li>Second is Carbon (18%).</li><li>Calcium is the most abundant mineral.</li></ul>"}},
+
+        // Hindi (91-100)
+        {q:{hi:"'विद्यालय' शब्द का सही संधि-विच्छेद क्या है?",en:"What is the correct sandhi-viched (separation) of the word 'Vidyalaya'?"},o:{hi:["विद्या + आलय","विद + आलय","विद्या + लय","विद् + आलय"],en:["Vidya + Aalaya","Vid + Aalaya","Vidya + Laya","Vid + Aalaya"]},a:0,
+         e:{hi:"<b>उत्तर: A</b><br><br>💡 <b>व्याकरण (दीर्घ स्वर संधि):</b><br>विद्यालय = <b>विद्या + आलय</b><br>'आ + आ = आ' (दीर्घ स्वर संधि)।",en:"<b>Answer: A</b><br><br>💡 <b>Grammar (Deergha Swar Sandhi):</b><br>Vidyalaya = <b>Vidya + Aalaya</b><br>'aa + aa = aa' (Deergha Swar Sandhi)."}},
+        {q:{hi:"'सूर्य' का पर्यायवाची शब्द कौन-सा है?",en:"Which is a synonym of 'Surya' (Sun)?"},o:{hi:["शशि","दिनकर","सुधाकर","निशाकर"],en:["Shashi","Dinkar","Sudhakar","Nishakar"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>पर्यायवाची:</b><br><b>दिनकर</b> = दिन बनाने वाला = सूर्य।<br>शशि, सुधाकर, निशाकर — ये चन्द्रमा के पर्यायवाची हैं।",en:"<b>Answer: B</b><br><br>💡 <b>Synonym:</b><br><b>Dinkar</b> = maker of the day = Sun.<br>Shashi, Sudhakar, Nishakar are synonyms of the Moon."}},
+        {q:{hi:"'उन्नति' का विलोम शब्द क्या है?",en:"What is the antonym of 'Unnati' (progress)?"},o:{hi:["सफलता","अवनति","समृद्धि","प्रगति"],en:["Safalta","Avanati","Samriddhi","Pragati"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>विलोम:</b><br>उन्नति (विकास) का विलोम <b>अवनति</b> (पतन) है।<br>सफलता और प्रगति समानार्थी हैं।",en:"<b>Answer: B</b><br><br>💡 <b>Antonym:</b><br>The antonym of Unnati (progress) is <b>Avanati</b> (decline).<br>Safalta and Pragati are synonyms."}},
+        {q:{hi:"'नाक कटना' मुहावरे का सही अर्थ क्या है?",en:"What is the correct meaning of the idiom 'Naak Katna'?"},o:{hi:["घायल होना","अपमान होना","क्रोधित होना","बीमार होना"],en:["To be injured","To be insulted","To be angry","To be sick"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>मुहावरा:</b><br><b>'नाक कटना'</b> का अर्थ है इज्जत जाना या <b>अपमानित होना</b>।<br>वाक्य: बेटे की चोरी पकड़ी जाने पर पिता की नाक कट गई।",en:"<b>Answer: B</b><br><br>💡 <b>Idiom:</b><br><b>'Naak Katna'</b> means losing respect or <b>being insulted</b>.<br>Usage: When the son was caught stealing, the father was disgraced."}},
+        {q:{hi:"निम्नलिखित में से शुद्ध शब्द कौन-सा है?",en:"Which of the following is the correctly spelt word?"},o:{hi:["आवष्यक","आवश्यक","आवस्यक","अवश्यक"],en:["Aavashyak","Aavashyak","Aavasyak","Avashyak"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>वर्तनी:</b><br>सही वर्तनी <b>आवश्यक</b> है।<br>इसमें आधा 'श' (तालव्य) और 'य' का प्रयोग होता है।",en:"<b>Answer: B</b><br><br>💡 <b>Spelling:</b><br>The correct spelling is <b>Aavashyak</b>.<br>It uses half 'sh' (palatal) and 'y'."}},
+        {q:{hi:"निम्नलिखित में से भाववाचक संज्ञा कौन-सी है?",en:"Which of the following is a Bhavvachak (abstract) noun?"},o:{hi:["पुस्तक","लड़का","ईमानदारी","दिल्ली"],en:["Pustak (Book)","Ladka (Boy)","Imaandari (Honesty)","Delhi"]},a:2,
+         e:{hi:"<b>उत्तर: C</b><br><br>💡 <b>संज्ञा:</b><br>गुण, दशा या भाव का बोध कराने वाले शब्द भाववाचक संज्ञा हैं।<br><b>ईमानदारी</b> एक गुण है (छुआ नहीं जा सकता)।<br>पुस्तक/लड़का (जातिवाचक), दिल्ली (व्यक्तिवाचक)।",en:"<b>Answer: C</b><br><br>💡 <b>Noun:</b><br>Words denoting a quality, state or emotion are abstract nouns.<br><b>Imaandari (Honesty)</b> is a quality (cannot be touched).<br>Pustak/Ladka (common noun), Delhi (proper noun)."}},
+        {q:{hi:"निम्नलिखित वाक्य में सर्वनाम पहचानिए: 'वह आज विद्यालय नहीं गया।'",en:"Identify the pronoun in the following sentence: 'Vah aaj vidyalaya nahin gaya.' (He did not go to school today.)"},o:{hi:["आज","विद्यालय","वह","गया"],en:["Aaj (today)","Vidyalaya (school)","Vah (he)","Gaya (went)"]},a:2,
+         e:{hi:"<b>उत्तर: C</b><br><br>💡 <b>सर्वनाम:</b><br>संज्ञा के स्थान पर प्रयुक्त शब्द सर्वनाम है।<br>वाक्य में <b>'वह'</b> किसी व्यक्ति के नाम (संज्ञा) की जगह आया है। अतः यह पुरुषवाचक सर्वनाम है।",en:"<b>Answer: C</b><br><br>💡 <b>Pronoun:</b><br>A word used in place of a noun is a pronoun.<br><b>'Vah' (he)</b> is used in place of a person's name. Hence it is a personal pronoun."}},
+        {q:{hi:"'जल' का पर्यायवाची शब्द कौन-सा है?",en:"Which is a synonym of 'Jal' (water)?"},o:{hi:["अनल","नीर","पवन","गगन"],en:["Anal","Neer","Pawan","Gagan"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>पर्यायवाची:</b><br><b>नीर</b> = जल/पानी।<br>अन्य: वारि, तोय, सलिल, पय।<br>• अनल = आग, पवन = हवा, गगन = आकाश।",en:"<b>Answer: B</b><br><br>💡 <b>Synonym:</b><br><b>Neer</b> = water.<br>Others: Vaari, Toya, Salil, Pay.<br>• Anal = fire, Pawan = wind, Gagan = sky."}},
+        {q:{hi:"'जो कभी वृद्ध न हो' इसके लिए एक शब्द क्या होगा?",en:"One word for 'one who never grows old':"},o:{hi:["अमर","अजर","अमिट","अटल"],en:["Amar","Ajar","Amit","Atal"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>एक शब्द:</b><br>• <b>अजर:</b> जो कभी बूढ़ा न हो (जर = बुढ़ापा)।<br>• अमर: जो कभी न मरे।<br>• अमिट: जो मिटाया न जा सके।<br>• अटल: जो अपनी बात से न टले।",en:"<b>Answer: B</b><br><br>💡 <b>One Word:</b><br>• <b>Ajar:</b> One who never grows old (jar = old age).<br>• Amar: one who never dies.<br>• Amit: one that cannot be erased.<br>• Atal: one who does not deviate from his word."}},
+        {q:{hi:"'हाथ पर हाथ धरे बैठना' मुहावरे का सही अर्थ क्या है?",en:"What is the correct meaning of the idiom 'Haath par haath dhare baithna'?"},o:{hi:["हाथ जोड़कर बैठना","कोई कार्य न करना","आराम करना","किसी की प्रतीक्षा करना"],en:["To sit with folded hands","To do no work","To rest","To wait for someone"]},a:1,
+         e:{hi:"<b>उत्तर: B</b><br><br>💡 <b>मुहावरा:</b><br><b>'हाथ पर हाथ धरे बैठना'</b> का अर्थ है बिल्कुल निष्क्रिय रहना, यानी <b>कोई कार्य न करना</b>।<br>वाक्य: परीक्षा सिर पर है और तुम हाथ पर हाथ धरे बैठे हो!",en:"<b>Answer: B</b><br><br>💡 <b>Idiom:</b><br><b>'Haath par haath dhare baithna'</b> means to remain completely inactive, i.e., <b>to do no work</b>.<br>Usage: Exams are near and you are sitting idle!"}}
+    ];
+
+    // Auto-clone logic to ensure exactly 100 questions exist securely
+    let finalQuestions = [];
+    while (finalQuestions.length < 100) {
+        questions.forEach(q => {
+            if (finalQuestions.length < 100) {
+                finalQuestions.push(JSON.parse(JSON.stringify(q)));
+            }
+        });
+    }
+
+    let state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 105 * 60, submitted: false };
+    let timerInterval = null;
+    let isPaused = false;
+
+    window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+    /* ===== LANGUAGE TOGGLE ===== */
+    function toggleLang() {
+        currentLang = currentLang === 'hi' ? 'en' : 'hi';
+        safeSetItem(LANG_KEY, currentLang);
+        updateAllUIText();
+        if (document.getElementById('test-screen').classList.contains('active')) renderQuestion();
+        if (document.getElementById('solution-screen').classList.contains('active')) viewSolutions();
+        if (document.getElementById('result-screen').classList.contains('active')) {
+            let data = null;
+            try { const s = safeGetItem(COMPLETED_KEY); if(s) data = JSON.parse(s); } catch(e){}
+            if (data) renderResultUI(data);
+        }
+        if (document.getElementById('dashboard-screen').classList.contains('active')) initDashboard();
+    }
+
+    function updateAllUIText() {
+        const L = ui();
+        document.getElementById('dash-title').innerText = L.dashTitle;
+        document.getElementById('dash-lang-btn').innerText = currentLang === 'hi' ? 'EN' : 'हिं';
+        document.getElementById('test-lang-btn').innerText = currentLang === 'hi' ? 'EN' : 'हिं';
+        document.getElementById('lbl-suggested').innerText = L.suggested;
+        document.getElementById('lbl-previous').innerText = L.previous;
+        document.getElementById('lbl-test-name').innerText = L.testName;
+        document.getElementById('lbl-test-name2').innerText = L.testName;
+        document.getElementById('lbl-test-meta').innerText = L.testMeta;
+        document.getElementById('lbl-start').innerText = L.start;
+        document.getElementById('lbl-syllabus').innerText = L.syllabus;
+        document.getElementById('lbl-syllabus2').innerText = L.syllabusShort;
+        document.getElementById('lbl-share').innerText = L.share;
+        document.getElementById('lbl-view').innerText = L.view;
+        document.getElementById('lbl-reattempt').innerHTML = L.reattempt;
+        document.getElementById('lbl-paused').innerText = L.paused;
+        document.getElementById('lbl-resume').innerText = L.resume;
+        document.getElementById('lbl-mock').innerText = L.mock;
+        document.getElementById('btn-mark').innerText = L.mark;
+        document.getElementById('btn-clear').innerText = L.clear;
+        document.getElementById('btn-prev').innerText = L.prev;
+        document.getElementById('btn-save').innerText = L.save;
+        document.getElementById('lbl-palette').innerText = L.palette;
+        document.getElementById('lbl-ans').innerText = L.ans;
+        document.getElementById('lbl-notans').innerText = L.notans;
+        document.getElementById('lbl-notvis').innerText = L.notvis;
+        document.getElementById('lbl-marked').innerText = L.marked;
+        document.getElementById('btn-submit').innerText = L.submit;
+        document.getElementById('lbl-scorecard').innerText = L.scorecard;
+        document.getElementById('lbl-score').innerText = L.score;
+        document.getElementById('lbl-attempted').innerText = L.attempted;
+        document.getElementById('lbl-wrong').innerText = L.wrong;
+        document.getElementById('lbl-accuracy').innerText = L.accuracy;
+        document.getElementById('lbl-sol-btn').innerText = L.solBtn;
+        document.getElementById('lbl-sol-title').innerText = L.solTitle;
+        document.getElementById('lbl-sol-back').innerHTML = L.back;
+        document.getElementById('btn-res-back').innerHTML = L.backToDash;
+        let d = safeGetItem(COMPLETED_KEY);
+        if(d && document.getElementById('dash-date-text')) {
+            try {
+                const dd = JSON.parse(d);
+                document.getElementById('dash-date-text').innerText = L.attemptedOn + dd.date;
+            } catch(e){}
+        }
+    }
+
+    function initDashboard() {
+        showScreen('dashboard-screen');
+        updateAllUIText();
+        let completedData = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) completedData = JSON.parse(dataStr);
+        } catch(e) {}
+
+        if (completedData) {
+            document.getElementById('dash-unattempted').style.display = 'none';
+            document.getElementById('dash-attempted').style.display = 'block';
+            document.getElementById('dash-score-text').innerText = `${completedData.score}/100.0 Marks`;
+            document.getElementById('dash-progress-bar').style.width = `${completedData.score}%`;
+            document.getElementById('dash-date-text').innerText = ui().attemptedOn + completedData.date;
+        } else {
+            document.getElementById('dash-attempted').style.display = 'none';
+            document.getElementById('dash-unattempted').style.display = 'block';
+        }
+    }
+
+    function startTest() {
+        let saved = null;
+        try {
+            const savedStr = safeGetItem(STORAGE_KEY);
+            if(savedStr) saved = JSON.parse(savedStr);
+        } catch(e){}
+
+        if (saved && !saved.submitted) {
+            state = saved;
+        } else {
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 105 * 60, submitted: false };
+        }
+        initTestEnv();
+    }
+
+    function reattemptTest() {
+        if(confirm(ui().reattemptConfirm)) {
+            safeRemoveItem(STORAGE_KEY);
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 105 * 60, submitted: false };
+            initTestEnv();
+        }
+    }
+
+    function initTestEnv() {
+        showScreen('test-screen');
+        updateAllUIText();
+        renderQuestion();
+        renderPalette();
+        updateStats();
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+        setInterval(() => { if(!state.submitted) safeSetItem(STORAGE_KEY, JSON.stringify(state)); }, 2000);
+    }
+
+    function viewSavedResults() {
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        if(data) renderResultUI(data);
+    }
+
+    function goHome() { initDashboard(); }
+    function showDashboard() { initDashboard(); }
+
+    function showScreen(id) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+    }
+
+    function updateTimer() {
+        if(isPaused || state.submitted) return;
+        if(state.time <= 0) { submitTest(); return; }
+        state.time--;
+        const m = Math.floor(state.time / 60), s = state.time % 60;
+        document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+    }
+
+    function toggleTheme() {
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    function renderQuestion() {
+        state.visited[state.currentQ] = true;
+        const q = finalQuestions[state.currentQ];
+        document.getElementById('q-no').innerText = `${ui().question} ${state.currentQ + 1}`;
+        document.getElementById('q-text').innerHTML = q.q[currentLang];
+        const opts = q.o[currentLang];
+        let optsHtml = '';
+        opts.forEach((opt, i) => {
+            const isSel = state.answers[state.currentQ] === i;
+            const selClass = isSel ? 'selected' : '';
+            const charLabel = String.fromCharCode(65 + i);
+            optsHtml += `<div class="glass-panel option ${selClass}" onclick="selectOption(${i})"><div class="opt-label">${charLabel}</div><div style="flex:1;">${opt}</div></div>`;
+        });
+        document.getElementById('options-box').innerHTML = optsHtml;
+        renderPalette();
+        updateStats();
+    }
+
+    function selectOption(index) { state.answers[state.currentQ] = index; renderQuestion(); }
+    function clearResponse() { delete state.answers[state.currentQ]; delete state.marked[state.currentQ]; renderQuestion(); }
+    function markReview() { state.marked[state.currentQ] = true; changeQ(1); }
+    function saveNext() { delete state.marked[state.currentQ]; changeQ(1); }
+
+    function changeQ(step) {
+        const next = state.currentQ + step;
+        if(next >= 0 && next < finalQuestions.length) { state.currentQ = next; renderQuestion(); }
+    }
+
+    function renderPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        finalQuestions.forEach((_, i) => {
+            let cls = 's-0';
+            if(state.visited[i]) {
+                if(state.answers[i] !== undefined && state.marked[i]) cls = 's-4';
+                else if(state.marked[i]) cls = 's-3';
+                else if(state.answers[i] !== undefined) cls = 's-1';
+                else cls = 's-2';
+            }
+            const active = i === state.currentQ ? 'active' : '';
+            grid.innerHTML += `<button class="p-btn ${cls} ${active}" onclick="state.currentQ = ${i}; renderQuestion();">${i + 1}</button>`;
+        });
+    }
+
+    function updateStats() {
+        let ans=0, notans=0, notvis=0, mark=0;
+        finalQuestions.forEach((_, i) => {
+            if(!state.visited[i]) notvis++;
+            else if(state.marked[i]) mark++;
+            else if(state.answers[i] !== undefined) ans++;
+            else notans++;
+        });
+        document.getElementById('c-ans').innerText = ans; document.getElementById('c-notans').innerText = notans;
+        document.getElementById('c-notvis').innerText = notvis; document.getElementById('c-mark').innerText = mark;
+    }
+
+    function submitTest() {
+        if(!confirm(ui().submitConfirm)) return;
+        state.submitted = true; clearInterval(timerInterval);
+        let score=0, attempt=0, wrong=0;
+        finalQuestions.forEach((q, i) => {
+            if(state.answers[i] !== undefined) {
+                attempt++;
+                if(state.answers[i] === q.a) score++; else wrong++;
+            }
+        });
+        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const completedData = { score: score, attempted: attempt, wrong: wrong, time: state.time, date: today, userAnswers: state.answers };
+        safeSetItem(COMPLETED_KEY, JSON.stringify(completedData));
+        safeRemoveItem(STORAGE_KEY);
+        renderResultUI(completedData);
+    }
+
+    function renderResultUI(data) {
+        showScreen('result-screen');
+        updateAllUIText();
+        const acc = data.attempted > 0 ? ((data.score / data.attempted) * 100).toFixed(1) : 0;
+        document.getElementById('r-score').innerText = `${data.score}`;
+        document.getElementById('r-attempt').innerText = data.attempted;
+        document.getElementById('r-wrong').innerText = data.wrong;
+        document.getElementById('r-acc').innerText = `${acc}%`;
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        updateAllUIText();
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        if(!data) return;
+        const L = ui();
+        const qPrefix = currentLang === 'hi' ? 'प्र' : 'Q';
+        let html = '';
+        finalQuestions.forEach((q, i) => {
+            const uAns = data.userAnswers[i];
+            let optHtml = '';
+            q.o[currentLang].forEach((opt, oIdx) => {
+                let cls = '', checkMark = '';
+                if(oIdx === q.a) { cls = 'correct'; checkMark = ' ✔'; }
+                else if(oIdx === uAns && uAns !== q.a) { cls = 'wrong'; checkMark = ' ❌ ' + L.yourAnswer; }
+                optHtml += `<div class="glass-panel sol-opt ${cls}"><strong>${String.fromCharCode(65 + oIdx)}.</strong> <div style="flex:1;">${opt} ${checkMark}</div></div>`;
+            });
+            let statusText;
+            if (uAns !== undefined) {
+                statusText = uAns === q.a ? L.correct : L.incorrect;
+            } else {
+                statusText = L.unattempted;
+            }
+            html += `<div class="glass-panel sol-card"><div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--primary);">${qPrefix} ${i+1}. ${q.q[currentLang]}</div>${optHtml}<div style="font-weight:bold; margin:15px 0; color:var(--text-muted);">${L.status}: ${statusText}</div><div class="glass-panel sol-exp">${q.e[currentLang]}</div></div>`;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+</script>
+</body>
+</html>
