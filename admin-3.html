@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1769e0">
+    <link rel="manifest" href="admin-manifest.json">
+    <title>HSSC Mock Test Wala - Admin App</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            padding: 20px;
+            display: none; /* पहले पेज छिपा रहेगा जब तक सही पासवर्ड न डले */
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+        }
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .download-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .download-btn:hover {
+            background-color: #218838;
+        }
+        .admin-install-btn {
+            display:block; width:100%; margin:0 0 18px; padding:13px 16px;
+            border:0; border-radius:8px; background:#1769e0; color:#fff;
+            font-size:16px; font-weight:700; cursor:pointer;
+        }
+        .admin-install-btn:disabled { opacity:.75; cursor:default; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #4a90e2;
+            color: white;
+        }
+        tr:nth-child(even) {background-color: #f2f2f2;}
+        tr:hover {background-color: #e9f5ff;}
+        #loading {
+            text-align: center;
+            font-size: 18px;
+            color: #666;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>HSSC Mock Wala - Admin Panel</h2>
+        <button class="admin-install-btn" id="installAdminAppBtn" type="button">📲 Install Admin Panel App</button>
+        
+        <div class="header-section">
+            <p>Total Users: <span id="userCount" style="font-weight: bold; color: #4a90e2;">0</span></p>
+            <button class="download-btn" onclick="downloadCSV()">📥 Download as Excel (CSV)</button>
+        </div>
+
+        <section style="border:1px solid #b7e4c7;border-radius:10px;padding:16px;margin:18px 0;background:#f3fff7;">
+            <h3 style="margin-bottom:12px;color:#146c43;">📲 मुख्य वेबसाइट App Install Count</h3>
+            <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;">
+                <div style="flex:1;min-width:160px;background:white;border:1px solid #cdebd7;border-radius:8px;padding:14px;">
+                    <div style="color:#555;">कुल सफल App Installs</div>
+                    <strong id="appInstallTotal" style="font-size:28px;color:#198754;">लोड हो रहा है...</strong>
+                </div>
+                <div style="flex:1;min-width:160px;background:white;border:1px solid #cdebd7;border-radius:8px;padding:14px;">
+                    <div style="color:#555;">चुनी हुई तारीख के Installs</div>
+                    <strong id="appInstallDateCount" style="font-size:28px;color:#1769e0;">0</strong>
+                </div>
+                <div>
+                    <label for="appInstallDate">तारीख चुनें</label>
+                    <input type="date" id="appInstallDate" style="display:block;padding:10px;margin-top:6px;border:1px solid #bbb;border-radius:6px;">
+                    <button class="download-btn" type="button" onclick="loadAppInstallStats()" style="background:#1769e0;margin-top:8px;">Install रिपोर्ट देखें</button>
+                </div>
+            </div>
+            <p id="appInstallStatus" style="margin-top:12px;color:#555;">रिपोर्ट लोड हो रही है...</p>
+            <p style="font-size:13px;color:#666;">यहाँ केवल विद्यार्थियों द्वारा इंस्टॉल की गई मुख्य HSSC Mock Test Wala Website App की गिनती होगी। Admin Panel App का इंस्टॉल इसमें शामिल नहीं होगा। गिनती tracking चालू होने के बाद होने वाले सफल installs से शुरू होगी; पुराने installs अपने-आप वापस नहीं गिने जा सकते।</p>
+        </section>
+
+        <section style="border:1px solid #cfe2ff;border-radius:10px;padding:16px;margin:18px 0;background:#f8fbff;">
+            <h3 style="margin-bottom:12px;color:#174ea6;">📊 Website Visitor Analytics (Date Wise)</h3>
+            <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:end;">
+                <div>
+                    <label for="analyticsDate">तारीख चुनें</label>
+                    <input type="date" id="analyticsDate" style="display:block;padding:10px;margin-top:6px;border:1px solid #bbb;border-radius:6px;">
+                </div>
+                <button class="download-btn" type="button" onclick="loadAnalytics()" style="background:#1769e0;">रिपोर्ट देखें</button>
+                <button class="download-btn" type="button" onclick="loadAnalyticsRange()" style="background:#6c757d;">पिछले 30 दिन</button>
+            </div>
+            <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;">
+                <div style="flex:1;min-width:150px;background:white;border:1px solid #d8e4f5;border-radius:8px;padding:14px;">
+                    <div style="color:#555;">कुल Page Views</div><strong id="analyticsViews" style="font-size:26px;color:#1769e0;">0</strong>
+                </div>
+                <div style="flex:1;min-width:150px;background:white;border:1px solid #d8e4f5;border-radius:8px;padding:14px;">
+                    <div style="color:#555;">Unique Visitors</div><strong id="analyticsUnique" style="font-size:26px;color:#198754;">0</strong>
+                </div>
+            </div>
+            <p id="analyticsStatus" style="margin-top:12px;color:#555;">तारीख चुनकर रिपोर्ट देखें।</p>
+            <div style="overflow-x:auto;">
+                <table id="analyticsTable">
+                    <thead><tr><th>तारीख</th><th>Page Views</th><th>Unique Visitors</th></tr></thead>
+                    <tbody id="analyticsBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <p id="loading">Loading data from Firebase...</p>
+
+        <table id="usersTable">
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Full Name</th>
+                    <th>Mobile Number</th>
+                    <th>Email ID</th>
+                    <th>Password</th>
+                    <th>Registration Date</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- User data will appear here automatically -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script>
+        // ==========================================
+        // एडमिन पासवर्ड यहाँ सेट करें (आप अपनी मर्जी का पासवर्ड रख सकते हैं)
+        // ==========================================
+        const ADMIN_PASSWORD = "Admin@123"; // <-- इस पासवर्ड को आप बदल भी सकते हैं
+
+        // पासवर्ड चेक करने का कोड
+        let enteredPassword = prompt("🔒 Enter Admin Password to Access Panel:");
+        if (enteredPassword === ADMIN_PASSWORD) {
+            document.body.style.display = "block"; // सही पासवर्ड होने पर पेज दिखेगा
+        } else {
+            alert("❌ Incorrect Password! Access Denied.");
+            window.location.href = "index.html"; // गलत पासवर्ड होने पर होम पेज पर भेज देगा
+        }
+
+        // Your Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDAt-Ck6dQwo0EQ8Ila_my9aGt8giLfdV8",
+            authDomain: "hssc-mock-test-wala.firebaseapp.com",
+            projectId: "hssc-mock-test-wala",
+            storageBucket: "hssc-mock-test-wala.firebasestorage.app",
+            messagingSenderId: "1082414054403",
+            appId: "1:1082414054403:web:de1593aae9a733344e2236",
+            measurementId: "G-LGHVK5RYE9"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Fetch Data from Firestore
+        db.collection("Users").orderBy("registeredAt", "desc").get().then((querySnapshot) => {
+            let tbody = document.getElementById("tableBody");
+            let count = 0;
+            
+            document.getElementById("loading").style.display = "none"; 
+            
+            querySnapshot.forEach((doc) => {
+                count++;
+                let data = doc.data();
+                
+                // Format Date
+                let dateStr = "N/A";
+                if (data.registeredAt) {
+                    let dateObj = data.registeredAt.toDate();
+                    dateStr = dateObj.toLocaleDateString("en-IN") + " " + dateObj.toLocaleTimeString("en-IN");
+                }
+
+                // Create Row
+                let row = `<tr>
+                    <td>${count}</td>
+                    <td>${data.fullName || '-'}</td>
+                    <td>${data.mobileNumber || '-'}</td>
+                    <td>${data.email || '-'}</td>
+                    <td style="color: #d63031; font-weight: bold;">${data.password || 'Hidden'}</td>
+                    <td>${dateStr}</td>
+                </tr>`;
+                
+                tbody.innerHTML += row;
+            });
+            
+            document.getElementById("userCount").innerText = count;
+        }).catch((error) => {
+            console.error("Error getting users: ", error);
+            document.getElementById("loading").innerText = "Error loading data. Check console.";
+            document.getElementById("loading").style.color = "red";
+        });
+
+        // ==========================================
+        // WEBSITE PWA INSTALL COUNTER
+        // ==========================================
+        function adminLocalDateKey(date) {
+            return new Intl.DateTimeFormat('en-CA', {
+                timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit', day: '2-digit'
+            }).format(date);
+        }
+
+        async function loadAppInstallStats() {
+            const dateInput = document.getElementById('appInstallDate');
+            const dateKey = dateInput.value || adminLocalDateKey(new Date());
+            dateInput.value = dateKey;
+            const status = document.getElementById('appInstallStatus');
+            status.textContent = 'Install रिपोर्ट लोड हो रही है...';
+            try {
+                const totalDoc = await db.collection('AppInstallStats').doc('total').get();
+                const dailyDoc = await db.collection('AppInstallAnalytics').doc(dateKey).get();
+                const total = totalDoc.exists ? (totalDoc.data().totalInstalls || 0) : 0;
+                const daily = dailyDoc.exists ? (dailyDoc.data().installs || 0) : 0;
+                document.getElementById('appInstallTotal').textContent = total;
+                document.getElementById('appInstallDateCount').textContent = daily;
+                status.textContent = `कुल सफल installs: ${total} | ${dateKey} को installs: ${daily}`;
+            } catch (error) {
+                console.error('App install analytics error:', error);
+                document.getElementById('appInstallTotal').textContent = '—';
+                status.textContent = 'Install रिपोर्ट नहीं मिली। Firebase Firestore Rules में AppInstallStats और AppInstallAnalytics पढ़ने/लिखने की अनुमति जाँचें।';
+            }
+        }
+
+        document.getElementById('appInstallDate').value = adminLocalDateKey(new Date());
+        loadAppInstallStats();
+
+        // ==========================================
+        // DATE-WISE WEBSITE VISITOR ANALYTICS
+        // ==========================================
+        function localDateKey(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        async function loadAnalytics() {
+            const input = document.getElementById('analyticsDate');
+            const dateKey = input.value || localDateKey(new Date());
+            input.value = dateKey;
+            const status = document.getElementById('analyticsStatus');
+            status.textContent = 'रिपोर्ट लोड हो रही है...';
+            try {
+                const doc = await db.collection('WebsiteAnalytics').doc(dateKey).get();
+                const data = doc.exists ? doc.data() : {};
+                const views = data.pageViews || 0;
+                const unique = data.uniqueVisitors || 0;
+                document.getElementById('analyticsViews').textContent = views;
+                document.getElementById('analyticsUnique').textContent = unique;
+                document.getElementById('analyticsBody').innerHTML =
+                    `<tr><td>${dateKey}</td><td>${views}</td><td>${unique}</td></tr>`;
+                status.textContent = doc.exists ? 'रिपोर्ट सफलतापूर्वक लोड हो गई।' : 'इस तारीख का अभी कोई रिकॉर्ड नहीं मिला।';
+            } catch (error) {
+                console.error('Analytics error:', error);
+                status.textContent = 'रिपोर्ट लोड नहीं हुई। Firebase Firestore Rules की अनुमति जाँचें।';
+            }
+        }
+
+        async function loadAnalyticsRange() {
+            const status = document.getElementById('analyticsStatus');
+            status.textContent = 'पिछले 30 दिनों की रिपोर्ट लोड हो रही है...';
+            const end = new Date();
+            const start = new Date();
+            start.setDate(end.getDate() - 29);
+            const startKey = localDateKey(start);
+            const endKey = localDateKey(end);
+            try {
+                const snapshot = await db.collection('WebsiteAnalytics')
+                    .where(firebase.firestore.FieldPath.documentId(), '>=', startKey)
+                    .where(firebase.firestore.FieldPath.documentId(), '<=', endKey)
+                    .orderBy(firebase.firestore.FieldPath.documentId())
+                    .get();
+                let viewsTotal = 0, uniqueTotal = 0, rows = '';
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const views = data.pageViews || 0;
+                    const unique = data.uniqueVisitors || 0;
+                    viewsTotal += views;
+                    uniqueTotal += unique;
+                    rows += `<tr><td>${doc.id}</td><td>${views}</td><td>${unique}</td></tr>`;
+                });
+                document.getElementById('analyticsViews').textContent = viewsTotal;
+                document.getElementById('analyticsUnique').textContent = uniqueTotal;
+                document.getElementById('analyticsBody').innerHTML = rows || '<tr><td colspan="3">अभी कोई रिकॉर्ड नहीं है।</td></tr>';
+                status.textContent = `पिछले 30 दिन (${startKey} से ${endKey}) की रिपोर्ट।`;
+            } catch (error) {
+                console.error('Analytics range error:', error);
+                status.textContent = 'रिपोर्ट लोड नहीं हुई। Firebase Firestore Rules की अनुमति जाँचें।';
+            }
+        }
+
+        // Default analytics date: today
+        document.getElementById("analyticsDate").value = localDateKey(new Date());
+        loadAnalytics();
+
+        // ADMIN PANEL PWA INSTALL: one-tap native install prompt when Chrome allows it.
+        // Reuse the website's existing root service worker (sw.js); do not register
+        // a second service worker for the same scope.
+        let deferredAdminInstallPrompt = null;
+        let installPromptWaiter = null;
+        const adminInstallButton = document.getElementById('installAdminAppBtn');
+
+        if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .catch(err => console.error('Service worker registration failed:', err));
+            });
+        }
+
+        window.addEventListener('beforeinstallprompt', (event) => {
+            event.preventDefault();
+            deferredAdminInstallPrompt = event;
+            if (installPromptWaiter) {
+                installPromptWaiter(deferredAdminInstallPrompt);
+                installPromptWaiter = null;
+            }
+            if (adminInstallButton) {
+                adminInstallButton.disabled = false;
+                adminInstallButton.textContent = '📲 Install Admin Panel App';
+            }
+        });
+
+        window.addEventListener('appinstalled', () => {
+            deferredAdminInstallPrompt = null;
+            if (adminInstallButton) {
+                adminInstallButton.textContent = '✅ Admin App Installed';
+                adminInstallButton.disabled = true;
+            }
+        });
+
+        if (adminInstallButton) {
+            adminInstallButton.addEventListener('click', async () => {
+                if (deferredAdminInstallPrompt) {
+                    const promptEvent = deferredAdminInstallPrompt;
+                    deferredAdminInstallPrompt = null;
+                    await promptEvent.prompt();
+                    const choice = await promptEvent.userChoice;
+                    if (choice && choice.outcome === 'accepted') {
+                        adminInstallButton.textContent = '⏳ Installing Admin App...';
+                    }
+                    return;
+                }
+
+                // Sometimes Chrome fires beforeinstallprompt a moment after page load.
+                adminInstallButton.disabled = true;
+                adminInstallButton.textContent = '⏳ Checking install availability...';
+                const promptEvent = await new Promise(resolve => {
+                    let finished = false;
+                    const finish = value => {
+                        if (finished) return;
+                        finished = true;
+                        clearTimeout(timer);
+                        resolve(value);
+                    };
+                    installPromptWaiter = finish;
+                    const timer = setTimeout(() => finish(null), 5000);
+                });
+                installPromptWaiter = null;
+
+                if (promptEvent) {
+                    deferredAdminInstallPrompt = promptEvent;
+                    adminInstallButton.disabled = false;
+                    adminInstallButton.textContent = '📲 Install Admin Panel App';
+                    adminInstallButton.click();
+                } else {
+                    adminInstallButton.disabled = false;
+                    adminInstallButton.textContent = '📲 Install Admin Panel App';
+                    alert('इस समय Chrome ने सीधे Install Prompt उपलब्ध नहीं कराया। कृपया जाँचें कि admin-manifest.json और 192.png/512.png सही नाम से उसी फ़ोल्डर में हैं और वेबसाइट की sw.js फाइल खुल रही है। Chrome की अनुमति के बिना वेबसाइट किसी ऐप को जबरन इंस्टॉल नहीं कर सकती।');
+                }
+            });
+        }
+
+        // Function to Download Table as CSV (Excel)
+        function downloadCSV() {
+            let csv = [];
+            let rows = document.querySelectorAll("table tr");
+            
+            for (let i = 0; i < rows.length; i++) {
+                let row = [], cols = rows[i].querySelectorAll("td, th");
+                
+                for (let j = 0; j < cols.length; j++) {
+                    let text = cols[j].innerText.replace(/"/g, '""'); 
+                    row.push('"' + text + '"');
+                }
+                csv.push(row.join(","));
+            }
+
+            let csvFile = new Blob([csv.join("\n")], {type: "text/csv"});
+            let downloadLink = document.createElement("a");
+            downloadLink.download = "Registered_Users_HSSC.csv";
+            downloadLink.href = window.URL.createObjectURL(csvFile);
+            downloadLink.style.display = "none";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        }
+    </script>
+</body>
+</html>
