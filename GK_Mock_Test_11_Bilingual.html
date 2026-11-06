@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HSSC GK Mock Test 11 (Top 25)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- html2pdf Library for PDF Download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        /* Beautiful Moving Gradient & Glassmorphism Theme */
+        :root {
+            --bg-grad-1: #4facfe; --bg-grad-2: #00f2fe; --bg-grad-3: #a18cd1; --bg-grad-4: #fbc2eb;
+            --glass-bg: rgba(255, 255, 255, 0.9); --glass-border: rgba(255, 255, 255, 0.6); --glass-shadow: rgba(31, 38, 135, 0.15);
+            --text-main: #1f2937; --text-muted: #64748b;
+            --primary: #2563eb; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; --purple: #8b5cf6;
+            --option-bg: rgba(243, 244, 246, 0.8); --option-selected: rgba(219, 234, 254, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+        [data-theme="dark"] {
+            --bg-grad-1: #0f2027; --bg-grad-2: #203a43; --bg-grad-3: #2c5364; --bg-grad-4: #141e30;
+            --glass-bg: rgba(17, 25, 40, 0.85); --glass-border: rgba(255, 255, 255, 0.15); --glass-shadow: rgba(0, 0, 0, 0.5);
+            --text-main: #f9fafb; --text-muted: #94a3b8;
+            --primary: #3b82f6; 
+            --option-bg: rgba(55, 65, 81, 0.7); --option-selected: rgba(30, 58, 138, 0.8);
+            --card-bg: rgba(31, 41, 55, 0.95);
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Mukta', 'Poppins', sans-serif; transition: background-color 0.3s, color 0.3s; touch-action: manipulation;}
+        
+        body { 
+            height: 100vh; height: 100dvh; 
+            background: linear-gradient(45deg, var(--bg-grad-1), var(--bg-grad-2), var(--bg-grad-3), var(--bg-grad-4)); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+            color: var(--text-main); 
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .glass-panel { background: var(--glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid var(--glass-border); box-shadow: 0 8px 32px 0 var(--glass-shadow); border-radius: 12px; }
+        
+        .btn { font-family: 'Poppins', sans-serif; background: var(--primary); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: 0.2s;}
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+        .btn-warning { background: var(--warning); color: #fff;}
+        .btn-clear { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border); }
+        .btn-mark { background: var(--purple); color: white; }
+        .btn-prev { background: var(--text-muted); color: white; }
+
+        /* Screens */
+        .screen { display: none; flex-direction: column; height: 100%; width: 100vw; position: absolute; top: 0; left: 0; }
+        .screen.active { display: flex; }
+
+        /* --- DASHBOARD UI --- */
+        #dashboard-screen { overflow-y: auto; background: var(--card-bg); align-items: center; padding-bottom: 30px;}
+        
+        .dash-header-top { background: #1e293b; color: white; width: 100%; padding: 15px 20px; font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 15px; position: sticky; top:0; z-index: 100;}
+        
+        .dash-content { width: 100%; max-width: 800px; padding: 20px; }
+        .section-title { font-weight: 600; color: var(--primary); margin: 15px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; font-size: 15px; }
+        
+        .dash-card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--glass-border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .test-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--text-main);}
+        .test-meta { color: var(--text-muted); font-size: 13px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;}
+        
+        .progress-container { width: 100%; height: 6px; background: var(--glass-border); border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: #fbc02d; width: 0%; transition: width 0.5s ease;}
+        
+        .dash-actions { display: flex; gap: 12px; margin-top: 15px; }
+        .dash-actions .btn { flex: 1; padding: 10px; font-size: 14px; border-radius: 8px;}
+        
+        .syllabus-footer { display: flex; justify-content: space-between; font-size: 12px; color: var(--primary); border-top: 1px solid var(--glass-border); padding-top: 12px; margin-top: 15px; }
+
+        /* --- TEST SCREEN UI --- */
+        header.test-head { padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 16px 16px; margin-bottom: 10px; margin-inline: 10px; }
+        .header-title { font-size: 16px; font-weight: 700; color: var(--primary); }
+        .header-controls { display: flex; gap: 8px; align-items: center; }
+        .timer-box { font-size: 14px; font-weight: 700; background: var(--card-bg); border: 1px solid var(--glass-border); color: var(--danger); padding: 5px 12px; border-radius: 20px; }
+
+        .main-area { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 0 10px 10px 10px; }
+        .question-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        
+        .q-header { padding: 10px 15px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; font-weight: 600; font-size: 14px; }
+        .q-body { flex: 1; padding: 15px; overflow-y: auto; font-size: 16px; line-height: 1.6; }
+        
+        .options-list { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 10px;}
+        .option { padding: 12px; border: 2px solid var(--glass-border); border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; background: var(--option-bg); font-weight: 500; font-size: 15px;}
+        .option.selected { border-color: var(--primary); background: var(--option-selected); color: var(--primary); }
+        .opt-label { width: 28px; height: 28px; flex-shrink: 0; border-radius: 50%; background: var(--card-bg); border: 1px solid var(--glass-border); display: flex; justify-content: center; align-items: center; font-weight: bold; }
+        .option.selected .opt-label { background: var(--primary); color: white; border-color: var(--primary);}
+        
+        .q-footer { padding: 10px; border-top: 1px solid var(--glass-border); flex-shrink: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; border-radius: 0 0 12px 12px; }
+
+        /* --- PALETTE UI --- */
+        .palette-section { width: 320px; display: flex; flex-direction: column; flex-shrink: 0; }
+        .palette-header { padding: 10px; border-bottom: 1px solid var(--glass-border); text-align: center; font-weight: bold; font-size: 15px;}
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; font-size: 12px; border-bottom: 1px solid var(--glass-border); font-weight: 500;}
+        .stat-item { display: flex; align-items: center; gap: 6px;}
+        .badge { width: 20px; height: 20px; border-radius: 4px; display: flex; justify-content: center; align-items: center; color: white; font-size: 10px; font-weight: bold;}
+        .s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);} 
+        .s-1 { background: var(--success); } .s-2 { background: var(--danger); } .s-3 { background: var(--purple); } 
+        .s-4 { background: var(--primary); position: relative; }
+        .s-4::after { content: '✔'; position: absolute; bottom: -4px; right: -4px; width: 12px; height: 12px; background: white; color: var(--primary); border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 8px; }
+        
+        .palette-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; overflow-y: auto; flex: 1; align-content: start; }
+        .p-btn { width: 100%; aspect-ratio: 1; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; color: white; font-size: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .p-btn.s-0 { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--glass-border);}
+        .p-btn.active { outline: 3px solid var(--primary); outline-offset: 2px; transform: scale(1.1);}
+        .submit-area { padding: 10px; border-top: 1px solid var(--glass-border); border-radius: 0 0 12px 12px;}
+
+        /* --- RESULTS & SOLUTIONS UI --- */
+        #result-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        #solution-screen { overflow-y: auto; align-items: center; padding: 15px;}
+        .sol-card { padding: 20px; margin-bottom: 15px; width: 100%; max-width: 800px; page-break-inside: avoid;}
+        .sol-opt { padding: 10px; margin: 6px 0; border-radius: 8px; border: 1px solid var(--glass-border); display: flex; gap: 10px; align-items: center; font-size: 15px; background: var(--card-bg);}
+        .sol-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: var(--success); color: var(--success); font-weight: bold; }
+        .sol-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: var(--danger); color: var(--danger); text-decoration: line-through;}
+        .sol-exp { margin-top: 15px; padding: 15px; background: rgba(37, 99, 235, 0.05); border: 1px solid var(--glass-border); border-left: 4px solid var(--primary); border-radius: 8px; font-size: 14.5px; line-height: 1.6; }
+        .sol-exp ul { padding-left: 20px; margin-top: 8px; }
+        .sol-exp li { margin-bottom: 6px; }
+
+        #pause-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); z-index: 200; display: none; justify-content: center; align-items: center; color: white; flex-direction: column; }
+
+        @media (max-width: 992px) {
+            .main-area { flex-direction: column; overflow-y: auto;}
+            .question-section { flex: none; min-height: 450px;}
+            .palette-section { width: 100%; flex: none; min-height: 350px;}
+            .q-footer .btn { padding: 10px; font-size: 13px; }
+        }
+    </style>
+</head>
+<body oncontextmenu="return false;" oncopy="return false;" onselectstart="return false;">
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="dashboard-screen" class="screen active">
+        <div class="dash-header-top">
+            <span style="cursor: pointer;" onclick="alert('Going Back')">&#8592;</span>
+            HSSC Mock Test Wala
+            <button class="btn btn-outline" style="margin-left:auto;background:white;color:#1e293b;padding:6px 12px;" onclick="toggleLanguage()" id="lang-btn-dash">English</button>
+        </div>
+
+        <div class="dash-content">
+            <!-- Unattempted State -->
+            <div id="dash-unattempted" style="display: none;">
+                <div class="section-title">Suggested Next Test</div>
+                <div class="dash-card">
+                    <div class="test-title">HSSC GK Mock Test 11 (Top 25)</div>
+                    <div class="test-meta">
+                        <span>25 प्रश्न • 25 मिनट • 25 अंक</span>
+                    </div>
+                    <div class="test-meta" style="justify-content: flex-end;">
+                        <button class="btn btn-outline" style="padding: 6px 20px; border-radius: 20px;" onclick="startTest()">Start Test 🚀</button>
+                    </div>
+                    <div class="syllabus-footer">
+                        <span>विषय: इतिहास, भूगोल, राजव्यवस्था एवं सामान्य ज्ञान</span>
+                        <span style="color:var(--success);">🔗 Share</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attempted State -->
+            <div id="dash-attempted" style="display: none;">
+                <div class="dash-card">
+                    <div class="test-title">HSSC GK Mock Test 11 (Top 25)</div>
+                    <div class="test-meta" style="margin-bottom: 5px;">
+                        <span id="dash-score-text" style="font-size: 15px; color: var(--text-muted);">0/25.0 Marks . 1.5K/2.9K Rank</span>
+                    </div>
+                    
+                    <div class="progress-container"><div class="progress-fill" id="dash-progress-bar"></div></div>
+
+                    <div class="dash-actions">
+                        <button class="btn btn-outline" onclick="viewSavedResults()">View Results</button>
+                        <button class="btn btn-outline" onclick="reattemptTest()">Reattempt &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAUSE OVERLAY -->
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 20px; font-size: 2rem;">Test Paused ⏸️</h2>
+        <button class="btn btn-primary" style="font-size: 1.2rem; padding: 10px 30px;" onclick="togglePause()">Resume Test ▶️</button>
+    </div>
+
+    <!-- TEST SCREEN -->
+    <div id="test-screen" class="screen">
+        <header class="glass-panel test-head">
+            <div class="header-title">HSSC GK Mock Test 11</div>
+            <div class="header-controls">
+                <button class="btn btn-clear" style="padding:4px 10px;font-size:12px;" onclick="toggleLanguage()" id="lang-btn-test">EN</button>
+                <button class="btn btn-clear" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="toggleTheme()">🌓 Theme</button>
+                <button class="btn btn-warning" style="padding: 4px 10px; font-size: 12px; border-radius: 20px;" onclick="togglePause()">⏸ Pause</button>
+                <div class="timer-box">⏱ <span id="timer-display">25:00</span></div>
+            </div>
+        </header>
+
+        <div class="main-area">
+            <div class="glass-panel question-section">
+                <div class="q-header">
+                    <span id="q-no">Question 1</span>
+                    <span style="color: var(--success); font-weight:bold;">+1 <span style="color: var(--text-muted); font-weight:normal;">|</span> <span style="color: var(--danger);">-0</span></span>
+                </div>
+                <div class="q-body">
+                    <div id="q-text" style="font-weight: 600;">Loading...</div>
+                    <div class="options-list" id="options-box"></div>
+                </div>
+                <div class="q-footer">
+                    <button class="btn btn-mark" onclick="markReview()">Mark & Next</button>
+                    <button class="btn btn-clear" onclick="clearResponse()">Clear</button>
+                    <button class="btn btn-prev" onclick="changeQ(-1)">Previous</button>
+                    <button class="btn btn-primary" onclick="saveNext()">Save & Next</button>
+                </div>
+            </div>
+
+            <div class="glass-panel palette-section">
+                <div class="palette-header">Question Palette</div>
+                <div class="stats-grid">
+                    <div class="stat-item"><div class="badge s-1" id="c-ans">0</div> Ans</div>
+                    <div class="stat-item"><div class="badge s-2" id="c-notans">0</div> Not Ans</div>
+                    <div class="stat-item"><div class="badge s-0" id="c-notvis">25</div> Not Visit</div>
+                    <div class="stat-item"><div class="badge s-3" id="c-mark">0</div> Marked</div>
+                </div>
+                <div class="palette-grid" id="q-grid"></div>
+                <div class="submit-area">
+                    <button class="btn btn-primary" style="width: 100%; background: var(--success); font-size: 15px; padding: 10px;" onclick="submitTest()">Submit Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div id="result-screen" class="screen">
+        <div style="width: 100%; max-width: 800px; margin-bottom: 15px;"><button class="btn btn-clear" onclick="showDashboard()">&#8592; Back to Dashboard</button></div>
+        <div class="glass-panel" style="max-width: 800px; width: 100%; padding: 25px;">
+            <h1 style="color: var(--primary); text-align: center;">Test Submitted Successfully! 🎉</h1>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin: 25px 0;">
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-score" style="color: var(--primary); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Score</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-attempt" style="color: var(--success); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Attempted</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-wrong" style="color: var(--danger); font-size: 1.8rem;">0</h2><p style="color: var(--text-muted); font-size:12px;">Wrong</p></div>
+                <div class="glass-panel" style="padding: 15px; text-align: center;"><h2 id="r-acc" style="color: var(--purple); font-size: 1.8rem;">0%</h2><p style="color: var(--text-muted); font-size:12px;">Accuracy</p></div>
+            </div>
+            <button class="btn btn-primary" style="width:100%; font-size: 15px;" onclick="viewSolutions()">📝 View Detailed Solutions</button>
+        </div>
+    </div>
+
+    <!-- SOLUTION SCREEN -->
+    <div id="solution-screen" class="screen">
+        <div style="max-width: 800px; width: 100%; margin:0 auto;">
+            <div class="glass-panel" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 12px 15px; position: sticky; top: 5px; z-index: 10;">
+                <h3 style="color: var(--primary);">Detailed Solutions</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-clear" style="padding:5px 10px;font-size:13px;" onclick="toggleLanguage()" id="lang-btn-sol">EN</button>
+                    <button class="btn btn-primary" style="padding: 5px 12px; font-size: 13px; background: var(--success);" onclick="downloadPDF()">📥 Download PDF</button>
+                    <button class="btn btn-clear" style="padding: 5px 12px; font-size: 13px;" onclick="showScreen('result-screen')">&#8592; Back</button>
+                </div>
+            </div>
+            
+            <!-- This container will be converted to PDF -->
+            <div id="sol-container"></div>
+            
+        </div>
+    </div>
+
+<script>
+    const MEMORY_STORE = {};
+    function safeGetItem(key) { try { return localStorage.getItem(key) || MEMORY_STORE[key] || null; } catch(e) { return MEMORY_STORE[key] || null; } }
+    function safeSetItem(key, value) { try { localStorage.setItem(key, value); } catch(e) {} MEMORY_STORE[key] = value; }
+    function safeRemoveItem(key) { try { localStorage.removeItem(key); } catch(e) {} delete MEMORY_STORE[key]; }
+
+    const STORAGE_KEY = 'hssc_gk_11_active'; 
+    const COMPLETED_KEY = 'hssc_gk_11_comp';
+
+    // 25 Questions perfectly extracted using JS Backticks
+    const finalQuestions = [
+        {
+                "q": "बाल दिवस भारत में कब मनाया जाता है?",
+                "o": [
+                        "14 नवंबर",
+                        "5 सितंबर",
+                        "2 अक्टूबर",
+                        "26 जनवरी"
+                ],
+                "a": 0,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> भारत में बाल दिवस 14 नवंबर को मनाया जाता है। यह पंडित जवाहरलाल नेहरू की जयंती है।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>जवाहरलाल नेहरू का जन्म 14 नवंबर 1889 को हुआ था।</li><li>नेहरू को बच्चों के बीच 'चाचा नेहरू' कहा जाता था।</li><li>संयुक्त राष्ट्र विश्व बाल दिवस 20 नवंबर को मनाता है।</li><li>भारत में पहले 20 नवंबर को बाल दिवस मनाया जाता था; 1964 के बाद 14 नवंबर चुना गया।</li><li>बाल अधिकारों में शिक्षा, सुरक्षा, स्वास्थ्य और विकास शामिल हैं।</li></ul>"
+        },
+        {
+                "q": "भारत के प्रथम वित्त आयोग का गठन कब हुआ था?",
+                "o": [
+                        "1950",
+                        "1951",
+                        "1952",
+                        "1956"
+                ],
+                "a": 1,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> भारत के प्रथम वित्त आयोग का गठन 1951 में हुआ था। इसके अध्यक्ष के.सी. नियोगी थे।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>वित्त आयोग का प्रावधान संविधान के अनुच्छेद 280 में है।</li><li>राष्ट्रपति प्रत्येक पाँच वर्ष पर या आवश्यकता पड़ने पर आयोग गठित करते हैं।</li><li>यह केंद्र और राज्यों के बीच करों के वितरण की सिफारिश करता है।</li><li>प्रथम वित्त आयोग के अध्यक्ष के.सी. नियोगी थे।</li><li>वित्त आयोग एक संवैधानिक निकाय है।</li></ul>"
+        },
+        {
+                "q": "भारत में नागरिक उड्डयन का जनक किसे कहा जाता है?",
+                "o": [
+                        "जे.आर.डी. टाटा",
+                        "विक्रम साराभाई",
+                        "होमी भाभा",
+                        "धीरूभाई अंबानी"
+                ],
+                "a": 0,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> जे.आर.डी. टाटा को भारत में नागरिक उड्डयन का जनक कहा जाता है।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>जे.आर.डी. टाटा का पूरा नाम जहांगीर रतनजी दादाभाई टाटा था।</li><li>उन्होंने 1932 में टाटा एयरलाइंस की शुरुआत की।</li><li>15 अक्टूबर 1932 को कराची से बंबई तक पहली एयरमेल उड़ान संचालित हुई।</li><li>टाटा एयरलाइंस आगे चलकर एयर इंडिया बनी।</li><li>उन्हें 1992 में भारत रत्न से सम्मानित किया गया।</li></ul>"
+        },
+        {
+                "q": "ब्लैक माउंटेन (Black Mountain) किस देश में स्थित है?",
+                "o": [
+                        "नेपाल",
+                        "भूटान",
+                        "बांग्लादेश",
+                        "म्यांमार"
+                ],
+                "a": 1,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> ब्लैक माउंटेन भूटान में स्थित पर्वतीय क्षेत्र है।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>भूटान हिमालय के पूर्वी भाग में स्थित स्थलरुद्ध देश है।</li><li>भूटान की राजधानी थिम्फू है।</li><li>भूटान को 'थंडर ड्रैगन की भूमि' भी कहा जाता है।</li><li>भूटान की आधिकारिक भाषा जोंगखा है।</li><li>गंगखर पुएंसुम भूटान की सबसे ऊँची चोटी मानी जाती है।</li></ul>"
+        },
+        {
+                "q": "विश्व की सबसे प्राचीन ज्ञात लिखित भाषाओं में से एक कौन-सी है?",
+                "o": [
+                        "लैटिन",
+                        "संस्कृत",
+                        "सुमेरियन",
+                        "अरबी"
+                ],
+                "a": 2,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> सुमेरियन भाषा मेसोपोटामिया की प्राचीन भाषा थी और इसके लिखित प्रमाण कीलाक्षर लिपि में मिलते हैं।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>सुमेर सभ्यता दक्षिणी मेसोपोटामिया में विकसित हुई।</li><li>कीलाक्षर (Cuneiform) लेखन का प्रमुख माध्यम था।</li><li>मिट्टी की गीली पट्टिकाओं पर लेखन किया जाता था।</li><li>उरुक सुमेर के प्रमुख नगरों में से एक था।</li><li>सुमेरियन के साथ अक्कादी भाषा के अभिलेख भी मेसोपोटामिया में मिले हैं।</li></ul>"
+        },
+        {
+                "q": "भारतीय वन सर्वेक्षण (Forest Survey of India—FSI) की स्थापना कब हुई?",
+                "o": [
+                        "1976",
+                        "1981",
+                        "1985",
+                        "1990"
+                ],
+                "a": 1,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> भारतीय वन सर्वेक्षण की स्थापना 1981 में हुई थी। इसका मुख्यालय देहरादून में है।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>FSI पर्यावरण, वन एवं जलवायु परिवर्तन मंत्रालय के अधीन कार्य करता है।</li><li>यह देश के वन आवरण का आकलन करता है।</li><li>भारत राज्य वन रिपोर्ट (India State of Forest Report) नियमित अंतराल पर प्रकाशित होती है।</li><li>FSI का मुख्यालय देहरादून, उत्तराखंड में है।</li><li>वन आवरण और वृक्ष आवरण का आकलन उपग्रह आंकड़ों तथा क्षेत्रीय जांच से किया जाता है।</li></ul>"
+        },
+        {
+                "q": "भारत के लिए 'इंडिया' नाम का प्रयोग सर्वप्रथम किस सभ्यता/समूह से जुड़ा माना जाता है?",
+                "o": [
+                        "यूनानी",
+                        "रोमन",
+                        "चीनी",
+                        "अरबी"
+                ],
+                "a": 0,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> यूनानी लेखकों ने सिंधु नदी के नाम से संबंधित रूपों का प्रयोग भारत क्षेत्र के लिए किया।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>'इंडिया' नाम का संबंध सिंधु (Indus) नदी से माना जाता है।</li><li>फारसी रूप 'हिंदू' सिंधु से विकसित हुआ।</li><li>यूनानी भाषा में सिंधु का रूप 'इंडोस' प्रचलित हुआ।</li><li>भारत का संविधान देश को 'India, that is Bharat' कहता है।</li><li>'भारत' नाम की व्युत्पत्ति के संबंध में प्राचीन परंपराएँ भी मिलती हैं।</li></ul>"
+        },
+        {
+                "q": "दिल्ली के लाल किले में मोती मस्जिद का निर्माण किस मुगल शासक ने करवाया?",
+                "o": [
+                        "अकबर",
+                        "शाहजहाँ",
+                        "औरंगजेब",
+                        "जहाँगीर"
+                ],
+                "a": 2,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> लाल किले की मोती मस्जिद का निर्माण औरंगजेब ने करवाया था।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>लाल किले का निर्माण शाहजहाँ ने करवाया था।</li><li>लाल किला दिल्ली में यमुना नदी के किनारे स्थित है।</li><li>मोती मस्जिद का निर्माण 17वीं शताब्दी में हुआ।</li><li>औरंगजेब का शासनकाल 1658 से 1707 तक था।</li><li>लाल किला यूनेस्को विश्व धरोहर स्थल है।</li></ul>"
+        },
+        {
+                "q": "मुसलमानों के लिए पृथक निर्वाचन की व्यवस्था किस अधिनियम द्वारा की गई?",
+                "o": [
+                        "भारतीय परिषद अधिनियम 1892",
+                        "भारतीय परिषद अधिनियम 1909",
+                        "भारत शासन अधिनियम 1919",
+                        "भारत शासन अधिनियम 1935"
+                ],
+                "a": 1,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> भारतीय परिषद अधिनियम 1909, जिसे मार्ले-मिंटो सुधार भी कहते हैं, ने मुसलमानों के लिए पृथक निर्वाचन की व्यवस्था की।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>लॉर्ड मिंटो उस समय भारत के वायसराय थे।</li><li>जॉन मार्ले ब्रिटेन के भारत सचिव थे।</li><li>इस अधिनियम ने केंद्रीय और प्रांतीय विधान परिषदों का विस्तार किया।</li><li>मुसलमानों के लिए पृथक निर्वाचन का प्रावधान किया गया।</li><li>इसे भारतीय संवैधानिक विकास का एक महत्वपूर्ण चरण माना जाता है।</li></ul>"
+        },
+        {
+                "q": "अंतरराष्ट्रीय तिथि रेखा (International Date Line) लगभग किस देशांतर पर स्थित है?",
+                "o": [
+                        "0°",
+                        "90° पूर्व",
+                        "180°",
+                        "90° पश्चिम"
+                ],
+                "a": 2,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> अंतरराष्ट्रीय तिथि रेखा लगभग 180° देशांतर के आसपास स्थित है। यह प्रशांत महासागर से होकर गुजरती है।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>यह एक सीधी रेखा नहीं है; कई स्थानों पर द्वीपों और देशों से बचने के लिए मुड़ती है।</li><li>इसके पूर्व और पश्चिम में कैलेंडर की तारीख में एक दिन का अंतर हो सकता है।</li><li>180° देशांतर ग्रीनविच से लगभग विपरीत दिशा में है।</li><li>1884 के अंतरराष्ट्रीय मेरिडियन सम्मेलन में ग्रीनविच को प्रधान मध्याह्न रेखा के रूप में स्वीकार किया गया।</li><li>तिथि रेखा का उद्देश्य विश्व में तारीख के परिवर्तन को व्यवस्थित करना है।</li></ul>"
+        },
+        {
+                "q": "राष्ट्रपति किस अनुच्छेद के अंतर्गत अध्यादेश जारी कर सकते हैं?",
+                "o": [
+                        "अनुच्छेद 72",
+                        "अनुच्छेद 123",
+                        "अनुच्छेद 143",
+                        "अनुच्छेद 356"
+                ],
+                "a": 1,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> भारतीय संविधान का अनुच्छेद 123 राष्ट्रपति को संसद के सत्र में न होने पर अध्यादेश जारी करने की शक्ति देता है।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>अध्यादेश तभी जारी होता है जब संसद के दोनों सदन एक साथ सत्र में न हों और तत्काल कार्रवाई आवश्यक हो।</li><li>अध्यादेश का प्रभाव संसद के अधिनियम जैसा होता है।</li><li>संसद के पुनः एकत्र होने पर अध्यादेश को छह सप्ताह के भीतर अनुमोदन चाहिए, अन्यथा वह समाप्त हो जाता है।</li><li>राष्ट्रपति मंत्रिपरिषद की सलाह पर कार्य करते हैं।</li><li>राज्यपाल की अध्यादेश शक्ति अनुच्छेद 213 में है।</li></ul>"
+        },
+        {
+                "q": "प्रथम एशियाई खेलों का आयोजन कब और कहाँ हुआ था?",
+                "o": [
+                        "1948, लंदन",
+                        "1951, नई दिल्ली",
+                        "1954, मनीला",
+                        "1962, जकार्ता"
+                ],
+                "a": 1,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> प्रथम एशियाई खेलों का आयोजन 1951 में नई दिल्ली में हुआ था।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>पहले एशियाई खेल 4 से 11 मार्च 1951 तक आयोजित हुए।</li><li>इन खेलों में 11 देशों ने भाग लिया था।</li><li>इनका आयोजन नई दिल्ली के नेशनल स्टेडियम में हुआ।</li><li>एशियाई खेलों का संचालन ओलंपिक काउंसिल ऑफ एशिया करती है।</li><li>भारत ने 1951 के खेलों में पदक तालिका में दूसरा स्थान प्राप्त किया था।</li></ul>"
+        },
+        {
+                "q": "भारत में वन नीति का राष्ट्रीय स्तर पर महत्वपूर्ण संशोधित दस्तावेज किस वर्ष जारी हुआ?",
+                "o": [
+                        "1952",
+                        "1972",
+                        "1988",
+                        "2002"
+                ],
+                "a": 2,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> राष्ट्रीय वन नीति 1988 में घोषित की गई थी।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>इस नीति में पर्यावरणीय स्थिरता को प्रमुख उद्देश्य बनाया गया।</li><li>स्थानीय समुदायों की भागीदारी पर जोर दिया गया।</li><li>वनों के संरक्षण और जैव विविधता की रक्षा इसका महत्वपूर्ण लक्ष्य है।</li><li>वन नीति 1952 इससे पहले की प्रमुख राष्ट्रीय वन नीति थी।</li><li>वन एवं वन्यजीव संरक्षण में जनभागीदारी को संयुक्त वन प्रबंधन जैसी पहलों से बल मिला।</li></ul>"
+        },
+        {
+                "q": "वन सर्वेक्षण रिपोर्ट में 'वन आवरण' का आकलन मुख्यतः किस तकनीक से किया जाता है?",
+                "o": [
+                        "केवल जनगणना",
+                        "रिमोट सेंसिंग/उपग्रह चित्र",
+                        "मौसम गुब्बारे",
+                        "समुद्री सर्वेक्षण"
+                ],
+                "a": 1,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> वन आवरण का आकलन मुख्यतः रिमोट सेंसिंग और उपग्रह चित्रों के विश्लेषण से किया जाता है।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>उपग्रह चित्र बड़े क्षेत्र का एकसमान आकलन संभव बनाते हैं।</li><li>क्षेत्रीय जांच (ground truthing) से आंकड़ों का सत्यापन किया जाता है।</li><li>वन आवरण का वर्गीकरण छत्र घनत्व के आधार पर किया जाता है।</li><li>FSI भारत राज्य वन रिपोर्ट प्रकाशित करता है।</li><li>वन आवरण और वृक्ष आवरण तकनीकी रूप से अलग श्रेणियाँ हैं।</li></ul>"
+        },
+        {
+                "q": "लाल किले का निर्माण किस मुगल शासक ने करवाया था?",
+                "o": [
+                        "बाबर",
+                        "अकबर",
+                        "शाहजहाँ",
+                        "औरंगजेब"
+                ],
+                "a": 2,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> दिल्ली के लाल किले का निर्माण मुगल सम्राट शाहजहाँ ने करवाया था।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>निर्माण 1638 में शुरू हुआ और 1648 के आसपास पूरा हुआ।</li><li>शाहजहाँ ने अपनी राजधानी आगरा से शाहजहानाबाद स्थानांतरित की।</li><li>लाल किले को किला-ए-मुबारक भी कहा जाता था।</li><li>यह लाल बलुआ पत्थर से निर्मित है।</li><li>15 अगस्त को भारत के प्रधानमंत्री लाल किले से राष्ट्र को संबोधित करते हैं।</li></ul>"
+        },
+        {
+                "q": "भारतीय संविधान में राष्ट्रपति की अध्यादेश शक्ति किस प्रकार की शक्ति है?",
+                "o": [
+                        "न्यायिक",
+                        "विधायी",
+                        "सैन्य",
+                        "आपातकालीन"
+                ],
+                "a": 1,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> अध्यादेश जारी करना राष्ट्रपति की विधायी शक्ति का हिस्सा है।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>इसका उल्लेख अनुच्छेद 123 में है।</li><li>अध्यादेश अस्थायी विधायी उपाय है।</li><li>यह संसद के कानून के समान प्रभाव रखता है।</li><li>संसद के पुनः बैठने पर निर्धारित अवधि में इसे संसद के सामने रखना पड़ता है।</li><li>राज्य स्तर पर राज्यपाल को अनुच्छेद 213 के अंतर्गत समान प्रकार की शक्ति है।</li></ul>"
+        },
+        {
+                "q": "भूटान की राजधानी क्या है?",
+                "o": [
+                        "पारो",
+                        "थिम्फू",
+                        "पुनाखा",
+                        "फुंटशोलिंग"
+                ],
+                "a": 1,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> भूटान की राजधानी थिम्फू है।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>भूटान दक्षिण एशिया का हिमालयी स्थलरुद्ध देश है।</li><li>इसकी सीमाएँ भारत और चीन से लगती हैं।</li><li>भूटान की मुद्रा नगुल्ट्रम है।</li><li>राष्ट्रीय भाषा जोंगखा है।</li><li>भूटान का राष्ट्रीय खेल तीरंदाजी है।</li></ul>"
+        },
+        {
+                "q": "सुमेर सभ्यता का प्रमुख क्षेत्र किस नदी-घाटी में था?",
+                "o": [
+                        "नील",
+                        "सिंधु",
+                        "टिगरिस-यूफ्रेटीस",
+                        "ह्वांगहो"
+                ],
+                "a": 2,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> सुमेर सभ्यता प्राचीन मेसोपोटामिया में टिगरिस और यूफ्रेटीस नदियों के निचले क्षेत्र में विकसित हुई।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>मेसोपोटामिया का अर्थ 'दो नदियों के बीच की भूमि' है।</li><li>उर, उरुक और लगाश सुमेर के प्रमुख नगर थे।</li><li>सुमेरियन लेखन में कीलाक्षर लिपि का उपयोग हुआ।</li><li>मिट्टी की पट्टिकाएँ लेखन के लिए प्रयुक्त होती थीं।</li><li>सुमेर को प्रारंभिक नगर-सभ्यताओं के विकास का महत्वपूर्ण केंद्र माना जाता है।</li></ul>"
+        },
+        {
+                "q": "भारत में नागरिक उड्डयन की पहली नियमित एयरमेल उड़ान 1932 में किसने संचालित की?",
+                "o": [
+                        "जे.आर.डी. टाटा",
+                        "सी.वी. रमन",
+                        "विक्रम साराभाई",
+                        "सलीम अली"
+                ],
+                "a": 0,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> 1932 में जे.आर.डी. टाटा ने कराची से बंबई के बीच टाटा एयरमेल सेवा की पहली उड़ान संचालित की।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>यह उड़ान 15 अक्टूबर 1932 को हुई थी।</li><li>उड़ान में हवाई डाक ले जाई गई थी।</li><li>टाटा एयरलाइंस की शुरुआत इसी पहल से जुड़ी है।</li><li>बाद में कंपनी का नाम एयर इंडिया रखा गया।</li><li>जे.आर.डी. टाटा को भारत रत्न 1992 में मिला।</li></ul>"
+        },
+        {
+                "q": "अंतरराष्ट्रीय तिथि रेखा किस महासागर से मुख्यतः होकर गुजरती है?",
+                "o": [
+                        "अटलांटिक",
+                        "हिंद",
+                        "प्रशांत",
+                        "आर्कटिक"
+                ],
+                "a": 2,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> अंतरराष्ट्रीय तिथि रेखा मुख्यतः प्रशांत महासागर से होकर गुजरती है।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>यह लगभग 180° देशांतर का अनुसरण करती है।</li><li>रेखा में मोड़ द्वीप समूहों को एक ही कैलेंडर तारीख में रखने के लिए हैं।</li><li>रेखा पार करने पर तारीख एक दिन आगे या पीछे हो सकती है।</li><li>यह राजनीतिक सीमा नहीं, बल्कि समय-तिथि निर्धारण की परंपरागत रेखा है।</li><li>ग्रीनविच 0° देशांतर को प्रधान मध्याह्न रेखा माना जाता है।</li></ul>"
+        },
+        {
+                "q": "भारत राज्य वन रिपोर्ट किस संस्था द्वारा प्रकाशित की जाती है?",
+                "o": [
+                        "भारतीय वन सर्वेक्षण",
+                        "भारतीय मौसम विभाग",
+                        "नीति आयोग",
+                        "भारतीय भूवैज्ञानिक सर्वेक्षण"
+                ],
+                "a": 0,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> भारत राज्य वन रिपोर्ट भारतीय वन सर्वेक्षण (FSI) द्वारा प्रकाशित की जाती है।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>FSI का मुख्यालय देहरादून में है।</li><li>संस्था की स्थापना 1981 में हुई थी।</li><li>रिपोर्ट में वन आवरण और वृक्ष आवरण के आंकड़े दिए जाते हैं।</li><li>उपग्रह चित्रों और क्षेत्रीय सत्यापन का उपयोग किया जाता है।</li><li>रिपोर्ट वन संसाधनों की स्थिति समझने में नीति-निर्माताओं की मदद करती है。</li></ul>"
+        },
+        {
+                "q": "1909 के मार्ले-मिंटो सुधारों का एक प्रमुख प्रावधान क्या था?",
+                "o": [
+                        "प्रांतीय स्वायत्तता",
+                        "मुसलमानों के लिए पृथक निर्वाचन",
+                        "भारत में संघीय न्यायालय",
+                        "पूर्ण स्वराज"
+                ],
+                "a": 1,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> 1909 के मार्ले-मिंटो सुधारों का प्रमुख प्रावधान मुसलमानों के लिए पृथक निर्वाचन की व्यवस्था था।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>यह भारतीय परिषद अधिनियम 1909 के नाम से भी जाना जाता है।</li><li>लॉर्ड मिंटो भारत के वायसराय थे।</li><li>जॉन मार्ले भारत सचिव थे।</li><li>विधान परिषदों का विस्तार किया गया।</li><li>इस व्यवस्था ने सांप्रदायिक निर्वाचन प्रणाली को औपचारिक रूप दिया।</li></ul>"
+        },
+        {
+                "q": "भारत में वन सर्वेक्षण संस्था (FSI) का मुख्यालय कहाँ है?",
+                "o": [
+                        "नई दिल्ली",
+                        "देहरादून",
+                        "भोपाल",
+                        "शिमला"
+                ],
+                "a": 1,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> भारतीय वन सर्वेक्षण (FSI) का मुख्यालय देहरादून, उत्तराखंड में है।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>FSI पर्यावरण, वन एवं जलवायु परिवर्तन मंत्रालय के अधीन है।</li><li>इसकी स्थापना 1981 में हुई थी।</li><li>यह वन संसाधनों का राष्ट्रीय स्तर पर आकलन करता है।</li><li>भारत राज्य वन रिपोर्ट इसके प्रमुख प्रकाशनों में है।</li><li>देहरादून में वन अनुसंधान संस्थान (FRI) भी स्थित है, जो अलग संस्था है।</li></ul>"
+        },
+        {
+                "q": "भारत के संविधान में वित्त आयोग का प्रावधान किस अनुच्छेद में है?",
+                "o": [
+                        "अनुच्छेद 263",
+                        "अनुच्छेद 280",
+                        "अनुच्छेद 300",
+                        "अनुच्छेद 324"
+                ],
+                "a": 1,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> वित्त आयोग का प्रावधान भारतीय संविधान के अनुच्छेद 280 में है।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>राष्ट्रपति वित्त आयोग का गठन करते हैं।</li><li>आयोग केंद्र और राज्यों के बीच कर-वितरण की सिफारिश करता है।</li><li>यह राज्यों को राजस्व सहायता अनुदान के सिद्धांत सुझाता है।</li><li>आयोग की संरचना और योग्यता संसद कानून द्वारा निर्धारित कर सकती है।</li><li>वित्त आयोग संवैधानिक निकाय है, जबकि नीति आयोग संवैधानिक निकाय नहीं है।</li></ul>"
+        },
+        {
+                "q": "अध्यादेश जारी करने की राष्ट्रपति की शक्ति किस स्थिति में प्रयोग की जाती है?",
+                "o": [
+                        "जब संसद का सत्र चल रहा हो",
+                        "जब संसद के दोनों सदन सत्र में न हों और तत्काल कार्रवाई आवश्यक हो",
+                        "केवल आपातकाल में",
+                        "केवल चुनाव के समय"
+                ],
+                "a": 1,
+                "e": "<b>सही उत्तर एवं व्याख्या:</b> अनुच्छेद 123 के तहत जब संसद के दोनों सदन एक साथ सत्र में न हों और तत्काल कार्रवाई आवश्यक हो, तब राष्ट्रपति अध्यादेश जारी कर सकते हैं।<br><br>💡 <b>5 अतिरिक्त महत्वपूर्ण तथ्य:</b><ul><li>यदि दोनों सदनों में से कोई एक सत्र में हो तो अध्यादेश की संवैधानिक शर्त पूरी नहीं होती।</li><li>अध्यादेश को संसद के समक्ष रखा जाता है।</li><li>संसद के पुनः एकत्र होने के छह सप्ताह बाद यह समाप्त हो सकता है, यदि पहले अस्वीकृत न हो।</li><li>राष्ट्रपति मंत्रिपरिषद की सलाह पर कार्य करते हैं।</li><li>राज्यपाल की समान शक्ति अनुच्छेद 213 में है।</li></ul>"
+        }
+];
+
+
+    // English translations for the complete bilingual test.
+    const englishQuestions = [
+      ["When is Children’s Day celebrated in India?",["14 November","5 September","2 October","26 January"]],
+      ["When was the First Finance Commission of India constituted?",["1950","1951","1952","1956"]],
+      ["Who is known as the Father of Civil Aviation in India?",["J. R. D. Tata","Vikram Sarabhai","Homi Bhabha","Dhirubhai Ambani"]],
+      ["In which country is the Black Mountain located?",["Nepal","Bhutan","Bangladesh","Myanmar"]],
+      ["Which is one of the oldest known written languages in the world?",["Latin","Sanskrit","Sumerian","Arabic"]],
+      ["When was the Forest Survey of India (FSI) established?",["1976","1981","1985","1990"]],
+      ["Which ancient group is associated with the earliest use of the name ‘India’?",["Greeks","Romans","Chinese","Arabs"]],
+      ["Which Mughal ruler built the Moti Masjid in Delhi’s Red Fort?",["Akbar","Shah Jahan","Aurangzeb","Jahangir"]],
+      ["Which Act introduced separate electorates for Muslims?",["Indian Councils Act, 1892","Indian Councils Act, 1909","Government of India Act, 1919","Government of India Act, 1935"]],
+      ["At approximately which longitude is the International Date Line located?",["0°","90° East","180°","90° West"]],
+      ["Under which Article can the President of India promulgate ordinances?",["Article 72","Article 123","Article 143","Article 356"]],
+      ["When and where were the first Asian Games held?",["1948, London","1951, New Delhi","1954, Manila","1962, Jakarta"]],
+      ["In which year was the important revised national forest policy document issued in India?",["1952","1972","1988","2002"]],
+      ["Which technique is mainly used to assess forest cover in forest survey reports?",["Census only","Remote sensing / satellite imagery","Weather balloons","Marine surveys"]],
+      ["Which Mughal ruler commissioned the construction of the Red Fort?",["Babur","Akbar","Shah Jahan","Aurangzeb"]],
+      ["What type of power is the President’s ordinance-making power under the Constitution?",["Judicial","Legislative","Military","Emergency"]],
+      ["What is the capital of Bhutan?",["Paro","Thimphu","Punakha","Phuentsholing"]],
+      ["In the valley of which rivers did the Sumerian civilisation mainly develop?",["Nile","Indus","Tigris–Euphrates","Huang He"]],
+      ["Who operated India’s first regular airmail flight in 1932?",["J. R. D. Tata","C. V. Raman","Vikram Sarabhai","Salim Ali"]],
+      ["Through which ocean does the International Date Line mainly pass?",["Atlantic","Indian","Pacific","Arctic"]],
+      ["Which institution publishes the India State of Forest Report?",["Forest Survey of India","India Meteorological Department","NITI Aayog","Geological Survey of India"]],
+      ["What was a major provision of the Morley–Minto Reforms of 1909?",["Provincial autonomy","Separate electorates for Muslims","Federal Court in India","Complete independence"]],
+      ["Where is the headquarters of the Forest Survey of India located?",["New Delhi","Dehradun","Bhopal","Shimla"]],
+      ["Which Article of the Indian Constitution provides for the Finance Commission?",["Article 263","Article 280","Article 300","Article 324"]],
+      ["When may the President exercise the power to promulgate an ordinance?",["When Parliament is in session","When both Houses are not in session and immediate action is necessary","Only during an emergency","Only during elections"]]
+    ];
+    const englishExplanations = [
+      "<b>Correct answer:</b> Children’s Day is celebrated in India on 14 November, the birth anniversary of Jawaharlal Nehru.<br><br>💡 <b>5 key facts:</b><ul><li>Nehru was born on 14 November 1889.</li><li>Children affectionately called him ‘Chacha Nehru’.</li><li>World Children’s Day is observed by the UN on 20 November.</li><li>India earlier observed Children’s Day on 20 November.</li><li>Children’s rights include education, health, protection and development.</li></ul>",
+      "<b>Correct answer:</b> The First Finance Commission was constituted in 1951, with K. C. Neogy as its chairman.<br><br>💡 <b>5 key facts:</b><ul><li>It is provided for under Article 280.</li><li>The President generally constitutes it every five years.</li><li>It recommends the distribution of tax revenues between the Union and states.</li><li>K. C. Neogy chaired the First Finance Commission.</li><li>The Finance Commission is a constitutional body.</li></ul>",
+      "<b>Correct answer:</b> J. R. D. Tata is known as the Father of Civil Aviation in India.<br><br>💡 <b>5 key facts:</b><ul><li>His full name was Jehangir Ratanji Dadabhoy Tata.</li><li>He started Tata Airlines in 1932.</li><li>The first airmail flight flew from Karachi to Bombay on 15 October 1932.</li><li>Tata Airlines later became Air India.</li><li>He received the Bharat Ratna in 1992.</li></ul>",
+      "<b>Correct answer:</b> The Black Mountain is a mountainous region in Bhutan.<br><br>💡 <b>5 key facts:</b><ul><li>Bhutan lies in the eastern Himalayas.</li><li>Its capital is Thimphu.</li><li>Bhutan is also called the ‘Land of the Thunder Dragon’.</li><li>Dzongkha is its official language.</li><li>Gangkhar Puensum is regarded as Bhutan’s highest peak.</li></ul>",
+      "<b>Correct answer:</b> Sumerian was an ancient language of Mesopotamia, written in cuneiform script.<br><br>💡 <b>5 key facts:</b><ul><li>Sumer developed in southern Mesopotamia.</li><li>Cuneiform was its major writing system.</li><li>Writing was made on wet clay tablets.</li><li>Uruk was an important Sumerian city.</li><li>Records in Akkadian are also found in Mesopotamia.</li></ul>",
+      "<b>Correct answer:</b> The Forest Survey of India was established in 1981 and is headquartered in Dehradun.<br><br>💡 <b>5 key facts:</b><ul><li>FSI works under the Ministry of Environment, Forest and Climate Change.</li><li>It assesses forest cover in the country.</li><li>It publishes the India State of Forest Report.</li><li>Its headquarters is in Dehradun, Uttarakhand.</li><li>Assessments use satellite data and field verification.</li></ul>",
+      "<b>Correct answer:</b> Greek writers used forms derived from the name of the Indus River for the Indian region.<br><br>💡 <b>5 key facts:</b><ul><li>The name India is linked to the Indus River.</li><li>The Persian form ‘Hindu’ developed from Sindhu.</li><li>The Greek form ‘Indos’ was used for the river.</li><li>The Constitution describes the country as ‘India, that is Bharat’.</li><li>Ancient traditions also explain the origin of the name Bharat.</li></ul>",
+      "<b>Correct answer:</b> Aurangzeb commissioned the Moti Masjid inside Delhi’s Red Fort.<br><br>💡 <b>5 key facts:</b><ul><li>Shah Jahan built the Red Fort.</li><li>The fort is situated in Delhi near the Yamuna.</li><li>Moti Masjid was built in the 17th century.</li><li>Aurangzeb ruled from 1658 to 1707.</li><li>The Red Fort is a UNESCO World Heritage Site.</li></ul>",
+      "<b>Correct answer:</b> The Indian Councils Act of 1909 introduced separate electorates for Muslims.<br><br>💡 <b>5 key facts:</b><ul><li>The reforms are also called the Morley–Minto Reforms.</li><li>They were named after John Morley and Lord Minto.</li><li>Separate electorates allowed Muslim voters to elect Muslim representatives.</li><li>The Act enlarged legislative councils.</li><li>It received royal assent in 1909.</li></ul>",
+      "<b>Correct answer:</b> The International Date Line roughly follows 180° longitude.<br><br>💡 <b>5 key facts:</b><ul><li>It lies mainly in the Pacific Ocean.</li><li>It marks the change of calendar date.</li><li>It deviates from 180° to avoid dividing countries and island groups.</li><li>Crossing westward generally advances the date by one day.</li><li>Crossing eastward generally moves the calendar back by one day.</li></ul>",
+      "<b>Correct answer:</b> Article 123 empowers the President to promulgate ordinances.<br><br>💡 <b>5 key facts:</b><ul><li>Ordinances are issued when both Houses of Parliament are not in session.</li><li>There must be circumstances requiring immediate action.</li><li>An ordinance has the force of an Act of Parliament.</li><li>It must be laid before Parliament when it reassembles.</li><li>It normally ceases six weeks after Parliament reassembles unless approved.</li></ul>",
+      "<b>Correct answer:</b> The first Asian Games were held in New Delhi in 1951.<br><br>💡 <b>5 key facts:</b><ul><li>The opening ceremony was held on 4 March 1951.</li><li>The event took place at the National Stadium, New Delhi.</li><li>It was also known as the Asiad.</li><li>Athletes from 11 countries participated.</li><li>India hosted the Asian Games again in 1982.</li></ul>",
+      "<b>Correct answer:</b> India’s National Forest Policy was revised in 1988.<br><br>💡 <b>5 key facts:</b><ul><li>The policy emphasised environmental stability.</li><li>It aimed to conserve natural forests.</li><li>It highlighted people’s participation in forest protection.</li><li>It set a national goal of one-third land area under forest or tree cover.</li><li>It replaced the earlier 1952 forest policy.</li></ul>",
+      "<b>Correct answer:</b> Forest cover is mainly assessed using remote sensing and satellite imagery.<br><br>💡 <b>5 key facts:</b><ul><li>Satellite images help map large areas.</li><li>Field observations support verification.</li><li>FSI prepares national forest-cover assessments.</li><li>Forest cover is assessed using canopy-density criteria.</li><li>The India State of Forest Report presents these assessments.</li></ul>",
+      "<b>Correct answer:</b> Shah Jahan commissioned the Red Fort in Delhi.<br><br>💡 <b>5 key facts:</b><ul><li>Construction began in 1638.</li><li>The fort was associated with Shahjahanabad.</li><li>It is built mainly of red sandstone.</li><li>The fort became a major Mughal residence.</li><li>India’s Independence Day address is delivered from its ramparts.</li></ul>",
+      "<b>Correct answer:</b> The ordinance-making power is legislative in nature.<br><br>💡 <b>5 key facts:</b><ul><li>It is provided under Article 123.</li><li>It is exercised by the President.</li><li>It is available when Parliament is not fully in session.</li><li>An ordinance has the same force as a parliamentary law while in operation.</li><li>Parliament can approve, modify or reject it.</li></ul>",
+      "<b>Correct answer:</b> Thimphu is the capital of Bhutan.<br><br>💡 <b>5 key facts:</b><ul><li>Bhutan is a landlocked Himalayan country.</li><li>Thimphu is the country’s largest city.</li><li>Dzongkha is the official language.</li><li>The currency is the ngultrum.</li><li>Bhutan follows a constitutional monarchy.</li></ul>",
+      "<b>Correct answer:</b> Sumerian civilisation developed in the Tigris–Euphrates river valley in Mesopotamia.<br><br>💡 <b>5 key facts:</b><ul><li>Mesopotamia means ‘land between rivers’.</li><li>The rivers are the Tigris and Euphrates.</li><li>The region lies largely in present-day Iraq.</li><li>Ur and Uruk were important city-states.</li><li>Sumerians developed one of the earliest urban civilisations.</li></ul>",
+      "<b>Correct answer:</b> J. R. D. Tata operated the pioneering regular airmail flight in 1932.<br><br>💡 <b>5 key facts:</b><ul><li>The flight took place on 15 October 1932.</li><li>It carried mail from Karachi to Bombay.</li><li>It was part of Tata Airlines’ early operations.</li><li>Tata Airlines later became Air India.</li><li>J. R. D. Tata is remembered as a pioneer of Indian aviation.</li></ul>",
+      "<b>Correct answer:</b> The International Date Line passes mainly through the Pacific Ocean.<br><br>💡 <b>5 key facts:</b><ul><li>It roughly follows the 180° meridian.</li><li>It separates two consecutive calendar dates.</li><li>Its route bends around some island groups.</li><li>It is not a straight political boundary.</li><li>The line is important for international timekeeping.</li></ul>",
+      "<b>Correct answer:</b> The Forest Survey of India publishes the India State of Forest Report.<br><br>💡 <b>5 key facts:</b><ul><li>FSI is headquartered in Dehradun.</li><li>It functions under the environment ministry.</li><li>The report assesses forest and tree cover.</li><li>Satellite data are used in the assessment.</li><li>The report is released periodically.</li></ul>",
+      "<b>Correct answer:</b> The Morley–Minto Reforms of 1909 introduced separate electorates for Muslims.<br><br>💡 <b>5 key facts:</b><ul><li>The reforms are associated with Lord Minto and John Morley.</li><li>They amended the Indian Councils framework.</li><li>Muslim voters elected Muslim representatives under separate electorates.</li><li>Legislative councils were enlarged.</li><li>The reforms increased communal representation in electoral politics.</li></ul>",
+      "<b>Correct answer:</b> The headquarters of the Forest Survey of India is in Dehradun, Uttarakhand.<br><br>💡 <b>5 key facts:</b><ul><li>FSI was established in 1981.</li><li>It assesses forest resources across India.</li><li>It uses remote sensing and field data.</li><li>It publishes the India State of Forest Report.</li><li>It works under the Ministry of Environment, Forest and Climate Change.</li></ul>",
+      "<b>Correct answer:</b> Article 280 of the Constitution provides for the Finance Commission.<br><br>💡 <b>5 key facts:</b><ul><li>The President constitutes the Finance Commission.</li><li>It is generally formed every five years.</li><li>It recommends tax devolution between the Union and states.</li><li>It is a constitutional body.</li><li>The First Finance Commission was constituted in 1951.</li></ul>",
+      "<b>Correct answer:</b> An ordinance may be issued when both Houses of Parliament are not in session and immediate action is necessary.<br><br>💡 <b>5 key facts:</b><ul><li>The power is given by Article 123.</li><li>The President promulgates the ordinance.</li><li>It has the force of law while in operation.</li><li>It must be placed before Parliament after it reassembles.</li><li>It is subject to parliamentary approval and constitutional limits.</li></ul>"
+    ];
+    let currentLanguage = 'hi';
+    function toggleLanguage(){ currentLanguage = currentLanguage === 'hi' ? 'en' : 'hi'; applyLanguage(); }
+    function applyLanguage(){
+      const en = currentLanguage === 'en';
+      document.documentElement.lang = en ? 'en' : 'hi';
+      ['lang-btn-dash','lang-btn-test','lang-btn-sol'].forEach(id=>{const b=document.getElementById(id); if(b) b.textContent=en?'हिन्दी':'English';});
+      const labels = {
+        'q-header-no': en?'Question':'प्रश्न',
+      };
+      const title=document.querySelector('.header-title'); if(title) title.textContent=en?'GK Mock Test 11':'GK मॉक टेस्ट 11';
+      const palette=document.querySelector('.palette-header'); if(palette) palette.textContent=en?'Question Palette':'प्रश्न पैलेट';
+      const solTitle=document.querySelector('#solution-screen h3'); if(solTitle) solTitle.textContent=en?'Detailed Solutions':'विस्तृत समाधान';
+      const viewBtn=document.querySelector('#result-screen button[onclick="viewSolutions()"]'); if(viewBtn) viewBtn.textContent=en?'📝 View Detailed Solutions':'📝 विस्तृत समाधान देखें';
+      const submit=document.querySelector('.submit-area button'); if(submit) submit.textContent=en?'Submit Test':'टेस्ट जमा करें';
+      const buttons=document.querySelectorAll('.q-footer button');
+      if(buttons.length===4){buttons[0].textContent=en?'Mark & Next':'Mark & Next';buttons[1].textContent=en?'Clear':'साफ करें';buttons[2].textContent=en?'Previous':'पिछला';buttons[3].textContent=en?'Save & Next':'सेव करें और आगे';}
+      const themeBtn=[...document.querySelectorAll('.header-controls button')].find(b=>b.getAttribute('onclick')==='toggleTheme()'); if(themeBtn) themeBtn.textContent=en?'🌓 Theme':'🌓 थीम';
+      const pauseBtn=[...document.querySelectorAll('.header-controls button')].find(b=>b.getAttribute('onclick')==='togglePause()'); if(pauseBtn) pauseBtn.textContent=en?'⏸ Pause':'⏸ रोकें';
+      if(document.getElementById('test-screen').classList.contains('active')) renderQuestion();
+      if(document.getElementById('solution-screen').classList.contains('active')) viewSolutions();
+    }
+
+    let state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+    let timerInterval = null;
+    let isPaused = false;
+
+    window.addEventListener('DOMContentLoaded', () => { initDashboard(); });
+
+    function initDashboard() {
+        showScreen('dashboard-screen');
+        let completedData = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) completedData = JSON.parse(dataStr);
+        } catch(e) {}
+
+        if (completedData) {
+            document.getElementById('dash-unattempted').style.display = 'none';
+            document.getElementById('dash-attempted').style.display = 'block';
+            document.getElementById('dash-score-text').innerText = `${completedData.score}/25.0 Marks . 1.5K/2.9K Rank`;
+            document.getElementById('dash-progress-bar').style.width = `${(completedData.score / 25) * 100}%`;
+        } else {
+            document.getElementById('dash-attempted').style.display = 'none';
+            document.getElementById('dash-unattempted').style.display = 'block';
+        }
+    }
+
+    function startTest() {
+        let saved = null;
+        try {
+            const savedStr = safeGetItem(STORAGE_KEY);
+            if(savedStr) saved = JSON.parse(savedStr);
+        } catch(e){}
+
+        if (saved && !saved.submitted) {
+            state = saved;
+        } else {
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+        }
+        initTestEnv();
+    }
+
+    function reattemptTest() {
+        if(confirm("Are you sure you want to start a fresh test? Your active progress will be lost.")) {
+            safeRemoveItem(STORAGE_KEY);
+            state = { currentQ: 0, answers: {}, marked: {}, visited: {}, time: 25 * 60, submitted: false };
+            initTestEnv();
+        }
+    }
+
+    function initTestEnv() {
+        showScreen('test-screen');
+        renderQuestion();
+        renderPalette();
+        updateStats();
+        
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(updateTimer, 1000);
+        setInterval(() => { if(!state.submitted) safeSetItem(STORAGE_KEY, JSON.stringify(state)); }, 2000);
+    }
+
+    function viewSavedResults() {
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(data) renderResultUI(data);
+    }
+
+    function showDashboard() { initDashboard(); }
+
+    function showScreen(id) { 
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+    }
+
+    function updateTimer() {
+        if(isPaused || state.submitted) return;
+        if(state.time <= 0) { submitTest(); return; }
+        state.time--;
+        const m = Math.floor(state.time / 60), s = state.time % 60;
+        document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+    }
+
+    function toggleTheme() {
+        document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    }
+
+    function renderQuestion() {
+        state.visited[state.currentQ] = true;
+        const q = finalQuestions[state.currentQ];
+        document.getElementById('q-no').innerText = `${currentLanguage === 'en' ? 'Question' : 'प्रश्न'} ${state.currentQ + 1}`;
+        document.getElementById('q-text').innerHTML = currentLanguage === 'en' ? englishQuestions[state.currentQ][0] : q.q;
+        let opts = '';
+        q.o.forEach((opt, i) => {
+            if(currentLanguage === 'en') opt = englishQuestions[state.currentQ][1][i];
+            const isSel = state.answers[state.currentQ] === i;
+            const selClass = isSel ? 'selected' : '';
+            const charLabel = String.fromCharCode(65 + i);
+            opts += `<div class="glass-panel option ${selClass}" onclick="selectOption(${i})"><div class="opt-label">${charLabel}</div><div style="flex:1;">${opt}</div></div>`;
+        });
+        document.getElementById('options-box').innerHTML = opts;
+        renderPalette();
+        updateStats();
+    }
+
+    function selectOption(index) { state.answers[state.currentQ] = index; renderQuestion(); }
+    function clearResponse() { delete state.answers[state.currentQ]; delete state.marked[state.currentQ]; renderQuestion(); }
+    function markReview() { state.marked[state.currentQ] = true; changeQ(1); }
+    function saveNext() { delete state.marked[state.currentQ]; changeQ(1); }
+
+    function changeQ(step) {
+        const next = state.currentQ + step;
+        if(next >= 0 && next < finalQuestions.length) { state.currentQ = next; renderQuestion(); }
+    }
+
+    function renderPalette() {
+        const grid = document.getElementById('q-grid');
+        grid.innerHTML = '';
+        finalQuestions.forEach((_, i) => {
+            let cls = 's-0';
+            if(state.visited[i]) {
+                if(state.answers[i] !== undefined && state.marked[i]) cls = 's-4';
+                else if(state.marked[i]) cls = 's-3';
+                else if(state.answers[i] !== undefined) cls = 's-1';
+                else cls = 's-2';
+            }
+            const active = i === state.currentQ ? 'active' : '';
+            grid.innerHTML += `<button class="p-btn ${cls} ${active}" onclick="state.currentQ = ${i}; renderQuestion();">${i + 1}</button>`;
+        });
+    }
+
+    function updateStats() {
+        let ans=0, notans=0, notvis=0, mark=0;
+        finalQuestions.forEach((_, i) => {
+            if(!state.visited[i]) notvis++;
+            else if(state.marked[i]) mark++;
+            else if(state.answers[i] !== undefined) ans++;
+            else notans++;
+        });
+        document.getElementById('c-ans').innerText = ans; document.getElementById('c-notans').innerText = notans;
+        document.getElementById('c-notvis').innerText = notvis; document.getElementById('c-mark').innerText = mark;
+    }
+
+    function submitTest() {
+        if(!confirm("Are you sure you want to submit the test?")) return;
+        state.submitted = true; clearInterval(timerInterval);
+        let score=0, attempt=0, wrong=0;
+        finalQuestions.forEach((q, i) => {
+            if(state.answers[i] !== undefined) {
+                attempt++;
+                if(state.answers[i] === q.a) score++; else wrong++;
+            }
+        });
+        const today = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        const completedData = { score: score, attempted: attempt, wrong: wrong, time: state.time, date: today, userAnswers: state.answers };
+        
+        safeSetItem(COMPLETED_KEY, JSON.stringify(completedData));
+        safeRemoveItem(STORAGE_KEY);
+        
+        renderResultUI(completedData);
+    }
+
+    function renderResultUI(data) {
+        showScreen('result-screen');
+        const acc = data.attempted > 0 ? ((data.score / data.attempted) * 100).toFixed(1) : 0;
+        document.getElementById('r-score').innerText = `${data.score}`;
+        document.getElementById('r-attempt').innerText = data.attempted;
+        document.getElementById('r-wrong').innerText = data.wrong;
+        document.getElementById('r-acc').innerText = `${acc}%`;
+    }
+
+    function viewSolutions() {
+        showScreen('solution-screen');
+        
+        let data = null;
+        try {
+            const dataStr = safeGetItem(COMPLETED_KEY);
+            if(dataStr) data = JSON.parse(dataStr);
+        } catch(e) {}
+        
+        if(!data) return;
+
+        let html = '';
+        finalQuestions.forEach((q, i) => {
+            const uAns = data.userAnswers[i];
+            let optHtml = '';
+            q.o.forEach((opt, oIdx) => {
+                if(currentLanguage === 'en') opt = englishQuestions[i][1][oIdx];
+                let cls = '', checkMark = '';
+                if(oIdx === q.a) { cls = 'correct'; checkMark = ' ✔'; }
+                else if(oIdx === uAns && uAns !== q.a) { cls = 'wrong'; checkMark = ' ❌ (Your Answer)'; }
+                optHtml += `<div class="glass-panel sol-opt ${cls}"><strong>${String.fromCharCode(65 + oIdx)}.</strong> <div style="flex:1;">${opt} ${checkMark}</div></div>`;
+            });
+            let statusText = currentLanguage === 'en' ? (uAns !== undefined ? (uAns === q.a ? 'Attempted (Correct)' : 'Attempted (Incorrect)') : 'Not attempted') : (uAns !== undefined ? (uAns === q.a ? 'हल किया (Correct)' : 'हल किया (Incorrect)') : 'हल नहीं किया (Unattempted)');
+            const questionText = currentLanguage === 'en' ? englishQuestions[i][0] : q.q;
+            const explanation = currentLanguage === 'en' ? englishExplanations[i] : q.e;
+            html += `<div class="glass-panel sol-card"><div style="font-weight:700; font-size:18px; margin-bottom:15px; color:var(--primary);">${currentLanguage === 'en' ? 'Q.' : 'प्र.'} ${i+1}. ${questionText}</div>${optHtml}<div style="font-weight:bold; margin:15px 0; color:var(--text-muted);">${currentLanguage === 'en' ? 'Status:' : 'स्थिति:'} ${statusText}</div><div class="glass-panel sol-exp">${explanation}</div></div>`;
+        });
+        document.getElementById('sol-container').innerHTML = html;
+    }
+
+    function downloadPDF() {
+        const element = document.getElementById('sol-container');
+        
+        // Hide the Back & Download buttons temporarily before generating PDF
+        const actionButtons = element.previousElementSibling;
+        actionButtons.style.display = 'none';
+
+        const opt = {
+            margin:       10,
+            filename:     currentLanguage === 'en' ? 'HSSC_GK_Mock_Test_11_Solutions_English.pdf' : 'HSSC_GK_Mock_Test_11_Solutions_Hindi.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        
+        // Disable dark mode temporarily for better PDF printing if it's on
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isDark) document.documentElement.setAttribute('data-theme', 'light');
+        
+        html2pdf().set(opt).from(element).save().then(() => {
+            // Revert back to original theme after saving
+            if (isDark) document.documentElement.setAttribute('data-theme', 'dark');
+            // Show the action buttons again
+            actionButtons.style.display = 'flex';
+        });
+    }
+</script>
+</body>
+</html>
