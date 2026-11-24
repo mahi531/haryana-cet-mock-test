@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1769e0">
+<title>Daily English Vocabulary | HSSC Mock Test Wala</title>
+<style>
+:root{--blue:#1769e0;--bg:#f3f6fb;--ink:#172033;--muted:#64748b;--card:#fff;--line:#dce4ef}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,"Noto Sans Devanagari",sans-serif}
+header{background:linear-gradient(120deg,#153d70,#1684c7);color:white;padding:20px 16px;text-align:center}
+header h1{font-size:24px;margin:0 0 7px}header p{margin:0;font-size:14px}
+main{max-width:850px;margin:18px auto;padding:0 13px 35px}
+.top{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:14px}
+button,.btn{border:0;border-radius:10px;padding:11px 15px;background:var(--blue);color:#fff;font-weight:700;font-size:15px;cursor:pointer;text-decoration:none}
+.secondary{background:#e5edf9;color:#174477}.date{color:var(--muted);font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:17px;margin:12px 0;box-shadow:0 4px 15px #18385b0c}
+.wordhead{display:flex;justify-content:space-between;gap:12px;align-items:center}.word{font-size:22px;font-weight:800;color:#174477}.meaning{font-size:17px;font-weight:700;margin:9px 0}
+.meta{line-height:1.65;margin:5px 0;font-size:15px}.meta b{color:#344968}.example{background:#f1f6ff;padding:10px;border-radius:9px;line-height:1.55;margin-top:9px}
+h2{font-size:20px;margin:22px 2px 8px}.quiz-q{font-weight:700;font-size:16px;line-height:1.5}.option{display:block;width:100%;text-align:left;margin:8px 0;background:#f4f7fc;color:var(--ink);border:1px solid var(--line);font-weight:500}.option.correct{background:#e2f7eb;border-color:#1a9b58}.option.wrong{background:#ffeded;border-color:#d33}
+#feedback{font-weight:700;margin:10px 0}.progress{height:8px;background:#e4eaf2;border-radius:10px;overflow:hidden}.progress span{display:block;height:100%;width:0;background:#1b9a60}
+@media(max-width:520px){header h1{font-size:21px}.card{padding:14px}.word{font-size:20px}}
+</style>
+</head>
+<body>
+<header><h1>📖 Daily English Vocabulary</h1><p>रोज़ 10 नए शब्द सीखें और अपनी तैयारी मजबूत करें</p></header>
+<main>
+<div class="top"><a class="btn secondary" href="index.html">← मुख्य पेज</a><span class="date" id="dayLabel">आज के शब्द</span></div>
+<div class="card"><b>आज का लक्ष्य:</b> 10 शब्द • हिंदी अर्थ • Synonyms • Antonyms • उदाहरण • अभ्यास</div>
+<div id="wordList"><div class="card">शब्द लोड हो रहे हैं…</div></div>
+<section class="card" id="practice">
+<h2>📝 Vocabulary Practice Test</h2>
+<p class="date">हर दिन के 10 शब्दों पर आधारित 10 प्रश्न। विकल्प चुनें और तुरंत सही उत्तर व व्याख्या देखें।</p>
+<div class="progress"><span id="progressBar"></span></div>
+<p id="questionCount" class="date"></p>
+<div id="questionArea">प्रश्न तैयार हो रहा है…</div>
+<div id="feedback" aria-live="polite"></div>
+<button id="nextBtn" type="button" onclick="nextQuestion()" hidden>अगला प्रश्न →</button>
+<div id="finalScore"></div>
+</section>
+</main>
+<script>
+let allWords=[],questions=[],qIndex=0,score=0,answered=false;
+const $=id=>document.getElementById(id);
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+async function init(){
+ try{
+  const r=await fetch('vocabulary.json?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw Error('vocabulary.json नहीं मिली');
+  const data=await r.json();const days=data.days||[];if(!days.length)throw Error('अभी शब्द उपलब्ध नहीं हैं');
+  const today=new Date();const key=today.toISOString().slice(0,10);
+  let chosen=days.find(d=>d.date===key);
+  if(!chosen){const start=new Date('2026-11-24T00:00:00Z');const n=Math.max(0,Math.floor((Date.UTC(today.getUTCFullYear(),today.getUTCMonth(),today.getUTCDate())-start.getTime())/86400000));chosen=days[n%days.length];}
+  allWords=chosen.words||[];$('dayLabel').textContent='शब्द सेट: '+(chosen.date||'आज');
+  renderWords();buildQuiz();
+ }catch(e){$('wordList').innerHTML='<div class="card">शब्द लोड नहीं हो पाए। जाँचें कि vocabulary.html और vocabulary.json एक ही GitHub फ़ोल्डर में हैं।<br>'+esc(e.message)+'</div>';$('questionArea').textContent='अभ्यास उपलब्ध नहीं है।';}
+}
+function renderWords(){
+ $('wordList').innerHTML=allWords.map((w,i)=>`<article class="card">
+ <div class="wordhead"><span class="word">${i+1}. ${esc(w.word)}</span><button class="secondary" type="button" onclick="speakWord('${esc(w.word).replace(/'/g,"\\'")}')">🔊 सुनें</button></div>
+ <div class="meaning">${esc(w.meaning_hi)}</div>
+ <p class="meta"><b>Synonyms (समानार्थी):</b> ${esc((w.synonyms||[]).join(', '))}</p>
+ <p class="meta"><b>Antonyms (विलोम):</b> ${esc((w.antonyms||[]).join(', '))}</p>
+ <div class="example"><b>Example:</b> ${esc(w.example_en)}<br><b>हिंदी:</b> ${esc(w.example_hi||'')}</div></article>`).join('');
+}
+function speakWord(word){if('speechSynthesis'in window){speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(word);u.lang='en-IN';speechSynthesis.speak(u);}}
+function buildQuiz(){
+ const pool=allWords.filter(w=>w.word);questions=pool.map((w,i)=>{
+  const type=i%3,correct=type===0?w.meaning_hi:type===1?(w.synonyms||[])[0]:(w.antonyms||[])[0];
+  const label=type===0?`“${w.word}” का हिंदी अर्थ क्या है?`:type===1?`“${w.word}” का Synonym (समानार्थी) चुनें।`:`“${w.word}” का Antonym (विलोम) चुनें।`;
+  const others=pool.filter(x=>x.word!==w.word).map(x=>type===0?x.meaning_hi:type===1?(x.synonyms||[])[0]:(x.antonyms||[])[0]).filter(Boolean);
+  const opts=[correct,...others.filter(x=>x!==correct).slice(0,3)].sort(()=>Math.random()-.5);
+  return {label,correct,opts,explain:`${w.word} का अर्थ: ${w.meaning_hi}। Synonyms: ${(w.synonyms||[]).join(', ')}। Antonyms: ${(w.antonyms||[]).join(', ')}।`};
+ });
+ showQuestion();
+}
+function showQuestion(){
+ answered=false;$('feedback').textContent='';$('nextBtn').hidden=true;$('finalScore').textContent='';
+ if(qIndex>=questions.length){$('questionArea').innerHTML=`<h2>अभ्यास पूरा हुआ!</h2><p>आपका स्कोर: <b>${score}/${questions.length}</b></p>`;$('questionCount').textContent='पूरा';$('progressBar').style.width='100%';$('nextBtn').hidden=true;$('finalScore').innerHTML='<button onclick="restartQuiz()">दोबारा अभ्यास करें</button>';return;}
+ const q=questions[qIndex];$('questionCount').textContent=`प्रश्न ${qIndex+1} / ${questions.length}`;$('progressBar').style.width=(qIndex/questions.length*100)+'%';
+ $('questionArea').innerHTML=`<p class="quiz-q">${qIndex+1}. ${esc(q.label)}</p>`+q.opts.map((o,i)=>`<button class="option" type="button" onclick="checkAnswer(${i})">${String.fromCharCode(65+i)}. ${esc(o)}</button>`).join('');
+}
+function checkAnswer(i){if(answered)return;answered=true;const q=questions[qIndex],chosen=q.opts[i];document.querySelectorAll('.option').forEach((b,n)=>{b.disabled=true;if(q.opts[n]===q.correct)b.classList.add('correct');if(n===i&&chosen!==q.correct)b.classList.add('wrong');});if(chosen===q.correct){score++;$('feedback').textContent='✓ सही उत्तर! '+q.explain;}else{$('feedback').textContent='✗ सही उत्तर: '+q.correct+'. '+q.explain;}$('nextBtn').hidden=false;$('nextBtn').textContent=qIndex===questions.length-1?'परिणाम देखें':'अगला प्रश्न →';}
+function nextQuestion(){if(!answered)return;qIndex++;showQuestion();}
+function restartQuiz(){qIndex=0;score=0;buildQuiz();}
+init();
+</script>
+</body></html>
