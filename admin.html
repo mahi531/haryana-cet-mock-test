@@ -72,17 +72,7 @@
             color: #666;
             margin: 20px 0;
         }
-    
-.vocab-admin{border:1px solid #cfe2ff;border-radius:10px;padding:16px;margin:18px 0;background:#f8fbff}
-.vocab-admin .vocab-admin-cards{display:flex;flex-wrap:wrap;gap:12px;margin:14px 0}
-.vocab-admin .vocab-admin-card{flex:1;min-width:135px;background:white;border:1px solid #d8e4f5;border-radius:8px;padding:14px}
-.vocab-admin .vocab-admin-card strong{display:block;font-size:26px;color:#1769e0}
-.vocab-admin table{margin-top:12px}
-.vocab-admin .vocab-admin-controls{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
-.vocab-admin input{padding:10px;border:1px solid #bbb;border-radius:6px}
-.vocab-admin .feedback-message{white-space:pre-wrap;overflow-wrap:anywhere;max-width:520px}
-
-</style>
+    </style>
 </head>
 <body>
 
@@ -116,6 +106,13 @@
             <p style="font-size:13px;color:#666;">यहाँ केवल विद्यार्थियों द्वारा इंस्टॉल की गई मुख्य HSSC Mock Test Wala Website App की गिनती होगी। Admin Panel App का इंस्टॉल इसमें शामिल नहीं होगा। गिनती tracking चालू होने के बाद होने वाले सफल installs से शुरू होगी; पुराने installs अपने-आप वापस नहीं गिने जा सकते।</p>
         </section>
 
+
+        <section style="border:1px solid #d8e4f5;border-radius:10px;padding:14px 16px;margin:18px 0;background:#f8fbff;">
+            <div style="font-weight:600;color:#174ea6;">📘 Vocabulary Page पर कुल Visitors</div>
+            <strong id="vocabularyVisitorTotal" style="display:block;font-size:30px;color:#198754;margin-top:4px;">लोड हो रहा है...</strong>
+            <small id="vocabularyVisitorStatus" style="color:#666;">Unique browser/device की गिनती</small>
+        </section>
+
         <section style="border:1px solid #cfe2ff;border-radius:10px;padding:16px;margin:18px 0;background:#f8fbff;">
             <h3 style="margin-bottom:12px;color:#174ea6;">📊 Website Visitor Analytics (Date Wise)</h3>
             <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:end;">
@@ -143,39 +140,7 @@
             </div>
         </section>
 
-        
-<section class="vocab-admin" id="vocabularyAdminAnalytics">
-  <h3 style="margin:0 0 10px;color:#174ea6;">📚 Daily Vocabulary – Reader, Like/Dislike और Feedback रिपोर्ट</h3>
-  <p style="color:#526174;margin:0 0 12px;">Vocabulary पेज पर आने वाले पाठक, उनकी प्रतिक्रियाएँ और विद्यार्थियों के सुझाव यहाँ देखें।</p>
-  <div class="vocab-admin-controls">
-    <div><label for="vocabAdminDate"><b>Vocabulary की तारीख</b></label><input type="date" id="vocabAdminDate"></div>
-    <button class="download-btn" type="button" id="loadVocabAdminDate" style="background:#1769e0;">रिपोर्ट देखें</button>
-    <button class="download-btn" type="button" id="loadVocabAdminAll" style="background:#6c757d;">सभी तारीखों की रिपोर्ट</button>
-  </div>
-  <div class="vocab-admin-cards">
-    <div class="vocab-admin-card"><div>कुल पाठक</div><strong id="vocabAdminReaders">0</strong></div>
-    <div class="vocab-admin-card"><div>👍 Likes</div><strong id="vocabAdminLikes" style="color:#198754;">0</strong></div>
-    <div class="vocab-admin-card"><div>👎 Dislikes</div><strong id="vocabAdminDislikes" style="color:#dc3545;">0</strong></div>
-    <div class="vocab-admin-card"><div>Feedback</div><strong id="vocabAdminFeedbackCount">0</strong></div>
-  </div>
-  <p id="vocabAdminStatus" style="color:#555;">रिपोर्ट लोड होने की प्रतीक्षा है...</p>
-  <h4>विद्यार्थियों की प्रतिक्रियाएँ</h4>
-  <div style="overflow-x:auto;">
-    <table>
-      <thead><tr><th>तारीख</th><th>विषय</th><th>सुझाव / Feedback</th><th>समय</th></tr></thead>
-      <tbody id="vocabAdminFeedbackBody"><tr><td colspan="4">अभी रिपोर्ट लोड नहीं हुई।</td></tr></tbody>
-    </table>
-  </div>
-  <h4>तारीख के अनुसार रिपोर्ट</h4>
-  <div style="overflow-x:auto;">
-    <table>
-      <thead><tr><th>तारीख</th><th>पाठक</th><th>Likes</th><th>Dislikes</th><th>Feedback</th></tr></thead>
-      <tbody id="vocabAdminDailyBody"><tr><td colspan="5">रिपोर्ट लोड नहीं हुई।</td></tr></tbody>
-    </table>
-  </div>
-</section>
-
-<p id="loading">Loading data from Firebase...</p>
+        <p id="loading">Loading data from Firebase...</p>
 
 
         <!-- LIVE MOCK TEST ADMIN CONTROLS -->
@@ -330,89 +295,6 @@
             document.getElementById("loading").style.color = "red";
         });
 
-
-// ==========================================
-// DAILY VOCABULARY ENGAGEMENT ADMIN REPORT
-// Shared collections written by vocabulary.html:
-// VocabularyStats/{YYYY-MM-DD}/Readers, Reactions, Feedback
-// ==========================================
-function vocabAdminEscape(value){
-  return String(value == null ? "" : value).replace(/[&<>"']/g, ch => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
-  }[ch]));
-}
-function vocabAdminDateLabel(value){
-  if(!value) return "-";
-  if(value.toDate) return value.toDate().toLocaleString("en-IN");
-  return String(value);
-}
-async function readVocabularyDay(dayDoc){
-  const [readers, reactions, feedback] = await Promise.all([
-    dayDoc.ref.collection("Readers").get(),
-    dayDoc.ref.collection("Reactions").get(),
-    dayDoc.ref.collection("Feedback").get()
-  ]);
-  let likes = 0, dislikes = 0;
-  reactions.forEach(doc=>{
-    const type = (doc.data() || {}).type;
-    if(type === "like") likes++;
-    if(type === "dislike") dislikes++;
-  });
-  return {date:dayDoc.id, readers:readers.size, likes, dislikes, feedback:feedback.size, feedbackDocs:feedback.docs};
-}
-async function loadVocabularyAdminReport(allDates){
-  const status = document.getElementById("vocabAdminStatus");
-  const selectedDate = document.getElementById("vocabAdminDate").value;
-  status.textContent = "Vocabulary रिपोर्ट Firebase से लोड हो रही है...";
-  try{
-    const snapshot = await db.collection("VocabularyStats").get();
-    let dayDocs = snapshot.docs;
-    if(!allDates && selectedDate) dayDocs = dayDocs.filter(doc=>doc.id === selectedDate);
-    const reports = [];
-    for(const dayDoc of dayDocs){
-      reports.push(await readVocabularyDay(dayDoc));
-    }
-    reports.sort((a,b)=>b.date.localeCompare(a.date));
-    const totalReaders = reports.reduce((sum,item)=>sum+item.readers,0);
-    const totalLikes = reports.reduce((sum,item)=>sum+item.likes,0);
-    const totalDislikes = reports.reduce((sum,item)=>sum+item.dislikes,0);
-    const totalFeedback = reports.reduce((sum,item)=>sum+item.feedback,0);
-    document.getElementById("vocabAdminReaders").textContent = totalReaders;
-    document.getElementById("vocabAdminLikes").textContent = totalLikes;
-    document.getElementById("vocabAdminDislikes").textContent = totalDislikes;
-    document.getElementById("vocabAdminFeedbackCount").textContent = totalFeedback;
-    document.getElementById("vocabAdminDailyBody").innerHTML = reports.length ? reports.map(item=>
-      `<tr><td>${vocabAdminEscape(item.date)}</td><td>${item.readers}</td><td>${item.likes}</td><td>${item.dislikes}</td><td>${item.feedback}</td></tr>`
-    ).join("") : '<tr><td colspan="5">इस तारीख का कोई रिकॉर्ड नहीं मिला।</td></tr>';
-    let feedbackRows = [];
-    reports.forEach(item=>{
-      item.feedbackDocs.forEach(doc=>{
-        const d = doc.data() || {};
-        feedbackRows.push({
-          date:item.date,
-          topic:d.topic || "-",
-          message:d.message || "",
-          time:vocabAdminDateLabel(d.createdAt)
-        });
-      });
-    });
-    feedbackRows.sort((a,b)=>b.date.localeCompare(a.date) || b.time.localeCompare(a.time));
-    document.getElementById("vocabAdminFeedbackBody").innerHTML = feedbackRows.length ?
-      feedbackRows.map(item=>`<tr><td>${vocabAdminEscape(item.date)}</td><td>${vocabAdminEscape(item.topic)}</td><td class="feedback-message">${vocabAdminEscape(item.message)}</td><td>${vocabAdminEscape(item.time)}</td></tr>`).join("") :
-      '<tr><td colspan="4">अभी कोई लिखित Feedback नहीं मिला।</td></tr>';
-    status.textContent = allDates ? `सभी उपलब्ध ${reports.length} Vocabulary तारीखों की रिपोर्ट दिखाई जा रही है।` :
-      `${selectedDate || "चुनी हुई तारीख"} की रिपोर्ट दिखाई जा रही है।`;
-  }catch(error){
-    console.error("Vocabulary admin report error:",error);
-    status.textContent = "रिपोर्ट लोड नहीं हुई। Firestore Rules में VocabularyStats पढ़ने की अनुमति जाँचें।";
-  }
-}
-document.getElementById("vocabAdminDate").value = localDateKey(new Date());
-document.getElementById("loadVocabAdminDate").addEventListener("click",()=>loadVocabularyAdminReport(false));
-document.getElementById("loadVocabAdminAll").addEventListener("click",()=>loadVocabularyAdminReport(true));
-loadVocabularyAdminReport(true);
-
-
         // ==========================================
         // WEBSITE PWA INSTALL COUNTER
         // ==========================================
@@ -511,9 +393,26 @@ loadVocabularyAdminReport(true);
             }
         }
 
+
+        // Simple total count for the Vocabulary HTML page.
+        async function loadVocabularyVisitorCount() {
+            const totalEl = document.getElementById('vocabularyVisitorTotal');
+            const statusEl = document.getElementById('vocabularyVisitorStatus');
+            try {
+                const snapshot = await db.collection('VocabularyPageVisitors').get();
+                totalEl.textContent = snapshot.size.toLocaleString('en-IN');
+                statusEl.textContent = 'कुल अलग-अलग browser/device जिन्होंने Vocabulary Page खोला';
+            } catch (error) {
+                console.error('Vocabulary visitor count error:', error);
+                totalEl.textContent = '—';
+                statusEl.textContent = 'गिनती नहीं मिली। Firestore Rules में VocabularyPageVisitors पढ़ने की अनुमति जाँचें।';
+            }
+        }
+
         // Default analytics date: today
         document.getElementById("analyticsDate").value = localDateKey(new Date());
         loadAnalytics();
+        loadVocabularyVisitorCount();
 
         // ADMIN PANEL PWA INSTALL: one-tap native install prompt when Chrome allows it.
         // Reuse the website's existing root service worker (sw.js); do not register
